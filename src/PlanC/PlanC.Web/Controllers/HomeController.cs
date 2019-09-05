@@ -12,7 +12,8 @@ namespace PlanC.Web.Controllers
     {
         public IActionResult Index()
         {
-            return View();
+            var vm = new IndexViewModel { Title = "Bienvenue sur Plan C! ❤" };
+            return View(vm);
         }
 
         public IActionResult About()
