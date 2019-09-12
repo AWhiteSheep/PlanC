@@ -16,6 +16,10 @@ namespace PlanC.Web.Controllers
             return View(vm);
         }
 
+        public IActionResult PlansCadres() {
+            return View();
+        }
+
         public IActionResult About()
         {
             ViewData["Message"] = "Your application description page.";
