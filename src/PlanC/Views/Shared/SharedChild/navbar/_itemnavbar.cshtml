@@ -1,0 +1,36 @@
+﻿@using PlanC.Views.Shared.SharedChild.navbar
+
+@model PlanC.Views.Shared.SharedChild.navbar.LinkItem
+
+@{
+    ///**
+    /// menu
+    ///     each
+}
+
+@if (Model is DropDownItem dropdown)
+{
+    <li class="nav-item dropdown">
+        <a class="bd-toc-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button"
+           data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            @Model.Display()
+        </a>
+        <div class="dropdown-menu side-dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+            @foreach (LinkItem linkItem in dropdown.Items)
+            {
+                <partial name="_itemnavbar.cshtml" for="@linkItem" />
+            }
+        </div>
+    </li>
+}
+else if (Model.parent != null)
+{
+    // si enfant d'un drop down
+    <a class="dropdown-item" href="#">@Model.Text</a>
+}
+else
+{
+    <li class="nav-item">
+        <a class="nav-link text-dark" href="#">@Model.Display()</a>
+    </li>
+}

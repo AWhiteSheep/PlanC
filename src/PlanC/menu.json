@@ -1,0 +1,56 @@
+{
+  "ItemsList" : [
+    {
+      "Text" : "Plan-cadre",
+      "Url" : "#",
+      "Items": [
+        {
+          "Text": "Nouveau plan-cadre",
+          "Url": "#"
+        },
+        {
+          "Text": "Consulter les plans-cadres",
+          "Url": "#"
+        }
+      ]
+    },
+    {
+      "Text" : "Plan de cours",
+      "Url" : "#",
+      "Items": [
+        {
+          "Text": "Nouveau plan de cours",
+          "Url": "#"
+        },
+        {
+          "Text": "Consulter les plans de cours",
+          "Url": "#"
+        }
+      ]
+    },
+    {
+      "Text" : "Compétences",
+      "Url" : "#",
+      "Items": [
+        {
+          "Text": "Nouvelle compétence",
+          "Url": "#"
+        },
+        {
+          "Text": "voir les compétences",
+          "Url": "#"
+        }
+      ]
+    },
+    {
+      "Text" : "Profil",
+      "Url" : "#",
+      "Items": [
+        {
+          "Text": "Consulter le profil",
+          "Url": "#"
+        }
+      ]
+    }
+  ]
+}

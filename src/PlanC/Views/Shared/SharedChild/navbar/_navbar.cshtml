@@ -1,0 +1,23 @@
+﻿@using PlanC.Views.Shared.SharedChild.navbar
+@using Newtonsoft.Json
+@using System.IO
+@using System.Text;
+
+
+@{
+    // construit la navigation à partir du fichier json
+    NavbarBuilder navbar = JsonConvert.DeserializeObject<NavbarBuilder>(
+        File.ReadAllText(
+            "menu.json",
+            Encoding.UTF7
+        ));
+}
+
+<nav class="bd-collapse bd-links">
+    <ul class="nav bd-sidenav">
+        @foreach (LinkItem item in navbar.LinkItems)
+        {
+            <partial name="_itemnavbar.cshtml" for="@item" />
+        }
+    </ul>
+</nav>
