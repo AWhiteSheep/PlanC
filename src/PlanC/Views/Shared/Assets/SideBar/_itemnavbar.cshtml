@@ -1,11 +1,12 @@
-﻿@using PlanC.Views.Shared.SharedChild.navbar
+﻿@using PlanC.Views.Shared.Assets.SideBar
 
-@model PlanC.Views.Shared.SharedChild.navbar.LinkItem
+@model PlanC.Views.Shared.Assets.SideBar.LinkItem
 
 @{
     ///**
     /// menu
     ///     each
+
 }
 
 @if (Model is DropDownItem dropdown)
@@ -25,12 +26,11 @@
 }
 else if (Model.parent != null)
 {
-    // si enfant d'un drop down
-    <a class="dropdown-item" href="#">@Model.Text</a>
+    <a class="@Model.Class" href="@Model.Url">@Model.Text</a>
 }
 else
 {
     <li class="nav-item">
-        <a class="nav-link text-dark" href="#">@Model.Display()</a>
+            <a class="@Model.Class" href="@Model.Url">@Model.Text</a>
     </li>
 }

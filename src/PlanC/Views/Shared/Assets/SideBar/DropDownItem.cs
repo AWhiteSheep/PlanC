@@ -4,15 +4,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace PlanC.Views.Shared.SharedChild.navbar
+namespace PlanC.Views.Shared.Assets.SideBar
 {
     public class DropDownItem : LinkItem
     {
         public List<LinkItem> Items { get; set; }
+        public new string Class = "dropdown-item";
 
-        public DropDownItem()
-        {
-        }
+        public DropDownItem() { }
         
         public DropDownItem(string display, string redirect, List<LinkItem> dropDownLinkItem) : base(display, redirect)
         {
