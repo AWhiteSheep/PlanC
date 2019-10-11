@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - PlanC</title>
     <link rel="stylesheet" href="~/css/sidebar.css" />
+    <link rel="stylesheet" href="~/css/topnavigation.css" />
 
     <environment include="Development">
         <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
@@ -18,7 +19,10 @@
     </environment>
     <link rel="stylesheet" href="~/css/site.css" />
 </head>
-<body>
+<body class="ui-indigo">
+
+    <partial name="_topnavigation.cshtml" />
+
     <div class="row">
         <div class="container-side-bar col-12 col-md-4 col-lg-3 bg-white border-right hide-md hide-sm bd-sidebar box-shadow">
             @(await Component.InvokeAsync("NavigationBar"))
