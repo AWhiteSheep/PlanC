@@ -1,0 +1,119 @@
+﻿p-0 {
+    padding: 0 !important;
+}
+
+.container-side-bar {
+    max-width: 350px;
+}
+
+.dashboard-sidebar {
+    padding-right: 24px;
+    padding-left: 24px;
+    margin-top: 58px;
+    width: auto;
+    height: 234px;
+    position: fixed;
+}
+
+.side-dropdown-menu {
+    position: relative !important;
+    transform: none !important;
+    left: 24px !important;
+}
+
+.user-drop-down {
+    left: unset !important;
+    right: 0;
+    min-width: 8rem !important;
+}
+
+.sticky-top {
+    position: sticky;
+    top: 0;
+    z-index: 1030;
+}
+
+@media (max-width: 768px) {
+    .max-md {
+        display: block !important;
+    }
+}
+
+.max-md {
+    display: none;
+}
+/**
+    Bootstrap 4 links css for side nva bar
+ */
+@media (min-width: 1200px) {
+    .bd-sidebar {
+        -webkit-box-flex: 0;
+        -ms-flex: 0 1 320px;
+        flex: 0 1 320px;
+    }
+}
+
+@media (min-width: 768px) {
+    .bd-sidebar {
+        position: -webkit-sticky;
+        position: sticky;
+        z-index: 1000;
+        height: calc(100vh - 4rem);
+    }
+}
+
+@media (min-width: 768px) {
+    .bd-sidebar {
+        border-right: 1px solid rgba(0,0,0,.1);
+    }
+}
+
+@media (min-width: 768px) {
+    .bd-links {
+        display: block !important;
+    }
+}
+
+@media (min-width: 768px) {
+    .bd-links {
+        max-height: calc(100vh - 9rem);
+        overflow-y: auto;
+    }
+}
+
+.bd-links {
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+    margin-right: -15px;
+    margin-left: -15px;
+}
+
+.bd-collapse {
+    display: none;
+}
+
+.bd-toc-item.active > .bd-sidenav {
+    display: block;
+}
+
+.bd-toc-link {
+    display: block;
+    padding: .55rem 2.5rem;
+    font-weight: 500;
+    color: rgba(0,0,0,.65);
+}
+
+.bd-sidenav {
+    display: none;
+}
+
+.nav {
+    display: -webkit-box;
+    display: flex;
+    -ms-flex-wrap: wrap;
+    flex-wrap: wrap;
+    flex-direction: column;
+    padding-left: 0;
+    margin-bottom: 0;
+    list-style: none;
+}
