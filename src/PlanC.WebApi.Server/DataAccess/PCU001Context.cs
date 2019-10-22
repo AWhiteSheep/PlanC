@@ -23,14 +23,14 @@ namespace PlanC.WebApi.Server.DataAccess
         public virtual DbSet<Tcrsreq> Tcrsreq { get; set; }
         public virtual DbSet<Tcrssklelem> Tcrssklelem { get; set; }
         public virtual DbSet<CourseTemplate> Tcrstmplt { get; set; }
-        public virtual DbSet<Department> Tdptmnt { get; set; }
-        public virtual DbSet<Exam> Texam { get; set; }
-        public virtual DbSet<Exam_SkillElement> Texamsklelem { get; set; }
+        public virtual DbSet<Department> Departments { get; set; }
+        public virtual DbSet<Exam> Exams { get; set; }
+        public virtual DbSet<Exam_SkillElement> Exam_SkillElements { get; set; }
         public virtual DbSet<Tfnlexam> Tfnlexam { get; set; }
         public virtual DbSet<Tpgm> Tpgm { get; set; }
-        public virtual DbSet<Skill> Tskl { get; set; }
-        public virtual DbSet<Tsklcntxt> Tsklcntxt { get; set; }
-        public virtual DbSet<SkillElement> Tsklelem { get; set; }
+        public virtual DbSet<Skill> Skills { get; set; }
+        public virtual DbSet<SkillAchievementContext> SkillAchievementContexts { get; set; }
+        public virtual DbSet<SkillElement> SkillElements { get; set; }
         public virtual DbSet<Tsmstr> Tsmstr { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -254,11 +254,11 @@ namespace PlanC.WebApi.Server.DataAccess
 
             modelBuilder.Entity<CourseTemplate>(entity =>
             {
-                entity.HasKey(e => new { e.CrsId, e.VsnCdttm });
+                entity.HasKey(e => new { e.Id, e.VsnCdttm });
 
                 entity.ToTable("TCRSTMPLT");
 
-                entity.Property(e => e.CrsId)
+                entity.Property(e => e.Id)
                     .HasColumnName("CRS_ID")
                     .HasMaxLength(10);
 
@@ -266,27 +266,27 @@ namespace PlanC.WebApi.Server.DataAccess
                     .HasColumnName("VSN_CDTTM")
                     .HasColumnType("datetime");
 
-                entity.Property(e => e.BoardApprvDt)
+                entity.Property(e => e.BoardApprovalDate)
                     .HasColumnName("BOARD_APPRV_DT")
                     .HasColumnType("date");
 
-                entity.Property(e => e.CmteApprvDt)
+                entity.Property(e => e.CommitteeApprovalDate)
                     .HasColumnName("CMTE_APPRV_DT")
                     .HasColumnType("date");
 
-                entity.Property(e => e.CrsDesc)
+                entity.Property(e => e.Description)
                     .HasColumnName("CRS_DESC")
                     .HasColumnType("ntext");
 
-                entity.Property(e => e.CrsIntent)
+                entity.Property(e => e.Intent)
                     .HasColumnName("CRS_INTENT")
                     .HasColumnType("ntext");
 
-                entity.Property(e => e.CrsTitle)
+                entity.Property(e => e.Title)
                     .HasColumnName("CRS_TITLE")
                     .HasMaxLength(50);
 
-                entity.Property(e => e.DptmntApprvDt)
+                entity.Property(e => e.DepartmentApprovalDate)
                     .HasColumnName("DPTMNT_APPRV_DT")
                     .HasColumnType("date");
 
@@ -295,11 +295,11 @@ namespace PlanC.WebApi.Server.DataAccess
                     .HasMaxLength(6)
                     .IsUnicode(false);
 
-                entity.Property(e => e.RcdCdttm)
-                    .HasColumnName("RCD_CDTTM")
-                    .HasColumnType("datetime");
+                //entity.Property(e => e.RcdCdttm)
+                //    .HasColumnName("RCD_CDTTM")
+                //    .HasColumnType("datetime");
 
-                entity.Property(e => e.TrkUid)
+                entity.Property(e => e.TrackingUserId)
                     .HasColumnName("TRK_UID")
                     .HasMaxLength(7)
                     .IsUnicode(false);
@@ -316,27 +316,27 @@ namespace PlanC.WebApi.Server.DataAccess
 
             modelBuilder.Entity<Department>(entity =>
             {
-                entity.HasKey(e => e.DptmntId);
+                entity.HasKey(e => e.Id);
 
                 entity.ToTable("TDPTMNT");
 
-                entity.Property(e => e.DptmntId)
+                entity.Property(e => e.Id)
                     .HasColumnName("DPTMNT_ID")
                     .ValueGeneratedNever();
 
-                entity.Property(e => e.DptmntDesc)
+                entity.Property(e => e.Description)
                     .HasColumnName("DPTMNT_DESC")
                     .HasMaxLength(250);
 
-                entity.Property(e => e.DptmntPlcy)
+                entity.Property(e => e.Policy)
                     .HasColumnName("DPTMNT_PLCY")
                     .HasColumnType("ntext");
 
-                entity.Property(e => e.RcdCdttm)
-                    .HasColumnName("RCD_CDTTM")
-                    .HasColumnType("datetime");
+                //entity.Property(e => e.RcdCdttm)
+                //    .HasColumnName("RCD_CDTTM")
+                //    .HasColumnType("datetime");
 
-                entity.Property(e => e.TrkUid)
+                entity.Property(e => e.TrackingUserId)
                     .HasColumnName("TRK_UID")
                     .HasMaxLength(7)
                     .IsUnicode(false);
@@ -458,11 +458,11 @@ namespace PlanC.WebApi.Server.DataAccess
 
             modelBuilder.Entity<Skill>(entity =>
             {
-                entity.HasKey(e => e.SklId);
+                entity.HasKey(e => e.Id);
 
                 entity.ToTable("TSKL");
 
-                entity.Property(e => e.SklId)
+                entity.Property(e => e.Id)
                     .HasColumnName("SKL_ID")
                     .HasMaxLength(4)
                     .IsUnicode(false)
@@ -472,99 +472,99 @@ namespace PlanC.WebApi.Server.DataAccess
                     .HasColumnName("ASSC_ATTD")
                     .HasColumnType("ntext");
 
-                entity.Property(e => e.PgmId)
+                entity.Property(e => e.StudyProgramId)
                     .IsRequired()
                     .HasColumnName("PGM_ID")
                     .HasMaxLength(6)
                     .IsUnicode(false);
 
-                entity.Property(e => e.RcdCdttm)
-                    .HasColumnName("RCD_CDTTM")
-                    .HasColumnType("datetime");
+                ///entity.Property(e => e.RcdCdttm)
+                ///    .HasColumnName("RCD_CDTTM")
+                ///    .HasColumnType("datetime");
 
-                entity.Property(e => e.SklTitle)
+                entity.Property(e => e.Title)
                     .HasColumnName("SKL_TITLE")
                     .HasMaxLength(200)
                     .IsUnicode(false);
 
-                entity.Property(e => e.TrkUid)
+                entity.Property(e => e.TrackingUserId)
                     .HasColumnName("TRK_UID")
                     .HasMaxLength(7)
                     .IsUnicode(false);
 
                 entity.HasOne(d => d.Pgm)
                     .WithMany(p => p.Tskl)
-                    .HasForeignKey(d => d.PgmId)
+                    .HasForeignKey(d => d.StudyProgramId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_TSKL_TPGM");
             });
 
-            modelBuilder.Entity<Tsklcntxt>(entity =>
+            modelBuilder.Entity<SkillAchievementContext>(entity =>
             {
-                entity.HasKey(e => new { e.SklId, e.SklCntxtSqnbr });
+                entity.HasKey(e => new { e.SkillId, e.SequenceNumber });
 
                 entity.ToTable("TSKLCNTXT");
 
-                entity.Property(e => e.SklId)
+                entity.Property(e => e.SkillId)
                     .HasColumnName("SKL_ID")
                     .HasMaxLength(4)
                     .IsUnicode(false);
 
-                entity.Property(e => e.SklCntxtSqnbr).HasColumnName("SKL_CNTXT_SQNBR");
+                entity.Property(e => e.SequenceNumber).HasColumnName("SKL_CNTXT_SQNBR");
 
-                entity.Property(e => e.RcdCdttm)
-                    .HasColumnName("RCD_CDTTM")
-                    .HasColumnType("datetime");
+                //entity.Property(e => e.RcdCdttm)
+                //    .HasColumnName("RCD_CDTTM")
+                //    .HasColumnType("datetime");
 
-                entity.Property(e => e.SklCntxtDesc)
+                entity.Property(e => e.Description)
                     .HasColumnName("SKL_CNTXT_DESC")
                     .HasColumnType("ntext");
 
-                entity.Property(e => e.TrkUid)
+                entity.Property(e => e.TrackingUserId)
                     .HasColumnName("TRK_UID")
                     .HasMaxLength(7)
                     .IsUnicode(false);
 
                 entity.HasOne(d => d.Skl)
                     .WithMany(p => p.Tsklcntxt)
-                    .HasForeignKey(d => d.SklId)
+                    .HasForeignKey(d => d.SkillId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_TSKLCNTXT_TSKL");
             });
 
             modelBuilder.Entity<SkillElement>(entity =>
             {
-                entity.HasKey(e => new { e.SklId, e.SklelemSqnbr });
+                entity.HasKey(e => new { e.SkillId, e.SequenceNumber });
 
                 entity.ToTable("TSKLELEM");
 
-                entity.Property(e => e.SklId)
+                entity.Property(e => e.SkillId)
                     .HasColumnName("SKL_ID")
                     .HasMaxLength(4)
                     .IsUnicode(false);
 
-                entity.Property(e => e.SklelemSqnbr).HasColumnName("SKLELEM_SQNBR");
+                entity.Property(e => e.SequenceNumber).HasColumnName("SKLELEM_SQNBR");
 
-                entity.Property(e => e.RcdCdttm)
-                    .HasColumnName("RCD_CDTTM")
-                    .HasColumnType("datetime");
+                //entity.Property(e => e.RcdCdttm)
+                //    .HasColumnName("RCD_CDTTM")
+                //    .HasColumnType("datetime");
 
-                entity.Property(e => e.SklelemDesc)
+                entity.Property(e => e.Description)
                     .HasColumnName("SKLELEM_DESC")
                     .HasColumnType("ntext");
 
-                entity.Property(e => e.SklelemTitle)
+                entity.Property(e => e.Title)
                     .HasColumnName("SKLELEM_TITLE")
                     .HasMaxLength(50);
 
-                entity.Property(e => e.TrkUid)
+                entity.Property(e => e.TrackingUserId)
                     .HasColumnName("TRK_UID")
                     .HasMaxLength(7)
                     .IsUnicode(false);
 
                 entity.HasOne(d => d.Skl)
                     .WithMany(p => p.Tsklelem)
-                    .HasForeignKey(d => d.SklId)
+                    .HasForeignKey(d => d.SkillId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_TSKLELEM_TSKL");
             });

@@ -2,14 +2,17 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNet.OData.Extensions;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using PlanC.WebApi.Server.DataAccess;
 
 namespace PlanC.WebApi.Server
 {
@@ -25,6 +28,8 @@ namespace PlanC.WebApi.Server
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddDbContext<PCU001Context>(options => options.UseSqlServer("name=PCU001"));
+            services.AddOData();
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
         }
 
@@ -41,7 +46,14 @@ namespace PlanC.WebApi.Server
             }
 
             app.UseHttpsRedirection();
-            app.UseMvc();
+            app.UseMvc(routeBuilder =>
+            {
+                routeBuilder.EnableDependencyInjection();
+                routeBuilder
+                    .Expand()
+                    .Select()
+                    .Filter();
+            });
         }
     }
 }

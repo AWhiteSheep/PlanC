@@ -11,12 +11,12 @@ namespace PlanC.WebApi.Models
             Texamsklelem = new HashSet<Exam_SkillElement>();
         }
 
-        public string SklId { get; set; }
-        public short SklelemSqnbr { get; set; }
-        public string SklelemTitle { get; set; }
-        public string SklelemDesc { get; set; }
-        public string TrkUid { get; set; }
-        public DateTime? RcdCdttm { get; set; }
+        public string SkillId { get; set; }
+        public short SequenceNumber { get; set; }
+        public string Title { get; set; }
+        public string Description { get; set; }
+        public string TrackingUserId { get; set; }
+        //public DateTime? RcdCdttm { get; set; }
 
         public Skill Skl { get; set; }
         public ICollection<Tcrssklelem> Tcrssklelem { get; set; }

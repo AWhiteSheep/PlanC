@@ -10,11 +10,11 @@ namespace PlanC.WebApi.Models
             Tpgm = new HashSet<Tpgm>();
         }
 
-        public int DptmntId { get; set; }
-        public string DptmntDesc { get; set; }
-        public string DptmntPlcy { get; set; }
-        public DateTime? RcdCdttm { get; set; }
-        public string TrkUid { get; set; }
+        public int Id { get; set; }
+        public string Description { get; set; }
+        public string Policy { get; set; }
+        //public DateTime? RcdCdttm { get; set; }
+        public string TrackingUserId { get; set; }
 
         public ICollection<Tpgm> Tpgm { get; set; }
     }
