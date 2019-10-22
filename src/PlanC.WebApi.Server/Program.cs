@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 
-namespace PlanC.WebApi
+namespace PlanC.WebApi.Server
 {
     public class Program
     {

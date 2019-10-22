@@ -3,11 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.28307.757
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PlanC", "PlanC\PlanC.csproj", "{F081037E-F2FE-4886-BBCA-B05F3CADC14A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PlanC.WebApi.Models", "PlanC.WebApi.Models\PlanC.WebApi.Models.csproj", "{90E586EC-0D7F-4A52-B3A7-3B7CDDC59EFF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PlanC.WebApi.Server", "PlanC.WebApi.Implementation\PlanC.WebApi.Server.csproj", "{324CAC71-C1FB-4A09-B36D-50D28E9E042C}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PlanC.WebApi.Interfaces", "PlanC.WebApi.Interfaces\PlanC.WebApi.Interfaces.csproj", "{4BEEB5E3-271C-4A2F-A63B-DB82737499E4}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PlanC.WebApi.Server", "PlanC.WebApi.Server\PlanC.WebApi.Server.csproj", "{14849D01-F9C8-44E1-9920-0D580578D265}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,18 +13,14 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{F081037E-F2FE-4886-BBCA-B05F3CADC14A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{F081037E-F2FE-4886-BBCA-B05F3CADC14A}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{F081037E-F2FE-4886-BBCA-B05F3CADC14A}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{F081037E-F2FE-4886-BBCA-B05F3CADC14A}.Release|Any CPU.Build.0 = Release|Any CPU
-		{324CAC71-C1FB-4A09-B36D-50D28E9E042C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{324CAC71-C1FB-4A09-B36D-50D28E9E042C}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{324CAC71-C1FB-4A09-B36D-50D28E9E042C}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{324CAC71-C1FB-4A09-B36D-50D28E9E042C}.Release|Any CPU.Build.0 = Release|Any CPU
-		{4BEEB5E3-271C-4A2F-A63B-DB82737499E4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{4BEEB5E3-271C-4A2F-A63B-DB82737499E4}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{4BEEB5E3-271C-4A2F-A63B-DB82737499E4}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{4BEEB5E3-271C-4A2F-A63B-DB82737499E4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{90E586EC-0D7F-4A52-B3A7-3B7CDDC59EFF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{90E586EC-0D7F-4A52-B3A7-3B7CDDC59EFF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{90E586EC-0D7F-4A52-B3A7-3B7CDDC59EFF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{90E586EC-0D7F-4A52-B3A7-3B7CDDC59EFF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{14849D01-F9C8-44E1-9920-0D580578D265}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{14849D01-F9C8-44E1-9920-0D580578D265}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{14849D01-F9C8-44E1-9920-0D580578D265}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{14849D01-F9C8-44E1-9920-0D580578D265}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

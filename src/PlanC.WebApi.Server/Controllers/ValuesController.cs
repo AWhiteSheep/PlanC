@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 
-namespace PlanC.WebApi.Controllers
+namespace PlanC.WebApi.Server.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]

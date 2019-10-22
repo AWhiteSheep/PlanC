@@ -5,7 +5,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\PlanC.WebApi.Interfaces\PlanC.WebApi.Interfaces.csproj" />
+    <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
+      <_Parameter1>PlanC.WebApi.Models</_Parameter1>
+    </AssemblyAttribute>
   </ItemGroup>
 
 </Project>
