@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 {
   "ItemsList": [
     {
@@ -58,3 +59,63 @@
     }
   ]
 }
+=======
+[
+  {
+    "Title": "Accueil",
+    "Url": "Index"
+  },
+  {
+    "Title": "Plan-cadre",
+    "Url": "Index",
+    "Children": [
+      {
+        "Title": "Nouveau plan-cadre",
+        "Url": "Index"
+      },
+      {
+        "Title": "Consulter les plans-cadres",
+        "Url": "Index"
+      }
+    ]
+  },
+  {
+    "Title": "Plan de cours",
+    "Url": "Url",
+    "Children": [
+      {
+        "Title": "Nouveau plan de cours",
+        "Url": "Index"
+      },
+      {
+        "Title": "Consulter les plans de cours",
+        "Url": "Index"
+      }
+    ]
+  },
+  {
+    "Title": "Compétences",
+    "Url": "Url",
+    "Children": [
+      {
+        "Title": "Nouvelle compétence",
+        "Url": "Index"
+      },
+      {
+        "Title": "voir les compétences",
+        "Url": "Index"
+      }
+    ]
+  },
+  {
+    "Title": "Profil",
+    "Url": "Url",
+    "Children": [
+      {
+        "Title": "Consulter le profil",
+        "Url": "Index"
+      }
+    ]
+  }
+]
+>>>>>>> origin/prototype

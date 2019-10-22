@@ -1,0 +1,55 @@
+﻿@page "/planscadres/nouveau/descriptif"
+@using BlazorApp1.Data
+@inject NavigationManager NavigationManager
+
+
+<h1>Nouveau plan-cadre</h1>
+<h2>Formulaire d'un nouveau plan-cadre</h2>
+
+<EditForm Model="@plancadre" OnValidSubmit="@HandleValidSubmit">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <p>
+        <label for="titrecours">Titre du cours: </label>
+        <InputText id="titrecours" @bind-Value="plancadre.TitreCours" />
+    </p>
+    <p>
+        <label for="codecours">Code du cours: </label>
+        <InputTextArea id="codecours" @bind-Value="plancadre.CodeCours" />
+    </p>
+    <p>
+        <label for="unite">Nombre d'unité: </label>
+        <InputTextArea id="unite" @bind-Value="plancadre.NombreUnite" />
+    </p>
+    <p>
+        <label for="ponderation">Nombre d'unité: </label>
+        <InputTextArea id="ponderation" @bind-Value="plancadre.Pondération" />
+    </p>
+    <p>
+        <label for="intentioneducative">Intention éducative: </label>
+        <InputTextArea id="intentioneducative" @bind-Value="plancadre.IntentionEducative" />
+    </p>
+    <p>
+        <label for="intentionpedagogique">Intention pédagogique: </label>
+        <InputTextArea id="intentioneducative" @bind-Value="plancadre.IntentionPedagogique" />
+    </p>
+    <p>
+        <label for="description">Description du cours: </label>
+        <InputTextArea id="description" @bind-Value="plancadre.Description" />
+    </p>
+
+    <!--href="/planscadres/nouveau/ponderation"-->
+    <button class="btn btn-dark" type="submit">Continuer</button>
+</EditForm>
+
+@code {
+    private PlanCadre plancadre = new PlanCadre();
+
+    private void HandleValidSubmit()
+    {
+
+        Console.WriteLine("OnValidSubmit");
+        NavigationManager.NavigateTo("/planscadres/nouveau/ponderation");
+    }
+}
