@@ -29,6 +29,8 @@ namespace PlanC.WebApi.Server
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<PCU001Context>(options => options.UseSqlServer("name=PCU001"));
+            //"asp.net core odata web api" --> 
+            //https://devblogs.microsoft.com/odata/supercharging-asp-net-core-api-with-odata/
             services.AddOData();
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
         }
