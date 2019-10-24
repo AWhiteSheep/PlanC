@@ -7,7 +7,7 @@ namespace PlanC.WebApi.Models
     {
         public string SkillId { get; set; }
         public short SequenceNumber { get; set; }
-        public string Description { get; set; }
+        public string Title { get; set; }
         public string TrackingUserId { get; set; }
         //public DateTime? RcdCdttm { get; set; }
 

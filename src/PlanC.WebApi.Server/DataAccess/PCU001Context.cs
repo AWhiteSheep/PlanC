@@ -301,6 +301,7 @@ namespace PlanC.WebApi.Server.DataAccess
 
                 entity.Property(e => e.TrackingUserId)
                     .HasColumnName("TRK_UID")
+                    .IsRequired()
                     .HasMaxLength(7)
                     .IsUnicode(false);
 
@@ -324,8 +325,8 @@ namespace PlanC.WebApi.Server.DataAccess
                     .HasColumnName("DPTMNT_ID")
                     .ValueGeneratedNever();
 
-                entity.Property(e => e.Description)
-                    .HasColumnName("DPTMNT_DESC")
+                entity.Property(e => e.Title)
+                    .HasColumnName("DPTMNT_TITLE")
                     .HasMaxLength(250);
 
                 entity.Property(e => e.Policy)
@@ -338,6 +339,7 @@ namespace PlanC.WebApi.Server.DataAccess
 
                 entity.Property(e => e.TrackingUserId)
                     .HasColumnName("TRK_UID")
+                    .IsRequired()
                     .HasMaxLength(7)
                     .IsUnicode(false);
             });
@@ -439,7 +441,7 @@ namespace PlanC.WebApi.Server.DataAccess
 
                 entity.Property(e => e.PgmDesc)
                     .HasColumnName("PGM_DESC")
-                    .HasMaxLength(10);
+                    .HasColumnType("ntext");
 
                 entity.Property(e => e.PgmTitle)
                     .HasColumnName("PGM_TITLE")
@@ -484,11 +486,12 @@ namespace PlanC.WebApi.Server.DataAccess
 
                 entity.Property(e => e.Title)
                     .HasColumnName("SKL_TITLE")
-                    .HasMaxLength(200)
+                    .HasMaxLength(512)
                     .IsUnicode(false);
 
                 entity.Property(e => e.TrackingUserId)
                     .HasColumnName("TRK_UID")
+                    .IsRequired()
                     .HasMaxLength(7)
                     .IsUnicode(false);
 
@@ -516,12 +519,13 @@ namespace PlanC.WebApi.Server.DataAccess
                 //    .HasColumnName("RCD_CDTTM")
                 //    .HasColumnType("datetime");
 
-                entity.Property(e => e.Description)
-                    .HasColumnName("SKL_CNTXT_DESC")
-                    .HasColumnType("ntext");
+                entity.Property(e => e.Title)
+                    .HasColumnName("SKL_CNTXT_TITLE")
+                    .HasMaxLength(512);
 
                 entity.Property(e => e.TrackingUserId)
                     .HasColumnName("TRK_UID")
+                    .IsRequired()
                     .HasMaxLength(7)
                     .IsUnicode(false);
 
@@ -549,16 +553,17 @@ namespace PlanC.WebApi.Server.DataAccess
                 //    .HasColumnName("RCD_CDTTM")
                 //    .HasColumnType("datetime");
 
-                entity.Property(e => e.Description)
+                entity.Property(e => e.Description) //TODO : Ne semble plus exister dans la BD
                     .HasColumnName("SKLELEM_DESC")
                     .HasColumnType("ntext");
 
                 entity.Property(e => e.Title)
                     .HasColumnName("SKLELEM_TITLE")
-                    .HasMaxLength(50);
+                    .HasMaxLength(250);
 
                 entity.Property(e => e.TrackingUserId)
                     .HasColumnName("TRK_UID")
+                    .IsRequired()
                     .HasMaxLength(7)
                     .IsUnicode(false);
 
