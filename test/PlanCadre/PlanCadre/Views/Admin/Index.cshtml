@@ -61,6 +61,18 @@
     </div>
 </div>
 
+<!-- Titre pour fragment des départements -->
+<h1 class="h3 mb-1 text-gray-800"> Aperçu des départements </h1>
+
+<div class="card shadow mb-4">
+    <div class="card-body">
+        <div class="table-responsive">
+            @(await Html.RenderComponentAsync<PlanCadre.Components.TDepartements>(RenderMode.Server))
+        </div>
+    </div>
+</div>
+
+
 <!-- Titre pour fragment des programmes -->
 <h1 class="h3 mb-1 text-gray-800"> Aperçu des programmes </h1>
 
@@ -560,4 +572,23 @@
     <script src="~/js/data/jquery.dataTables.min.js"></script>
     <script src="~/js/data/dataTables.bootstrap4.min.js"></script>
     <script src="~/js/data/datatables-demo.js"></script>
+    <!-- uniquement pour la table razor -->
+    <script src="https://cdn.syncfusion.com/ej2/17.3.18/dist/ej2.min.js"></script>
+    <script src="https://cdn.syncfusion.com/ej2/17.3.18/dist/ejs.interop.min.js"></script>
+    <script>
+        ej.base.L10n.load({
+            'fr-FR': {
+                'grid': {
+                    'EmptyRecord': 'Enregistrement vide',
+                    'Add': 'Ajouter',
+                    'Edit': 'Modifier',
+                    'Delete': 'Supprimer',
+                    'Items': 'Éléments'
+                },
+                'pager': {
+                    'currentPageInfo': '{0} de {1} pages'
+                }
+            }
+        });
+    </script>
 }

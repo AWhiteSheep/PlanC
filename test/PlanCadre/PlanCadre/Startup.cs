@@ -1,10 +1,12 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
+using Microsoft.AspNetCore.Rewrite;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -33,7 +35,7 @@ namespace PlanCadre
         {
             if (env.IsDevelopment())
             {
-                app.UseDeveloperExceptionPage();
+                app.UseDeveloperExceptionPage();                
             }
             else
             {
@@ -41,13 +43,14 @@ namespace PlanCadre
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
-            app.UseHttpsRedirection();
-            app.UseStaticFiles();
-
+            // Add the endpoint routing matcher middleware to the request pipeline
             app.UseRouting();
-
+            app.UseHttpsRedirection();
+            // For the wwroot folder
+            app.UseStaticFiles();
+            // Add the authorization middleware to the request pipeline
             app.UseAuthorization();
-
+            // Add endpoints to the request pipeline
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
