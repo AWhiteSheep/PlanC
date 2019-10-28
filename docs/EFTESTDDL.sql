@@ -1,18 +1,8 @@
-***********************************************************
-    Génération
-    Plugiciel : Moteur pour la génération de DDL ANSI (3.2.0 - 05-12-2009), Grandite
+CREATE DATABASE PCU001
+GO
 
-    Nom de la base de données : "Base de données"
-    Fichier source : "c:\users\info1\planc\docs\planc.sms"
-
-    Généré le : 7 oct. 2019 14:23:51
-    Généré par Open ModelSphere Version 3.2"
-***********************************************************
-
-
-***********************************************************
-    CREATE STATEMENTS
-***********************************************************
+USE PCU001
+GO
 
 
 CREATE TABLE TCRS_TMPLT 
@@ -62,16 +52,14 @@ CREATE TABLE TSKLTMPLT
 
 ALTER TABLE TCRS_TMPLT 
   ADD CONSTRAINT TCRS_TMPLT_PK PRIMARY KEY (
-    CRS_ID)  ;
+    CRS_ID)
 ALTER TABLE TSKL 
   ADD CONSTRAINT TSKL_PK PRIMARY KEY (
     SKL_ID)  ;
 ALTER TABLE TSKLELEM 
   ADD CONSTRAINT TSKLELEM_PK PRIMARY KEY (
     SKL_ID, SKL_ELEM_SQNBR)  ;
-ALTER TABLE TSKLTMPLT 
-  ADD CONSTRAINT TSKLTMPLT_PK PRIMARY KEY (
-    )  ;
+
 ALTER TABLE TSKLELEM
   ADD CONSTRAINT TSKLELEM__TSKL_FK 
     FOREIGN KEY (SKL_ID)
@@ -86,8 +74,3 @@ ALTER TABLE TSKLTMPLT
   ADD CONSTRAINT TSKLTMPLT_TSKLELEM_FK 
     FOREIGN KEY (SKL_ID, SKL_ELEM_SQNBR)
       REFERENCES TSKLELEM;
-
-
-
-    END
-
