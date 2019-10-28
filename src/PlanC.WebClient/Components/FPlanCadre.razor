@@ -1,0 +1,72 @@
+﻿@using PlanC.WebApi.Server.DataAccess
+@using PlanC.WebApi.Models
+@inject NavigationManager NavigationManager
+
+<!-- Formulaire d'un nouveau plan-cadre -->
+    <EditForm Model="@CTemplate" OnValidSubmit="@HandleValidSubmit">
+        <DataAnnotationsValidator />
+        <ValidationSummary />
+
+        <div class="form-group">
+            <label class="control-label col-sm-2" for="CrsTitle">Titre du cours: </label>
+            <div class="col-sm-10">
+                <InputText @bind-Value="CTemplate.Title" type="text" class="form-control" id="CrsTitle" placeholder="Titre du cours" name="CrsTitle" />
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-sm-2" for="CrsId">Identifiant du cours: </label>
+            <div class="col-sm-10">
+                <InputText @bind-Value="CTemplate.Id" type="text" class="form-control" id="CrsId" placeholder="Identifiant du cours" name="CrsId" />
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-sm-2" for="Units">Nombre d'unité pour le cours: </label>
+            <div class="col-sm-10">
+                <InputNumber @bind-Value="CTemplate.Units" class="form-control" id="Units" placeholder="Nombre d'unité" name="Units" />
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-sm-2" for="Ponderation">Pondération (propriété non trouvé): </label>
+            <div class="col-sm-10">
+                <input class="form-control" id="Ponderation" placeholder="Ingore It" name="Ponderation" />
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-sm-2" for="CrsIntent">Intention du cours: </label>
+            <div class="col-sm-10">
+                <InputTextArea @bind-Value="CTemplate.Intent" class="form-control" id="CrsIntent" placeholder="Intention éducative..." name="CrsIntent" />
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-sm-2" for="IntentionPedagogique">Intention du pédagogique (propriété non trouvé): </label>
+            <div class="col-sm-10">
+                <input class="form-control" id="IntentionPedagogique" placeholder="Ingore It" name="IntentionPedagogique" />
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-sm-2" for="IntentionPedagogique">Intention du pédagogique (propriété non trouvé): </label>
+            <div class="col-sm-10">
+                <textarea class="form-control" id="IntentionPedagogique" placeholder="Ingore It" name="IntentionPedagogique" />
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-sm-2" for="CrsDesc">Description du cours: </label>
+            <div class="col-sm-10">
+                <InputTextArea @bind-Value="CTemplate.Description" class="form-control" id="CrsIntent" placeholder="Description du cours..." name="CrsDesc" />
+            </div>
+        </div>
+
+        <!--href="/planscadres/nouveau/ponderation"-->
+        <button class="btn btn-dark" type="submit">Continuer</button>
+    </EditForm>
+
+@code {
+    private CourseTemplate CTemplate = new CourseTemplate();
+
+    private void HandleValidSubmit()
+    {
+        // 
+        Console.WriteLine("OnValidSubmit");
+        NavigationManager.NavigateTo("/planscadres/nouveau/ponderation");
+    }
+}

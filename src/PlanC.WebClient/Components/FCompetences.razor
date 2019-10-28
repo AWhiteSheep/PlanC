@@ -1,0 +1,86 @@
+﻿@using PlanC.WebApi.Models
+@using PlanC.WebApi.Server.DataAccess
+@inject NavigationManager NavigationManager
+@using Syncfusion.EJ2.Blazor
+@using Syncfusion.EJ2.Blazor.Grids
+@using Syncfusion.EJ2.Blazor.Data
+
+<!-- formulaire pour les nouvelles compétences -->
+<EditForm Model="@skill" class="competence-form">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+    <div class="form-group">
+        <label class="control-label col-sm-2" for="SklId">Numéro de la compétence: </label>
+        <div class="col-sm-10">
+            <InputText @bind-Value="skill.Id" type="text" class="form-control" id="SklId" placeholder="Numéro de la compétence" name="SklId" />
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="control-label col-sm-2" for="PgmId">Numéro du programme: </label>
+        <div class="col-sm-10">
+            <InputText @bind-Value="skill.StudyProgramId" type="text" class="form-control" id="PgmId" placeholder="Numéro du programme" name="PgmId" />
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="control-label col-sm-2" for="SklTitle">Titre de la compétence: </label>
+        <div class="col-sm-10">
+            <InputText @bind-Value="skill.Title" type="text" class="form-control" id="SklTitle" placeholder="Libélé de la compétence" name="SklTitle" />
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="control-label col-sm-2" for="AsscAttd">Attente: </label>
+        <div class="col-sm-10">
+            <InputTextArea @bind-Value="skill.AsscAttd" class="form-control" rows="5" id="AsscAttd" name="AsscAttd"></InputTextArea>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="control-label col-sm-2" for="SklContext">Context de réalisation: </label>
+        <div class="col-sm-10">
+            <InputTextArea @bind-Value="cntxt.Title" class="form-control" rows="5" id="SklContext" name="SklContext"></InputTextArea>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label class="control-label col-sm-2">Élément de la compétence: </label>
+        <div class="col-sm-10">
+            <EjsGrid DataSource="skElements" TValue="SkillElement" AllowPaging="true" Locale="fr-FR" Toolbar="@(new string[] { "Add", "Edit", "Delete", "Cancel", "Update"  })">
+                <GridEditSettings AllowAdding="true" AllowEditing="true" AllowDeleting="true" Mode="EditMode.Normal"></GridEditSettings>
+                <GridColumns>
+                    <GridColumn Field=@nameof(SkillElement.Title) HeaderText="Titre de l'élément" TextAlign="TextAlign.Right" Width="130"></GridColumn>
+                    <GridColumn Field=@nameof(SkillElement.Description) HeaderText="Description" TextAlign="TextAlign.Right" Width="200"></GridColumn>
+                </GridColumns>
+            </EjsGrid>
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="col-sm-offset-2 col-10">
+            <button type="submit" class="btn btn-default">Submit</button>
+        </div>
+    </div>
+</EditForm>
+
+@code {
+    private readonly PCU001Context _context = new PCU001Context();
+    Skill skill = new Skill();
+    SkillAchievementContext cntxt = new SkillAchievementContext();
+    List<SkillElement> skElements = new List<SkillElement>();
+
+    public async void HandleValidSubmit()
+    {
+        skElements.ForEach(e => { e.SkillId = skill.Id; e.SequenceNumber = (short)(skElements.IndexOf(e) + 1); } ) ;
+        skill.Tsklelem = skElements;
+        cntxt.SkillId = skill.Id;
+        skill.Tsklcntxt.Add(cntxt);
+
+        _context.Skills.Add(skill);
+        try
+        {
+            Console.WriteLine($"SQL return code: {await _context.SaveChangesAsync()}");
+        }
+        catch ( Exception e)
+        {
+            Console.WriteLine($"Error: {e.Message} -- {e.InnerException}");
+        }
+        NavigationManager.NavigateTo("/");
+    }
+}
