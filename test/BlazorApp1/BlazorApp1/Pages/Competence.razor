@@ -6,6 +6,7 @@
 @using Syncfusion.EJ2.Blazor.Data
 
 
+
 <div class="container-fluid">
     <div class="col">
         <h1>Nouvelle compétence</h1>
@@ -39,7 +40,7 @@
             <div class="form-group">
                 <label class="control-label col-sm-2" for="SklContext">Context de réalisation: </label>
                 <div class="col-sm-10">
-                    <InputTextArea @bind-Value="competence.SklContext" class="form-control" rows="5" id="SklContext" name="SklContext"></InputTextArea>
+                    <InputTextArea @bind-Value="cntxt.SklCntxtDesc" class="form-control" rows="5" id="SklContext" name="SklContext"></InputTextArea>
                 </div>
             </div>
 
@@ -66,14 +67,28 @@
 </div>
 
 @code {
+    private readonly PCU001Context _context = new PCU001Context();
     Tskl competence = new Tskl();
+    Tsklcntxt cntxt = new Tsklcntxt();
     List<Tsklelem> tsklelems = new List<Tsklelem>();
 
-    private void HandleValidSubmit()
+    private async void HandleValidSubmit()
     {
         tsklelems.ForEach(e => { e.SklId = competence.SklId; e.SklelemSqnbr = (short)(tsklelems.IndexOf(e) + 1); } ) ;
         competence.Tsklelem = tsklelems;
-        Console.WriteLine("OnValidSubmit");
+        cntxt.SklId = competence.SklId;
+        competence.Tsklcntxt.Add(cntxt);
+
+        _context.Tskl.Add(competence);
+        try
+        {
+            Console.WriteLine($"SQL return code: {await _context.SaveChangesAsync()}");
+        }
+        catch ( Exception e)
+        {
+            Console.WriteLine($"Error: {e.Message} -- {e.InnerException}");
+        }
         NavigationManager.NavigateTo("/");
     }
+
 }

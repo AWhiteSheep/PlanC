@@ -15,7 +15,7 @@ namespace BlazorApp1.Data
         public string PgmId { get; set; }
         public string SklTitle { get; set; }
         public string AsscAttd { get; set; }
-        public string SklContext { get; set; }
+        //public string SklContext { get; set; }
         public string TrkUid { get; set; }
         public DateTime? RcdCdttm { get; set; }
 
