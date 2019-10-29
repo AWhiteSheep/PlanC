@@ -1,12 +1,32 @@
 ﻿/* Please see documentation at https://docs.microsoft.com/aspnet/core/client-side/bundling-and-minification
 for details on configuring this project to bundle and minify static web assets. */
 
+.card-area a {
+  background-color: #fefefe;
+  padding: 7px;
+  margin: 0 5px 5px 0;
+  margin: 0 5px 5px 5px;
+}
+
+  .card-area a:nth-child(1) {
+    margin: 0 5px 5px 0;
+  }
+
+.drawer-banner {
+  position: absolute;
+  z-index: 3;
+  width: 100%;
+  background-color: rgba(58, 59, 69, 0.15);
+}
 /* Composite of the app, Nemesis
 -------------------------------------------------- */
+.in-card {
+  background-color: #ffffff;
+}
 .in-card.shadow {
   box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15) !important;
 }
-.in-card .card-body {
+.in-card .table-responsive {
   min-height: 140px;
 }
 
@@ -10762,6 +10782,7 @@ a:focus {
 
 .topbar {
   height: 4.375rem;
+  z-index: 5;
 }
 
   .topbar #sidebarToggleTop {

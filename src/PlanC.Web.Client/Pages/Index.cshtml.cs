@@ -17,9 +17,9 @@ namespace PlanC.Web.Client.Pages
             _logger = logger;
         }
 
-        public void OnGet()
+        public IActionResult OnGet()
         {
-
+            return Redirect("/personnel");
         }
     }
 }
