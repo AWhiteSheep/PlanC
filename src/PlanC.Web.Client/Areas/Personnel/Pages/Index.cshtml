@@ -1,0 +1,125 @@
+﻿@page
+@model PlanC.Web.Client.Areas.Personnel.Pages.IndexModel
+@{
+    ViewData["Title"] = "Le personnel";
+}
+
+
+<!-- Titre de la page -->
+<h1 class="h3 mb-1 text-gray-800"> Portail du personnel </h1>
+<p class="mb-4">
+    Tout ce dont vous avez besoin afin de créer des plans de cours à une vitesse éclaire!
+</p>
+
+<!-- Ce que nous retrouvons sur cette page -->
+<div class="card mb-4 template-navy-shadow">
+    <div class="card-header">
+        Sur cette page
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-6 d-flex flex-column">
+                <a href="#"> Vos documents en cours. </a>
+                <a href="#"> Vos documents pour l'année. </a>
+            </div>
+            <div class="col-6 d-flex flex-column">
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Section de navigation -->
+<div class="row">
+    <div class="col-lg-6">
+        <!-- Les liens utiles -->
+        <div class="card mb-4">
+            <div class="card-header">
+                Liens utilitaires
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-6 d-flex flex-column">
+                        <a href="#"> Les plans-cadres disponibles </a>
+                        <a href="#"> Nouveau plan cadre </a>
+                        <a href="#"> Voir l'ensemble </a>
+                    </div>
+                    <div class="col-6 d-flex flex-column">
+                        <a href="#"> Les plans de cours disponibles </a>
+                        <a href="#"> Nouveau plan de cours </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-6">
+        <!-- Message distiné pour le groupe d'administration -->
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-danger"> Important </h6>
+            </div>
+            <div class="card-body">
+                Vous devez avoir la dernière version de votre plan de cours pour le 26 septembre.
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Document en cours de production -->
+<div class="in-card shadow mb-4">
+    <div class="card-header py-3">
+        <!-- Titre pour fragment pour les documents en production -->
+        <h6 class="m-0 font-weight-bold"> Les documents en production... </h6>
+    </div>
+    <div class="card-body">
+        <!-- Séparateur -->
+        <p>
+            Vos documents en cours se retrouverons ici pour que vous puissez retourner dès votre retour au travail restant.
+        </p>
+        <!-- Conteneur pour les documents en production -->
+        <div class="table-responsive">
+            Aucun document à afficher.
+        </div>
+    </div>
+</div>
+
+<!-- Document mis en favoris -->
+<div class="in-card shadow mb-4">
+    <div class="card-header py-3">
+        <!-- Titre pour les documents en favoris -->
+        <h6 class="m-0 font-weight-bold"> Les documents en favoris </h6>
+    </div>
+    <div class="card-body">
+        <!-- Séparateur -->
+        <p>
+            Dans cette section vous pourriez retrouver les documents dont vous aurez besoin pour l'années, ou bien ceux que vous pensez
+            devoir à accéder plus souvent.
+        </p>
+        <!-- Conteneur pour les documents en favoris -->
+        <div class="table-responsive">
+            Aucun document à afficher.
+        </div>
+    </div>
+</div>
+
+@section Scripts  {
+    <!-- Scripts unique pour la page -->
+    <script src="~/js/data/jquery.dataTables.min.js"></script>
+    <script src="~/js/data/dataTables.bootstrap4.min.js"></script>
+    <script src="~/js/data/datatables-demo.js"></script>
+    <!-- uniquement pour la table razor -->
+    <script>
+        ej.base.L10n.load({
+            'fr-FR': {
+                'grid': {
+                    'EmptyRecord': 'Enregistrement vide',
+                    'Add': 'Ajouter',
+                    'Edit': 'Modifier',
+                    'Delete': 'Supprimer',
+                    'Items': 'Éléments'
+                },
+                'pager': {
+                    'currentPageInfo': '{0} de {1} pages'
+                }
+            }
+        });
+    </script>
+}
