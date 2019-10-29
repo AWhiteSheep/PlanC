@@ -7,7 +7,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PlanC.WebApi.Server", "Plan
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PlanC.WebApi.Shared", "PlanC.WebApi.Shared\PlanC.WebApi.Shared.csproj", "{5C32DA89-C12D-4ECC-B301-4F6EBC7808E0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PlanC.WebClient", "PlanC.WebClient\PlanC.WebClient.csproj", "{F278C04E-112E-4C91-B969-21C92E71991F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PlanC.WebClient", "PlanC.WebClient\PlanC.WebClient.csproj", "{F278C04E-112E-4C91-B969-21C92E71991F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

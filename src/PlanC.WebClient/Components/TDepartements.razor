@@ -6,6 +6,12 @@
 @using Syncfusion.EJ2.Blazor.Data
 @* les cdn(s) doivent être ajoutés pour le bon fonctionnement du componant *@
 
+@if (Dpt == null)
+{
+<p><em>En cours de chargement...</em></p>
+}
+else
+{
 <!-- Module table des départements -->
 <EjsGrid DataSource="Dpt" TValue="Department" AllowPaging="true" Locale="fr-FR" Toolbar="@(new[] { "Add", "Edit", "Delete", "Cancel", "Update" })">
     <GridEditSettings AllowAdding="true" AllowEditing="true" AllowDeleting="true" Mode="EditMode.Normal"></GridEditSettings>
@@ -14,12 +20,23 @@
         <GridColumn Field=@nameof(Department.Policy) HeaderText="Description" TextAlign="TextAlign.Right" Width="200"></GridColumn>
     </GridColumns>
 </EjsGrid>
+}
 
 @code {
     // context de la base de données
     private readonly PCU001Context _context = new PCU001Context();
 
     // liste pour les différents tests
-    List<Department> Dpt = new List<Department>() { new Department() { Title = "Informatique", Policy = "Retour de livre."} ,
-        new Department() { Title = "Science humaine", Policy = "Retour de livre."} };
+    List<Department> Dpt;
+
+    protected override Task OnInitializedAsync()
+    {
+        return LoadItemsAdync();
+    }
+
+    async Task LoadItemsAdync()
+    {
+        Dpt = new List<Department>() { new Department() { Title = "Informatique", Policy = "Retour de livre."} ,
+            new Department() { Title = "Science humaine", Policy = "Retour de livre."} };
+    }
 }
