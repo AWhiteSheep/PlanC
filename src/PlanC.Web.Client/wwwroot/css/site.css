@@ -1,6 +1,8 @@
 ﻿/* Please see documentation at https://docs.microsoft.com/aspnet/core/client-side/bundling-and-minification
 for details on configuring this project to bundle and minify static web assets. */
-
+.sidebar .collapse-item.te-active {
+  background-color: #eaecf4;
+}
 .card-area a {
   background-color: #fefefe;
   padding: 7px;

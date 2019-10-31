@@ -1,47 +1,30 @@
 ﻿@page
 @model PlanC.Web.Client.Areas.Admin.Pages.IndexModel
 @{
+    // page d'attérissage pour le portail de l'administration
     ViewData["Title"] = "Administration";
 }
 
-<div class="text-center">
-    <h1 class="display-4"> Administration </h1>
-    <p> Tout les outils nécessaires. </p>
-</div>
-
-
-<!-- Titre de la page -->
-<h1 class="h3 mb-1 text-gray-800">Administration</h1>
-<p class="mb-4">
-    Pour la réalisation d'une bonne gestion de vos tâches en tant que qu'administrateur de cette application,
-    vous retrouver ci-bas les liens nécessaires, lesquels vous guiderons tout au long des processus.
-</p>
 <!-- Section de navigation -->
-<div class="row">
-    <div class="col-lg-6">
-        <!-- Les liens utiles -->
-        <div class="card mb-4">
-            <div class="card-header">
-                Liens utilitaires
-            </div>
-            <div class="card-body">
-                <div class="row">
-                    <div class="col-6 d-flex flex-column">
-                        <a href="/admin/departement"> Les départements </a>
-                        <a href="/admin/departement/nouveau"> Ajout de départements </a>
-                        <a href="/admin/repertoire"> Tout visualiser </a>
-                    </div>
-                    <div class="col-6 d-flex flex-column">
-                        <a href="/admin/programmes"> Les programmes </a>
-                        <a href="/admin/programmes/nouveau"> Ajout de programmes </a>
-                    </div>
+<div class="row mb-3">
+    <div class="col-lg-8">
+        <!-- Titre de la page -->
+        <h1 class="h3 mb-1 text-gray-800 mb-3"> Administration </h1>
+        <!-- Message de bienvenue et option administrateur -->
+        <p>
+            Vous retrouvez ci-dessous les différentes options dans l'optique de l'opération de cet application.
+            <div class="d-flex flex-row card-area">
+                <div class="d-flex flex-row">
+                    <a href="~/Admin/Departements"> Les départements </a>
+                    <a href="~/Admin/Programmes"> Les programmes </a>
+                    <a href="#"> Voir l'ensemble </a>
                 </div>
             </div>
-        </div>
+        </p>
     </div>
-    <div class="col-lg-6">
+    <div class="col-lg-4">
         <!-- Message distiné pour le groupe d'administration -->
-        <div class="card shadow mb-4">
+        <div class="card shadow">
             <div class="card-header py-3">
                 <h6 class="m-0 font-weight-bold text-danger"> Important </h6>
             </div>
@@ -56,7 +39,9 @@
 <div class="card shadow mb-4">
     <div class="card-header py-3">
         <!-- Titre pour fragment des départements -->
-        <h6 class="m-0 font-weight-bold text-capitalize"> Aperçu des départements </h6>
+        <h6 class="m-0 font-weight-bold"> 
+            <a href="~/Admin/Departements"> Les départements </a>
+        </h6>
     </div>
     <div class="card-body">
         <div class="table-responsive">
@@ -70,7 +55,9 @@
 <div class="card shadow mb-4">
     <div class="card-header py-3">
         <!-- Titre pour fragment des programmes -->
-        <h6 class="m-0 font-weight-bold text-capitalize"> Aperçu des programmes </h6>
+        <h6 class="m-0 font-weight-bold">
+            <a href="~/Admin/Programmes"> Les programmes </a>
+        </h6>
     </div>
     <div class="card-body">
         <div class="table-responsive">
