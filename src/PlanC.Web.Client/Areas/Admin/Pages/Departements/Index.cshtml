@@ -2,3 +2,5 @@
 @model PlanC.Web.Client.Areas.Admin.Pages.Departements.IndexModel
 @{
 }
+
+@(await Html.RenderComponentAsync<PlanC.Web.Client.Components.TDepartements>(RenderMode.Server))
