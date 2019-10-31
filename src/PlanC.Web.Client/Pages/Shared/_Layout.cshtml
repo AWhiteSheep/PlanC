@@ -48,12 +48,29 @@
     <!-- pour le framework de template suncfusion -->
     <script src="https://cdn.syncfusion.com/ej2/17.3.18/dist/ej2.min.js"></script>
     <script src="https://cdn.syncfusion.com/ej2/17.3.18/dist/ejs.interop.min.js"></script>
+
+    <!-- Auto complete master -->
+    <script src="~/js/jquery.autocomplete.min.js"></script>
+
     <script>
         // god bless stackoverflow
         // https://stackoverflow.com/questions/57366355/how-do-i-use-blazor-server-side-inside-a-razor-component-library-using-areas
         Blazor.start({
             configureSignalR: function (builder) {
                 builder.withUrl("/_blazor");
+            }
+        });
+
+
+        var values = [
+            { value: '/personnel', data: 'Personnel' },
+            { value: '/admin', data: 'Admin' }
+        ];
+
+        $('#autocomplete').autocomplete({
+            lookup: values,
+            onSelect: function (suggestion) {
+                location.replace(suggestion.value);
             }
         });
     </script>

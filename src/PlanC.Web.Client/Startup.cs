@@ -53,6 +53,7 @@ namespace PlanC.Web.Client
             {
                 endpoints.MapRazorPages();
                 endpoints.MapBlazorHub();
+                endpoints.MapFallbackToPage("/Index");
             });
         }
     }
