@@ -37,7 +37,7 @@ namespace PlanC.WebApi.Server.DataAccess
         {
             if (!optionsBuilder.IsConfigured)
             {
-                optionsBuilder.UseSqlServer("name=PCU001");
+                optionsBuilder.UseSqlServer("Data Source=database-1.cai5lbxs9ofy.us-east-1.rds.amazonaws.com,1433;Initial Catalog=PCU001;User ID=dbo802668235;Password=Nemesis2123%*;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False");
             }
         }
 
@@ -480,9 +480,9 @@ namespace PlanC.WebApi.Server.DataAccess
                     .HasMaxLength(6)
                     .IsUnicode(false);
 
-                ///entity.Property(e => e.RcdCdttm)
-                ///    .HasColumnName("RCD_CDTTM")
-                ///    .HasColumnType("datetime");
+                entity.Property(e => e.RcdCdttm)
+                    .HasColumnName("RCD_CDTTM")
+                    .HasColumnType("datetime");
 
                 entity.Property(e => e.Title)
                     .HasColumnName("SKL_TITLE")
@@ -520,7 +520,7 @@ namespace PlanC.WebApi.Server.DataAccess
                 //    .HasColumnType("datetime");
 
                 entity.Property(e => e.Title)
-                    .HasColumnName("SKL_CNTXT_TITLE")
+                    .HasColumnName("SKL_CNTXT_DESC")
                     .HasMaxLength(512);
 
                 entity.Property(e => e.TrackingUserId)

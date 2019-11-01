@@ -5,7 +5,7 @@
 @using Syncfusion.EJ2.Blazor.Data
 
 <!-- formulaire pour les nouvelles compétences -->
-<EditForm Model="@skill" class="competence-form">
+<EditForm Model="@skill" OnValidSubmit="HandleValidSubmit" class="competence-form">
     <DataAnnotationsValidator />
     <ValidationSummary />
     <div class="form-group">
