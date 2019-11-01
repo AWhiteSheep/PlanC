@@ -3,65 +3,66 @@
 @inject NavigationManager NavigationManager
 
 <!-- Formulaire d'un nouveau plan-cadre -->
+<div class="container">
     <EditForm Model="@CTemplate" OnValidSubmit="@HandleValidSubmit">
+        <!-- Validation async -->
         <DataAnnotationsValidator />
         <ValidationSummary />
 
         <div class="row">
+            <!-- Valeur pour le titre du plan-cadre -->
             <div class="col-lg-6">
                 <div class="form-group">
                     <label class="control-label" for="CrsTitle"> Titre du cours: </label>
-                    <input @bind="CTemplate.Title" type="text" class="form-control" id="CrsTitle" placeholder="Titre du cours" name="CrsTitle" />
+                    <OnStringInputValidation @bind-Value="CTemplate.Title" type="text" class="form-control" id="CrsTitle" placeholder="Titre du cours" name="CrsTitle" />
+                    <ValidationMessage For="@(() => CTemplate.Title)" />
                 </div>
             </div>
+            <!-- Valeur pour l'identification du cours -->
             <div class="col-lg-6">
                 <div class="form-group">
                     <label class="control-label" for="CrsId"> Identifiant du cours: </label>
-                    <input @bind="CTemplate.Id" type="text" class="form-control" id="CrsId" placeholder="Identifiant du cours" name="CrsId" />
+                    <OnStringInputValidation @bind-Value="CTemplate.Id" type="text" class="form-control" id="CrsId" placeholder="Identifiant du cours" name="CrsId" />
+                    <ValidationMessage For="@(() => CTemplate.Id)" />
                 </div>
             </div>
         </div>
         <div class="row">
-            <div class="col-lg-6">
+            <!-- Nombre d'unités pour le cours données -->
+            <div class="col-md-6">
                 <div class="form-group">
-                    <label class="control-label col-md-6" for="Units">Nombre d'unité pour le cours: </label>
-                    <div class="col-md-6">
-                        <input @bind="CTemplate.Units" class="form-control" id="Units" placeholder="Nombre d'unité" name="Units" />
-                    </div>
+                    <label class="control-label" for="Units">Nombre d'unité pour le cours: </label>
+                    <OnNumberInputValidation @bind-Value="CTemplate.Units" class="form-control" id="Units" placeholder="Nombre d'unité" name="Units" type="number" />
+                    <ValidationMessage For="@(() => CTemplate.Units)" />
                 </div>
             </div>
-            <div class="col-lg-6">
+            <!-- Ajout de la pondération -->
+            <div class="col-md-6">
                 <div class="form-group">
-                    <label class="control-label col-md-6" for="Ponderation">Pondération (propriété non trouvé): </label>
-                    <div class="col-md-6">
-                        <input class="form-control" id="Ponderation" placeholder="Ingore It" name="Ponderation" />
-                    </div>
+                    <label class="control-label" for="Ponderation">Pondération (propriété non trouvé): </label>
+                    <input class="form-control" id="Ponderation" placeholder="Ingore It" name="Ponderation" />
                 </div>
             </div>
         </div>
+        <!-- Séparateur -->
+        <hr />
+        <!-- les intentions du cours -->
         <div class="form-group">
-            <label class="control-label col-12" for="CrsIntent">Intention du cours: </label>
-            <div class="col-12">
-                <textarea rows="4" @bind="CTemplate.Intent" class="form-control" id="CrsIntent" placeholder="Intention éducative..." name="CrsIntent" />
-            </div>
+            <label class="control-label" for="CrsIntent">Intention du cours: </label>
+            <InputTextArea @bind-Value="CTemplate.Intent" rows="4" class="form-control" id="CrsIntent" placeholder="Intention éducative..." name="CrsIntent" />
+            <ValidationMessage For="@(() => CTemplate.Intent)" />
         </div>
+        <!-- Entrés pour les intentions pédagogiques du cours -->
         <div class="form-group">
-            <label class="control-label col-12" for="IntentionPedagogique">Intention du pédagogique (propriété non trouvé): </label>
-            <div class="col-12">
-                <textarea rows="4" class="form-control" id="IntentionPedagogique" placeholder="Ingore It" name="IntentionPedagogique" />
-            </div>
+            <label class="control-label" for="IntentionPedagogique">Intention du pédagogique (propriété non trouvé): </label>
+            <InputTextArea rows="4" @bind-Value="CTemplate.Intent" class="form-control" id="IntentionPedagogique" placeholder="Ingore It" name="IntentionPedagogique" />
+            <ValidationMessage For="@(() => CTemplate.Intent)" />
         </div>
-        <div class="form-group">
-            <label class="control-label col-12" for="IntentionPedagogique">Intention du pédagogique (propriété non trouvé): </label>
-            <div class="col-12">
-                <textarea rows="4" class="form-control" id="IntentionPedagogique" placeholder="Ingore It" name="IntentionPedagogique" />
-            </div>
-        </div>
+        <!-- Descriptions du cours -->
         <div class="form-group">
             <label class="control-label col-12" for="CrsDesc">Description du cours: </label>
-            <div class="col-12">
-                <textarea rows="4" @bind="CTemplate.Description" class="form-control" id="CrsIntent" placeholder="Description du cours..." name="CrsDesc" />
-            </div>
+            <InputTextArea rows="4" @bind-Value="CTemplate.Description" class="form-control" id="CrsIntent" placeholder="Description du cours..." name="CrsDesc" />
+            <ValidationMessage For="@(() => CTemplate.Description)" />
         </div>
         <!--href="/planscadres/nouveau/ponderation"-->
         <div class="col-12">
@@ -69,12 +70,14 @@
             <button class="btn btn-dark" type="submit">Continuer</button>
         </div>
     </EditForm>
+</div>
 @code {
     private CourseTemplate CTemplate = new CourseTemplate();
 
+    // validation côté serveur
     private void HandleValidSubmit()
     {
-        //
+        // enregistre le cours template
         Console.WriteLine("OnValidSubmit");
         NavigationManager.NavigateTo("/planscadres/nouveau/ponderation");
     }

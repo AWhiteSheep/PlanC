@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace PlanC.WebApi.Models
 {
@@ -15,7 +16,9 @@ namespace PlanC.WebApi.Models
         public string Id { get; set; }
         public DateTime VsnCdttm { get; set; }
         public string PgmId { get; set; }
+        [Required]
         public string Title { get; set; }
+        [Required]
         public decimal? Units { get; set; }
         public string Description { get; set; }
         public string Intent { get; set; }
