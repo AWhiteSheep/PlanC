@@ -2,3 +2,5 @@
 @model PlanC.Web.Client.Areas.Personnel.Pages.PlansCadres.NouveauModel
 @{
 }
+
+@(await Html.RenderComponentAsync<PlanC.Web.Client.Components.FPlanCadre>(RenderMode.Server))
