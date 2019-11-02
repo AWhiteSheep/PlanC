@@ -480,9 +480,9 @@ namespace PlanC.WebApi.Server.DataAccess
                     .HasMaxLength(6)
                     .IsUnicode(false);
 
-                entity.Property(e => e.RcdCdttm)
-                    .HasColumnName("RCD_CDTTM")
-                    .HasColumnType("datetime");
+                //entity.Property(e => e.RcdCdttm)
+                //    .HasColumnName("RCD_CDTTM")
+                //    .HasColumnType("datetime");
 
                 entity.Property(e => e.Title)
                     .HasColumnName("SKL_TITLE")

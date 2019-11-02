@@ -1,6 +1,17 @@
-﻿@page
+﻿
+@page
 @model PlanC.Web.Client.Areas.Personnel.Pages.Competences.NouvelleModel
 @{
 }
 
-@(await Html.RenderComponentAsync<PlanC.Web.Client.Components.FCompetences>(RenderMode.Server))
+<section id="app">
+    @(await Html.RenderComponentAsync<PlanC.Web.Client.Components.FCompetences>(RenderMode.Server))
+</section>
+
+@section  Scripts {
+    <script>
+        $('#app').on("click","[data-mask]", function(){
+            $(this).mask($(this).attr('data-mask'), { placeholder: "____" });
+        });
+    </script>
+}

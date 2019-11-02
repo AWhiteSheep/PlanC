@@ -12,14 +12,14 @@
 
         <div class="form-group">
             <label class="control-label" for="SklTitle">Titre de la compétence: </label>
-            <InputText @bind-Value="skill.Title" type="text" class="form-control" id="SklTitle" placeholder="Libélé de la compétence" name="SklTitle" data-mask="0000"  />
+            <InputText @bind-Value="skill.Title" type="text" class="form-control" id="SklTitle" name="SklTitle" placeholder="Titre de la compétence" data-mask />
             <ValidationMessage For="@(() => skill.Title)" />
         </div>
         <div class="row">
             <div class="col-6">
                 <div class="form-group">
                     <label class="control-label" for="SklId">Numéro de la compétence: </label>
-                    <InputText @bind-Value="skill.Id" type="text" class="form-control" id="SklId" placeholder="Numéro de la compétence" name="SklId" />
+                    <InputText @bind-Value="skill.Id" type="text" class="form-control" id="SklId" placeholder="Numéro de la compétence" name="SklId"  data-mask="0000" />
                     <ValidationMessage For="@(() => skill.Id)" />
                 </div>
             </div>
