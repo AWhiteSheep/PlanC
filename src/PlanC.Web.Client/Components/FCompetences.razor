@@ -12,7 +12,7 @@
 
         <div class="form-group">
             <label class="control-label" for="SklTitle">Titre de la compétence: </label>
-            <InputText @bind-Value="skill.Title" type="text" class="form-control" id="SklTitle" placeholder="Libélé de la compétence" name="SklTitle" />
+            <InputText @bind-Value="skill.Title" type="text" class="form-control" id="SklTitle" placeholder="Libélé de la compétence" name="SklTitle" data-mask="0000"  />
             <ValidationMessage For="@(() => skill.Title)" />
         </div>
         <div class="row">
