@@ -1,8 +1,43 @@
 ﻿/* Please see documentation at https://docs.microsoft.com/aspnet/core/client-side/bundling-and-minification
 for details on configuring this project to bundle and minify static web assets. */
+/*
+Theme animation home page
+*/
+#theme-portal-image {
+  
+}
+/*
+Theme circle button - log out
+*/
+.theme-link {
+  height: 4.375rem;
+  display: flex;
+  align-items: center;
+}
+.theme-link:hover {
+  text-decoration: none;
+}
+.theme-circle-button {
+  border: 2px solid #cfcfcf;
+  color: #cfcfcf;
+  border-radius: 50%;
+  padding: 8px;
+}
+.theme-circle-button:hover {
+  border: 2px solid #202020;
+  color: #202020;
+}
+.theme-logout:hover {
+  border: 2px solid #dc3545;
+  color: #dc3545;
+}
+
 .sidebar .collapse-item.te-active {
   background-color: #eaecf4;
 }
+/**
+Style de carte pour le theme
+*/
 .card-area a {
   background-color: #fefefe;
   padding: 7px;

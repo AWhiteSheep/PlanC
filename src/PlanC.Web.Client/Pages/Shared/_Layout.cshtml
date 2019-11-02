@@ -34,6 +34,27 @@
             </div>
         </div>
     </div>
+    <!-- Modal de déconnection -->
+    <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <!-- Haut du modal -->
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel"> Prêt pour partir? </h5>
+                    <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <!-- Body du modal -->
+                <div class="modal-body"> Choisir "Déconnexion" si vous voulez mettre fin à votre session. </div>
+                <!-- Option du modal -->
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" type="button" data-dismiss="modal"> Canceler </button>
+                    <a class="btn btn-primary" href="login.html"> Déconnexion </a>
+                </div>
+            </div>
+        </div>
+    </div>
     <!-- End of Page Wrapper -->
     <!-- Scroll to Top Button-->
     <a class="scroll-to-top rounded" href="#page-top">
@@ -42,9 +63,13 @@
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/lib/jquery-easing/jquery.easing.min.js"></script>
-    <script src="~/js/site.js" asp-append-version="true"></script>
+
+    <!-- librairie framework anime js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/2.2.0/anime.min.js" integrity="sha256-BuxrUdr/4YoztQLxT6xmdO6hSQw2d6BtBUY1pteGds4=" crossorigin="anonymous"></script>
+
     <!-- Blazor framework for the client -->
     <script src="~/_framework/blazor.server.js" autostart="false"></script>
+
     <!-- pour le framework de template suncfusion -->
     <script src="https://cdn.syncfusion.com/ej2/17.3.18/dist/ej2.min.js"></script>
     <script src="https://cdn.syncfusion.com/ej2/17.3.18/dist/ejs.interop.min.js"></script>
@@ -52,6 +77,11 @@
     <!-- Auto complete master -->
     <script src="~/js/jquery.autocomplete.min.js"></script>
 
+    <!-- Masking librairie framework  https://igorescobar.github.io/jQuery-Mask-Plugin/ -->
+    <script src="~/js/jquery.mask.min.js"></script>
+
+    <!-- Scripts custome -->
+    <script src="~/js/site.js" asp-append-version="true"></script>
     <script>
         // god bless stackoverflow
         // https://stackoverflow.com/questions/57366355/how-do-i-use-blazor-server-side-inside-a-razor-component-library-using-areas

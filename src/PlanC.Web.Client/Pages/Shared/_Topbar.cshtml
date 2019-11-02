@@ -25,7 +25,7 @@
             <a class="nav-link dropdown-toggle" href="#" id="searchDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 <i class="fas fa-search fa-fw"></i>
             </a>
-            <!-- Dropdown - Messages -->
+            <!-- Dropdown - Menu pour rechercher -->
             <div class="dropdown-menu dropdown-menu-right p-3 shadow animated--grow-in" aria-labelledby="searchDropdown">
                 <form class="form-inline mr-auto w-100 navbar-search">
                     <div class="input-group">
@@ -42,8 +42,39 @@
 
         <!-- Nav Item - Centre de notifications -->
 
-        <!-- Nav Item - Messages quelque'un veut vous dire quelque chose? -->
+        <!-- Nav Item - Profil de l'utilisateur -->
+        <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <img class="img-profile rounded-circle" src="~/images/avatars/girl-1.svg">
+            </a>
+            <!-- Dropdown - Options pour l'utilisateur -->
+            <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="userDropdown">
+                <a class="dropdown-item" href="#">
+                    <i class="fas fa-user fa-sm fa-fw mr-2"></i>
+                    Mon profil
+                </a>
+                <a class="dropdown-item" href="#">
+                    <i class="fas fa-file fa-sm fa-fw mr-2"></i>
+                    Mes documents
+                </a>
+                <a class="dropdown-item" href="#">
+                    <i class="fas fa-info fa-sm fa-fw mr-2"></i>
+                    Aide
+                </a>
+                <div class="dropdown-divider"></div>
+                <a class="dropdown-item" href="#">
+                    <i class="fas fa-comment fa-sm fa-fw mr-2"></i>
+                    Commentaire
+                </a>
+            </div>
+        </li>
 
-        <!-- Nav Item - Les information de l'usager -->
+        <!-- Nav Item - Déconnexion de l'utilisateur -->
+        <li class="nav-item dropdown">
+            <a class="theme-link" href="#" data-toggle="modal" data-target="#logoutModal">
+                <i class="theme-circle-button theme-logout fas fa-power-off"></i>
+            </a>
+        </li>
+
     </ul>
 </nav>
