@@ -28,11 +28,11 @@ namespace PlanC.WebApi.Server
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddDbContext<PCU001Context>(options => options.UseSqlServer("name=PCU001"));
+            services.AddDbContext<PCU001Context>(options => options.UseSqlServer("name=RDS_PCU001"));
             //"asp.net core odata web api" --> 
             //https://devblogs.microsoft.com/odata/supercharging-asp-net-core-api-with-odata/
             services.AddOData();
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+            services.AddMvc();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
