@@ -14,7 +14,7 @@
             <div class="col-lg-6">
                 <div class="form-group">
                     <label class="control-label" for="CrsTitle"> Titre du cours: </label>
-                    <OnStringInputValidation @bind-Value="CTemplate.Title" type="text" class="form-control" id="CrsTitle" placeholder="Titre du cours" name="CrsTitle" />
+                    <OnStringInput @bind-Value="CTemplate.Title" type="text" class="form-control" id="CrsTitle" placeholder="Titre du cours" name="CrsTitle" />
                     <ValidationMessage For="@(() => CTemplate.Title)" />
                 </div>
             </div>
@@ -22,7 +22,7 @@
             <div class="col-lg-6">
                 <div class="form-group">
                     <label class="control-label" for="CrsId"> Identifiant du cours: </label>
-                    <OnStringInputValidation @bind-Value="CTemplate.Id" type="text" class="form-control" id="CrsId" placeholder="Identifiant du cours" name="CrsId" />
+                    <OnStringInput @bind-Value="CTemplate.Id" type="text" class="form-control" id="CrsId" placeholder="Identifiant du cours" name="CrsId" />
                     <ValidationMessage For="@(() => CTemplate.Id)" />
                 </div>
             </div>
@@ -32,7 +32,7 @@
             <div class="col-md-6">
                 <div class="form-group">
                     <label class="control-label" for="Units">Nombre d'unité pour le cours: </label>
-                    <OnNumberInputValidation @bind-Value="CTemplate.Units" class="form-control" id="Units" placeholder="Nombre d'unité" name="Units" type="number" />
+                    <OnNumberInputMask Mask="00000" @bind-Value="CTemplate.Units" CssClass="theme-mask" id="Units" placeholder="Nombre d'unité" />
                     <ValidationMessage For="@(() => CTemplate.Units)" />
                 </div>
             </div>

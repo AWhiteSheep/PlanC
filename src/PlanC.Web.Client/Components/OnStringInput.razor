@@ -1,8 +1,7 @@
 ﻿@inherits InputText
 
-<input 
-    @attributes="AdditionalAttributes" 
+<input @attributes="AdditionalAttributes" 
     class="@CssClass" 
     value="@CurrentValue" 
     @oninput="EventCallback.Factory.CreateBinder<string>(
-        this, __value => CurrentValueAsString = __value, CurrentValueAsString)" />
+     this, __value => CurrentValueAsString = __value, CurrentValueAsString)" />
