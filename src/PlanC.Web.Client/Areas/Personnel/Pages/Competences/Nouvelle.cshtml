@@ -4,14 +4,4 @@
 @{
 }
 
-<section id="app">
-    @(await Html.RenderComponentAsync<PlanC.Web.Client.Components.FCompetences>(RenderMode.Server))
-</section>
-
-@section  Scripts {
-    <script>
-        $('#app').on("click","[data-mask]", function(){
-            $(this).mask($(this).attr('data-mask'), { placeholder: "____" });
-        });
-    </script>
-}
+@(await Html.RenderComponentAsync<PlanC.Web.Client.Components.FCompetences>(RenderMode.Server))

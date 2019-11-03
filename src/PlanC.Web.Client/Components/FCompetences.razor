@@ -19,7 +19,7 @@
             <div class="col-6">
                 <div class="form-group">
                     <label class="control-label" for="SklId">Numéro de la compétence: </label>
-                    <InputText @bind-Value="skill.Id" type="text" class="form-control" id="SklId" placeholder="Numéro de la compétence" name="SklId"  data-mask="0000" />
+                    <OnStringInputMask @bind-Value="skill.Id" CssClass="theme-mask" Mask="0000" id="SklId" placeholder="ex: 1051." />
                     <ValidationMessage For="@(() => skill.Id)" />
                 </div>
             </div>
