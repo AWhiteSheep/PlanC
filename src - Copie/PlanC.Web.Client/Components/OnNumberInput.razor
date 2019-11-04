@@ -1,8 +1,0 @@
-﻿@inherits InputNumber<decimal?>
-
-<input 
-    @attributes="AdditionalAttributes" 
-    class="@CssClass" 
-    value="@CurrentValue" 
-    @oninput="EventCallback.Factory.CreateBinder<decimal?>(
-        this, __value => CurrentValue = __value, CurrentValue)" />
