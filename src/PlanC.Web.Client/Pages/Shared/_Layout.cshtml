@@ -1,23 +1,29 @@
 ﻿<!DOCTYPE html>
 <html lang="en">
 <head>
+    <!-- Meta tags -->
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="referrer" content="origin">
+
+    <!-- Titre de la page mère -->
     <title>@ViewData["Title"] - Client</title>
-    <link rel="stylesheet" type="text/css" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-    <link rel="stylesheet" type="text/css" href="~/css/site.css" />
-    <!-- css style sheet pour syncfusion table -->
+
+    <!-- CDNs fontawesome, bootstrap & css style sheet pour syncfusion table -->
     <link rel="stylesheet" type="text/css" href="https://cdn.syncfusion.com/ej2/17.3.18/fabric.css" />
     <link rel="stylesheet" type="text/css" href="https://cdn.syncfusion.com/ej2/17.3.19/ej2-buttons/styles/material.css" />
-    <!-- Custom fonts for this template-->
-    <link rel="stylesheet" type="text/css" href="~/lib/fontawesome-free/css/all.min.css" />
-    <!-- Semantic ui interface framework -->
-    <link rel="stylesheet" type="text/css" src="/lib/Semantic-UI-CSS-master/components/search.css" />
+    <script src="https://kit.fontawesome.com/50510c8db2.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" />
 
-    <!-- Render style section -->
+
+    <!-- Section pour les styles -->
     @RenderSection("Styles", required: false)
+    <!-- End section styles -->
+
+    <!-- Style pour le site entier -->
+    <link rel="stylesheet" type="text/css" href="~/css/site.css" />
+
 </head>
 <body id="page-top">
     <!-- Page Wrapper -->
@@ -65,15 +71,17 @@
     <a class="scroll-to-top rounded" href="#page-top">
         <i class="fas fa-angle-up"></i>
     </a>
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/lib/jquery-easing/jquery.easing.min.js"></script>
+
+    <!-- CDNs bootstrap -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+    <!-- JQuery -->
+    <script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.4.1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-easing/1.4.1/jquery.easing.min.js" integrity="sha256-H3cjtrm/ztDeuhCN9I4yh4iN2Ybx/y1RM7rMmAesA0k=" crossorigin="anonymous"></script>
 
     <!-- librairie framework anime js -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/2.2.0/anime.min.js" integrity="sha256-BuxrUdr/4YoztQLxT6xmdO6hSQw2d6BtBUY1pteGds4=" crossorigin="anonymous"></script>
-
-    <!-- Blazor framework for the client -->
-    <script src="~/_framework/blazor.server.js" autostart="false"></script>
 
     <!-- pour le framework de template suncfusion -->
     <script src="https://cdn.syncfusion.com/ej2/17.3.18/dist/ej2.min.js"></script>
@@ -82,11 +90,9 @@
     <!-- Auto complete master -->
     <script src="~/js/jquery.autocomplete.min.js"></script>
 
-    <!-- Sementic framework pour coponent ui -->
-    <partial name="_Sementic.cshtml" />
-
-    <!-- Scripts custome -->
+    <!-- Scripts custome & Blazor framework for the client -->
     <script src="~/js/site.js" asp-append-version="true"></script>
+    <script src="~/_framework/blazor.server.js" autostart="false"></script>
     <script>
         // god bless stackoverflow
         // https://stackoverflow.com/questions/57366355/how-do-i-use-blazor-server-side-inside-a-razor-component-library-using-areas
@@ -95,7 +101,6 @@
                 builder.withUrl("/_blazor");
             }
         });
-
 
         var values = [
             { value: 'Admin', data: '/admin' },
