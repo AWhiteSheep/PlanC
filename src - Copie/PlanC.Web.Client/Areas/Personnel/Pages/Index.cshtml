@@ -1,0 +1,90 @@
+﻿@page
+@model PlanC.Web.Client.Areas.Personnel.Pages.IndexModel
+@{
+    ViewData["Title"] = "Le personnel";
+}
+
+<!-- Section de navigation -->
+<div class="row mb-3">
+    <div class="col-lg-8">
+        <!-- Titre de la page -->
+        <h1 class="h3 mb-1 text-gray-800 mb-3"> Portail du personnel </h1>
+        <p>
+            Tout ce dont vous avez besoin afin de créer des plans de cours à une vitesse éclaire!
+            <div class="d-flex flex-row card-area">
+                <div class="d-flex flex-row">
+                    <a href="~/Personnel/PlansCadres"> Les plans-cadres </a>
+                    <a href="~/Personnel/PlansCours"> Les plans de cours </a>
+                    <a href="~/Personnel"> Voir l'ensemble </a>
+                </div>
+            </div>
+        </p>
+    </div>
+    <div class="col-lg-4">
+        <!-- Message distiné pour le groupe d'administration -->
+        <div class="card shadow">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-danger"> Important </h6>
+            </div>
+            <div class="card-body">
+                Vous devez avoir la dernière version de votre plan de cours pour le 26 septembre.
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Document en cours de production -->
+<div class="in-card shadow mb-4">
+    <div class="card-body">
+        <!-- Séparateur -->
+        <p>
+            <!-- Titre pour fragment pour les documents en production -->
+            <h6 class="m-0 font-weight-bold"> Les documents en production... </h6>
+        </p>
+        <!-- Conteneur pour les documents en production -->
+        <div class="table-responsive">
+            Aucun document à afficher. <br />
+            Vos documents en cours se retrouverons ici.
+        </div>
+    </div>
+</div>
+
+<!-- Document mis en favoris -->
+<div class="in-card shadow mb-4">
+    <div class="card-body">
+        <!-- Séparateur -->
+        <p>
+            <!-- Titre pour les documents en favoris -->
+            <h6 class="m-0 font-weight-bold"> Les documents en favoris </h6>
+        </p>
+        <!-- Conteneur pour les documents en favoris -->
+        <div class="table-responsive">
+            Aucun document à afficher. <br />
+            Dans cette section vous pourriez retrouver les documents mis de côté.
+        </div>
+    </div>
+</div>
+
+@section Scripts  {
+    <!-- Scripts unique pour la page -->
+    <script src="~/js/data/jquery.dataTables.min.js"></script>
+    <script src="~/js/data/dataTables.bootstrap4.min.js"></script>
+    <script src="~/js/data/datatables-demo.js"></script>
+    <!-- uniquement pour la table razor -->
+    <script>
+        ej.base.L10n.load({
+            'fr-FR': {
+                'grid': {
+                    'EmptyRecord': 'Enregistrement vide',
+                    'Add': 'Ajouter',
+                    'Edit': 'Modifier',
+                    'Delete': 'Supprimer',
+                    'Items': 'Éléments'
+                },
+                'pager': {
+                    'currentPageInfo': '{0} de {1} pages'
+                }
+            }
+        });
+    </script>
+}
