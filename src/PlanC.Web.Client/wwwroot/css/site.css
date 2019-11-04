@@ -37,7 +37,8 @@ Mask theme
   transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
 }
 .e-input-group, .e-input-group.e-control-wrapper {
-  border: none !important;
+  border: .7px solid #d1d3e2 !important;
+  border-radius: 0.35rem !important;
 }
 /*
 Theme circle button - log out

@@ -3,16 +3,17 @@
 @inject NavigationManager NavigationManager
 @using Syncfusion.EJ2.Blazor.Grids
 @using Syncfusion.EJ2.Blazor.Data
+@using Syncfusion.EJ2.Blazor.DropDowns
 
 <div class="container">
-<!-- formulaire pour les nouvelles compétences -->
+    <!-- formulaire pour les nouvelles compétences -->
     <EditForm Model="@skill" class="competence-form">
         <DataAnnotationsValidator />
         <ValidationSummary />
 
         <div class="form-group">
             <label class="control-label" for="SklTitle">Titre de la compétence: </label>
-            <InputText @bind-Value="skill.Title" type="text" class="form-control" id="SklTitle" name="SklTitle" placeholder="Titre de la compétence" data-mask />
+            <OnStringInput @bind-Value="skill.Title" class="form-control" id="SklTitle" placeholder="Titre de la compétence" />
             <ValidationMessage For="@(() => skill.Title)" />
         </div>
         <div class="row">
@@ -23,11 +24,18 @@
                     <ValidationMessage For="@(() => skill.Id)" />
                 </div>
             </div>
+            <!-- Sélection du programme -->
             <div class="col-6">
                 <div class="form-group">
-                    <label class="control-label" for="PgmId">Numéro du programme: </label>
-                    <InputText @bind-Value="skill.StudyProgramId" type="text" class="form-control" id="PgmId" placeholder="Numéro du programme" name="PgmId" />
-                    <ValidationMessage For="@(() => skill.StudyProgramId)" />
+                    <label class="control-label" for="PgmId">Sélectionner un programme: </label>
+                    <EjsDropDownList CssClass="theme-mask form-control" TValue="string" @bind-Value="skill.StudyProgramId" ModelType="programme" DataSource="programmes" Placeholder="Choix des programmes..." AllowFiltering=true IgnoreAccent=true>
+                        <DropDownListTemplates>
+                            <ItemTemplate Context="modelItem">
+                                <span><span class='Title'>@((modelItem as Tpgm).PgmTitle)</span><span class='PgmId'>@((modelItem as Tpgm).PgmId)</span></span>
+                            </ItemTemplate>
+                        </DropDownListTemplates>
+                        <DropDownListFieldSettings GroupBy="Dptmnt.Title" Value="PgmId" Text="PgmTitle"></DropDownListFieldSettings>
+                    </EjsDropDownList>
                 </div>
             </div>
         </div>
@@ -81,4 +89,24 @@
         }
         NavigationManager.NavigateTo("/");
     }
+
+    // définition des programmes
+    Tpgm programme = new Tpgm();
+    List<Tpgm> programmes =  new List<Tpgm>()
+    {
+        new Tpgm(){ PgmId="340.AA", PgmTitle="Sculpture", Dptmnt=new Department(){ Title="Electronique" } },
+        new Tpgm(){ PgmId="654.AB", PgmTitle="Dinocolor", Dptmnt=new Department(){ Title="Electronique" }  },
+        new Tpgm(){ PgmId="456.DD", PgmTitle="Scolarie", Dptmnt=new Department(){ Title="Electronique" }  },
+        new Tpgm(){ PgmId="456.DD", PgmTitle="Dentaire", Dptmnt=new Department(){ Title="Science" }  },
+        new Tpgm(){ PgmId="456.DD", PgmTitle="Voctuseraptor", Dptmnt=new Department(){ Title="Science" }  },
+        new Tpgm(){ PgmId="456.DD", PgmTitle="Tinoculaire", Dptmnt=new Department(){ Title="Chimie" }  },
+        new Tpgm(){ PgmId="456.DD", PgmTitle="Vanitorinactirapeute" ,Dptmnt=new Department(){ Title="Electronique" }  },
+    };
 }
+
+<style>
+    .PgmId {
+        right: 15px;
+        position: absolute;
+    }
+</style>
