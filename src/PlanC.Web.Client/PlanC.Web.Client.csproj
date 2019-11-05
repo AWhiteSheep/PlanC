@@ -21,9 +21,4 @@
     <PackageReference Include="Syncfusion.EJ2.Blazor" Version="17.3.0.18-beta" />
   </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\PlanC.WebApi.Shared\PlanC.WebApi.Shared.csproj" />
-    <ProjectReference Include="..\PlanC.WebApi.Server\PlanC.WebApi.Server.csproj" />
-  </ItemGroup>
-
 </Project>
