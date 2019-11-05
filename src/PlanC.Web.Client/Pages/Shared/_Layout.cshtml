@@ -99,6 +99,7 @@
         Blazor.start({
             configureSignalR: function (builder) {
                 builder.withUrl("/_blazor");
+                builder.withAutomaticReconnect();
             }
         });
 

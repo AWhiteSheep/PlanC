@@ -27,18 +27,20 @@ else
             <DetailTemplate>
                 @{
                     var department = (context as Department);
-                    <table class="detailtable" width="100%">
+                    <table class="text-right" width="100%">
+                        <thead>
+                            <tr>
+                                <th> Titre </th>
+                                <th> Identifiant </th>
+                            </tr>
+                        </thead>
                         <tbody>
                             <!-- Loop sur tous les programmes du département -->
                             @foreach (Tpgm program in department.Tpgm)
                             {
                                 <tr>
-                                    <td>
-                                        <span style="font-weight: 500;"> Titre: </span> @program.PgmTitle
-                                    </td>
-                                    <td>
-                                        <span style="font-weight: 500;"> Desciption: </span> @program.PgmDesc
-                                    </td>
+                                    <td> @program.PgmTitle </td>
+                                    <td> @program.PgmId </td>
                                 </tr>
                             }
                         </tbody>
@@ -69,7 +71,7 @@ else
     // liste pour les différents tests
     public List<Department> Dpt;
     // programmes mok
-    public List<Tpgm> Tpgms = new List<Tpgm>() { new Tpgm() { PgmTitle = "Informatique", PgmDesc = "Programmer" } };
+    public List<Tpgm> Tpgms = new List<Tpgm>() { new Tpgm() { PgmTitle = "Informatique", PgmDesc = "Programmer" , PgmId = "320.AA" } };
 
     // Durant l'initialisation appelle de la fonction load items afin de chercher les éléments dans la base de données
     protected override Task OnInitializedAsync()

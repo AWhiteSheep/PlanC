@@ -24,7 +24,9 @@ namespace PlanC.Web.Client
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddRazorPages();
-            services.AddServerSideBlazor();
+            services.AddServerSideBlazor().AddCircuitOptions(configure => {
+                configure.DetailedErrors = true;
+            });
             services.AddControllersWithViews();
         }
 
@@ -52,7 +54,9 @@ namespace PlanC.Web.Client
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapRazorPages();
-                endpoints.MapBlazorHub();
+                endpoints.MapBlazorHub(option => {
+                    option.Transports = Microsoft.AspNetCore.Http.Connections.HttpTransportType.LongPolling;                    
+                });
                 endpoints.MapFallbackToPage("/Index");
             });
         }
