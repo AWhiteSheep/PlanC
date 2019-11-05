@@ -94,17 +94,8 @@
     }
 
     // définition des programmes
-    Tpgm programme = new Tpgm();
-    List<Tpgm> programmes =  new List<Tpgm>()
-    {
-        new Tpgm(){ PgmId="340.AA", PgmTitle="Sculpture", Dptmnt=new Department(){ Title="Electronique" } },
-        new Tpgm(){ PgmId="654.AB", PgmTitle="Dinocolor", Dptmnt=new Department(){ Title="Electronique" }  },
-        new Tpgm(){ PgmId="456.DD", PgmTitle="Scolarie", Dptmnt=new Department(){ Title="Electronique" }  },
-        new Tpgm(){ PgmId="456.DD", PgmTitle="Dentaire", Dptmnt=new Department(){ Title="Science" }  },
-        new Tpgm(){ PgmId="456.DD", PgmTitle="Voctuseraptor", Dptmnt=new Department(){ Title="Science" }  },
-        new Tpgm(){ PgmId="456.DD", PgmTitle="Tinoculaire", Dptmnt=new Department(){ Title="Chimie" }  },
-        new Tpgm(){ PgmId="456.DD", PgmTitle="Vanitorinactirapeute" ,Dptmnt=new Department(){ Title="Electronique" }  },
-    };
+    Tpgm programme = PlanC.Web.Client.Data.PCU001FakeContext.programmes.First();
+    List<Tpgm> programmes = PlanC.Web.Client.Data.PCU001FakeContext.programmes;
 }
 
 <style>

@@ -59,35 +59,17 @@ else
 }
 
 @code {
-    
+
     [Parameter]
-    // paramètre afin de loader un tableau éditable
     public bool IsEditable { get; set; } = false;
-    // donne accès au grid dans la razor
     public EjsGrid<Department> GridDepartement;
     ElementReference inputRef;
-    // context de la base de données
     private readonly PCU001Context _context = new PCU001Context();
-    // liste pour les différents tests
-    public List<Department> Dpt;
-    // programmes mok
-    public List<Tpgm> Tpgms = new List<Tpgm>() { new Tpgm() { PgmTitle = "Informatique", PgmDesc = "Programmer" , PgmId = "320.AA" } };
 
-    // Durant l'initialisation appelle de la fonction load items afin de chercher les éléments dans la base de données
-    protected override Task OnInitializedAsync()
-    {
-        return LoadItemsAdync();
-    }
-
-    // load tous les items dans la table suite à l'initialisation par synchronisation
-    async Task LoadItemsAdync()
-    {
-        Dpt = new List<Department>() { new Department() { Title = "Informatique", Policy = "Retour de livre.", Tpgm = Tpgms} ,
-            new Department() { Title = "Science humaine", Policy = "Retour de livre.", Tpgm = Tpgms} };
-    }
+    public List<Department> Dpt = PlanC.Web.Client.Data.PCU001FakeContext.Departments;
 
     // Ouvre tout les tabs pour de la table de département
-    public void ExpendAll(ClickEventArgs args) 
+    public void ExpendAll(ClickEventArgs args)
     {
         this.GridDepartement.DetailExpandAll();
     }

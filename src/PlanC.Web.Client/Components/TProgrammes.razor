@@ -24,19 +24,8 @@ else
 @code {
     // context de la base de données
     private readonly PCU001Context _context = new PCU001Context();
+    
+    public List<Department> Dpt = PlanC.Web.Client.Data.PCU001FakeContext.Departments;
+    public List<Tpgm> Pgms = PlanC.Web.Client.Data.PCU001FakeContext.programmes;
 
-    // List temporaire des choix des programmes
-    List<Tpgm> Pgms;
-
-    protected override Task OnInitializedAsync()
-    {
-        return LoadItemsAdync();
-    }
-
-    async Task LoadItemsAdync()
-    {
-        await Task.Delay(700);
-        Pgms = new List<Tpgm>() { new Tpgm() { PgmTitle = "Programmation", PgmDesc = "A-Z de la programmation"} ,
-        new Tpgm() { PgmTitle = "Physique", PgmDesc = "D'avant à la physique moderne"} };
-    }
 }
