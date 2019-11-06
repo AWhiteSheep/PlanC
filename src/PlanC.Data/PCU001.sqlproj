@@ -69,6 +69,9 @@
   <ItemGroup>
     <PostDeploy Include="Scripts\Script.PostDeployment1.sql" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="Published\PCU001.publish.xml" />
+  </ItemGroup>
   <PropertyGroup>
     <PostBuildEvent>:r .\Scripts\Script.PostDeployment.sql</PostBuildEvent>
   </PropertyGroup>
