@@ -57,8 +57,7 @@ namespace PlanC.Web.Client
             // Add the authorization middleware to the request pipeline
             app.UseAuthorization();
             // Add endpoints to the request pipeline
-            app.UseEndpoints(endpoints =>
-            {
+            app.UseEndpoints(endpoints => {
                 endpoints.MapRazorPages();
                 endpoints.MapBlazorHub(option => {
                     option.Transports = Microsoft.AspNetCore.Http.Connections.HttpTransportType.LongPolling;                    

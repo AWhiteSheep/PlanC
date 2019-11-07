@@ -7,106 +7,140 @@
 @using Syncfusion.EJ2.Blazor.Data
 @inject PCU001Context _context
 @inject IJSRuntime JSRuntime
-
 @* les cdn(s) doivent être ajoutés pour le bon fonctionnement du componant *@
 
-@if (departments == null)
+@if (departments != null)
 {
+    @if (NewDepartement == null)
+    {
+        <div class="card shadow h-100 py-2">
+            <div class="row card-body">
+                <div class="col-md-6">
+                    <EditForm Model="SelectedDepartment">
+                        <div class="form-row">
+                            <div class="form-group col-md-12">
+                                <label for="idedit"> Id </label>
+                                <input class="form-control" @bind="@(SelectedDepartment.Id)" disabled />
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group col-md-12">
+                                <label for="titleedit"> Nom du département </label>
+                                <InputText class="form-control" @bind-Value="@(SelectedDepartment.Title)"></InputText>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group col-md-12">
+                                <label for="policyedit"> Politique du département </label>
+                                <InputTextArea class="form-control" rows="4" @bind-Value="@SelectedDepartment.Policy"></InputTextArea>
+                            </div>
+                        </div>
+                    </EditForm>
+                    <button class="btn btn-outline-info" @onclick="Save"> Sauvegarder </button>
+                </div>
+                <div class="col-md-6">
+                    <!-- Module table des départements -->
+                    <EjsGrid @ref="Grid" ModelType="departments.First()" DataSource="departments" EnablePersistence="true"
+                             TValue="Department" AllowPaging="true" Locale="fr-FR" Height=315>
+
+                        <!-- Les événements se passant sur la table et les paramètre -->
+                        <GridEvents RowSelected="RowSelectHandler" TValue="Department"></GridEvents>
+                        <GridEditSettings AllowAdding="true" AllowEditing="true" AllowDeleting="true" Mode="EditMode.Dialog"></GridEditSettings>
+
+                        <!-- Template pour afficher les différents programmes dans le départements donné -->
+                        <GridTemplates>
+                            <DetailTemplate>
+                                @{
+                                    var department = (context as Department);
+                                    <table class="text-right" width="100%">
+                                        <thead>
+                                            <tr>
+                                                <th> Titre </th>
+                                                <th> Identifiant </th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <!-- Loop sur tous les programmes du département -->
+                                            @foreach (Tpgm program in department.Tpgm)
+                                            {
+                                                <tr>
+                                                    <td> @program.PgmTitle </td>
+                                                    <td> @program.PgmId </td>
+                                                </tr>
+                                            }
+                                        </tbody>
+                                    </table>
+                                }
+                            </DetailTemplate>
+                        </GridTemplates>
+                        <!-- Affiche en colone les différentes propriétés du département -->
+                        <GridColumns>
+                            <GridColumn Field=@nameof(Department.Id) HeaderText="Id"
+                                        TextAlign="TextAlign.Right" Width="30"></GridColumn>
+                            <GridColumn Field=@nameof(Department.Title) HeaderText="Titre de l'élément"
+                                        TextAlign="TextAlign.Right" Width="130"></GridColumn>
+                            <GridColumn HeaderText="Gestion des départements" Width="150">
+                                <GridCommandColumns>
+                                    <GridCommandColumn ButtonOption="@(new CommandButtonOptions() { Content = "Détails", CssClass = "e-flat" })"></GridCommandColumn>
+                                </GridCommandColumns>
+                            </GridColumn>
+                        </GridColumns>
+                    </EjsGrid>
+                    <div class="col-12 text-center p-3">
+                        <button class="btn btn-primary" @onclick="Add"> Nouveau </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+    else
+    {
+    <EditForm Model="NewDepartement">
+        <DataAnnotationsValidator />
+        <ValidationSummary />
+        <div class="form-row">
+            <div class="form-group col-md-12">
+                <label for="titleedit"> Nom du département </label>
+                <OnStringInput @bind-Value="@(NewDepartement.Title)" class="form-control" placeholder="Titre du département"></OnStringInput>
+                <ValidationMessage For="@(() => NewDepartement.Title)" />
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group col-md-12">
+                <label for="policyedit"> Politique du département </label>
+                <OnStringInput @bind-Value="@NewDepartement.Policy" class="form-control" placeholder="Politique de dévelopement" rows="4"></OnStringInput>
+                <ValidationMessage For="@(() => NewDepartement.Policy)" />
+            </div>
+        </div>
+    </EditForm>
+    <div class="col-12 text-center p-3">
+        <button class="btn btn-primary" @onclick="Add"> Nouveau </button>
+    </div>
+    }
 }
 else
 {
-    <div class="card border-left-warning shadow h-100 py-2">
-        <div class="row card-body">
-            <div class="col-md-6">
-                <EditForm Model="SelectedDepartment">
-                    <div class="form-row">
-                        <div class="form-group col-md-12">
-                            <label for="idedit"> Id </label>
-                            <input class="form-control" @bind="@(SelectedDepartment.Id)" disabled />
-                        </div>
-                    </div>
-                    <div class="form-row">
-                        <div class="form-group col-md-12">
-                            <label for="titleedit"> Nom du département </label>
-                            <InputText class="form-control" @bind-Value="@(SelectedDepartment.Title)"></InputText>
-                        </div>
-                    </div>
-                    <div class="form-row">
-                        <div class="form-group col-md-12">
-                            <label for="policyedit"> Politique du département </label>
-                            <InputTextArea class="form-control" rows="4" @bind-Value="@SelectedDepartment.Policy"></InputTextArea>
-                        </div>
-                    </div>
-                </EditForm>
-                <EjsButton @onclick="Save"> Sauvegarder </EjsButton>
-            </div>
-            <div class="col-md-6">
-                <!-- Module table des départements -->
-                <EjsGrid @ref="Grid" ModelType="departments.First()" DataSource="departments" EnablePersistence="true"
-                         TValue="Department" AllowPaging="true" Locale="fr-FR" Height=315>
-
-                    <!-- Les événements se passant sur la table et les paramètre -->
-                    <GridEvents RowSelected="RowSelectHandler" TValue="Department"></GridEvents>
-                    <GridEditSettings AllowAdding="true" AllowEditing="true" AllowDeleting="true" Mode="EditMode.Dialog"></GridEditSettings>
-
-                    <!-- Template pour afficher les différents programmes dans le départements donné -->
-                    <GridTemplates>
-                        <DetailTemplate>
-                            @{
-                                var department = (context as Department);
-                                <table class="text-right" width="100%">
-                                    <thead>
-                                        <tr>
-                                            <th> Titre </th>
-                                            <th> Identifiant </th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <!-- Loop sur tous les programmes du département -->
-                                        @foreach (Tpgm program in department.Tpgm)
-                                        {
-                                            <tr>
-                                                <td> @program.PgmTitle </td>
-                                                <td> @program.PgmId </td>
-                                            </tr>
-                                        }
-                                    </tbody>
-                                </table>
-                            }
-                        </DetailTemplate>
-                    </GridTemplates>
-                    <!-- Affiche en colone les différentes propriétés du département -->
-                    <GridColumns>
-                        <GridColumn Field=@nameof(Department.Id) HeaderText="Id"
-                                    TextAlign="TextAlign.Right" Width="30"></GridColumn>
-                        <GridColumn Field=@nameof(Department.Title) HeaderText="Titre de l'élément"
-                                    TextAlign="TextAlign.Right" Width="130"></GridColumn>
-                        <GridColumn HeaderText="Gestion des départements" Width="150">
-                            <GridCommandColumns>
-                                <GridCommandColumn ButtonOption="@(new CommandButtonOptions() { Content = "Détails", CssClass = "e-flat" })"></GridCommandColumn>
-                            </GridCommandColumns>
-                        </GridColumn>
-                    </GridColumns>
-                </EjsGrid>
-            </div>
-        </div>
+    <div class="container">
+        <p> Il y a eu un problème lors de la connection à la base de données. </p>
     </div>
 }
 
 @code {
     [Parameter]
     public bool IsEditable { get; set; } = false;
-    EjsGrid<Department> Grid;
+    private EjsGrid<Department> Grid;
     private List<Department> departments;
-    public Department SelectedDepartment = new Department();
+    private Department SelectedDepartment;
+    private Department NewDepartement;
 
     protected override void OnInitialized()
     {
         JSRuntime.InvokeAsync<string>("modelInitializing");
         departments = _context.Departments.ToList();
+        SelectedDepartment = departments.First();
     }
 
-    protected override void OnAfterRender(bool firstRender) 
+    protected override void OnAfterRender(bool firstRender)
     {
         JSRuntime.InvokeAsync<string>("modelLoaded");
     }
@@ -121,6 +155,18 @@ else
     void Save()
     {
         this.Grid.UpdateRow(1, SelectedDepartment);
+    }
+
+    // ajoute les données
+    void Add()
+    {
+        NewDepartement = new Department();
+    }
+
+    // canceller la demande de création de département
+    void CancelAdd()
+    {
+        NewDepartement = null;
     }
 
     public void RowSelectHandler(RowSelectEventArgs<Department> args)
