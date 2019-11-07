@@ -2,7 +2,9 @@
 // for details on configuring this project to bundle and minify static web assets.
 
 // Write your JavaScript code.
-    
+window.alertDatabaseError = () => {
+    alert("Erreur avec la database, durant la communication.");
+}
 
 // Toggle the side navigation
 $("#sidebarToggle, #sidebarToggleTop").on('click', function (e) {
@@ -16,7 +18,7 @@ $("#sidebarToggle, #sidebarToggleTop").on('click', function (e) {
 // Close any open menu accordions when window is resized below 768px
 $(window).resize(function () {
     if ($(window).width() < 768) {
-        $('.sidebar .collapse').collapse('hide');
+        //$('.sidebar .collapse').collapse('hide');
     };
 });
 
