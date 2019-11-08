@@ -7,7 +7,7 @@ namespace PlanC.WebApi.Models
     {
         public SkillElement()
         {
-            Tcrssklelem = new HashSet<Tcrssklelem>();
+            Tcrssklelem = new HashSet<Course_SkillElement>();
             Texamsklelem = new HashSet<Exam_SkillElement>();
         }
 
@@ -19,7 +19,7 @@ namespace PlanC.WebApi.Models
         //public DateTime? RcdCdttm { get; set; }
 
         public Skill Skl { get; set; }
-        public ICollection<Tcrssklelem> Tcrssklelem { get; set; }
+        public ICollection<Course_SkillElement> Tcrssklelem { get; set; }
         public ICollection<Exam_SkillElement> Texamsklelem { get; set; }
     }
 }

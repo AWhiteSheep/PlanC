@@ -8,9 +8,9 @@ namespace PlanC.WebApi.Models
     {
         public CourseTemplate()
         {
-            Tcrsreq = new HashSet<Tcrsreq>();
-            Tcrssklelem = new HashSet<Tcrssklelem>();
-            Tfnlexam = new HashSet<Tfnlexam>();
+            Tcrsreq = new HashSet<CourseRequirement>();
+            Tcrssklelem = new HashSet<Course_SkillElement>();
+            Tfnlexam = new HashSet<FinalCertificativeExam>();
         }
 
         public string Id { get; set; }
@@ -29,8 +29,8 @@ namespace PlanC.WebApi.Models
         //public DateTime? RcdCdttm { get; set; }
 
         public Tpgm Pgm { get; set; }
-        public ICollection<Tcrsreq> Tcrsreq { get; set; }
-        public ICollection<Tcrssklelem> Tcrssklelem { get; set; }
-        public ICollection<Tfnlexam> Tfnlexam { get; set; }
+        public ICollection<CourseRequirement> Tcrsreq { get; set; }
+        public ICollection<Course_SkillElement> Tcrssklelem { get; set; }
+        public ICollection<FinalCertificativeExam> Tfnlexam { get; set; }
     }
 }

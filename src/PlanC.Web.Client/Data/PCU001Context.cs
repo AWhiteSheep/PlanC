@@ -7,8 +7,6 @@ namespace PlanC.WebApi.Server.DataAccess
 {
     public partial class PCU001Context : DbContext
     {
-        private readonly string ConnectionString;
-
         public PCU001Context()
         {
         }
@@ -18,22 +16,22 @@ namespace PlanC.WebApi.Server.DataAccess
         {
         }
 
-        public virtual DbSet<Tcd> Tcd { get; set; }
-        public virtual DbSet<Tcdty> Tcdty { get; set; }
-        public virtual DbSet<Tcertexam> Tcertexam { get; set; }
-        public virtual DbSet<Tcrspln> Tcrspln { get; set; }
-        public virtual DbSet<Tcrsreq> Tcrsreq { get; set; }
-        public virtual DbSet<Tcrssklelem> Tcrssklelem { get; set; }
+        public virtual DbSet<Code> Tcd { get; set; }
+        public virtual DbSet<CodeType> Tcdty { get; set; }
+        public virtual DbSet<NonFinalCertificativeExam> Tcertexam { get; set; }
+        public virtual DbSet<CoursePlan> Tcrspln { get; set; }
+        public virtual DbSet<CourseRequirement> Tcrsreq { get; set; }
+        public virtual DbSet<Course_SkillElement> Tcrssklelem { get; set; }
         public virtual DbSet<CourseTemplate> Tcrstmplt { get; set; }
         public virtual DbSet<Department> Departments { get; set; }
-        public virtual DbSet<Exam> Exams { get; set; }
+        public virtual DbSet<ExamInfo> Exams { get; set; }
         public virtual DbSet<Exam_SkillElement> Exam_SkillElements { get; set; }
-        public virtual DbSet<Tfnlexam> Tfnlexam { get; set; }
+        public virtual DbSet<FinalCertificativeExam> Tfnlexam { get; set; }
         public virtual DbSet<Tpgm> Tpgm { get; set; }
         public virtual DbSet<Skill> Skills { get; set; }
         public virtual DbSet<SkillAchievementContext> SkillAchievementContexts { get; set; }
         public virtual DbSet<SkillElement> SkillElements { get; set; }
-        public virtual DbSet<Tsmstr> Tsmstr { get; set; }
+        public virtual DbSet<Semester> Tsmstr { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -45,7 +43,7 @@ namespace PlanC.WebApi.Server.DataAccess
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<Tcd>(entity =>
+            modelBuilder.Entity<Code>(entity =>
             {
                 entity.HasKey(e => new { e.CdTy, e.Cd });
 
@@ -69,7 +67,7 @@ namespace PlanC.WebApi.Server.DataAccess
                     .HasColumnName("RCD_CDTTM")
                     .HasColumnType("datetime");
 
-                entity.Property(e => e.TrkUid)
+                entity.Property(e => e.TrackingUserId)
                     .HasColumnName("TRK_UID")
                     .HasMaxLength(7)
                     .IsUnicode(false);
@@ -81,7 +79,7 @@ namespace PlanC.WebApi.Server.DataAccess
                     .HasConstraintName("FK_TCD_TCDTY");
             });
 
-            modelBuilder.Entity<Tcdty>(entity =>
+            modelBuilder.Entity<CodeType>(entity =>
             {
                 entity.HasKey(e => e.CdTy);
 
@@ -101,23 +99,23 @@ namespace PlanC.WebApi.Server.DataAccess
                     .HasColumnName("RCD_CDTTM")
                     .HasColumnType("datetime");
 
-                entity.Property(e => e.TrkUid)
+                entity.Property(e => e.TrackingUserId)
                     .HasColumnName("TRK_UID")
                     .HasMaxLength(7)
                     .IsUnicode(false);
             });
 
-            modelBuilder.Entity<Tcertexam>(entity =>
+            modelBuilder.Entity<NonFinalCertificativeExam>(entity =>
             {
-                entity.HasKey(e => new { e.CrsId, e.TchrUid, e.PlnVsnCdttm, e.SmstrId, e.ExamId });
+                entity.HasKey(e => new { e.CourseId, e.TeacherUserId, e.PlnVsnCdttm, e.SemesterId, e.ExamId });
 
                 entity.ToTable("TCERTEXAM");
 
-                entity.Property(e => e.CrsId)
+                entity.Property(e => e.CourseId)
                     .HasColumnName("CRS_ID")
                     .HasMaxLength(10);
 
-                entity.Property(e => e.TchrUid)
+                entity.Property(e => e.TeacherUserId)
                     .HasColumnName("TCHR_UID")
                     .HasMaxLength(7)
                     .IsUnicode(false);
@@ -126,21 +124,26 @@ namespace PlanC.WebApi.Server.DataAccess
                     .HasColumnName("PLN_VSN_CDTTM")
                     .HasColumnType("datetime");
 
-                entity.Property(e => e.SmstrId)
+                entity.Property(e => e.SemesterId)
                     .HasColumnName("SMSTR_ID")
                     .HasMaxLength(3)
                     .IsUnicode(false);
 
                 entity.Property(e => e.ExamId).HasColumnName("EXAM_ID");
 
+                entity.Property(e => e.TrackingUserId)
+                    .HasColumnName("TRK_UID")
+                    .HasMaxLength(7)
+                    .IsUnicode(false);
+
                 entity.HasOne(d => d.Exam)
-                    .WithMany(p => p.Tcertexam)
+                    .WithMany(p => p.NonFinalCertificativeExams)
                     .HasForeignKey(d => d.ExamId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_TCERTEXAM_TEXAM");
             });
 
-            modelBuilder.Entity<Tcrspln>(entity =>
+            modelBuilder.Entity<CoursePlan>(entity =>
             {
                 entity.HasKey(e => new { e.CrsId, e.TchrUid, e.PlnVsnCdttm, e.SmstrId });
 
@@ -164,14 +167,19 @@ namespace PlanC.WebApi.Server.DataAccess
                     .HasMaxLength(3)
                     .IsUnicode(false);
 
+                entity.Property(e => e.TrackingUserId)
+                    .HasColumnName("TRK_UID")
+                    .HasMaxLength(7)
+                    .IsUnicode(false);
+
                 entity.HasOne(d => d.Smstr)
-                    .WithMany(p => p.Tcrspln)
+                    .WithMany(p => p.CoursePlans)
                     .HasForeignKey(d => d.SmstrId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_TCRSPLN_TSMSTR");
             });
 
-            modelBuilder.Entity<Tcrsreq>(entity =>
+            modelBuilder.Entity<CourseRequirement>(entity =>
             {
                 entity.HasKey(e => new { e.CrsId, e.VsnCdttm, e.ReqCrsId });
 
@@ -210,13 +218,13 @@ namespace PlanC.WebApi.Server.DataAccess
                     .HasConstraintName("FK_TCRSREQ_TCRSTMPLT");
             });
 
-            modelBuilder.Entity<Tcrssklelem>(entity =>
+            modelBuilder.Entity<Course_SkillElement>(entity =>
             {
-                entity.HasKey(e => new { e.CrsId, e.VsnCdttm, e.SklId, e.SklelemSqnbr });
+                entity.HasKey(e => new { e.CourseId, e.VsnCdttm, e.SkillId, e.SkillElementSequenceNumber });
 
                 entity.ToTable("TCRSSKLELEM");
 
-                entity.Property(e => e.CrsId)
+                entity.Property(e => e.CourseId)
                     .HasColumnName("CRS_ID")
                     .HasMaxLength(10);
 
@@ -224,32 +232,32 @@ namespace PlanC.WebApi.Server.DataAccess
                     .HasColumnName("VSN_CDTTM")
                     .HasColumnType("datetime");
 
-                entity.Property(e => e.SklId)
+                entity.Property(e => e.SkillId)
                     .HasColumnName("SKL_ID")
                     .HasMaxLength(4)
                     .IsUnicode(false);
 
-                entity.Property(e => e.SklelemSqnbr).HasColumnName("SKLELEM_SQNBR");
+                entity.Property(e => e.SkillElementSequenceNumber).HasColumnName("SKLELEM_SQNBR");
 
-                entity.Property(e => e.PrtlSklInd)
+                entity.Property(e => e.IsPartial)
                     .HasColumnName("PRTL_SKL_IND")
                     .HasMaxLength(1)
                     .IsUnicode(false);
 
-                entity.Property(e => e.TxnmyCd)
+                entity.Property(e => e.TaxonomicLevel)
                     .HasColumnName("TXNMY_CD")
                     .HasMaxLength(2)
                     .IsUnicode(false);
 
-                entity.HasOne(d => d.Tcrstmplt)
+                entity.HasOne(d => d.CourseTemplate)
                     .WithMany(p => p.Tcrssklelem)
-                    .HasForeignKey(d => new { d.CrsId, d.VsnCdttm })
+                    .HasForeignKey(d => new { d.CourseId, d.VsnCdttm })
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_TTMPLTSKLELEM_TCRSTMPLT");
 
-                entity.HasOne(d => d.Skl)
+                entity.HasOne(d => d.SkillElement)
                     .WithMany(p => p.Tcrssklelem)
-                    .HasForeignKey(d => new { d.SklId, d.SklelemSqnbr })
+                    .HasForeignKey(d => new { d.SkillId, d.SkillElementSequenceNumber })
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_TTMPLTSKLELEM_TSKLELEM");
             });
@@ -312,7 +320,7 @@ namespace PlanC.WebApi.Server.DataAccess
                     .HasColumnType("decimal(3, 2)");
 
                 entity.HasOne(d => d.Pgm)
-                    .WithMany(p => p.Tcrstmplt)
+                    .WithMany(p => p.CourseTemplates)
                     .HasForeignKey(d => d.PgmId)
                     .HasConstraintName("FK_TCRSTMPLT_TPGM");
             });
@@ -325,7 +333,7 @@ namespace PlanC.WebApi.Server.DataAccess
 
                 entity.Property(e => e.Id)
                     .HasColumnName("DPTMNT_ID")
-                    .ValueGeneratedOnAdd();
+                    .UseIdentityColumn();
 
                 entity.Property(e => e.Title)
                     .HasColumnName("DPTMNT_TITLE")
@@ -346,7 +354,7 @@ namespace PlanC.WebApi.Server.DataAccess
                     .IsUnicode(false);
             });
 
-            modelBuilder.Entity<Exam>(entity =>
+            modelBuilder.Entity<ExamInfo>(entity =>
             {
                 entity.HasKey(e => e.ExamId);
 
@@ -361,50 +369,60 @@ namespace PlanC.WebApi.Server.DataAccess
                     .HasMaxLength(2)
                     .IsUnicode(false);
 
-                entity.Property(e => e.ExamWght)
+                entity.Property(e => e.Weight)
                     .HasColumnName("EXAM_WGHT")
                     .HasColumnType("decimal(5, 2)");
+
+                entity.Property(e => e.TrackingUserId)
+                    .HasColumnName("TRK_UID")
+                    .HasMaxLength(7)
+                    .IsUnicode(false);
             });
 
             modelBuilder.Entity<Exam_SkillElement>(entity =>
             {
-                entity.HasKey(e => new { e.ExamId, e.SklId, e.SklelemSqnbr });
+                entity.HasKey(e => new { e.ExamId, e.SkillId, e.SkillElelementSequenceNumber });
 
                 entity.ToTable("TEXAMSKLELEM");
 
                 entity.Property(e => e.ExamId).HasColumnName("EXAM_ID");
 
-                entity.Property(e => e.SklId)
+                entity.Property(e => e.SkillId)
                     .HasColumnName("SKL_ID")
                     .HasMaxLength(4)
                     .IsUnicode(false);
 
-                entity.Property(e => e.SklelemSqnbr).HasColumnName("SKLELEM_SQNBR");
+                entity.Property(e => e.SkillElelementSequenceNumber).HasColumnName("SKLELEM_SQNBR");
 
-                entity.Property(e => e.SklelemWght)
+                entity.Property(e => e.SkillElementWeight)
                     .HasColumnName("SKLELEM_WGHT")
                     .HasColumnType("decimal(5, 2)");
 
+                entity.Property(e => e.TrackingUserId)
+                    .HasColumnName("TRK_UID")
+                    .HasMaxLength(7)
+                    .IsUnicode(false);
+
                 entity.HasOne(d => d.Exam)
-                    .WithMany(p => p.Texamsklelem)
+                    .WithMany(p => p.Exam_SkillElements)
                     .HasForeignKey(d => d.ExamId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_TEXAMSKLELEM_TEXAM");
 
-                entity.HasOne(d => d.Skl)
+                entity.HasOne(d => d.SkillElement)
                     .WithMany(p => p.Texamsklelem)
-                    .HasForeignKey(d => new { d.SklId, d.SklelemSqnbr })
+                    .HasForeignKey(d => new { d.SkillId, d.SkillElelementSequenceNumber })
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_TEXAMSKLELEM_TSKLELEM");
             });
 
-            modelBuilder.Entity<Tfnlexam>(entity =>
+            modelBuilder.Entity<FinalCertificativeExam>(entity =>
             {
-                entity.HasKey(e => new { e.CrsId, e.VsnCdttm, e.ExamId });
+                entity.HasKey(e => new { e.CourseId, e.VsnCdttm, e.ExamId });
 
                 entity.ToTable("TFNLEXAM");
 
-                entity.Property(e => e.CrsId)
+                entity.Property(e => e.CourseId)
                     .HasColumnName("CRS_ID")
                     .HasMaxLength(10);
 
@@ -414,15 +432,20 @@ namespace PlanC.WebApi.Server.DataAccess
 
                 entity.Property(e => e.ExamId).HasColumnName("EXAM_ID");
 
+                entity.Property(e => e.TrackingUserId)
+                    .HasColumnName("TRK_UID")
+                    .HasMaxLength(7)
+                    .IsUnicode(false);
+
                 entity.HasOne(d => d.Exam)
-                    .WithMany(p => p.Tfnlexam)
+                    .WithMany(p => p.FinalCertificativeExam)
                     .HasForeignKey(d => d.ExamId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_TFNLEXAM_TEXAM");
 
                 entity.HasOne(d => d.Tcrstmplt)
                     .WithMany(p => p.Tfnlexam)
-                    .HasForeignKey(d => new { d.CrsId, d.VsnCdttm })
+                    .HasForeignKey(d => new { d.CourseId, d.VsnCdttm })
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_TFNLEXAM_TCRSTMPLT");
             });
@@ -439,7 +462,7 @@ namespace PlanC.WebApi.Server.DataAccess
                     .IsUnicode(false)
                     .ValueGeneratedNever();
 
-                entity.Property(e => e.DptmntId).HasColumnName("DPTMNT_ID");
+                entity.Property(e => e.DepartmentId).HasColumnName("DPTMNT_ID");
 
                 entity.Property(e => e.PgmDesc)
                     .HasColumnName("PGM_DESC")
@@ -449,13 +472,18 @@ namespace PlanC.WebApi.Server.DataAccess
                     .HasColumnName("PGM_TITLE")
                     .HasMaxLength(10);
 
-                entity.Property(e => e.PgmTyCd)
+                entity.Property(e => e.Category)
                     .HasColumnName("PGM_TY_CD")
                     .HasMaxLength(10);
 
-                entity.HasOne(d => d.Dptmnt)
+                entity.Property(e => e.TrackingUserId)
+                    .HasColumnName("TRK_UID")
+                    .HasMaxLength(7)
+                    .IsUnicode(false);
+
+                entity.HasOne(d => d.Department)
                     .WithMany(p => p.Tpgm)
-                    .HasForeignKey(d => d.DptmntId)
+                    .HasForeignKey(d => d.DepartmentId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_TPGM_TDPTMNT");
             });
@@ -497,8 +525,8 @@ namespace PlanC.WebApi.Server.DataAccess
                     .HasMaxLength(7)
                     .IsUnicode(false);
 
-                entity.HasOne(d => d.Pgm)
-                    .WithMany(p => p.Tskl)
+                entity.HasOne(d => d.StudyProgram)
+                    .WithMany(p => p.Skills)
                     .HasForeignKey(d => d.StudyProgramId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_TSKL_TPGM");
@@ -576,29 +604,34 @@ namespace PlanC.WebApi.Server.DataAccess
                     .HasConstraintName("FK_TSKLELEM_TSKL");
             });
 
-            modelBuilder.Entity<Tsmstr>(entity =>
+            modelBuilder.Entity<Semester>(entity =>
             {
-                entity.HasKey(e => e.SmstrId);
+                entity.HasKey(e => e.Id);
 
                 entity.ToTable("TSMSTR");
 
-                entity.Property(e => e.SmstrId)
+                entity.Property(e => e.Id)
                     .HasColumnName("SMSTR_ID")
                     .HasMaxLength(3)
                     .IsUnicode(false)
                     .ValueGeneratedNever();
 
-                entity.Property(e => e.SmstrDesc)
+                entity.Property(e => e.Description)
                     .HasColumnName("SMSTR_DESC")
                     .HasMaxLength(50);
 
-                entity.Property(e => e.SmstrNdt)
+                entity.Property(e => e.EndDate)
                     .HasColumnName("SMSTR_NDT")
                     .HasColumnType("date");
 
-                entity.Property(e => e.SmstrSdt)
+                entity.Property(e => e.StartDate)
                     .HasColumnName("SMSTR_SDT")
                     .HasColumnType("date");
+
+                entity.Property(e => e.TrackingUserId)
+                    .HasColumnName("TRK_UID")
+                    .HasMaxLength(7)
+                    .IsUnicode(false);
             });
         }
     }

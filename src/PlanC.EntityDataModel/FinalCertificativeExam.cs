@@ -3,13 +3,14 @@ using System.Collections.Generic;
 
 namespace PlanC.WebApi.Models
 {
-    public partial class Tfnlexam
+    public partial class FinalCertificativeExam
     {
-        public string CrsId { get; set; }
+        public string CourseId { get; set; }
         public DateTime VsnCdttm { get; set; }
         public int ExamId { get; set; }
+        public string TrackingUserId { get; set; }
 
-        public Exam Exam { get; set; }
+        public ExamInfo Exam { get; set; }
         public CourseTemplate Tcrstmplt { get; set; }
     }
 }

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace PlanC.WebApi.Models
 {
-    public partial class Tcrsreq
+    public partial class CourseRequirement
     {
         public string CrsId { get; set; }
         public DateTime VsnCdttm { get; set; }

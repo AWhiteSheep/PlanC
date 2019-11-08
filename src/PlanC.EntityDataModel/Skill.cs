@@ -19,7 +19,7 @@ namespace PlanC.WebApi.Models
         public string TrackingUserId { get; set; }
         //public DateTime? RcdCdttm { get; set; }
 
-        public Tpgm Pgm { get; set; }
+        public Tpgm StudyProgram { get; set; }
         public ICollection<SkillAchievementContext> Tsklcntxt { get; set; }
         public ICollection<SkillElement> Tsklelem { get; set; }
     }
