@@ -6,6 +6,11 @@ window.alertDatabaseError = () => {
     alert("Erreur avec la database, durant la communication.");
 }
 
+// toggle the given element
+window.toggle = (element) => {
+    $(element).toggle();
+}
+
 // Toggle the side navigation
 $("#sidebarToggle, #sidebarToggleTop").on('click', function (e) {
     $("body").toggleClass("sidebar-toggled");

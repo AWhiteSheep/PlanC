@@ -325,7 +325,7 @@ namespace PlanC.WebApi.Server.DataAccess
 
                 entity.Property(e => e.Id)
                     .HasColumnName("DPTMNT_ID")
-                    .ValueGeneratedNever();
+                    .ValueGeneratedOnAdd();
 
                 entity.Property(e => e.Title)
                     .HasColumnName("DPTMNT_TITLE")

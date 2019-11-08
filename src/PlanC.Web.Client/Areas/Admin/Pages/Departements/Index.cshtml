@@ -35,10 +35,14 @@
     </div>
 </div>
 
-<!-- Table de département et fonctionnalité -->
-@(await Html.RenderComponentAsync<PlanC.Web.Client.Components.TDepartements>(RenderMode.Server))
+<!-- Container pour blazor component -->
+<div class="row justify-content-center">
+    <!-- Table de département et fonctionnalité -->
+    @(await Html.RenderComponentAsync<PlanC.Web.Client.Components.TDepartements>(RenderMode.Server))
+</div>
 
 @section Styles {
+    <link href="https://cdn.syncfusion.com/ej2/17.3.26/ej2-buttons/styles/material.css" rel="stylesheet" />
     <script>
         window.modelInitializing = () => {
             $("#loaderDepart").show();

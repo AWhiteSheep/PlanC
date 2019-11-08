@@ -1,6 +1,7 @@
 ﻿@using Syncfusion.EJ2.Blazor.Spinner
 @using PlanC.WebApi.Server.DataAccess
 @using PlanC.WebApi.Models
+@using PlanC.Web.Client.Data
 @using Syncfusion.EJ2.Blazor
 @using Syncfusion.EJ2.Blazor.Grids
 @using Syncfusion.EJ2.Blazor.Buttons
@@ -11,36 +12,79 @@
 
 @if (departments != null)
 {
-    @if (NewDepartement == null)
-    {
-        <div class="card shadow h-100 py-2">
+    <div class="col-12">
+        <div class="card shadow">
+            <div class="card-header">
+                <div class="d-flex">
+                    <button class="btn btn-primary" @onclick="Add"> Ajouter un département </button>
+                    <div class="custom-checkbox pl-5 pt-2 disable-select">
+                        <input @bind="BulkCheckDepart" type="checkbox" class="custom-control-input" id="bulkCheckDepart" />
+                        <label class="custom-control-label" for="bulkCheckDepart"> Ajouter plus d'un département </label>
+                    </div>
+                </div>
+            </div>
             <div class="row card-body">
                 <div class="col-md-6">
-                    <EditForm Model="SelectedDepartment">
-                        <div class="form-row">
-                            <div class="form-group col-md-12">
-                                <label for="idedit"> Id </label>
-                                <input class="form-control" @bind="@(SelectedDepartment.Id)" disabled />
-                            </div>
+                    <div class="col-12 card shadow">
+                        <div class="row card-body">
+                            @if (NewDepartement != null)
+                            {
+                                <EditForm Model="NewDepartement" OnSubmit="SubmitNew" class="col-12">
+                                    <DataAnnotationsValidator />
+                                    <ValidationSummary />
+                                    <div class="form-row">
+                                        <div class="form-group col-12">
+                                            <label for="titleedit"> Nom du département </label>
+                                            <OnStringInput @bind-Value="@(NewDepartement.Title)" class="form-control" placeholder="Titre du département"></OnStringInput>
+                                            <ValidationMessage For="@(() => NewDepartement.Title)" />
+                                        </div>
+                                    </div>
+                                    <div class="form-row">
+                                        <div class="form-group col-12">
+                                            <label for="policyedit"> Politique du département </label>
+                                            <textarea @bind="@NewDepartement.Policy" class="form-control" placeholder="Politique de département" rows="4"></textarea>
+                                            <ValidationMessage For="@(() => NewDepartement.Policy)" />
+                                        </div>
+                                    </div>
+                                    <div class="col-12 text-right p-3">
+                                        <button type="submit" class="btn btn-primary"> Ajouter </button>
+                                        <a class="btn btn-primary text-white" @onclick="CancelAdd"> Annuler </a>
+                                    </div>
+                                </EditForm>
+                            }
+                            else
+                            {
+                                <EditForm @ref="EditFormSelectedDepartment" Model="SelectedDepartment" class="col-12">
+                                    <div class="form-row">
+                                        <div class="form-group col-12">
+                                            <label for="titleedit"> Nom du département </label>
+                                            <InputText disabled="@IsDisabledSelectedDepartment" name="title" class="form-control" @bind-Value="@(SelectedDepartment.Title)"></InputText>
+                                        </div>
+                                    </div>
+                                    <div class="form-row">
+                                        <div class="form-group col-12">
+                                            <label for="policyedit"> Politique du département </label>
+                                            <InputTextArea disabled="@IsDisabledSelectedDepartment" name="policy" class="form-control" rows="4" @bind-Value="@SelectedDepartment.Policy"></InputTextArea>
+                                        </div>
+                                    </div>
+                                </EditForm>                                
+                                <div class="col-12 text-right p-3">
+                                    @if (IsDisabledSelectedDepartment)
+                                    {
+                                        <button class="btn btn-info" @onclick="Modifier"> Modifier </button>
+                                    }
+                                    else
+                                    {
+                                        <button class="btn btn-success" @onclick="Save"> Sauvegarder </button>
+                                    }
+                                </div>
+                            }
                         </div>
-                        <div class="form-row">
-                            <div class="form-group col-md-12">
-                                <label for="titleedit"> Nom du département </label>
-                                <InputText class="form-control" @bind-Value="@(SelectedDepartment.Title)"></InputText>
-                            </div>
-                        </div>
-                        <div class="form-row">
-                            <div class="form-group col-md-12">
-                                <label for="policyedit"> Politique du département </label>
-                                <InputTextArea class="form-control" rows="4" @bind-Value="@SelectedDepartment.Policy"></InputTextArea>
-                            </div>
-                        </div>
-                    </EditForm>
-                    <button class="btn btn-outline-info" @onclick="Save"> Sauvegarder </button>
+                    </div>
                 </div>
                 <div class="col-md-6">
                     <!-- Module table des départements -->
-                    <EjsGrid @ref="Grid" ModelType="departments.First()" DataSource="departments" EnablePersistence="true"
+                    <EjsGrid @ref="Grid" ModelType="departments.First()" DataSource="departments"
                              TValue="Department" AllowPaging="true" Locale="fr-FR" Height=315>
 
                         <!-- Les événements se passant sur la table et les paramètre -->
@@ -75,7 +119,7 @@
                         </GridTemplates>
                         <!-- Affiche en colone les différentes propriétés du département -->
                         <GridColumns>
-                            <GridColumn Field=@nameof(Department.Id) HeaderText="Id"
+                            <GridColumn Field=@nameof(Department.Id) IsPrimaryKey="true" IsIdentity="true" HeaderText="Id"
                                         TextAlign="TextAlign.Right" Width="30"></GridColumn>
                             <GridColumn Field=@nameof(Department.Title) HeaderText="Titre de l'élément"
                                         TextAlign="TextAlign.Right" Width="130"></GridColumn>
@@ -86,42 +130,10 @@
                             </GridColumn>
                         </GridColumns>
                     </EjsGrid>
-                    <div class="col-12 text-center p-3">
-                        <button class="btn btn-primary" @onclick="Add"> Nouveau </button>
-                    </div>
                 </div>
             </div>
         </div>
-    }
-    else
-    {
-    <div class="col-md-6 card shadow h-100 py-2">
-        <div class="row card-body">
-            <EditForm @ref="FormNewDepartement" Model="NewDepartement" OnSubmit="SubmitNew" class="col-12">
-                <DataAnnotationsValidator />
-                <ValidationSummary />
-                <div class="form-row">
-                    <div class="form-group col-md-12">
-                        <label for="titleedit"> Nom du département </label>
-                        <OnStringInput @bind-Value="@(NewDepartement.Title)" class="form-control" placeholder="Titre du département"></OnStringInput>
-                        <ValidationMessage For="@(() => NewDepartement.Title)" />
-                    </div>
-                </div>
-                <div class="form-row">
-                    <div class="form-group col-md-12">
-                        <label for="policyedit"> Politique du département </label>
-                        <textarea @bind="@NewDepartement.Policy" class="form-control" placeholder="Politique de département" rows="4"></textarea>
-                        <ValidationMessage For="@(() => NewDepartement.Policy)" />
-                    </div>
-                </div>
-                <div class="col-12 text-right p-3">
-                    <button type="submit" class="btn btn-primary"> Ajouter </button>
-                    <a class="btn btn-primary text-white" @onclick="CancelAdd"> Annuler </a>
-                </div>
-            </EditForm>
-        </div>
     </div>
-    }
 }
 else
 {
@@ -139,17 +151,29 @@ else
 
 @code {
     [Parameter]
+    // paramètre du grid
     public bool IsEditable { get; set; } = false;
     private EjsGrid<Department> Grid;
+    private EditForm EditFormSelectedDepartment;
+    private PCU001DataAccessLayer DataAccess;
+
+    // liste de départements pour accéder à la database
     private List<Department> departments;
+
+    // pour modifier le département sélectionné
     private Department SelectedDepartment;
-    private Department NewDepartement;
+    private bool IsDisabledSelectedDepartment = true;
+
+    // pour construire un nouveau département
+    private Department NewDepartement { get; set; } = null;
     private EditForm FormNewDepartement;
+    private bool BulkCheckDepart { get; set; } = false;
 
     protected override void OnInitialized()
     {
         JSRuntime.InvokeAsync<string>("modelInitializing");
-        departments = _context.Departments.ToList();
+        DataAccess = new PCU001DataAccessLayer(_context);
+        departments = DataAccess.GetAllDepartment().ToList();
         SelectedDepartment = departments.First();
     }
 
@@ -165,15 +189,33 @@ else
     }
 
     // sauvegarde les données
-    void Save()
+    async void Save()
     {
-        this.Grid.UpdateRow(1, SelectedDepartment);
+        try
+        {
+            departments.RemoveAll(e => e.Id == SelectedDepartment.Id);
+            departments.Add(SelectedDepartment);
+            IsDisabledSelectedDepartment = !IsDisabledSelectedDepartment;
+            DataAccess.UpdateDepartment(SelectedDepartment);
+            StateHasChanged();
+        }
+        catch (Exception e)
+        {
+            await JSRuntime.InvokeAsync<string>("alertDatabaseError");
+        }
+    }
+
+    void Modifier()
+    {
+        IsDisabledSelectedDepartment = !IsDisabledSelectedDepartment;
+        StateHasChanged();
     }
 
     // ajoute les données
     void Add()
     {
         NewDepartement = new Department();
+        StateHasChanged();
     }
 
     // ajoute les données
@@ -181,13 +223,23 @@ else
     {
         // ajoute les données dans la database
         try
-        {
-            await _context.Departments.AddAsync(NewDepartement);
-            await _context.SaveChangesAsync();
-            departments = _context.Departments.ToList();
+        {            
+            NewDepartement.TrackingUserId = "00000";
+            DataAccess.AddDepartment(NewDepartement);
+
+            // reset le formulaire
             NewDepartement = null;
+
+            // si le check est true redébuter le formulaire
+            if (BulkCheckDepart)
+            {
+                NewDepartement = new Department();
+            }
+
+            // update le ui
+            StateHasChanged();
         }
-        catch
+        catch (Exception e)
         {
             await JSRuntime.InvokeAsync<string>("alertDatabaseError");
         }
@@ -197,6 +249,7 @@ else
     void CancelAdd()
     {
         NewDepartement = null;
+        StateHasChanged();
     }
 
     public void RowSelectHandler(RowSelectEventArgs<Department> args)
