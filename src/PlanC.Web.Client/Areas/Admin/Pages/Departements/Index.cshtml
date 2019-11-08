@@ -35,10 +35,14 @@
     </div>
 </div>
 
+
 <!-- Container pour blazor component -->
 <div class="row justify-content-center">
+    <!-- Render la liste en simple information -->
+    @(await Html.RenderComponentAsync<PlanC.Web.Client.Areas.Admin.Pages.Departements.Liste>(RenderMode.Server))
+
     <!-- Table de département et fonctionnalité -->
-    @(await Html.RenderComponentAsync<PlanC.Web.Client.Components.TDepartements>(RenderMode.Server))
+    @*(await Html.RenderComponentAsync<PlanC.Web.Client.Components.TDepartements>(RenderMode.Server))*@
 </div>
 
 @section Styles {
