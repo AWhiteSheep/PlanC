@@ -21,7 +21,13 @@ namespace PlanC.WebApi.Models
         [Required]
         public decimal? Units { get; set; }
         public string Description { get; set; }
-        public string Intent { get; set; }
+        public string EducationalIntent { get; set; }
+
+        public int TheoryHours { get; set; }
+        public int PracticeHours { get; set; }
+        public int HomeHours { get; set; }
+
+        public string PedagogicalIntent { get; set; }
         public DateTime? DepartmentApprovalDate { get; set; }
         public DateTime? CommitteeApprovalDate { get; set; }
         public DateTime? BoardApprovalDate { get; set; }

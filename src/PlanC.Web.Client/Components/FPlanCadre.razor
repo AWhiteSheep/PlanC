@@ -49,14 +49,14 @@
         <!-- les intentions du cours -->
         <div class="form-group">
             <label class="control-label" for="CrsIntent">Intention du cours: </label>
-            <InputTextArea @bind-Value="CTemplate.Intent" rows="4" class="form-control" id="CrsIntent" placeholder="Intention éducative..." name="CrsIntent" />
-            <ValidationMessage For="@(() => CTemplate.Intent)" />
+            <InputTextArea @bind-Value="CTemplate.EducationalIntent" rows="4" class="form-control" id="CrsIntent" placeholder="Intention éducative..." name="CrsIntent" />
+            <ValidationMessage For="@(() => CTemplate.EducationalIntent)" />
         </div>
         <!-- Entrés pour les intentions pédagogiques du cours -->
         <div class="form-group">
             <label class="control-label" for="IntentionPedagogique">Intention du pédagogique (propriété non trouvé): </label>
-            <InputTextArea rows="4" @bind-Value="CTemplate.Intent" class="form-control" id="IntentionPedagogique" placeholder="Ingore It" name="IntentionPedagogique" />
-            <ValidationMessage For="@(() => CTemplate.Intent)" />
+            <InputTextArea rows="4" @bind-Value="CTemplate.PedagogicalIntent" class="form-control" id="IntentionPedagogique" placeholder="Ingore It" name="IntentionPedagogique" />
+            <ValidationMessage For="@(() => CTemplate.PedagogicalIntent)" />
         </div>
         <!-- Descriptions du cours -->
         <div class="form-group">
