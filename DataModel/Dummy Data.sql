@@ -38,7 +38,7 @@ INSERT INTO TPGM
 	DPTMNT_ID,
 	PGM_TITLE,
 	PGM_DESC,
-	PGM_TY_CD,
+	PGM_TY_CD, --Type de programme
 	TRK_UID
 )
 VALUES
@@ -399,5 +399,34 @@ VALUES
 	0,
 	0,
 	'Reconnaissance du sens général et des idées essentielles du message.',
+	'11111'
+)
+
+INSERT INTO TCRSTMPLT
+(
+	CRS_ID,
+	VSN_CDTTM, --Numero de version
+	PGM_ID,
+	CRS_TITLE,
+	UNITS,
+	CRS_DESC,
+	CRS_INTENT,
+	DPTMNT_APPRV_DT,
+	CMTE_APPRV_DT,
+	BOARD_APPRV_DT,
+	TRK_UID
+)
+VALUES
+(
+	'420-1G1-HU',
+	GETDATE(),
+	'420.B0',
+	'Ordinateur et réseaux de PME',
+	3.33,
+	'Ce cours permet à l’étudiante ou l’étudiant d’apprendre le fonctionnement d’une station de travail du point de vue matériel et logiciel. Il apprend aussi les règles de base de la sécurité, l’utilisation de la virtualisation ainsi que l’interconnexion des équipements.',
+	'L’étudiant sait installer efficacement un ordinateur, tant du point de vue matériel que logiciel, en fonction de la demande d’un client et en suivant la procédure établie par l’entreprise.  Il se réfère à la documentation pertinente et recherche les dernières versions des pilotes. Il peut relier l’ordinateur au réseau de l’entreprise.  Il peut installer et configurer plusieurs systèmes d’exploitation et les applications pour plusieurs utilisateurs, pour l’archivage et la sauvegarde des données.  Il gère toutes ses interventions à l’aide des applications appropriées.',
+	'2019-02-01',
+	'2019-03-30',
+	'2019-04-05',
 	'11111'
 )
