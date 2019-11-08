@@ -7,7 +7,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PlanC.Web.Client", "PlanC.W
 EndProject
 Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "PCU001", "PlanC.Data\PCU001.sqlproj", "{5C4BFD62-AABD-4016-97DD-734A62C3BB34}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PlanC.EntityDataModel", "PlanC.EntityDataModel\PlanC.EntityDataModel.csproj", "{6975245D-0105-44FC-A7C1-A7E6B70A3815}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PlanC.EntityDataModel", "PlanC.EntityDataModel\PlanC.EntityDataModel.csproj", "{6975245D-0105-44FC-A7C1-A7E6B70A3815}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PlanC.DocumentGeneration", "PlanC.DocumentGeneration\PlanC.DocumentGeneration.csproj", "{13F680D5-D6EF-43D4-8701-68A83BCFED05}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -29,6 +31,10 @@ Global
 		{6975245D-0105-44FC-A7C1-A7E6B70A3815}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6975245D-0105-44FC-A7C1-A7E6B70A3815}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6975245D-0105-44FC-A7C1-A7E6B70A3815}.Release|Any CPU.Build.0 = Release|Any CPU
+		{13F680D5-D6EF-43D4-8701-68A83BCFED05}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{13F680D5-D6EF-43D4-8701-68A83BCFED05}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{13F680D5-D6EF-43D4-8701-68A83BCFED05}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{13F680D5-D6EF-43D4-8701-68A83BCFED05}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
