@@ -1,0 +1,13 @@
+﻿@page "/programme/{id}"
+
+@*context de la base de donné *@
+@inject PCU001Context _context
+@using PlanC.Web.Client.Data
+
+@code {
+    [Parameter]
+    public string id { get; set; } // id du programme à trouver
+    protected override void OnInitialized()
+    {
+    }
+}

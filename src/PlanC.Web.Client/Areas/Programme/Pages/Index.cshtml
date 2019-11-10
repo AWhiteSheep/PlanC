@@ -1,5 +1,7 @@
 ﻿@page
-@model PlanC.Web.Client.Areas.Programme.Pages.IndexModel
+@namespace PlanC.Web.Client.Areas.Programme.Pages
+
+@model IndexModel
 @{
     // page listant tous les programmes possibles selon les droits
     // une personne connecté pourra modifier la liste et les items
@@ -39,8 +41,8 @@
 
 <!-- Container pour blazor component -->
 <div class="row justify-content-center">
-    <!-- Table de département et fonctionnalité -->
-    @(await Html.RenderComponentAsync<PlanC.Web.Client.Areas.Programme.Pages.Liste>(RenderMode.Server))
+    <!-- Render le componenet app qui fait en sorte que la directive .page fonctionne -->
+    @(await Html.RenderComponentAsync<App>(RenderMode.ServerPrerendered))
 </div>
 
 @section Styles {
