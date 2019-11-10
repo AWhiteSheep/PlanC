@@ -26,4 +26,8 @@
     <ProjectReference Include="..\PlanC.EntityDataModel\PlanC.EntityDataModel.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Areas\Personnel\Pages\Documents\" />
+  </ItemGroup>
+
 </Project>
