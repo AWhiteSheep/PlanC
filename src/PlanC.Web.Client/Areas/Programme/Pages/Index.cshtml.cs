@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
-namespace PlanC.Web.Client.Areas.Admin.Pages.Programmes
+namespace PlanC.Web.Client.Areas.Programme.Pages
 {
     public class IndexModel : PageModel
     {

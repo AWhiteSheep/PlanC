@@ -11,110 +11,112 @@
     bool IsAdmin = pageArea == "admin";
     bool IsCompetence = pageName.StartsWith("/competences") ;
     bool IsPersonnel = pageArea == "personnel";
+    bool IsDepartemnt = pageArea == "departement";
+    bool IsProgramme = pageArea == "programme";
 }
 
 <!-- Sidebar -->
-<ul class="navbar-nav sidebar sidebar-dark accordion" id="accordionSidebar">
+    <ul class="navbar-nav sidebar sidebar-dark accordion" id="accordionSidebar">
 
-    <!-- Sidebar - Brand -->
-    <a class="sidebar-brand d-flex align-items-center justify-content-center" href="index">
-        <div class="sidebar-brand-icon rotate-n-15">
-            <i class="far fa-address-card"></i>
-        </div>
-        <div class="sidebar-brand-text mx-3"> Profil </div>
-    </a>
-
-    <!-- Divider -->
-    <hr class="sidebar-divider my-0">
-
-    <!-- Nav Item - Dashboard -->
-    <li class="nav-item">
-        <a class="nav-link" href="~/">
-            <i class="fas fa-archway"></i>
-            <span> Portail </span>
-        </a>
-    </li>
-
-    <!-- Divider -->
-    <hr class="sidebar-divider">
-
-    <!-- Heading -->
-    <a class="sidebar-heading" href="~/Admin"> Administration </a>
-
-    <!-- Nav Item - Pages Collapse Menu -->
-    <li class="nav-item">
-        <a class="nav-link @(IsAdmin && !IsAreaIndex ? "" : "collapsed")" href="~/Admin/Programmes" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="true" aria-controls="collapseTwo">
-            <i class="fas fa-graduation-cap"></i>
-            <span> Programmes d'études </span>
-        </a>
-        <div id="collapseTwo" class="collapse @(IsAdmin && !IsAreaIndex ? "show" : "")" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
-            <div class="bg-white py-2 collapse-inner rounded">
-                <h6 class="collapse-header"> Sélections </h6>
-                <a class="collapse-item @(IsAdmin && pageName.StartsWith("/departements")? "te-active" : "")" href="~/Admin/Departements"> Les départements </a>
-                <a class="collapse-item @(IsAdmin && pageName.StartsWith("/programmes")? "te-active" : "")" href="~/Admin/Programmes"> Les programmes d'études </a>
-                <a class="collapse-item" href="~/Admin"> Tout visionner </a>
+        <!-- Sidebar - Brand -->
+        <a class="sidebar-brand d-flex align-items-center justify-content-center" href="index">
+            <div class="sidebar-brand-icon rotate-n-15">
+                <i class="far fa-address-card"></i>
             </div>
-        </div>
-    </li>
-
-    <!-- Nav Item - Utilities Collapse Menu -->
-    <li class="nav-item">
-        <a class="nav-link @(IsCompetence ? "":"collapsed")" href="#" data-toggle="collapse" data-target="#collapseUtilities" aria-expanded="true" aria-controls="collapseUtilities">
-            <!-- section pour tout les ajouts utilitaire -->
-            <i class="fas fa-coffee"></i>
-            <span> Modules </span>
+            <div class="sidebar-brand-text mx-3"> Profil </div>
         </a>
-        <div id="collapseUtilities" class="collapse @(IsCompetence ? "show":"")" aria-labelledby="headingUtilities" data-parent="#accordionSidebar">
-            <div class="bg-white py-2 collapse-inner rounded">
-                <!-- Module de compétences -->
-                <h6 class="collapse-header"> Compétences </h6>
-                <a class="collapse-item @(IsCompetence && pageName == "/competences/index" || pageName == "/competences" ? "te-active":"")"  href="~/Personnel/Competences"> Les compétences </a>
-                <a class="collapse-item @(pageName == "/competences/nouvelle" ? "te-active":"")" href="~/Personnel/Competences/Nouvelle"> Ajouts de compétences </a>
+
+        <!-- Divider -->
+        <hr class="sidebar-divider my-0">
+
+        <!-- Nav Item - Dashboard -->
+        <li class="nav-item">
+            <a class="nav-link" href="~/">
+                <i class="fas fa-archway"></i>
+                <span> Portail </span>
+            </a>
+        </li>
+
+        <!-- Divider -->
+        <hr class="sidebar-divider">
+
+        <!-- Heading -->
+        <a class="sidebar-heading" href="~/Admin"> Administration </a>
+
+        <!-- Nav Item - Utilities Collapse Menu -->
+        <li class="nav-item">
+            <a class="nav-link @(IsCompetence ? "":"collapsed")" href="#" data-toggle="collapse" data-target="#collapseUtilities" aria-expanded="true" aria-controls="collapseUtilities">
+                <!-- section pour tout les ajouts utilitaire -->
+                <i class="fas fa-coffee"></i>
+                <span> Modules </span>
+            </a>
+            <div id="collapseUtilities" class="collapse @(IsCompetence ? "show":"")" aria-labelledby="headingUtilities" data-parent="#accordionSidebar">
+                <div class="bg-white py-2 collapse-inner rounded">
+                    <!-- Module de compétences -->
+                    <h6 class="collapse-header"> Compétences </h6>
+                    <a class="collapse-item @(IsCompetence && pageName == "/competences/index" || pageName == "/competences" ? "te-active":"")" href="~/Personnel/Competences"> Les compétences </a>
+                    <a class="collapse-item @(pageName == "/competences/nouvelle" ? "te-active":"")" href="~/Personnel/Competences/Nouvelle"> Ajouts de compétences </a>
+                </div>
             </div>
-        </div>
-    </li>
+        </li>
 
-    <!-- Divider -->
-    <hr class="sidebar-divider">
+        <!-- Nav Item - Section départements -->
+        <li class="nav-item">
+            <a class="nav-link" href="~/Departement/Index">
+                <i class="far fa-file-alt"></i>
+                <span> Les départements </span>
+            </a>
+        </li>
 
-    <!-- Heading -->
-    <a class="sidebar-heading" href="~/Personnel"> Personnel enseignant </a>
+        <!-- Nav Item - Section départements -->
+        <li class="nav-item">
+            <a class="nav-link" href="~/Programme/Index">
+                <i class="far fa-file-alt"></i>
+                <span> Les programmes d'étude </span>
+            </a>
+        </li>
 
-    <!-- Nav Item - Pages Collapse Menu -->
-    <li class="nav-item">
-        <a class="nav-link @(IsPersonnel && !IsCompetence && !IsAreaIndex ? "":"collapsed")" href="~/Personnel/Documents" data-toggle="collapse" data-target="#collapsePages" aria-expanded="true" aria-controls="collapsePages">
-            <i class="fab fa-elementor"></i>
-            <span> Document </span>
-        </a>
-        <div id="collapsePages" class="collapse @(IsPersonnel && !IsCompetence && !IsAreaIndex ? "show":"")" aria-labelledby="headingPages" data-parent="#accordionSidebar">
-            <div class="bg-white py-2 collapse-inner rounded">
-                <!-- les plans- cadres -->
-                <h6 class="collapse-header"> Les plans-cadres </h6>
-                <a class="collapse-item @(IsPersonnel && (pageName == "/planscadres" || pageName == "/planscadres/index") ? "te-active":"")" href="~/Personnel/PlansCadres"> Liste des plans-cadres </a>
-                <a class="collapse-item @(IsPersonnel && pageName.StartsWith("/planscadres/nouveau") ? "te-active":"")" href="~/Personnel/PlansCadres/Nouveau"> Ajout de plans-cadres </a>
-                <!-- les plans de cours -->
-                <h6 class="collapse-header"> Les plans de cours </h6>
-                <a class="collapse-item @(IsPersonnel && (pageName == "/planscours" || pageName == "/planscours/index") ? "te-active":"")" href="~/Personnel/PlansCours"> Liste des plans de cours </a>
-                <a class="collapse-item @(IsPersonnel && pageName.StartsWith("/planscours/nouveau") ? "te-active":"")" href="~/Personnel/PlansCours/Nouveau"> Ajout de plans de cours </a>
+        <!-- Divider -->
+        <hr class="sidebar-divider">
+
+        <!-- Heading -->
+        <a class="sidebar-heading" href="~/Personnel"> Personnel enseignant </a>
+
+        <!-- Nav Item - Pages Collapse Menu -->
+        <li class="nav-item">
+            <a class="nav-link @(IsPersonnel && !IsCompetence && !IsAreaIndex ? "":"collapsed")" href="~/Personnel/Documents" data-toggle="collapse" data-target="#collapsePages" aria-expanded="true" aria-controls="collapsePages">
+                <i class="fab fa-elementor"></i>
+                <span> Document </span>
+            </a>
+            <div id="collapsePages" class="collapse @(IsPersonnel && !IsCompetence && !IsAreaIndex ? "show":"")" aria-labelledby="headingPages" data-parent="#accordionSidebar">
+                <div class="bg-white py-2 collapse-inner rounded">
+                    <!-- les plans- cadres -->
+                    <h6 class="collapse-header"> Les plans-cadres </h6>
+                    <a class="collapse-item @(IsPersonnel && (pageName == "/planscadres" || pageName == "/planscadres/index") ? "te-active":"")" href="~/Personnel/PlansCadres"> Liste des plans-cadres </a>
+                    <a class="collapse-item @(IsPersonnel && pageName.StartsWith("/planscadres/nouveau") ? "te-active":"")" href="~/Personnel/PlansCadres/Nouveau"> Ajout de plans-cadres </a>
+                    <!-- les plans de cours -->
+                    <h6 class="collapse-header"> Les plans de cours </h6>
+                    <a class="collapse-item @(IsPersonnel && (pageName == "/planscours" || pageName == "/planscours/index") ? "te-active":"")" href="~/Personnel/PlansCours"> Liste des plans de cours </a>
+                    <a class="collapse-item @(IsPersonnel && pageName.StartsWith("/planscours/nouveau") ? "te-active":"")" href="~/Personnel/PlansCours/Nouveau"> Ajout de plans de cours </a>
+                </div>
             </div>
+        </li>
+
+        <!-- Nav Item - Afffiche tous les documents respectant les critères -->
+        <li class="nav-item">
+            <a class="nav-link" href="~/Documents">
+                <i class="far fa-file-alt"></i>
+                <span> Tout les documents </span>
+            </a>
+        </li>
+
+        <!-- Divider -->
+        <hr class="sidebar-divider d-none d-md-block">
+
+        <!-- Sidebar Toggler (Sidebar) -->
+        <div class="text-center d-none d-md-inline">
+            <button class="rounded-circle border-0" id="sidebarToggle"></button>
         </div>
-    </li>
 
-    <!-- Nav Item - Charts -->
-    <li class="nav-item">
-        <a class="nav-link" href="~/Documents">
-            <i class="far fa-file-alt"></i>
-            <span> Tout les documents </span>
-        </a>
-    </li>
-
-    <!-- Divider -->
-    <hr class="sidebar-divider d-none d-md-block">
-
-    <!-- Sidebar Toggler (Sidebar) -->
-    <div class="text-center d-none d-md-inline">
-        <button class="rounded-circle border-0" id="sidebarToggle"></button>
-    </div>
-
-</ul>
+    </ul>
 <!-- End of Sidebar -->

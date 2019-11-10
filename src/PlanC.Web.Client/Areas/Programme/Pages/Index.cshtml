@@ -1,6 +1,8 @@
 ﻿@page
-@model PlanC.Web.Client.Areas.Admin.Pages.Programmes.IndexModel
+@model PlanC.Web.Client.Areas.Programme.Pages.IndexModel
 @{
+    // page listant tous les programmes possibles selon les droits
+    // une personne connecté pourra modifier la liste et les items
 }
 
 <!-- Section de navigation -->
@@ -8,6 +10,7 @@
     <div class="col">
         <nav aria-label="breadcrumb">
             <ol class="breadcrumb">
+                <!-- Donne accès au portail selon le role de l'utilisateur -->
                 <li class="breadcrumb-item"><a href="~/Admin"> Portail </a></li>
                 <li style="padding: 0 4px;"><i class="fas fa-home" style="font-size: 15px; color: #3f51b5;"></i></li>
                 <li class="breadcrumb-item"><i class="fas fa-circle" style="font-size: 5px; vertical-align: middle; padding-right: 2px;"></i></li>
@@ -37,7 +40,7 @@
 <!-- Container pour blazor component -->
 <div class="row justify-content-center">
     <!-- Table de département et fonctionnalité -->
-    @(await Html.RenderComponentAsync<PlanC.Web.Client.Components.TProgrammes>(RenderMode.Server))
+    @(await Html.RenderComponentAsync<PlanC.Web.Client.Areas.Programme.Pages.Liste>(RenderMode.Server))
 </div>
 
 @section Styles {

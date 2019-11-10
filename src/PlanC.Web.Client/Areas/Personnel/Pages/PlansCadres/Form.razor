@@ -1,7 +1,6 @@
-﻿@using PlanC.WebApi.Server.DataAccess
+﻿@using PlanC.Web.Client.Components
 @using PlanC.WebApi.Models
 @inject NavigationManager NavigationManager
-
 <!-- Formulaire d'un nouveau plan-cadre -->
 <div class="container">
     <EditForm Model="@CTemplate" OnValidSubmit="@HandleValidSubmit">
@@ -32,7 +31,7 @@
             <div class="col-md-6">
                 <div class="form-group">
                     <label class="control-label" for="Units">Nombre d'unité pour le cours: </label>
-                    <OnNumberInputMask Mask="00000" @bind-Value="CTemplate.Units" CssClass="theme-mask" id="Units" placeholder="Nombre d'unité" />
+                    <OnNumberInput Mask="00000" @bind-Value="CTemplate.Units" CssClass="theme-mask" id="Units" placeholder="Nombre d'unité" />
                     <ValidationMessage For="@(() => CTemplate.Units)" />
                 </div>
             </div>

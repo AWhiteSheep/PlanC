@@ -1,6 +1,8 @@
 ﻿@page
-@model PlanC.Web.Client.Areas.Admin.Pages.Departements.IndexModel
+@model PlanC.Web.Client.Areas.Departement.Pages.IndexModel
 @{
+    // Selon les droits d'authentification l'usager connecté aurait le droit à la modification
+    // de la liste contenant le département
 }
 
 
@@ -39,7 +41,7 @@
 <!-- Container pour blazor component -->
 <div class="row justify-content-center">
     <!-- Render la liste en simple information -->
-    @(await Html.RenderComponentAsync<PlanC.Web.Client.Areas.Admin.Pages.Departements.Liste>(RenderMode.Server))
+    @(await Html.RenderComponentAsync<PlanC.Web.Client.Areas.Departement.Pages.Liste>(RenderMode.Server))
 
     <!-- Table de département et fonctionnalité -->
     @*(await Html.RenderComponentAsync<PlanC.Web.Client.Components.TDepartements>(RenderMode.Server))*@
