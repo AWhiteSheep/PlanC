@@ -11,6 +11,8 @@ namespace PlanC.WebApi.Models
         public short SkillElementSequenceNumber { get; set; }
         public string IsPartial { get; set; }
         public string TaxonomicLevel { get; set; }
+        public string ContentDetails { get; set; }
+        public string TrackingUserId { get; set; }
 
         public SkillElement SkillElement { get; set; }
         public CourseTemplate CourseTemplate { get; set; }

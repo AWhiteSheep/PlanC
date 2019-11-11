@@ -13,6 +13,7 @@ namespace PlanC.WebApi.Models
         }
 
         public int ExamId { get; set; }
+        public string ExamTitle { get; set; }
         public string ExamTyCd { get; set; }
         public decimal? Weight { get; set; }
         public string TrackingUserId { get; set; }

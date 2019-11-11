@@ -10,7 +10,17 @@ namespace PlanC.EntityDataModel
     {
         public TemplateViewModel(CourseTemplate template)
         {
-            Template = template;
+            CourseId = template.Id;
+            TheoryHours = template.TheoryHours.GetValueOrDefault();
+            PracticeHours = template.PracticeHours.GetValueOrDefault();
+            HomeHours = template.HomeHours.GetValueOrDefault();
+            Title = template.Title;
+            EducationalIntent = template.EducationalIntent;
+            PedagogicalIntent = template.PedagogicalIntent;
+            DepartmentApprovalDate = template.DepartmentApprovalDate.GetValueOrDefault();
+            CommitteeApprovalDate = template.CommitteeApprovalDate.GetValueOrDefault();
+            BoardApprovalDate = template.DepartmentApprovalDate.GetValueOrDefault();
+
 
             List<string> skillKeys = template.Tcrssklelem.Select(elem => elem.SkillId).Distinct().ToList();
 
@@ -27,29 +37,93 @@ namespace PlanC.EntityDataModel
             }
         }
 
-        CourseTemplate Template;
-
-        List<SkillViewModel> SkillViews = new List<SkillViewModel>();
-
-        List<FinalExamViewModel> finalExams = new List<FinalExamViewModel>();
-
-        private class SkillViewModel
+        public TemplateViewModel()
         {
+
+        }
+
+        public string CourseId { get; set; }
+        public int TheoryHours { get; set; }
+        public int PracticeHours { get; set; }
+        public int HomeHours { get; set; }
+        public string Title { get; set; }
+
+        public string EducationalIntent { get; set; }
+        public string PedagogicalIntent { get; set; }
+        public DateTime DepartmentApprovalDate { get; set; }
+        public DateTime CommitteeApprovalDate { get; set; }
+        public DateTime BoardApprovalDate { get; set; }
+
+        
+
+        public List<SkillViewModel> SkillViews = new List<SkillViewModel>();
+
+        public List<FinalExamViewModel> finalExams = new List<FinalExamViewModel>();
+
+        public class SkillViewModel
+        {
+            public SkillViewModel()
+            {
+
+            }
             public SkillViewModel(List<Course_SkillElement> elements)
             {
-                Skill = elements.First().SkillElement.Skl;
+                var Skill = elements.First().SkillElement.Skl;
+                SkillTitle = Skill.Title;
+                SkillId = Skill.Id;
 
-                this.elements = elements;
+                foreach (Course_SkillElement elem in elements)
+                {
+                    Elements.Add(new SkillElementViewModel(elem));
+                }
             }
 
-            Skill Skill;
+            public string SkillId { get; set; }
+            public string SkillTitle { get; set; }
 
-            List<Course_SkillElement> elements;
+            
+            public List<SkillElementViewModel> Elements = new List<SkillElementViewModel>();
+
+            public class SkillElementViewModel
+            {
+                public SkillElementViewModel(Course_SkillElement course_SkillElement)
+                {
+                    SkillElement skillElement = course_SkillElement.SkillElement;
+                    List <SkillElementPerformanceCriteria> skillElementPerformanceCriterias = skillElement.Tsklelemcrt.ToList();
+
+                    SkillElementTitle = skillElement.Title;
+
+                    foreach (SkillElementPerformanceCriteria crit in skillElementPerformanceCriterias)
+                    {
+                        PerformanceCriteria.Add(crit.SklElemCrtTitle);
+                    }
+
+                    ContentDetails = course_SkillElement.ContentDetails;
+
+                    IsPartial = course_SkillElement.IsPartial == "1";
+                }
+
+                public SkillElementViewModel()
+                {
+
+                }
+
+                public string SkillElementTitle { get; set; }
+                public List<string> PerformanceCriteria { get; set; }
+                public string ContentDetails { get; set; }
+
+                public bool IsPartial { get; set;  }
+            }
         }
 
         //TODO implement exam naming
-        private class FinalExamViewModel
+        public class FinalExamViewModel
         {
+            public FinalExamViewModel()
+            {
+
+            }
+
             public FinalExamViewModel(ExamInfo exam)
             {
                 ExamTitle = exam.ExamId.ToString();
@@ -61,8 +135,8 @@ namespace PlanC.EntityDataModel
                 }
             }
 
-            public string ExamTitle { get; private set; }
-            public decimal ExamWeight { get; private set; }
+            public string ExamTitle { get; set; }
+            public decimal ExamWeight { get; set; }
 
             List<SkillElementWeightViewModel> SkillElementWeights = new List<SkillElementWeightViewModel>();
 

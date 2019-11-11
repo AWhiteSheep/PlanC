@@ -1,6 +1,7 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
+using PlanC.EntityDataModel;
 using PlanC.WebApi.Models;
 
 namespace PlanC.WebApi.Server.DataAccess
@@ -43,6 +44,68 @@ namespace PlanC.WebApi.Server.DataAccess
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<CourseActivityElement>(entity =>
+            {
+                entity.HasKey(e => new { e.SklelemSqnbr, e.SklId, e.CrsId, e.TchrUid, e.PlnVsnCdttm, e.SmstrId, e.ActvtSqnbr });
+
+                entity.ToTable("TACTELEM");
+
+                entity.HasComment("Association activité -- élément de compétence");
+
+                entity.Property(e => e.SklelemSqnbr).HasColumnName("SKLELEM_SQNBR");
+
+                entity.Property(e => e.SklId)
+                    .HasColumnName("SKL_ID")
+                    .HasMaxLength(4)
+                    .IsUnicode(false)
+                    .IsFixedLength();
+
+                entity.Property(e => e.CrsId)
+                    .HasColumnName("CRS_ID")
+                    .HasMaxLength(10)
+                    .IsFixedLength()
+                    .HasComment("Code d'identification d'un cours");
+
+                entity.Property(e => e.TchrUid)
+                    .HasColumnName("TCHR_UID")
+                    .HasMaxLength(7)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.PlnVsnCdttm)
+                    .HasColumnName("PLN_VSN_CDTTM")
+                    .HasColumnType("datetime");
+
+                entity.Property(e => e.SmstrId)
+                    .HasColumnName("SMSTR_ID")
+                    .HasMaxLength(3)
+                    .IsUnicode(false)
+                    .IsFixedLength();
+
+                entity.Property(e => e.ActvtSqnbr).HasColumnName("ACTVT_SQNBR");
+
+                entity.Property(e => e.RcdCdttm)
+                    .HasColumnName("RCD_CDTTM")
+                    .HasColumnType("datetime")
+                    .HasDefaultValueSql("(getdate())");
+
+                entity.Property(e => e.TrkUid)
+                    .HasColumnName("TRK_UID")
+                    .HasMaxLength(7)
+                    .IsUnicode(false);
+
+                entity.HasOne(d => d.SkillElement)
+                    .WithMany(p => p.CourseActivityElements)
+                    .HasForeignKey(d => new { d.SklId, d.SklelemSqnbr })
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_TACTELEM_TSKLELEM");
+
+                entity.HasOne(d => d.Tcrsactvt)
+                    .WithMany(p => p.ActivityElements)
+                    .HasForeignKey(d => new { d.CrsId, d.TchrUid, d.PlnVsnCdttm, d.SmstrId, d.ActvtSqnbr })
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_TACTELEM_TCRSACTVT");
+            });
+
             modelBuilder.Entity<Code>(entity =>
             {
                 entity.HasKey(e => new { e.CdTy, e.Cd });
@@ -52,16 +115,19 @@ namespace PlanC.WebApi.Server.DataAccess
                 entity.Property(e => e.CdTy)
                     .HasColumnName("CD_TY")
                     .HasMaxLength(2)
-                    .IsUnicode(false);
+                    .IsUnicode(false)
+                    .IsFixedLength();
 
                 entity.Property(e => e.Cd)
                     .HasColumnName("CD")
                     .HasMaxLength(2)
-                    .IsUnicode(false);
+                    .IsUnicode(false)
+                    .IsFixedLength();
 
                 entity.Property(e => e.CdDesc)
                     .HasColumnName("CD_DESC")
-                    .HasMaxLength(10);
+                    .HasMaxLength(10)
+                    .IsFixedLength();
 
                 entity.Property(e => e.RcdCdttm)
                     .HasColumnName("RCD_CDTTM")
@@ -89,7 +155,7 @@ namespace PlanC.WebApi.Server.DataAccess
                     .HasColumnName("CD_TY")
                     .HasMaxLength(2)
                     .IsUnicode(false)
-                    .ValueGeneratedNever();
+                    .IsFixedLength();
 
                 entity.Property(e => e.CdTyDesc)
                     .HasColumnName("CD_TY_DESC")
@@ -111,9 +177,13 @@ namespace PlanC.WebApi.Server.DataAccess
 
                 entity.ToTable("TCERTEXAM");
 
+                entity.HasComment("Examen certificatif");
+
                 entity.Property(e => e.CourseId)
                     .HasColumnName("CRS_ID")
-                    .HasMaxLength(10);
+                    .HasMaxLength(10)
+                    .IsFixedLength()
+                    .HasComment("Code d'identification d'un cours");
 
                 entity.Property(e => e.TeacherUserId)
                     .HasColumnName("TCHR_UID")
@@ -127,9 +197,15 @@ namespace PlanC.WebApi.Server.DataAccess
                 entity.Property(e => e.SemesterId)
                     .HasColumnName("SMSTR_ID")
                     .HasMaxLength(3)
-                    .IsUnicode(false);
+                    .IsUnicode(false)
+                    .IsFixedLength();
 
                 entity.Property(e => e.ExamId).HasColumnName("EXAM_ID");
+
+                //entity.Property(e => e.RcdCdttm)
+                //    .HasColumnName("RCD_CDTTM")
+                //    .HasColumnType("datetime")
+                //    .HasDefaultValueSql("(getdate())");
 
                 entity.Property(e => e.TrackingUserId)
                     .HasColumnName("TRK_UID")
@@ -141,17 +217,27 @@ namespace PlanC.WebApi.Server.DataAccess
                     .HasForeignKey(d => d.ExamId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_TCERTEXAM_TEXAM");
+
+                entity.HasOne(d => d.CoursePlan)
+                    .WithMany(p => p.NonFinalCertificativeExams)
+                    .HasForeignKey(d => new { d.CourseId, d.TeacherUserId, d.PlnVsnCdttm, d.SemesterId })
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_TCERTEXAM_TCRSPLN");
             });
 
-            modelBuilder.Entity<CoursePlan>(entity =>
+            modelBuilder.Entity<CourseActivity>(entity =>
             {
-                entity.HasKey(e => new { e.CrsId, e.TchrUid, e.PlnVsnCdttm, e.SmstrId });
+                entity.HasKey(e => new { e.CrsId, e.TchrUid, e.PlnVsnCdttm, e.SmstrId, e.ActvtSqnbr });
 
-                entity.ToTable("TCRSPLN");
+                entity.ToTable("TCRSACTVT");
+
+                entity.HasComment("Calendrier des activités");
 
                 entity.Property(e => e.CrsId)
                     .HasColumnName("CRS_ID")
-                    .HasMaxLength(10);
+                    .HasMaxLength(10)
+                    .IsFixedLength()
+                    .HasComment("Code d'identification d'un cours");
 
                 entity.Property(e => e.TchrUid)
                     .HasColumnName("TCHR_UID")
@@ -165,7 +251,121 @@ namespace PlanC.WebApi.Server.DataAccess
                 entity.Property(e => e.SmstrId)
                     .HasColumnName("SMSTR_ID")
                     .HasMaxLength(3)
+                    .IsUnicode(false)
+                    .IsFixedLength();
+
+                entity.Property(e => e.ActvtSqnbr).HasColumnName("ACTVT_SQNBR");
+
+                entity.Property(e => e.ActvtDesc)
+                    .HasColumnName("ACTVT_DESC")
+                    .HasColumnType("ntext");
+
+                entity.Property(e => e.ActvtLgnth)
+                    .HasColumnName("ACTVT_LGNTH")
+                    .HasComment("Nombre de semaines consacrées à cette activité");
+
+                entity.Property(e => e.RcdCdttm)
+                    .HasColumnName("RCD_CDTTM")
+                    .HasColumnType("datetime")
+                    .HasDefaultValueSql("(getdate())");
+
+                entity.Property(e => e.TrkUid)
+                    .HasColumnName("TRK_UID")
+                    .HasMaxLength(7)
                     .IsUnicode(false);
+
+                entity.HasOne(d => d.CoursePlan)
+                    .WithMany(p => p.CourseActivities)
+                    .HasForeignKey(d => new { d.CrsId, d.TchrUid, d.PlnVsnCdttm, d.SmstrId })
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_TCRSACTVT_TCRSPLN");
+            });
+
+            modelBuilder.Entity<CourseMaterial>(entity =>
+            {
+                entity.HasKey(e => new { e.CrsId, e.TchrUid, e.PlnVsnCdttm, e.SmstrId, e.CrsMtrlSqnbr });
+
+                entity.ToTable("TCRSMTRL");
+
+                entity.HasComment("Matériel requis");
+
+                entity.Property(e => e.CrsId)
+                    .HasColumnName("CRS_ID")
+                    .HasMaxLength(10)
+                    .IsFixedLength()
+                    .HasComment("Code d'identification d'un cours");
+
+                entity.Property(e => e.TchrUid)
+                    .HasColumnName("TCHR_UID")
+                    .HasMaxLength(7)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.PlnVsnCdttm)
+                    .HasColumnName("PLN_VSN_CDTTM")
+                    .HasColumnType("datetime");
+
+                entity.Property(e => e.SmstrId)
+                    .HasColumnName("SMSTR_ID")
+                    .HasMaxLength(3)
+                    .IsUnicode(false)
+                    .IsFixedLength();
+
+                entity.Property(e => e.CrsMtrlSqnbr).HasColumnName("CRS_MTRL_SQNBR");
+
+                entity.Property(e => e.CrsMtrlDesc)
+                    .HasColumnName("CRS_MTRL_DESC")
+                    .HasMaxLength(255);
+
+                entity.Property(e => e.RcdCdttm)
+                    .HasColumnName("RCD_CDTTM")
+                    .HasColumnType("datetime")
+                    .HasDefaultValueSql("(getdate())");
+
+                entity.Property(e => e.TrkUid)
+                    .HasColumnName("TRK_UID")
+                    .HasMaxLength(7)
+                    .IsUnicode(false);
+
+                entity.HasOne(d => d.Tcrspln)
+                    .WithMany(p => p.CourseMaterials)
+                    .HasForeignKey(d => new { d.CrsId, d.TchrUid, d.PlnVsnCdttm, d.SmstrId })
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_TCRSMTRL_TCRSPLN");
+            });
+
+            modelBuilder.Entity<CoursePlan>(entity =>
+            {
+                entity.HasKey(e => new { e.CrsId, e.TchrUid, e.PlnVsnCdttm, e.SmstrId });
+
+                entity.ToTable("TCRSPLN");
+
+                entity.HasComment("Plan de cours");
+
+                entity.Property(e => e.CrsId)
+                    .HasColumnName("CRS_ID")
+                    .HasMaxLength(10)
+                    .IsFixedLength()
+                    .HasComment("Code d'identification d'un cours");
+
+                entity.Property(e => e.TchrUid)
+                    .HasColumnName("TCHR_UID")
+                    .HasMaxLength(7)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.PlnVsnCdttm)
+                    .HasColumnName("PLN_VSN_CDTTM")
+                    .HasColumnType("datetime");
+
+                entity.Property(e => e.SmstrId)
+                    .HasColumnName("SMSTR_ID")
+                    .HasMaxLength(3)
+                    .IsUnicode(false)
+                    .IsFixedLength();
+
+                //entity.Property(e => e.RcdCdttm)
+                //    .HasColumnName("RCD_CDTTM")
+                //    .HasColumnType("datetime")
+                //    .HasDefaultValueSql("(getdate())");
 
                 entity.Property(e => e.TrackingUserId)
                     .HasColumnName("TRK_UID")
@@ -185,9 +385,13 @@ namespace PlanC.WebApi.Server.DataAccess
 
                 entity.ToTable("TCRSREQ");
 
+                entity.HasComment("Prérequis; corequis");
+
                 entity.Property(e => e.CrsId)
                     .HasColumnName("CRS_ID")
-                    .HasMaxLength(10);
+                    .HasMaxLength(10)
+                    .IsFixedLength()
+                    .HasComment("Code d'identification d'un cours");
 
                 entity.Property(e => e.VsnCdttm)
                     .HasColumnName("VSN_CDTTM")
@@ -195,16 +399,19 @@ namespace PlanC.WebApi.Server.DataAccess
 
                 entity.Property(e => e.ReqCrsId)
                     .HasColumnName("REQ_CRS_ID")
-                    .HasMaxLength(10);
+                    .HasMaxLength(10)
+                    .IsFixedLength();
 
                 entity.Property(e => e.CrsReqTyCd)
                     .HasColumnName("CRS_REQ_TY_CD")
                     .HasMaxLength(2)
-                    .IsUnicode(false);
+                    .IsUnicode(false)
+                    .IsFixedLength();
 
                 entity.Property(e => e.RcdCdttm)
                     .HasColumnName("RCD_CDTTM")
-                    .HasColumnType("datetime");
+                    .HasColumnType("datetime")
+                    .HasDefaultValueSql("(getdate())");
 
                 entity.Property(e => e.TrkUid)
                     .HasColumnName("TRK_UID")
@@ -220,13 +427,18 @@ namespace PlanC.WebApi.Server.DataAccess
 
             modelBuilder.Entity<Course_SkillElement>(entity =>
             {
-                entity.HasKey(e => new { e.CourseId, e.VsnCdttm, e.SkillId, e.SkillElementSequenceNumber });
+                entity.HasKey(e => new { e.CourseId, e.VsnCdttm, e.SkillId, e.SkillElementSequenceNumber })
+                    .HasName("PK_TTMPLTSKLELEM");
 
                 entity.ToTable("TCRSSKLELEM");
 
+                entity.HasComment("Association plan-cadre -- élément de compétence");
+
                 entity.Property(e => e.CourseId)
                     .HasColumnName("CRS_ID")
-                    .HasMaxLength(10);
+                    .HasMaxLength(10)
+                    .IsFixedLength()
+                    .HasComment("Code d'identification d'un cours");
 
                 entity.Property(e => e.VsnCdttm)
                     .HasColumnName("VSN_CDTTM")
@@ -235,19 +447,36 @@ namespace PlanC.WebApi.Server.DataAccess
                 entity.Property(e => e.SkillId)
                     .HasColumnName("SKL_ID")
                     .HasMaxLength(4)
-                    .IsUnicode(false);
+                    .IsUnicode(false)
+                    .IsFixedLength();
 
                 entity.Property(e => e.SkillElementSequenceNumber).HasColumnName("SKLELEM_SQNBR");
+
+                entity.Property(e => e.ContentDetails)
+                    .HasColumnName("ADDTNL_DESC")
+                    .HasColumnType("ntext");
 
                 entity.Property(e => e.IsPartial)
                     .HasColumnName("PRTL_SKL_IND")
                     .HasMaxLength(1)
+                    .IsUnicode(false)
+                    .IsFixedLength();
+
+                //entity.Property(e => e.RcdCdttm)
+                //    .HasColumnName("RCD_CDTTM")
+                //    .HasColumnType("datetime")
+                //    .HasDefaultValueSql("(getdate())");
+
+                entity.Property(e => e.TrackingUserId)
+                    .HasColumnName("TRK_UID")
+                    .HasMaxLength(7)
                     .IsUnicode(false);
 
                 entity.Property(e => e.TaxonomicLevel)
                     .HasColumnName("TXNMY_CD")
                     .HasMaxLength(2)
-                    .IsUnicode(false);
+                    .IsUnicode(false)
+                    .IsFixedLength();
 
                 entity.HasOne(d => d.CourseTemplate)
                     .WithMany(p => p.Tcrssklelem)
@@ -268,9 +497,13 @@ namespace PlanC.WebApi.Server.DataAccess
 
                 entity.ToTable("TCRSTMPLT");
 
+                entity.HasComment("Plan-cadre");
+
                 entity.Property(e => e.Id)
                     .HasColumnName("CRS_ID")
-                    .HasMaxLength(10);
+                    .HasMaxLength(10)
+                    .IsFixedLength()
+                    .HasComment("Code d'identification d'un cours");
 
                 entity.Property(e => e.VsnCdttm)
                     .HasColumnName("VSN_CDTTM")
@@ -296,15 +529,6 @@ namespace PlanC.WebApi.Server.DataAccess
                     .HasColumnName("CRS_PDG_INTENT")
                     .HasColumnType("ntext");
 
-                entity.Property(e => e.TheoryHours)
-                    .HasColumnName("THEORY_HRS");
-
-                entity.Property(e => e.PracticeHours)
-                    .HasColumnName("PRCT_HRS");
-
-                entity.Property(e => e.HomeHours)
-                    .HasColumnName("HOME_HRS");
-
                 entity.Property(e => e.Title)
                     .HasColumnName("CRS_TITLE")
                     .HasMaxLength(50);
@@ -313,18 +537,25 @@ namespace PlanC.WebApi.Server.DataAccess
                     .HasColumnName("DPTMNT_APPRV_DT")
                     .HasColumnType("date");
 
+                entity.Property(e => e.HomeHours).HasColumnName("HOME_HRS");
+
                 entity.Property(e => e.PgmId)
                     .HasColumnName("PGM_ID")
                     .HasMaxLength(6)
-                    .IsUnicode(false);
+                    .IsUnicode(false)
+                    .IsFixedLength();
+
+                entity.Property(e => e.PracticeHours).HasColumnName("PRCT_HRS");
 
                 //entity.Property(e => e.RcdCdttm)
                 //    .HasColumnName("RCD_CDTTM")
-                //    .HasColumnType("datetime");
+                //    .HasColumnType("datetime")
+                //    .HasDefaultValueSql("(getdate())");
+
+                entity.Property(e => e.TheoryHours).HasColumnName("THEORY_HRS");
 
                 entity.Property(e => e.TrackingUserId)
                     .HasColumnName("TRK_UID")
-                    .IsRequired()
                     .HasMaxLength(7)
                     .IsUnicode(false);
 
@@ -344,25 +575,25 @@ namespace PlanC.WebApi.Server.DataAccess
 
                 entity.ToTable("TDPTMNT");
 
-                entity.Property(e => e.Id)
-                    .HasColumnName("DPTMNT_ID")
-                    .UseIdentityColumn();
+                entity.HasComment("Département");
 
-                entity.Property(e => e.Title)
-                    .HasColumnName("DPTMNT_TITLE")
-                    .HasMaxLength(250);
+                entity.Property(e => e.Id).HasColumnName("DPTMNT_ID");
 
                 entity.Property(e => e.Policy)
                     .HasColumnName("DPTMNT_PLCY")
                     .HasColumnType("ntext");
 
+                entity.Property(e => e.Title)
+                    .HasColumnName("DPTMNT_TITLE")
+                    .HasMaxLength(250);
+
                 //entity.Property(e => e.RcdCdttm)
                 //    .HasColumnName("RCD_CDTTM")
-                //    .HasColumnType("datetime");
+                //    .HasColumnType("datetime")
+                //    .HasDefaultValueSql("(getdate())");
 
                 entity.Property(e => e.TrackingUserId)
                     .HasColumnName("TRK_UID")
-                    .IsRequired()
                     .HasMaxLength(7)
                     .IsUnicode(false);
             });
@@ -373,18 +604,30 @@ namespace PlanC.WebApi.Server.DataAccess
 
                 entity.ToTable("TEXAM");
 
+                entity.HasComment("Entité de base pour un examen");
+
                 entity.Property(e => e.ExamId)
                     .HasColumnName("EXAM_ID")
                     .ValueGeneratedNever();
 
+                entity.Property(e => e.ExamTitle)
+                    .HasColumnName("EXAM_TITLE")
+                    .HasMaxLength(150);
+
                 entity.Property(e => e.ExamTyCd)
                     .HasColumnName("EXAM_TY_CD")
                     .HasMaxLength(2)
-                    .IsUnicode(false);
+                    .IsUnicode(false)
+                    .IsFixedLength();
 
                 entity.Property(e => e.Weight)
                     .HasColumnName("EXAM_WGHT")
                     .HasColumnType("decimal(5, 2)");
+
+                //entity.Property(e => e.RcdCdttm)
+                //    .HasColumnName("RCD_CDTTM")
+                //    .HasColumnType("datetime")
+                //    .HasDefaultValueSql("(getdate())");
 
                 entity.Property(e => e.TrackingUserId)
                     .HasColumnName("TRK_UID")
@@ -398,23 +641,26 @@ namespace PlanC.WebApi.Server.DataAccess
 
                 entity.ToTable("TEXAMSKLELEM");
 
+                entity.HasComment("Association examen -- élément de compétence");
+
                 entity.Property(e => e.ExamId).HasColumnName("EXAM_ID");
 
                 entity.Property(e => e.SkillId)
                     .HasColumnName("SKL_ID")
                     .HasMaxLength(4)
-                    .IsUnicode(false);
+                    .IsUnicode(false)
+                    .IsFixedLength();
 
                 entity.Property(e => e.SkillElelementSequenceNumber).HasColumnName("SKLELEM_SQNBR");
+
+                //entity.Property(e => e.RcdCdttm)
+                //    .HasColumnName("RCD_CDTTM")
+                //    .HasColumnType("datetime")
+                //    .HasDefaultValueSql("(getdate())");
 
                 entity.Property(e => e.SkillElementWeight)
                     .HasColumnName("SKLELEM_WGHT")
                     .HasColumnType("decimal(5, 2)");
-
-                entity.Property(e => e.TrackingUserId)
-                    .HasColumnName("TRK_UID")
-                    .HasMaxLength(7)
-                    .IsUnicode(false);
 
                 entity.HasOne(d => d.Exam)
                     .WithMany(p => p.Exam_SkillElements)
@@ -435,15 +681,24 @@ namespace PlanC.WebApi.Server.DataAccess
 
                 entity.ToTable("TFNLEXAM");
 
+                entity.HasComment("Examen certificatif final");
+
                 entity.Property(e => e.CourseId)
                     .HasColumnName("CRS_ID")
-                    .HasMaxLength(10);
+                    .HasMaxLength(10)
+                    .IsFixedLength()
+                    .HasComment("Code d'identification d'un cours");
 
                 entity.Property(e => e.VsnCdttm)
                     .HasColumnName("VSN_CDTTM")
                     .HasColumnType("datetime");
 
                 entity.Property(e => e.ExamId).HasColumnName("EXAM_ID");
+
+                //entity.Property(e => e.RcdCdttm)
+                //    .HasColumnName("RCD_CDTTM")
+                //    .HasColumnType("datetime")
+                //    .HasDefaultValueSql("(getdate())");
 
                 entity.Property(e => e.TrackingUserId)
                     .HasColumnName("TRK_UID")
@@ -469,11 +724,13 @@ namespace PlanC.WebApi.Server.DataAccess
 
                 entity.ToTable("TPGM");
 
+                entity.HasComment("Programme d'études");
+
                 entity.Property(e => e.PgmId)
                     .HasColumnName("PGM_ID")
                     .HasMaxLength(6)
                     .IsUnicode(false)
-                    .ValueGeneratedNever();
+                    .IsFixedLength();
 
                 entity.Property(e => e.DepartmentId).HasColumnName("DPTMNT_ID");
 
@@ -483,11 +740,18 @@ namespace PlanC.WebApi.Server.DataAccess
 
                 entity.Property(e => e.PgmTitle)
                     .HasColumnName("PGM_TITLE")
-                    .HasMaxLength(10);
+                    .HasMaxLength(50);
 
                 entity.Property(e => e.Category)
                     .HasColumnName("PGM_TY_CD")
-                    .HasMaxLength(10);
+                    .HasMaxLength(2)
+                    .IsUnicode(false)
+                    .IsFixedLength();
+
+                //entity.Property(e => e.RcdCdttm)
+                //    .HasColumnName("RCD_CDTTM")
+                //    .HasColumnType("datetime")
+                //    .HasDefaultValueSql("(getdate())");
 
                 entity.Property(e => e.TrackingUserId)
                     .HasColumnName("TRK_UID")
@@ -501,17 +765,40 @@ namespace PlanC.WebApi.Server.DataAccess
                     .HasConstraintName("FK_TPGM_TDPTMNT");
             });
 
+            modelBuilder.Entity<Role>(entity =>
+            {
+                entity.HasKey(e => e.RoleId);
+
+                entity.ToTable("TROLE");
+
+                entity.Property(e => e.RoleId)
+                    .HasColumnName("ROLE_ID")
+                    .ValueGeneratedNever();
+
+                //entity.Property(e => e.RcdCdttm)
+                //    .HasColumnName("RCD_CDTTM")
+                //    .HasColumnType("datetime")
+                //    .HasDefaultValueSql("(getdate())");
+
+                entity.Property(e => e.RoleNm)
+                    .HasColumnName("ROLE_NM")
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+            });
+
             modelBuilder.Entity<Skill>(entity =>
             {
                 entity.HasKey(e => e.Id);
 
                 entity.ToTable("TSKL");
 
+                entity.HasComment("Compétence");
+
                 entity.Property(e => e.Id)
                     .HasColumnName("SKL_ID")
                     .HasMaxLength(4)
                     .IsUnicode(false)
-                    .ValueGeneratedNever();
+                    .IsFixedLength();
 
                 entity.Property(e => e.AsscAttd)
                     .HasColumnName("ASSC_ATTD")
@@ -521,20 +808,21 @@ namespace PlanC.WebApi.Server.DataAccess
                     .IsRequired()
                     .HasColumnName("PGM_ID")
                     .HasMaxLength(6)
-                    .IsUnicode(false);
+                    .IsUnicode(false)
+                    .IsFixedLength();
 
                 //entity.Property(e => e.RcdCdttm)
                 //    .HasColumnName("RCD_CDTTM")
-                //    .HasColumnType("datetime");
+                //    .HasColumnType("datetime")
+                //    .HasDefaultValueSql("(getdate())");
 
                 entity.Property(e => e.Title)
                     .HasColumnName("SKL_TITLE")
-                    .HasMaxLength(512)
+                    .HasMaxLength(200)
                     .IsUnicode(false);
 
                 entity.Property(e => e.TrackingUserId)
                     .HasColumnName("TRK_UID")
-                    .IsRequired()
                     .HasMaxLength(7)
                     .IsUnicode(false);
 
@@ -551,24 +839,27 @@ namespace PlanC.WebApi.Server.DataAccess
 
                 entity.ToTable("TSKLCNTXT");
 
+                entity.HasComment("Contextes de réalisation associés à une compétence");
+
                 entity.Property(e => e.SkillId)
                     .HasColumnName("SKL_ID")
                     .HasMaxLength(4)
-                    .IsUnicode(false);
+                    .IsUnicode(false)
+                    .IsFixedLength();
 
                 entity.Property(e => e.SequenceNumber).HasColumnName("SKL_CNTXT_SQNBR");
 
                 //entity.Property(e => e.RcdCdttm)
                 //    .HasColumnName("RCD_CDTTM")
-                //    .HasColumnType("datetime");
+                //    .HasColumnType("datetime")
+                //    .HasDefaultValueSql("(getdate())");
 
                 entity.Property(e => e.Title)
-                    .HasColumnName("SKL_CNTXT_DESC")
+                    .HasColumnName("SKL_CNTXT_TITLE")
                     .HasMaxLength(512);
 
                 entity.Property(e => e.TrackingUserId)
                     .HasColumnName("TRK_UID")
-                    .IsRequired()
                     .HasMaxLength(7)
                     .IsUnicode(false);
 
@@ -585,28 +876,31 @@ namespace PlanC.WebApi.Server.DataAccess
 
                 entity.ToTable("TSKLELEM");
 
+                entity.HasComment("Élément de compétence");
+
                 entity.Property(e => e.SkillId)
                     .HasColumnName("SKL_ID")
                     .HasMaxLength(4)
-                    .IsUnicode(false);
+                    .IsUnicode(false)
+                    .IsFixedLength();
 
                 entity.Property(e => e.SequenceNumber).HasColumnName("SKLELEM_SQNBR");
 
                 //entity.Property(e => e.RcdCdttm)
                 //    .HasColumnName("RCD_CDTTM")
-                //    .HasColumnType("datetime");
+                //    .HasColumnType("datetime")
+                //    .HasDefaultValueSql("(getdate())");
 
-                entity.Property(e => e.Description) //TODO : Ne semble plus exister dans la BD
+                entity.Property(e => e.Description)
                     .HasColumnName("SKLELEM_DESC")
                     .HasColumnType("ntext");
 
                 entity.Property(e => e.Title)
                     .HasColumnName("SKLELEM_TITLE")
-                    .HasMaxLength(250);
+                    .HasMaxLength(255);
 
                 entity.Property(e => e.TrackingUserId)
                     .HasColumnName("TRK_UID")
-                    .IsRequired()
                     .HasMaxLength(7)
                     .IsUnicode(false);
 
@@ -617,17 +911,62 @@ namespace PlanC.WebApi.Server.DataAccess
                     .HasConstraintName("FK_TSKLELEM_TSKL");
             });
 
+            modelBuilder.Entity<SkillElementPerformanceCriteria>(entity =>
+            {
+                entity.HasKey(e => new { e.SklId, e.SklElemSqnbr, e.SklElemCrtSqnbr });
+
+                entity.ToTable("TSKLELEMCRT");
+
+                entity.Property(e => e.SklId)
+                    .HasColumnName("SKL_ID")
+                    .HasMaxLength(4)
+                    .IsUnicode(false)
+                    .IsFixedLength();
+
+                entity.Property(e => e.SklElemSqnbr).HasColumnName("SKL_ELEM_SQNBR");
+
+                entity.Property(e => e.SklElemCrtSqnbr).HasColumnName("SKL_ELEM_CRT_SQNBR");
+
+                //entity.Property(e => e.RcdCdttm)
+                //    .HasColumnName("RCD_CDTTM")
+                //    .HasColumnType("datetime")
+                //    .HasDefaultValueSql("(getdate())");
+
+                entity.Property(e => e.SklElemCrtTitle)
+                    .HasColumnName("SKL_ELEM_CRT_TITLE")
+                    .HasMaxLength(255);
+
+                entity.Property(e => e.TrkUid)
+                    .IsRequired()
+                    .HasColumnName("TRK_UID")
+                    .HasMaxLength(7)
+                    .IsUnicode(false);
+
+                entity.HasOne(d => d.SkillElement)
+                    .WithMany(p => p.Tsklelemcrt)
+                    .HasForeignKey(d => new { d.SklId, d.SklElemSqnbr })
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_TSKLELEMCRT_TSKLELEM");
+            });
+
             modelBuilder.Entity<Semester>(entity =>
             {
                 entity.HasKey(e => e.Id);
 
                 entity.ToTable("TSMSTR");
 
+                entity.HasComment("Session");
+
                 entity.Property(e => e.Id)
                     .HasColumnName("SMSTR_ID")
                     .HasMaxLength(3)
                     .IsUnicode(false)
-                    .ValueGeneratedNever();
+                    .IsFixedLength();
+
+                //entity.Property(e => e.RcdCdttm)
+                //    .HasColumnName("RCD_CDTTM")
+                //    .HasColumnType("datetime")
+                //    .HasDefaultValueSql("(getdate())");
 
                 entity.Property(e => e.Description)
                     .HasColumnName("SMSTR_DESC")
@@ -645,6 +984,102 @@ namespace PlanC.WebApi.Server.DataAccess
                     .HasColumnName("TRK_UID")
                     .HasMaxLength(7)
                     .IsUnicode(false);
+            });
+
+            modelBuilder.Entity<User>(entity =>
+            {
+                entity.HasKey(e => e.Uid);
+
+                entity.ToTable("TUSER");
+
+                entity.Property(e => e.Uid)
+                    .HasColumnName("UID")
+                    .HasMaxLength(7)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.DptmntId).HasColumnName("DPTMNT_ID");
+
+                entity.Property(e => e.GvnNm)
+                    .HasColumnName("GVN_NM")
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.RcdCdttm)
+                    .HasColumnName("RCD_CDTTM")
+                    .HasColumnType("datetime")
+                    .HasDefaultValueSql("(getdate())");
+
+                entity.Property(e => e.Snm)
+                    .HasColumnName("SNM")
+                    .HasMaxLength(50);
+
+                entity.HasOne(d => d.Department)
+                    .WithMany(p => p.Users)
+                    .HasForeignKey(d => d.DptmntId)
+                    .HasConstraintName("FK_TUSER_TDPTMNT");
+            });
+
+            modelBuilder.Entity<UserAvailability>(entity =>
+            {
+                entity.HasKey(e => new { e.Uid, e.UserAvlSqnbr });
+
+                entity.ToTable("TUSERAVL");
+
+                entity.Property(e => e.Uid)
+                    .HasColumnName("UID")
+                    .HasMaxLength(7)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.UserAvlSqnbr)
+                    .HasColumnName("USER_AVL_SQNBR")
+                    .ValueGeneratedOnAdd();
+
+                entity.Property(e => e.AvlNtm).HasColumnName("AVL_NTM");
+
+                entity.Property(e => e.AvlStm).HasColumnName("AVL_STM");
+
+                entity.Property(e => e.RcdCdttm)
+                    .HasColumnName("RCD_CDTTM")
+                    .HasColumnType("datetime")
+                    .HasDefaultValueSql("(getdate())");
+
+                entity.Property(e => e.WeekdayNbr).HasColumnName("WEEKDAY_NBR");
+
+                entity.HasOne(d => d.User)
+                    .WithMany(p => p.Tuseravl)
+                    .HasForeignKey(d => d.Uid)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_TUSERAVL_TUSER");
+            });
+
+            modelBuilder.Entity<User_Role>(entity =>
+            {
+                entity.HasKey(e => new { e.Uid, e.RoleId });
+
+                entity.ToTable("TUSERROLE");
+
+                entity.Property(e => e.Uid)
+                    .HasColumnName("UID")
+                    .HasMaxLength(7)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.RoleId).HasColumnName("ROLE_ID");
+
+                //entity.Property(e => e.RcdCdttm)
+                //    .HasColumnName("RCD_CDTTM")
+                //    .HasColumnType("datetime")
+                //    .HasDefaultValueSql("(getdate())");
+
+                entity.HasOne(d => d.Role)
+                    .WithMany(p => p.Tuserrole)
+                    .HasForeignKey(d => d.RoleId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_TUSERROLE_TROLE");
+
+                entity.HasOne(d => d.User)
+                    .WithMany(p => p.User_Roles)
+                    .HasForeignKey(d => d.Uid)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_TUSERROLE_TUSER");
             });
         }
     }

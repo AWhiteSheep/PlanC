@@ -1,4 +1,5 @@
-﻿using System;
+﻿using PlanC.EntityDataModel;
+using System;
 using System.Collections.Generic;
 
 namespace PlanC.WebApi.Models
@@ -9,6 +10,8 @@ namespace PlanC.WebApi.Models
         {
             Tcrssklelem = new HashSet<Course_SkillElement>();
             Texamsklelem = new HashSet<Exam_SkillElement>();
+            Tsklelemcrt = new HashSet<SkillElementPerformanceCriteria>();
+            CourseActivityElements = new HashSet<CourseActivityElement>();
         }
 
         public string SkillId { get; set; }
@@ -21,5 +24,7 @@ namespace PlanC.WebApi.Models
         public Skill Skl { get; set; }
         public ICollection<Course_SkillElement> Tcrssklelem { get; set; }
         public ICollection<Exam_SkillElement> Texamsklelem { get; set; }
+        public ICollection<SkillElementPerformanceCriteria> Tsklelemcrt { get; set; }
+        public ICollection<CourseActivityElement> CourseActivityElements { get; set; }
     }
 }

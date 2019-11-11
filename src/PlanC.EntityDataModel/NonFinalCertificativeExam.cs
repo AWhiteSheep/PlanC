@@ -14,5 +14,6 @@ namespace PlanC.WebApi.Models
 
 
         public ExamInfo Exam { get; set; }
+        public CoursePlan CoursePlan { get; set; }
     }
 }

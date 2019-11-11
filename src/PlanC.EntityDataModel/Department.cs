@@ -1,4 +1,5 @@
-﻿using System;
+﻿using PlanC.EntityDataModel;
+using System;
 using System.Collections.Generic;
 
 namespace PlanC.WebApi.Models
@@ -16,6 +17,7 @@ namespace PlanC.WebApi.Models
         //public DateTime? RcdCdttm { get; set; }
         public string TrackingUserId { get; set; }
 
+        public ICollection<User> Users { get; set; }
         public ICollection<Tpgm> Tpgm { get; set; }
     }
 }

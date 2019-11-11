@@ -16,17 +16,13 @@ namespace PlanC.WebApi.Models
         public string Id { get; set; }
         public DateTime VsnCdttm { get; set; }
         public string PgmId { get; set; }
-        [Required]
         public string Title { get; set; }
-        [Required]
         public decimal? Units { get; set; }
         public string Description { get; set; }
         public string EducationalIntent { get; set; }
-
-        public int TheoryHours { get; set; }
-        public int PracticeHours { get; set; }
-        public int HomeHours { get; set; }
-
+        public int? TheoryHours { get; set; }
+        public int? PracticeHours { get; set; }
+        public int? HomeHours { get; set; }
         public string PedagogicalIntent { get; set; }
         public DateTime? DepartmentApprovalDate { get; set; }
         public DateTime? CommitteeApprovalDate { get; set; }
