@@ -10,6 +10,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using PlanC.EntityDataModel;
 using PlanC.WebApi.Server.DataAccess;
 
 namespace PlanC.Web.Client
@@ -44,7 +45,7 @@ namespace PlanC.Web.Client
 
             // Ajout de la dbContext
             services.AddDbContext<PCU001Context>(options =>
-               options.UseSqlServer(Configuration.GetConnectionString("PCU001")));
+               options.UseSqlServer(Configuration.GetConnectionString("RDS_PCU001")));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

@@ -37,7 +37,7 @@ namespace PlanC.WebApi.Server.DataAccess
         {
             if (!optionsBuilder.IsConfigured)
             {
-                optionsBuilder.UseSqlServer("Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=PCU001;Integrated Security=True;Connect Timeout=60;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False");
+                optionsBuilder.UseSqlServer("Data Source=database-1.cai5lbxs9ofy.us-east-1.rds.amazonaws.com,1433;Initial Catalog=PCU001;User ID=dbo802668235;Password=Nemesis2123%*;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False");
             }
         }
 
@@ -288,9 +288,22 @@ namespace PlanC.WebApi.Server.DataAccess
                     .HasColumnName("CRS_DESC")
                     .HasColumnType("ntext");
 
-                entity.Property(e => e.Intent)
-                    .HasColumnName("CRS_INTENT")
+                entity.Property(e => e.EducationalIntent)
+                    .HasColumnName("CRS_EDU_INTENT")
                     .HasColumnType("ntext");
+
+                entity.Property(e => e.PedagogicalIntent)
+                    .HasColumnName("CRS_PDG_INTENT")
+                    .HasColumnType("ntext");
+
+                entity.Property(e => e.TheoryHours)
+                    .HasColumnName("THEORY_HRS");
+
+                entity.Property(e => e.PracticeHours)
+                    .HasColumnName("PRCT_HRS");
+
+                entity.Property(e => e.HomeHours)
+                    .HasColumnName("HOME_HRS");
 
                 entity.Property(e => e.Title)
                     .HasColumnName("CRS_TITLE")
