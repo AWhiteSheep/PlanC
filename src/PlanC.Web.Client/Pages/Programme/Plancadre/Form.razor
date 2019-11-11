@@ -1,0 +1,112 @@
+﻿@page "/programme/{id:int}/create"
+@using PlanC.Web.Client.Components
+@using PlanC.WebApi.Models
+@inject NavigationManager NavigationManager
+@inject PCU001Context context
+
+<!-- Section de navigation -->
+<div class="row mb-3">
+    <div class="col">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <!-- Donne accès au portail selon le role de l'utilisateur -->
+                <li class="breadcrumb-item"><a href="/"> Portail </a></li>
+                <li style="padding: 0 4px;"><i class="fas fa-home" style="font-size: 15px; color: #3f51b5;"></i></li>
+                <li class="breadcrumb-item"><i class="fas fa-circle" style="font-size: 5px; vertical-align: middle; padding-right: 2px;"></i></li>
+                <li class="breadcrumb-item active" aria-current="page"> Programmes </li>
+            </ol>
+        </nav>
+    </div>
+    <!-- Message distiné pour le groupe d'administration -->
+    <div class="col-12">
+        <div class="alert alert-light show shadow" role="alert">
+            <div class="alert-icon text-warning">
+                <i class="fas fa-exclamation-triangle"></i>
+            </div>
+            <div class="alert-text">
+                Veuillez vérifier que tous les plans cadres pour les programmes d'informatique soit à jour pour le 15 novembre.
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Formulaire d'un nouveau plan-cadre -->
+<div class="container">
+    <div class="row">
+        <!-- Valeur pour le titre du plan-cadre -->
+        <div class="col-lg-6">
+            <div class="form-group">
+                <label class="control-label" for="CrsTitle"> Titre du cours: </label>
+                <input readonly type="text" class="form-control" id="CrsTitle" placeholder="Titre du cours" name="CrsTitle" value="@program.PgmTitle" />
+            </div>
+        </div>
+        <!-- Valeur pour l'identification du cours -->
+        <div class="col-lg-6">
+            <div class="form-group">
+                <label class="control-label" for="CrsId"> Identifiant du cours: </label>
+                <input readonly type="text" class="form-control" id="CrsTitle" placeholder="Titre du cours" name="CrsTitle" value="@program.PgmId" />
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <!-- Nombre d'unités pour le cours données -->
+        <div class="col-md-6">
+            <div class="form-group">
+                <label class="control-label" for="Units">Nombre d'unité pour le cours: </label>
+                <input Mask="00000" @bind="CTemplate.Units" CssClass="theme-mask" id="Units" placeholder="Nombre d'unité" />
+                <ValidationMessage For="@(() => CTemplate.Units)" />
+            </div>
+        </div>
+        <!-- Ajout de la pondération -->
+        <div class="col-md-6">
+            <div class="form-group">
+                <label class="control-label" for="Ponderation">Pondération (propriété non trouvé): </label>
+                <input class="form-control" id="Ponderation" placeholder="Ingore It" name="Ponderation" />
+            </div>
+        </div>
+    </div>
+    <!-- Séparateur -->
+    <hr />
+    <!-- les intentions du cours -->
+    <div class="form-group">
+        <label class="control-label" for="CrsIntent">Intention du cours: </label>
+        <InputTextArea @bind -Value="CTemplate.Intent" rows="4" class="form-control" id="CrsIntent" placeholder="Intention éducative..." name="CrsIntent" />
+        <ValidationMessage For="@(() => CTemplate.Intent)" />
+    </div>
+    <!-- Entrés pour les intentions pédagogiques du cours -->
+    <div class="form-group">
+        <label class="control-label" for="IntentionPedagogique">Intention du pédagogique (propriété non trouvé): </label>
+        <InputTextArea rows="4" @bind-Value="CTemplate.Intent" class="form-control" id="IntentionPedagogique" placeholder="Ingore It" name="IntentionPedagogique" />
+        <ValidationMessage For="@(() => CTemplate.Intent)" />
+    </div>
+    <!-- Descriptions du cours -->
+    <div class="form-group">
+        <label class="control-label col-12" for="CrsDesc">Description du cours: </label>
+        <InputTextArea rows="4" @bind-Value="CTemplate.Description" class="form-control" id="CrsIntent" placeholder="Description du cours..." name="CrsDesc" />
+        <ValidationMessage For="@(() => CTemplate.Description)" />
+    </div>
+    <!--href="/planscadres/nouveau/ponderation"-->
+    <div class="col-12">
+        <!--href="/planscadres/nouveau/ponderation"-->
+        <button class="btn btn-dark" @onclick="HandleValidSubmit">Continuer</button>
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public string Id { get; set; }
+    public Tpgm program;
+
+    private CourseTemplate CTemplate = new CourseTemplate();
+
+    protected override void OnInitialized()
+    {
+        program = context.Tpgm.First(e => e.PgmId == Id);
+    }
+
+    // validation côté serveur
+    private void HandleValidSubmit()
+    {
+        NavigationManager.NavigateTo("/planscadres/nouveau/ponderation");
+    }
+}

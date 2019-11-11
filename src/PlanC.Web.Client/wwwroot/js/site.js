@@ -20,6 +20,14 @@ $("#sidebarToggle, #sidebarToggleTop").on('click', function (e) {
     };
 });
 
+
+window.modelInitializing = () => {
+    $("#loaderDepart").show();
+};
+window.modelLoaded = (symbol, price) => {
+    $("#loaderDepart").hide();
+};
+
 // Close any open menu accordions when window is resized below 768px
 $(window).resize(function () {
     if ($(window).width() < 768) {

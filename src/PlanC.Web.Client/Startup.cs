@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -25,11 +26,21 @@ namespace PlanC.Web.Client
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            // BLAZOR COOKIE Auth Code (begin)
+            services.Configure<CookiePolicyOptions>(options =>
+            {
+                options.CheckConsentNeeded = context => false;
+            });
+
+            // Ajoute les configuration pour configurer les options pour
+            // accèder les pages razors
             services.AddRazorPages();
             services.AddServerSideBlazor().AddCircuitOptions(configure => {
                 configure.DetailedErrors = true;
             });
-            services.AddControllersWithViews();
+
+            services.AddMvc(options =>
+                 options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute()));
 
             // Ajout de la dbContext
             services.AddDbContext<PCU001Context>(options =>
@@ -52,6 +63,7 @@ namespace PlanC.Web.Client
             // Add the endpoint routing matcher middleware to the request pipeline
             app.UseRouting();
             app.UseHttpsRedirection();
+            app.UseCookiePolicy();
             // For the wwroot folder
             app.UseStaticFiles();
             // Add the authorization middleware to the request pipeline
@@ -62,7 +74,7 @@ namespace PlanC.Web.Client
                 endpoints.MapBlazorHub(option => {
                     option.Transports = Microsoft.AspNetCore.Http.Connections.HttpTransportType.LongPolling;                    
                 });
-                endpoints.MapFallbackToPage("/Index");
+                endpoints.MapFallbackToPage("/_Host");
             });
         }
     }
