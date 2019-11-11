@@ -1,0 +1,204 @@
+﻿@page "/programme"
+@*context de la base de donné et js runtime*@
+@inject PCU001Context _context
+@inject IJSRuntime JSRuntime
+@* les cdn(s) doivent être ajoutés pour le bon fonctionnement du componant *@
+
+<!-- Section de navigation -->
+<div class="row mb-3">
+    <div class="col">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <!-- Donne accès au portail selon le role de l'utilisateur -->
+                <li class="breadcrumb-item"><a href="/"> Portail </a></li>
+                <li style="padding: 0 4px;"><i class="fas fa-home" style="font-size: 15px; color: #3f51b5;"></i></li>
+                <li class="breadcrumb-item"><i class="fas fa-circle" style="font-size: 5px; vertical-align: middle; padding-right: 2px;"></i></li>
+                <li class="breadcrumb-item active" aria-current="page"> Programmes </li>
+            </ol>
+        </nav>
+    </div>
+    <!-- Message distiné pour le groupe d'administration -->
+    <div class="col-12">
+        <div class="alert alert-light show shadow" role="alert">
+            <div class="alert-icon text-warning">
+                <i class="fas fa-exclamation-triangle"></i>
+            </div>
+            <div class="alert-text">
+                Veuillez vérifier que tous les plans cadres pour les programmes d'informatique soit à jour pour le 15 novembre.
+            </div>
+        </div>
+    </div>
+</div>
+
+<div style="position:relative;">
+    <!-- -->
+    @if (programmes == null)
+    {
+        <p><em>En cours de chargement...</em></p>
+    }
+    else
+    {
+        <div class="col-12 firstLayer" style="position: absolute; top: 0; left: 0;">
+            <div class="card shadow">
+                <div class="card-header">
+                    <div class="d-flex">
+                        <button class="btn btn-primary" @onclick="Add"> Ajouter un département </button>
+                        <div class="custom-checkbox pl-5 pt-2 disable-select">
+                            <input @bind="BulkCheck" type="checkbox" class="custom-control-input" id="bulkCheckDepart" />
+                            <label class="custom-control-label" for="bulkCheckDepart"> Ajouter plus d'un département </label>
+                        </div>
+                    </div>
+                </div>
+
+                @if (!programmes.Any())
+                {
+                    <p><em>Nous avons trouvé aucun programme.</em></p>
+                }
+                else
+                {
+                    @foreach (Tpgm programme in programmes)
+                    {
+                        <!-- Affiche les informations d'un département -->
+                        <table style="position: relative">
+                            <tbody>
+                                <tr>
+                                    <td valign="top">
+                                        <h4><a href="#">#@programme.PgmId</a></h4>
+                                    </td>
+                                    <td>
+                                        <h4>@programme.PgmTitle</h4>
+                                        <!-- Renvoit les programmes reliés au département-->
+                                    </td>
+                                    <td valign="top" class="flex-column">
+                                        <a class="btn btn-success" href="/Programme/@programme.PgmId.Replace('.', '-')">Consulter</a>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    }
+                }
+            </div>
+        </div>
+    }
+    <div class="card shadow hiddenForm col-12">
+        <div class="card-header">
+            <div class="d-flex">
+                <button class="btn btn-danger" @onclick="Cancel"> Anuller </button>
+                <div class="custom-checkbox pl-5 pt-2 disable-select">
+                    <input @bind="BulkCheck" type="checkbox" class="custom-control-input" id="bulkCheckDepart" />
+                    <label class="custom-control-label" for="bulkCheckDepart"> Ajouter plus d'un département </label>
+                </div>
+            </div>
+        </div>
+        <form class="col-12">
+            <div class="form-row">
+                <div class="form-group col-12">
+                    <label for="title"> Nom du programme </label>
+                    <input id="title" class="form-control @(IsValidating ? (IsTitleValid ? "is-valid": "is-invalid") : "")" @bind="@newProgram.PgmTitle" required />
+                    <div class="valid-feedback">
+                        Semble bon!
+                    </div>
+                    <div class="invalid-feedback">
+                        Veuillez entrer un nom du programme.
+                    </div>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group col-12">
+                    <label for="description"> Description </label>
+                    <textarea id="description" class="form-control @(IsValidating ? (IsDescriptionValid ? "is-valid": "is-invalid"): "")" rows="4" @bind="@newProgram.PgmDesc" required></textarea>
+                    <div class="valid-feedback">
+                        Semble bon!
+                    </div>
+                    <div class="invalid-feedback">
+                        Veuillez entrer une description.
+                    </div>
+                </div>
+            </div>
+            <button class="btn btn-success" @onclick="SaveAsync"> Sauvegarder </button>
+        </form>
+    </div>
+</div>
+
+@code {
+
+    private List<Tpgm> programmes;
+    private Tpgm newProgram = new Tpgm();
+    private bool IsCreating;
+    private bool IsValidating = false;
+    private bool IsTitleValid;
+    private bool IsDescriptionValid;
+    private bool BulkCheck;
+
+    protected override void OnInitialized()
+    {
+        // part l'initialisateur chez le client
+        JSRuntime.InvokeAsync<string>("modelInitializing");
+        programmes = _context.Tpgm.ToList();
+    }
+
+    protected override void OnAfterRender(bool firstRender)
+    {
+        if (firstRender)
+        {
+            JSRuntime.InvokeAsync<string>("initForm");
+        }
+    }
+
+    private void Add()
+    {
+        JSRuntime.InvokeAsync<string>("showForm");
+        newProgram = new Tpgm();
+        IsCreating = true;
+    }
+
+    private void Cancel()
+    {
+        JSRuntime.InvokeAsync<string>("hideForm");
+        newProgram = new Tpgm();
+        IsCreating = false;
+    }
+
+    private async void SaveAsync()
+    {
+        IsValidating = true;
+        IsTitleValid = !string.IsNullOrEmpty(newProgram.PgmTitle);
+        IsDescriptionValid = !string.IsNullOrEmpty(newProgram.PgmDesc);
+
+        if (IsTitleValid && IsDescriptionValid)
+        {
+            // ajoute les données dans la database
+            try
+            {
+                newProgram.TrackingUserId = "00000";
+                _context.Tpgm.Add(newProgram);
+                _context.SaveChanges();
+
+                newProgram = new Tpgm();
+
+                // si le check est true redébuter le formulaire
+                if (BulkCheck)
+                {
+                    IsCreating = true;
+                    IsValidating = false;
+                }
+                else
+                {
+                    IsCreating = false;
+                }
+
+                // update le ui
+                StateHasChanged();
+            }
+            catch (Exception e)
+            {
+                await JSRuntime.InvokeAsync<string>("alertDatabaseError");
+            }
+        }
+
+        StateHasChanged();
+    }
+}
+
+<style>
+</style>

@@ -3,14 +3,21 @@
 @namespace PlanC.Web.Client.Pages
 @addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
 
+@inject Microsoft.AspNetCore.Antiforgery.IAntiforgery Xsrf
+@functions{
+    public string GetAntiXsrfRequestToken()
+    {
+        return Xsrf.GetAndStoreTokens(HttpContext).RequestToken;
+    }
+}
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <!-- Meta tags -->
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="referrer" content="origin">
-
+    <base href="~/" />
     <!-- Titre de la page mère -->
     <title>@ViewData["Title"] - Client</title>
 
@@ -41,7 +48,7 @@
                 <!-- Begin Page Content -->
                 <div class="container-fluid" style="position:relative">
                     <app>
-                        @(await Html.RenderComponentAsync<App>(RenderMode.ServerPrerendered))
+                        @(await Html.RenderComponentAsync<App>(RenderMode.Server))
                     </app>
                 </div>
             </div>
@@ -91,6 +98,9 @@
     <script src="https://cdn.syncfusion.com/ej2/17.3.18/dist/ej2.min.js"></script>
     <script src="https://cdn.syncfusion.com/ej2/17.3.18/dist/ejs.interop.min.js"></script>
 
+    <!-- Anime js -->
+    <script src="https://cdn.jsdelivr.net/npm/animejs@3.1.0/lib/anime.min.js"></script>
+
     <!-- Auto complete master -->
     <script src="~/js/jquery.autocomplete.min.js"></script>
 
@@ -98,6 +108,11 @@
     <script src="~/js/site.js" asp-append-version="true"></script>
     <script src="~/_framework/blazor.server.js" autostart="false"></script>
     <script>
+
+        $.ajaxPrefilter(function (options, originalOptions, xhr) {
+            xhr.setRequestHeader("__RequestVerificationToken", '@GetAntiXsrfRequestToken()');
+        });
+
         // god bless stackoverflow
         // https://stackoverflow.com/questions/57366355/how-do-i-use-blazor-server-side-inside-a-razor-component-library-using-areas
         Blazor.start({

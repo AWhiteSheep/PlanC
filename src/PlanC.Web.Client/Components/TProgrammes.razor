@@ -45,13 +45,10 @@ else
 
     protected override void OnInitialized()
     {
-        // part l'initialisateur chez le client
-        JSRuntime.InvokeAsync<string>("modelInitializing");
         programmes = _context.Tpgm.ToList();
     }
 
     protected override void OnAfterRender(bool firstRender)
     {
-        JSRuntime.InvokeAsync<string>("modelLoaded");
     }
 }

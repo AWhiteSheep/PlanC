@@ -1,0 +1,75 @@
+﻿@page "/departement"
+
+@using Microsoft.AspNetCore.Components
+@using PlanC.WebApi.Models
+@inject PCU001Context context
+<!-- Section de navigation -->
+<div class="row mb-3">
+    <div class="col">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="~/Admin"> Portail </a></li>
+                <li style="padding: 0 4px;"><i class="fas fa-home" style="font-size: 15px; color: #3f51b5;"></i></li>
+                <li class="breadcrumb-item"><i class="fas fa-circle" style="font-size: 5px; vertical-align: middle; padding-right: 2px;"></i></li>
+                <li class="breadcrumb-item active" aria-current="page"> Départements </li>
+            </ol>
+        </nav>
+    </div>
+    <!-- Message distiné pour le groupe d'administration -->
+    <div class="col-12">
+        <div class="alert alert-light show shadow" role="alert">
+            <div class="alert-icon text-warning">
+                <i class="fas fa-exclamation-triangle"></i>
+            </div>
+            <div class="alert-text">
+                Vous devez avoir la dernière version de votre plan de cours pour le 26 septembre.
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="loaderDepart" class="row" style="display: none;">
+    <div class="col-12 text-center">
+        <img src="/lib/loader/puff-light.svg" height="350" alt="">
+    </div>
+</div>
+
+<!-- Container pour blazor component -->
+<div class="row justify-content-center">
+    <!-- Affiche tous les départements -->
+    <div class="col-12">
+        <div class="card shadow">
+            <div class="card-body">
+                @foreach (Department department in departments)
+                {
+                    <!-- Affiche les informations d'un département -->
+                    <table style="position: relative">
+                        <tbody>
+                            <tr>
+                                <td valign="top">
+                                    <h4><a href="#">#@department.Id</a></h4>
+                                </td>
+                                <td>
+                                    <h4>@department.Title</h4>
+                                    <!-- Renvoit les programmes reliés au département-->
+                                </td>
+                                <td valign="top" class="flex-column">
+                                    <a class="btn btn-success" href="/Departement/@department.Id">Consulter</a>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {   
+    protected List<Department> departments;
+
+    protected override void OnInitialized()
+    {
+        departments = context.Departments.OrderBy(e => e.Title).ToList();
+    }
+}

@@ -1,0 +1,23 @@
+﻿@using Syncfusion.EJ2.Blazor.Buttons
+@using Syncfusion.EJ2.Blazor.Popups
+
+<!-- Component avec lequel nous avons de l'aide -->
+<EjsTooltip Target="@TargetId" Content="@Tooltip" IsSticky="true" CloseDelay="1000">
+    <e-content-template>
+        <EjsButton ID="@Id" Content="@Content" IsPrimary="true"></EjsButton>
+    </e-content-template>
+</EjsTooltip>
+
+@code {
+    [Parameter]
+    public string Content { get; set; } = "Button";
+    [Parameter]
+    public string Id { get; set; } = "Button1";
+    string TargetId;
+    [Parameter]
+    public object Tooltip { get; set; } = "Click close icon to close me";
+    protected override void OnParametersSet()
+    {
+        TargetId = "#" + Id;
+    }
+}
