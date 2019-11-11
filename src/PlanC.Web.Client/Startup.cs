@@ -11,6 +11,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using PlanC.EntityDataModel;
+using PlanC.Web.Client.Models2;
 using PlanC.WebApi.Server.DataAccess;
 
 namespace PlanC.Web.Client
@@ -77,6 +78,10 @@ namespace PlanC.Web.Client
                 });
                 endpoints.MapFallbackToPage("/_Host");
             });
+
+            var context = new PCU001Context2();
+
+            context.Tcrstmplt.Load();
         }
     }
 }
