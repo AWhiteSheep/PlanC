@@ -1,5 +1,6 @@
 ﻿@page "/"
 
+@inject IJSRuntime JSRuntime
 
 <div class="row">
     <div id="theme-portal-image" class="col-lg-6">
@@ -48,3 +49,33 @@
         </div>
     </div>
 </div>
+
+<button @onclick="Yay">yay</button>
+
+
+<div id="editor">
+</div>
+
+@code {
+    protected override async void OnAfterRender(bool firstRender)
+    {
+        // la vue peut se render plusieurs fois au initialise et
+        // suite au changement de la composante
+        if (firstRender)
+        {
+            // call avec le jsinterop afin de lier les composantes
+            // que jquery et que les plugins ui ne peuvent s'accroché
+            // car elles ont un cycle différent
+            await JSRuntime.InvokeAsync<string>("InitTrumbowyg", "#editor");
+        }
+    }
+
+    async void Yay()
+    {
+        // call avec le jsinterop afin de lier les composantes
+        // que jquery et que les plugins ui ne peuvent s'accroché
+        // car elles ont un cycle différent
+        var text = await JSRuntime.InvokeAsync<string>("PropsTrumbowyg", new object[] { "#editor", "html" });
+
+    }
+}

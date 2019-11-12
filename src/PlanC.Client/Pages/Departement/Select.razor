@@ -1,6 +1,8 @@
 ﻿@page "/departement/{id:int}"
 @inject PCU001Context context
 
+@using  PlanC.Client.Components
+
 <!-- Section de navigation -->
 <div class="row mb-3">
     <div class="col">
@@ -47,7 +49,8 @@
                 </ul>
                 <!-- Affiche tous les politiques concernant le département en formaté -->
                 <h5><b>Politique du département</b></h5>
-                <p>@(new MarkupString(department.Policy))</p>
+                <!-- protège le client pour les attaques -->
+                <p><MarkdownView Content="@department.Policy" /></p>
             </td>
             <td valign="top" class="flex-column">
                 <button class="btn btn-success">Modifier</button>

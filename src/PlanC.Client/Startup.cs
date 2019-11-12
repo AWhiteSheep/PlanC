@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Ganss.XSS;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Hosting;
@@ -30,11 +31,23 @@ namespace PlanC.Client
         {
             services.AddRazorPages();
             services.AddServerSideBlazor();
-            services.AddSingleton<WeatherForecastService>();
 
             // Ajout de la dbContext
             services.AddDbContext<PCU001Context>(options =>
-               options.UseSqlServer(Configuration.GetConnectionString("PCU001")));
+               options.UseSqlServer(Configuration.GetConnectionString("RDS_PCU001")));
+
+            // Be Safe – Sanitize Your HTML 
+            services.AddScoped<IHtmlSanitizer, HtmlSanitizer>(x =>
+            {
+                // https://blog.jonblankenship.com/2019/01/27/safely-rendering-markdown-in-blazor/
+                // Configure sanitizer rules as needed here.
+                // For now, just use default rules + allow class attributes
+                var sanitizer = new Ganss.XSS.HtmlSanitizer();
+                sanitizer.AllowedAttributes.ToList().AddRange(new List<string> { "b", "ul", "ol", "li", "p","i", "u", "em", "strong",
+                 "h1","h2","h3","h4","h5","h6","br","hr","blockquote","code", "del", "dl", "dd", "img", "pre", "s", "sup", "sub", "strike",
+                "div"});
+                return sanitizer;
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

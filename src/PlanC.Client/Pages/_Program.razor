@@ -38,47 +38,52 @@
     }
     else
     {
-        <div class="col-12 firstLayer" style="position: absolute; top: 0; left: 0;">
-            <div class="card shadow">
-                <div class="card-header">
-                    <div class="d-flex">
-                        <button class="btn btn-primary" @onclick="Add"> Ajouter un département </button>
-                        <div class="custom-checkbox pl-5 pt-2 disable-select">
-                            <input @bind="BulkCheck" type="checkbox" class="custom-control-input" id="bulkCheckDepart" />
-                            <label class="custom-control-label" for="bulkCheckDepart"> Ajouter plus d'un département </label>
-                        </div>
-                    </div>
-                </div>
-
-                @if (!programmes.Any())
+    <div class="col-12 firstLayer" style="position: absolute; top: 0; left: 0;">
+        <div class="shadow card-body">
+            <ul id="wk-7b0" class="uk-subnav uk-subnav-pill uk-flex-center">
+                <li class="" data-uk-filter=""><a href="#">Tous</a></li>
+                <li data-uk-filter="Administration" class=""><a href="#">Administration</a></li>
+                <li data-uk-filter="Arts &amp; Communications" class=""><a href="#">Arts &amp; Communications</a></li>
+                <li data-uk-filter="Humains" class=""><a href="#">Humains</a></li>
+                <li data-uk-filter="Physiques" class="uk-active"><a href="#">Physiques</a></li>
+                <li data-uk-filter="Santé" class=""><a href="#">Santé</a></li>
+            </ul>
+            @if (!programmes.Any())
+            {
+                <p><em>Nous avons trouvé aucun programme.</em></p>
+            }
+            else
+            {
+                @foreach (Tpgm programme in programmes)
                 {
-                    <p><em>Nous avons trouvé aucun programme.</em></p>
+                    <!-- Affiche les informations d'un département -->
+                    <table style="position: relative">
+                        <tbody>
+                            <tr>
+                                <td valign="top">
+                                    <h4><a href="#">#@programme.PgmId</a></h4>
+                                </td>
+                                <td>
+                                    <h4>@programme.PgmTitle</h4>
+                                    <!-- Renvoit les programmes reliés au département-->
+                                </td>
+                                <td valign="top" class="flex-column">
+                                    <a class="btn btn-success" href="/Programme/@programme.PgmId.Replace('.', '-')">Consulter</a>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
                 }
-                else
-                {
-                    @foreach (Tpgm programme in programmes)
-                    {
-                        <!-- Affiche les informations d'un département -->
-                        <table style="position: relative">
-                            <tbody>
-                                <tr>
-                                    <td valign="top">
-                                        <h4><a href="#">#@programme.PgmId</a></h4>
-                                    </td>
-                                    <td>
-                                        <h4>@programme.PgmTitle</h4>
-                                        <!-- Renvoit les programmes reliés au département-->
-                                    </td>
-                                    <td valign="top" class="flex-column">
-                                        <a class="btn btn-success" href="/Programme/@programme.PgmId.Replace('.', '-')">Consulter</a>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    }
-                }
+            }
+        </div>
+        <div class="d-flex flex-column text-right pt-3 pb-3">
+            <button class="btn btn-primary" @onclick="Add"> Ajouter un département </button>
+            <div class="custom-checkbox pl-5 pt-2 disable-select">
+                <input @bind="BulkCheck" type="checkbox" class="custom-control-input" id="bulkCheckDepart" />
+                <label class="custom-control-label" for="bulkCheckDepart"> Cocher pour ajouter plus d'un département </label>
             </div>
         </div>
+    </div>
     }
     <div class="card shadow hiddenForm col-12">
         <div class="card-header">

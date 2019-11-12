@@ -43,11 +43,39 @@ INSERT INTO TPGM
 )
 VALUES
 (
-	'420.B0',
+	'420.AA',
 	1,
 	'Technique de l’informatique',
 	'Le programme d’études Techniques de l’informatique vise à former des techniciennes ou techniciens en informatique qui exerceront leur profession dans les domaines du développement d’applications et de l’administration des réseaux informatiques.',
-	'AA',
+	'TA',
+	'11111'
+),
+(
+	'420.B0',
+	1,
+	'Programmation et sécurité',
+	'Le programme d’études Techniques de l’informatique vise à former des techniciennes ou techniciens en
+informatique dont la profession cible le développement d’applications ou l’administration des réseaux
+informatiques.
+Dans le domaine du développement d’applications, les techniciennes et les techniciens participent à la
+conception d’applications fonctionnant sur différentes plateformes et en effectuent le développement et la
+maintenance. Les applications développées contribuent à des domaines variés dans presque tous les
+secteurs d’activité où l’intégrité de ses données est la base de la conception.
+Dans le domaine de l’administration des réseaux informatiques, les techniciennes et les techniciens
+participent à la conception de réseaux, en effectuent l’installation, en fait sa gestion et la sécurisation de ses
+serveurs et ordinateurs. Leur tâche consiste aussi à assurer le fonctionnement des services Internet et
+intranet qui y sont liés, tels le partage de ressources, la communication, l’hébergement, la téléphonie, etc.
+Ces personnes offrent également du soutien aux utilisatrices et aux utilisateurs.
+Selon l’ampleur du projet, le travail est effectué individuellement ou en collaboration avec différents
+spécialistes : autres techniciennes et techniciens en informatique, analystes, conseillères ou conseillers en
+architecture de données ou de réseaux, chargées ou chargés de projets, personnel responsable de
+l’assurance qualité, fournisseurs, etc.
+L’environnement de travail est très diversifié. Il est souvent constitué de composants matériels et logiciels à
+la fine pointe des technologies, mais parfois de composants de générations antérieures. Le travail
+demande donc une capacité d’adaptation importante, un perfectionnement constant de ses connaissances,
+d’excellentes capacités de raisonnement, l’application d’une démarche structurée, de la polyvalence, ainsi
+que de l’ouverture d’esprit. ',
+	'TA',
 	'11111'
 ),
 (
@@ -55,7 +83,7 @@ VALUES
 	2,
 	'Technique des soins infirmiers',
 	'Les personnes professionnelles de la santé doivent se préparer à assumer de nouveaux rôles et à relever des défis reliés aux changements scientifiques, technologiques, organisationnels et politiques. Le programme Soins infirmiers 180.A0 s’inscrit dans le cadre de ces changements et vise à former des personnes aptes à exercer la profession d’une façon autonome et responsable.',
-	'BB',
+	'TS',
 	'22222'
 ),
 (
@@ -63,7 +91,7 @@ VALUES
 	4,
 	'Formation générale/Français',
 	'Dans la vie, il est important de bien écrire. C’est pourquoi le programe de français existe.',
-	'CC',
+	'PH',
 	'33333'
 )
 GO
