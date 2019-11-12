@@ -13,6 +13,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using PlanC.Client.Data;
 using PlanC.WebApi.Models;
+using PlanC.WebApi.Server.DataAccess;
 
 namespace PlanC.Client
 {
