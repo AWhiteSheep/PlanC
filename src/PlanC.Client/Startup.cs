@@ -58,7 +58,9 @@ namespace PlanC.Client
 
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapBlazorHub();
+                endpoints.MapBlazorHub(option => {
+                    option.Transports = Microsoft.AspNetCore.Http.Connections.HttpTransportType.LongPolling;
+                });
                 endpoints.MapFallbackToPage("/_Host");
             });
         }

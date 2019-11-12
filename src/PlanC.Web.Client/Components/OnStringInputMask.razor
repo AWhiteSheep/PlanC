@@ -1,7 +1,0 @@
-﻿@using Syncfusion.EJ2.Blazor.Inputs
-@inherits InputText
-
-<EjsMaskedTextBox @attributes="AdditionalAttributes"
-    value="@CurrentValue"
-    @oninput="EventCallback.Factory.CreateBinder<string>(
-     this, __value => CurrentValueAsString = __value, CurrentValueAsString)" />

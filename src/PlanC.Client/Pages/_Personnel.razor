@@ -1,10 +1,6 @@
-﻿@page
-@namespace PlanC.Web.Client.Areas.Personnel.Pages
+﻿@page "/personnel"
 
-@model IndexModel
-@{
-    ViewData["Title"] = "Le personnel";
-}
+@namespace PlanC.Client.Pages
 
 <!-- Section de navigation -->
 <div class="row mb-3">
@@ -66,27 +62,3 @@
         </div>
     </div>
 </div>
-
-@section Scripts  {
-    <!-- Scripts unique pour la page -->
-    <script src="~/js/data/jquery.dataTables.min.js"></script>
-    <script src="~/js/data/dataTables.bootstrap4.min.js"></script>
-    <script src="~/js/data/datatables-demo.js"></script>
-    <!-- uniquement pour la table razor -->
-    <script>
-        ej.base.L10n.load({
-            'fr-FR': {
-                'grid': {
-                    'EmptyRecord': 'Enregistrement vide',
-                    'Add': 'Ajouter',
-                    'Edit': 'Modifier',
-                    'Delete': 'Supprimer',
-                    'Items': 'Éléments'
-                },
-                'pager': {
-                    'currentPageInfo': '{0} de {1} pages'
-                }
-            }
-        });
-    </script>
-}

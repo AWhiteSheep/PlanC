@@ -286,7 +286,7 @@ namespace PlanC.WebApi.Models
                     .HasColumnName("CRS_DESC")
                     .HasColumnType("ntext");
 
-                entity.Property(e => e.Intent)
+                entity.Property(e => e.EducationalIntent)
                     .HasColumnName("CRS_INTENT")
                     .HasColumnType("ntext");
 

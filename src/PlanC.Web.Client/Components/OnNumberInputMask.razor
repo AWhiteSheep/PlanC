@@ -1,7 +1,0 @@
-﻿@using Syncfusion.EJ2.Blazor.Inputs
-@inherits InputNumber<decimal?>
-
-<EjsMaskedTextBox @attributes="AdditionalAttributes"
-    value="@CurrentValue"
-    @oninput="EventCallback.Factory.CreateBinder<decimal?>(
-     this, __value => CurrentValue = __value, CurrentValue)" />
