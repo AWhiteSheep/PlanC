@@ -1,0 +1,99 @@
+﻿@page "/competence"
+@inject PCU001Context context
+@inject NavigationManager NavigationManager
+
+<div class="container">
+    <div class="form-group">
+        <label class="control-label" for="SklTitle">Titre de la compétence: </label>
+        <input @bind="skill.Title" class="form-control" id="SklTitle" placeholder="Titre de la compétence" />
+    </div>
+    <div class="row">
+        <div class="col-6">
+            <div class="form-group">
+                <label class="control-label" for="SklId">Numéro de la compétence: </label>
+                <input @bind="skill.Id" class="form-control" Mask="0000" id="SklId" placeholder="ex: 1051." />
+            </div>
+        </div>
+        <!-- Sélection du programme -->
+        <div class="col-6">
+            <div class="form-group">
+                <label class="control-label" for="PgmId">Sélectionner un programme: </label>
+                <EjsDropDownList CssClass="theme-dropdown" TValue="string" @bind-Value="skill.StudyProgramId" ModelType="programme" DataSource="programmes" Placeholder="Choix des programmes..." AllowFiltering=true IgnoreAccent=true>
+                    <DropDownListTemplates>
+                        <ItemTemplate Context="modelItem">
+                            <span><span class='Title'>@((modelItem as Tpgm).PgmTitle)</span><span class='PgmId'>@((modelItem as Tpgm).PgmId)</span></span>
+                        </ItemTemplate>
+                        <ValueTemplate Context="modelItem">
+                            <span>@((modelItem as Tpgm).PgmTitle) - @((modelItem as Tpgm).PgmId)</span>
+                        </ValueTemplate>
+                    </DropDownListTemplates>
+                    <DropDownListFieldSettings GroupBy="" Value="PgmId" Text="PgmTitle"></DropDownListFieldSettings>
+                </EjsDropDownList>
+            </div>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="control-label" for="AsscAttd">Attente: </label>
+        <textarea @bind="skill.AsscAttd" class="form-control" rows="5" id="AsscAttd" name="AsscAttd"></textarea>
+    </div>
+    <div class="form-group">
+        <label class="control-label" for="SklContext">Context de réalisation: </label>
+        <textarea @bind="cntxt.Title" class="form-control" rows="5" id="SklContext" name="SklContext"></textarea>
+    </div>
+    <div class="form-group">
+        <label class="control-label">Élément de la compétence: </label>
+        <EjsGrid DataSource="skElements" TValue="SkillElement" AllowPaging="true" Locale="fr-FR" Toolbar="@(new string[] { "Add", "Edit", "Delete", "Cancel", "Update"  })">
+            <GridEditSettings AllowAdding="true" AllowEditing="true" AllowDeleting="true" Mode="EditMode.Normal"></GridEditSettings>
+            <GridColumns>
+                <GridColumn Field=@nameof(SkillElement.Title) HeaderText="Titre élément" TextAlign="TextAlign.Right" Width="130"></GridColumn>
+                <GridColumn Field=@nameof(SkillElement.Description) HeaderText="Déscription" TextAlign="TextAlign.Right" Width="200"></GridColumn>
+            </GridColumns>
+        </EjsGrid>
+    </div>
+    <div class="col-12">
+        <button class="btn btn-default" @onclick="HandleValidSubmit">Submit</button>
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public Tpgm programme { get; set; }
+
+    Skill skill = new Skill();
+    SkillAchievementContext cntxt = new SkillAchievementContext();
+
+    List<SkillElement> skElements = new List<SkillElement>();
+    List<Tpgm> programmes;
+
+
+    public async void HandleValidSubmit()
+    {
+        skElements.ForEach(e => { e.SkillId = skill.Id; e.SequenceNumber = (short)(skElements.IndexOf(e) + 1); });
+        skill.Tsklelem = skElements;
+        cntxt.SkillId = skill.Id;
+        skill.Tsklcntxt.Add(cntxt);
+
+        context.Skills.Add(skill);
+        try
+        {
+            Console.WriteLine($"SQL return code: {await context.SaveChangesAsync()}");
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine($"Error: {e.Message} -- {e.InnerException}");
+        }
+        NavigationManager.NavigateTo("/");
+    }
+
+    protected override void OnInitialized()
+    {
+        programmes = context.Tpgm.ToList();
+    }
+}
+
+<style>
+    .PgmId {
+        right: 15px;
+        position: absolute;
+    }
+</style>

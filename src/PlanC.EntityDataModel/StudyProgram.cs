@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text.Json.Serialization;
 
 namespace PlanC.WebApi.Models
 {
@@ -19,6 +20,7 @@ namespace PlanC.WebApi.Models
         public string TrackingUserId { get; set; }
 
 
+        [JsonIgnore]
         public Department Department { get; set; }
         public ICollection<CourseTemplate> CourseTemplates { get; set; }
         public ICollection<Skill> Skills { get; set; }

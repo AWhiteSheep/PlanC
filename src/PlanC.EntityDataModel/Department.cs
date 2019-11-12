@@ -1,6 +1,7 @@
 ﻿using PlanC.EntityDataModel;
 using System;
 using System.Collections.Generic;
+using System.Text.Json.Serialization;
 
 namespace PlanC.WebApi.Models
 {
@@ -18,6 +19,7 @@ namespace PlanC.WebApi.Models
         public string TrackingUserId { get; set; }
 
         public ICollection<User> Users { get; set; }
+        [JsonIgnore]
         public ICollection<Tpgm> Tpgm { get; set; }
     }
 }
