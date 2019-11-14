@@ -74,4 +74,8 @@
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
     </Content>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="wwwroot\lib\trumbowyg\icons.svg" />
+    <None Include="wwwroot\lib\trumbowyg\sass\trumbowyg.scss" />
+  </ItemGroup>
 </Project>

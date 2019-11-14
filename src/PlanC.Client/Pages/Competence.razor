@@ -5,26 +5,26 @@
 <div class="container">
     <div class="form-group">
         <label class="control-label" for="SklTitle">Titre de la compétence: </label>
-        <input @bind="skill.Title" class="form-control" id="SklTitle" placeholder="Titre de la compétence" />
+        <input @bind="skill.Enonce" class="form-control" id="SklTitle" placeholder="Titre de la compétence" />
     </div>
     <div class="row">
         <div class="col-6">
             <div class="form-group">
                 <label class="control-label" for="SklId">Numéro de la compétence: </label>
-                <input @bind="skill.Id" class="form-control" Mask="0000" id="SklId" placeholder="ex: 1051." />
+                <input @bind="skill.CompetenceId" class="form-control" Mask="0000" id="SklId" placeholder="ex: 1051." />
             </div>
         </div>
         <!-- Sélection du programme -->
         <div class="col-6">
             <div class="form-group">
                 <label class="control-label" for="PgmId">Sélectionner un programme: </label>
-                <EjsDropDownList CssClass="theme-dropdown" TValue="string" @bind-Value="skill.StudyProgramId" ModelType="programme" DataSource="programmes" Placeholder="Choix des programmes..." AllowFiltering=true IgnoreAccent=true>
+                <EjsDropDownList CssClass="theme-dropdown" TValue="int" @bind-Value="skill.DisciplineId" ModelType="programme" DataSource="programmes" Placeholder="Choix des programmes..." AllowFiltering=true IgnoreAccent=true>
                     <DropDownListTemplates>
                         <ItemTemplate Context="modelItem">
-                            <span><span class='Title'>@((modelItem as Tpgm).PgmTitle)</span><span class='PgmId'>@((modelItem as Tpgm).PgmId)</span></span>
+                            <span><span class='Title'>@((modelItem as Programmes).Designation)</span><span class='PgmId'>@((modelItem as Programmes).Id)</span></span>
                         </ItemTemplate>
                         <ValueTemplate Context="modelItem">
-                            <span>@((modelItem as Tpgm).PgmTitle) - @((modelItem as Tpgm).PgmId)</span>
+                            <span>@((modelItem as Programmes).Designation) - @((modelItem as Programmes).Id)</span>
                         </ValueTemplate>
                     </DropDownListTemplates>
                     <DropDownListFieldSettings GroupBy="" Value="PgmId" Text="PgmTitle"></DropDownListFieldSettings>
@@ -34,19 +34,19 @@
     </div>
     <div class="form-group">
         <label class="control-label" for="AsscAttd">Attente: </label>
-        <textarea @bind="skill.AsscAttd" class="form-control" rows="5" id="AsscAttd" name="AsscAttd"></textarea>
+        <textarea @bind="skill.AttitudeAttendu" class="form-control" rows="5" id="AsscAttd" name="AsscAttd"></textarea>
     </div>
     <div class="form-group">
         <label class="control-label" for="SklContext">Context de réalisation: </label>
-        <textarea @bind="cntxt.Title" class="form-control" rows="5" id="SklContext" name="SklContext"></textarea>
+        <textarea @bind="cntxt.Text" class="form-control" rows="5" id="SklContext" name="SklContext"></textarea>
     </div>
     <div class="form-group">
         <label class="control-label">Élément de la compétence: </label>
-        <EjsGrid DataSource="skElements" TValue="SkillElement" AllowPaging="true" Locale="fr-FR" Toolbar="@(new string[] { "Add", "Edit", "Delete", "Cancel", "Update"  })">
+        <EjsGrid DataSource="skElements" TValue="ElementsCompetence" AllowPaging="true" Locale="fr-FR" Toolbar="@(new string[] { "Add", "Edit", "Delete", "Cancel", "Update"  })">
             <GridEditSettings AllowAdding="true" AllowEditing="true" AllowDeleting="true" Mode="EditMode.Normal"></GridEditSettings>
             <GridColumns>
-                <GridColumn Field=@nameof(SkillElement.Title) HeaderText="Titre élément" TextAlign="TextAlign.Right" Width="130"></GridColumn>
-                <GridColumn Field=@nameof(SkillElement.Description) HeaderText="Déscription" TextAlign="TextAlign.Right" Width="200"></GridColumn>
+                <GridColumn Field=@nameof(ElementsCompetence.Libele) HeaderText="Titre élément" TextAlign="TextAlign.Right" Width="130"></GridColumn>
+                <GridColumn Field=@nameof(ElementsCompetence.Description) HeaderText="Déscription" TextAlign="TextAlign.Right" Width="200"></GridColumn>
             </GridColumns>
         </EjsGrid>
     </div>
@@ -57,23 +57,23 @@
 
 @code {
     [Parameter]
-    public Tpgm programme { get; set; }
+    public Programmes programme { get; set; }
 
-    Skill skill = new Skill();
-    SkillAchievementContext cntxt = new SkillAchievementContext();
+    Competences skill = new Competences();
+    CompetenceContextes cntxt = new CompetenceContextes();
 
-    List<SkillElement> skElements = new List<SkillElement>();
-    List<Tpgm> programmes;
+    List<ElementsCompetence> skElements = new List<ElementsCompetence>();
+    List<Programmes> programmes;
 
 
     public async void HandleValidSubmit()
     {
-        skElements.ForEach(e => { e.SkillId = skill.Id; e.SequenceNumber = (short)(skElements.IndexOf(e) + 1); });
-        skill.Tsklelem = skElements;
-        cntxt.SkillId = skill.Id;
-        skill.Tsklcntxt.Add(cntxt);
+        skElements.ForEach(e => { e.CompetenceId = skill.CompetenceId; e.ElementCompetenceSqnbr = (byte)(skElements.IndexOf(e) + 1); });
+        skill.ElementsCompetence = skElements;
+        cntxt.CompetenceId = skill.CompetenceId;
+        skill.CompetenceContextes.Add(cntxt);
 
-        context.Skills.Add(skill);
+        context.Competences.Add(skill);
         try
         {
             Console.WriteLine($"SQL return code: {await context.SaveChangesAsync()}");
@@ -87,7 +87,7 @@
 
     protected override void OnInitialized()
     {
-        programmes = context.Tpgm.ToList();
+        programmes = context.Programmes.ToList();
     }
 }
 

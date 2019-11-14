@@ -55,21 +55,21 @@
                 }
                 else
                 {
-                    @foreach (Tpgm programme in programmes)
+                    @foreach (Programmes programme in programmes)
                     {
                         <!-- Affiche les informations d'un département -->
                         <table style="position: relative">
                             <tbody>
                                 <tr>
                                     <td valign="top">
-                                        <h4><a href="#">#@programme.PgmId</a></h4>
+                                        <h4><a href="#">#@programme.Id</a></h4>
                                     </td>
                                     <td>
-                                        <h4>@programme.PgmTitle</h4>
+                                        <h4>@programme.Designation</h4>
                                         <!-- Renvoit les programmes reliés au département-->
                                     </td>
                                     <td valign="top" class="flex-column">
-                                        <a class="btn btn-success" href="/Programme/@programme.PgmId.Replace('.', '-')">Consulter</a>
+                                        <a class="btn btn-success" href="/Programme/@programme.Id.Replace('.', '-')">Consulter</a>
                                     </td>
                                 </tr>
                             </tbody>
@@ -100,7 +100,7 @@
             <div class="form-row">
                 <div class="form-group col-12">
                     <label for="title"> Nom du programme </label>
-                    <input id="title" class="form-control @(IsValidating ? (IsTitleValid ? "is-valid": "is-invalid") : "")" @bind="@newProgram.PgmTitle" required />
+                    <input id="title" class="form-control @(IsValidating ? (IsTitleValid ? "is-valid": "is-invalid") : "")" @bind="@newProgram.Designation" required />
                     <div class="valid-feedback">
                         Semble bon!
                     </div>
@@ -112,7 +112,7 @@
             <div class="form-row">
                 <div class="form-group col-12">
                     <label for="description"> Description </label>
-                    <textarea id="description" class="form-control @(IsValidating ? (IsDescriptionValid ? "is-valid": "is-invalid"): "")" rows="4" @bind="@newProgram.PgmDesc" required></textarea>
+                    <textarea id="description" class="form-control @(IsValidating ? (IsDescriptionValid ? "is-valid": "is-invalid"): "")" rows="4" @bind="@newProgram.Description" required></textarea>
                     <div class="valid-feedback">
                         Semble bon!
                     </div>
@@ -128,8 +128,8 @@
 
 @code {
 
-    private List<Tpgm> programmes;
-    private Tpgm newProgram = new Tpgm();
+    private List<Programmes> programmes;
+    private Programmes newProgram = new Programmes();
     private bool IsCreating;
     private bool IsValidating = false;
     private bool IsTitleValid;
@@ -140,7 +140,7 @@
     {
         // part l'initialisateur chez le client
         JSRuntime.InvokeAsync<string>("modelInitializing");
-        programmes = _context.Tpgm.ToList();
+        programmes = _context.Programmes.ToList();
     }
 
     protected override void OnAfterRender(bool firstRender)
@@ -154,33 +154,32 @@
     private void Add()
     {
         JSRuntime.InvokeAsync<string>("showForm");
-        newProgram = new Tpgm();
+        newProgram = new Programmes();
         IsCreating = true;
     }
 
     private void Cancel()
     {
         JSRuntime.InvokeAsync<string>("hideForm");
-        newProgram = new Tpgm();
+        newProgram = new Programmes();
         IsCreating = false;
     }
 
     private async void SaveAsync()
     {
         IsValidating = true;
-        IsTitleValid = !string.IsNullOrEmpty(newProgram.PgmTitle);
-        IsDescriptionValid = !string.IsNullOrEmpty(newProgram.PgmDesc);
+        IsTitleValid = !string.IsNullOrEmpty(newProgram.Designation);
+        IsDescriptionValid = !string.IsNullOrEmpty(newProgram.Description);
 
         if (IsTitleValid && IsDescriptionValid)
         {
             // ajoute les données dans la database
             try
             {
-                newProgram.TrackingUserId = "00000";
-                _context.Tpgm.Add(newProgram);
+                _context.Programmes.Add(newProgram);
                 _context.SaveChanges();
 
-                newProgram = new Tpgm();
+                newProgram = new Programmes();
 
                 // si le check est true redébuter le formulaire
                 if (BulkCheck)

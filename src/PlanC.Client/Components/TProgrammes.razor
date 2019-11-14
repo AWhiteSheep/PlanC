@@ -1,4 +1,4 @@
-﻿@using PlanC.WebApi.Server.DataAccess
+﻿@using PlanC.EntityDataModel
 @using Syncfusion.EJ2.Blazor.Grids
 @*context de la base de donné et js runtime*@
 @inject PCU001Context _context
@@ -27,11 +27,11 @@ else
                 </div>
             </div>
             <!-- Module table des départements -->
-            <EjsGrid DataSource="programmes" TValue="Tpgm" AllowPaging="true" Locale="fr-FR" Toolbar="@(new[] { "Add", "Edit", "Delete", "Cancel", "Update" })">
+            <EjsGrid DataSource="programmes" TValue="Programmes" AllowPaging="true" Locale="fr-FR" Toolbar="@(new[] { "Add", "Edit", "Delete", "Cancel", "Update" })">
                 <GridEditSettings AllowAdding="true" AllowEditing="true" AllowDeleting="true" Mode="EditMode.Dialog"></GridEditSettings>
                 <GridColumns>
-                    <GridColumn Field=@nameof(Tpgm.PgmTitle) HeaderText="Titre de l'élément" TextAlign="TextAlign.Right" Width="130"></GridColumn>
-                    <GridColumn Field=@nameof(Tpgm.PgmDesc) HeaderText="Description" TextAlign="TextAlign.Right" Width="200"></GridColumn>
+                    <GridColumn Field=@nameof(Programmes.Designation) HeaderText="Titre de l'élément" TextAlign="TextAlign.Right" Width="130"></GridColumn>
+                    <GridColumn Field=@nameof(Programmes.Description) HeaderText="Description" TextAlign="TextAlign.Right" Width="200"></GridColumn>
                 </GridColumns>
             </EjsGrid>            
         </div>
@@ -40,11 +40,11 @@ else
 
 @code {
 
-    private List<Tpgm> programmes;
+    private List<Programmes> programmes;
 
     protected override void OnInitialized()
     {
-        programmes = _context.Tpgm.ToList();
+        programmes = _context.Programmes.ToList();
     }
 
     protected override void OnAfterRender(bool firstRender)

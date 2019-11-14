@@ -1,6 +1,7 @@
 ﻿@page "/"
 
 @inject IJSRuntime JSRuntime
+@implements IDisposable
 
 <div class="row">
     <div id="theme-portal-image" class="col-lg-6">
@@ -57,16 +58,26 @@
 </div>
 
 @code {
+        bool wasRender = false;
     protected override async void OnAfterRender(bool firstRender)
     {
         // la vue peut se render plusieurs fois au initialise et
         // suite au changement de la composante
         if (firstRender)
         {
+            wasRender = true;
             // call avec le jsinterop afin de lier les composantes
             // que jquery et que les plugins ui ne peuvent s'accroché
             // car elles ont un cycle différent
             await JSRuntime.InvokeAsync<string>("InitTrumbowyg", "#editor");
+        }
+    }
+
+    public async void Dispose()
+    {
+        if (wasRender)
+        {
+            await JSRuntime.InvokeAsync<string>("DisposeTrumbowyg", "#editor");
         }
     }
 

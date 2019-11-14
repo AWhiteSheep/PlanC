@@ -38,7 +38,7 @@
                 <h4><a href="#">#@department.Id</a></h4>
             </td>
             <td>
-                <h4>@department.Title</h4>
+                <h4>@department.Titre</h4>
                 <!-- Renvoit les programmes reliés au département-->
                 <h5><b>Les programmes</b></h5>
                 <ul>
@@ -50,7 +50,7 @@
                 <!-- Affiche tous les politiques concernant le département en formaté -->
                 <h5><b>Politique du département</b></h5>
                 <!-- protège le client pour les attaques -->
-                <p><MarkdownView Content="@department.Policy" /></p>
+                <p><MarkdownView Content="@department.Politique" /></p>
             </td>
             <td valign="top" class="flex-column">
                 <button class="btn btn-success">Modifier</button>
@@ -62,10 +62,10 @@
 @code {
     [Parameter]
     public int Id { get; set; }
-    public Department department;
+    public Departements department;
 
     protected override void OnInitialized()
     {
-        department = context.Departments.First(e => e.Id == Id);
+        department = context.Departements.First(e => e.Id == Id);
     }
 }
