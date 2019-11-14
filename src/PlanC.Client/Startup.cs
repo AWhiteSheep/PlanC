@@ -12,7 +12,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using PlanC.Client.Data;
-using PlanC.WebApi.Models;
 
 namespace PlanC.Client
 {

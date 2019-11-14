@@ -1,11 +1,11 @@
-﻿@using PlanC.WebApi.Models
+﻿@using PlanC.EntityDataModel
 @using Syncfusion.EJ2.Blazor
 @using Syncfusion.EJ2.Blazor.Grids
 @inject PCU001Context _context
 @inject IJSRuntime JSRuntime
 @* les cdn(s) doivent être ajoutés pour le bon fonctionnement du componant *@
 
-@if (departments != null)
+@if (Departements != null)
 {
     <div class="col-12">
         <div class="card shadow">
@@ -30,15 +30,15 @@
                                     <div class="form-row">
                                         <div class="form-group col-12">
                                             <label for="titleedit"> Nom du département </label>
-                                            <OnStringInput @bind-Value="@(NewDepartement.Title)" class="form-control" placeholder="Titre du département"></OnStringInput>
-                                            <ValidationMessage For="@(() => NewDepartement.Title)" />
+                                            <OnStringInput @bind-Value="@(NewDepartement.Titre)" class="form-control" placeholder="Titre du département"></OnStringInput>
+                                            <ValidationMessage For="@(() => NewDepartement.Titre)" />
                                         </div>
                                     </div>
                                     <div class="form-row">
                                         <div class="form-group col-12">
                                             <label for="policyedit"> Politique du département </label>
-                                            <textarea @bind="@NewDepartement.Policy" class="form-control" placeholder="Politique de département" rows="4"></textarea>
-                                            <ValidationMessage For="@(() => NewDepartement.Policy)" />
+                                            <textarea @bind="@NewDepartement.Politique" class="form-control" placeholder="Politique de département" rows="4"></textarea>
+                                            <ValidationMessage For="@(() => NewDepartement.Politique)" />
                                         </div>
                                     </div>
                                     <div class="col-12 text-right p-3">
@@ -49,22 +49,22 @@
                             }
                             else
                             {
-                                <EditForm @ref="EditFormSelectedDepartment" Model="SelectedDepartment" class="col-12">
+                                <EditForm @ref="EditFormSelectedDepartements" Model="SelectedDepartements" class="col-12">
                                     <div class="form-row">
                                         <div class="form-group col-12">
                                             <label for="titleedit"> Nom du département </label>
-                                            <InputText disabled="@IsDisabledSelectedDepartment" name="title" class="form-control" @bind-Value="@(SelectedDepartment.Title)"></InputText>
+                                            <InputText disabled="@IsDisabledSelectedDepartements" name="title" class="form-control" @bind-Value="@(SelectedDepartements.Titre)"></InputText>
                                         </div>
                                     </div>
                                     <div class="form-row">
                                         <div class="form-group col-12">
                                             <label for="policyedit"> Politique du département </label>
-                                            <InputTextArea disabled="@IsDisabledSelectedDepartment" name="policy" class="form-control" rows="4" @bind-Value="@SelectedDepartment.Policy"></InputTextArea>
+                                            <InputTextArea disabled="@IsDisabledSelectedDepartements" name="policy" class="form-control" rows="4" @bind-Value="@SelectedDepartements.Politique"></InputTextArea>
                                         </div>
                                     </div>
                                 </EditForm>
                                 <div class="col-12 text-right p-3">
-                                    @if (IsDisabledSelectedDepartment)
+                                    @if (IsDisabledSelectedDepartements)
                                     {
                                         <button class="btn btn-info" @onclick="Modifier"> Modifier </button>
                                     }
@@ -79,22 +79,22 @@
                 </div>
                 <div class="col-md-6">
                     <!-- Module table des départements -->
-                    <EjsGrid @ref="Grid" ModelType="departments.First()" DataSource="departments"
-                             TValue="Department" AllowPaging="true" Locale="fr-FR" Height=315
+                    <EjsGrid @ref="Grid" ModelType="Departements.First()" DataSource="Departements"
+                             TValue="Departements" AllowPaging="true" Locale="fr-FR" Height=315
                              Toolbar="@(new List<string>() { "Search"})" AllowSorting="true"
                              ContextMenuItems="@(new List<object>() { "Edit", "Delete" })">
 
                         <GridSearchSettings Fields="@(new string[] { "Title", "Id" })" Operator=Operator.Contains IgnoreCase="true"></GridSearchSettings>
 
                         <!-- Les événements se passant sur la table et les paramètre -->
-                        <GridEvents RowSelected="RowSelectHandler" TValue="Department"></GridEvents>
+                        <GridEvents RowSelected="RowSelectHandler" TValue="Departements"></GridEvents>
                         <GridEditSettings AllowAdding="true" AllowEditing="true" AllowDeleting="true" Mode="EditMode.Dialog"></GridEditSettings>
 
                         <!-- Template pour afficher les différents programmes dans le départements donné -->
                         <GridTemplates>
                             <DetailTemplate>
                                 @{
-                                    var department = (context as Department);
+                                    var Departements = (context as Departements);
                                     <table class="text-right" width="100%">
                                         <thead>
                                             <tr>
@@ -104,11 +104,11 @@
                                         </thead>
                                         <tbody>
                                             <!-- Loop sur tous les programmes du département -->
-                                            @foreach (Tpgm program in department.Tpgm)
+                                            @foreach (Programmes program in Departements.Programmes)
                                             {
                                                 <tr>
-                                                    <td> @program.PgmTitle </td>
-                                                    <td> @program.PgmId </td>
+                                                    <td> @program.Designation </td>
+                                                    <td> @program.Id </td>
                                                 </tr>
                                             }
                                         </tbody>
@@ -118,9 +118,9 @@
                         </GridTemplates>
                         <!-- Affiche en colone les différentes propriétés du département -->
                         <GridColumns>
-                            <GridColumn Field=@nameof(Department.Id) IsPrimaryKey="true" IsIdentity="true" HeaderText="Id"
+                            <GridColumn Field=@nameof(PlanC.EntityDataModel.Departements.Id) IsPrimaryKey="true" IsIdentity="true" HeaderText="Id"
                                         TextAlign="TextAlign.Right" Width="30"></GridColumn>
-                            <GridColumn Field=@nameof(Department.Title) HeaderText="Titre de l'élément"
+                            <GridColumn Field=@nameof(PlanC.EntityDataModel.Departements.Titre) HeaderText="Titre de l'élément"
                                         TextAlign="TextAlign.Right" Width="130"></GridColumn>
                             <GridColumn HeaderText="Gestion des départements" Width="150">
                                 <GridCommandColumns>
@@ -152,26 +152,26 @@ else
     [Parameter]
     // paramètre du grid
     public bool IsEditable { get; set; } = false;
-    private EjsGrid<Department> Grid;
-    private EditForm EditFormSelectedDepartment;
+    private EjsGrid<Departements> Grid;
+    private EditForm EditFormSelectedDepartements;
 
     // liste de départements pour accéder à la database
-    private List<Department> departments;
+    private List<Departements> Departements;
 
     // pour modifier le département sélectionné
-    private Department SelectedDepartment;
-    private bool IsDisabledSelectedDepartment = true;
+    private Departements SelectedDepartements;
+    private bool IsDisabledSelectedDepartements = true;
 
     // pour construire un nouveau département
-    private Department NewDepartement { get; set; } = null;
+    private Departements NewDepartement { get; set; } = null;
     private EditForm FormNewDepartement;
     private bool BulkCheckDepart { get; set; } = false;
 
     protected override void OnInitialized()
     {
         JSRuntime.InvokeAsync<string>("modelInitializing");
-        departments = _context.Departments.ToList();
-        SelectedDepartment = departments.First();
+        Departements = _context.Departements.ToList();
+        SelectedDepartements = Departements.First();
     }
 
     protected override void OnAfterRender(bool firstRender)
@@ -193,7 +193,7 @@ else
         // apporté a ce dernier le database peut le savoir et sauvegarder les changements
         try
         {
-            IsDisabledSelectedDepartment = !IsDisabledSelectedDepartment;
+            IsDisabledSelectedDepartements = !IsDisabledSelectedDepartements;
             _context.SaveChanges();
             Grid.Refresh();
             StateHasChanged();
@@ -206,14 +206,14 @@ else
 
     void Modifier()
     {
-        IsDisabledSelectedDepartment = !IsDisabledSelectedDepartment;
+        IsDisabledSelectedDepartements = !IsDisabledSelectedDepartements;
         StateHasChanged();
     }
 
     // ajoute les données
     void Add()
     {
-        NewDepartement = new Department();
+        NewDepartement = new Departements();
         StateHasChanged();
     }
 
@@ -223,8 +223,7 @@ else
         // ajoute les données dans la database
         try
         {
-            NewDepartement.TrackingUserId = "00000";
-            _context.Departments.Add(NewDepartement);
+            _context.Departements.Add(NewDepartement);
             _context.SaveChanges();
 
             // reset le formulaire
@@ -233,7 +232,7 @@ else
             // si le check est true redébuter le formulaire
             if (BulkCheckDepart)
             {
-                NewDepartement = new Department();
+                NewDepartement = new Departements();
             }
 
             // update le ui
@@ -252,8 +251,8 @@ else
         StateHasChanged();
     }
 
-    public void RowSelectHandler(RowSelectEventArgs<Department> args)
+    public void RowSelectHandler(RowSelectEventArgs<Departements> args)
     {
-        SelectedDepartment = departments.SingleOrDefault(e => e.Id == args.Data.Id);
+        SelectedDepartements = Departements.SingleOrDefault(e => e.Id == args.Data.Id);
     }
 }

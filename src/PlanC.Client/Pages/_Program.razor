@@ -1,4 +1,5 @@
 ﻿@page "/programme"
+
 @*context de la base de donné et js runtime*@
 @inject PCU001Context _context
 @inject IJSRuntime JSRuntime
@@ -38,52 +39,52 @@
     }
     else
     {
-    <div class="col-12 firstLayer" style="position: absolute; top: 0; left: 0;">
-        <div class="shadow card-body">
-            <ul id="wk-7b0" class="uk-subnav uk-subnav-pill uk-flex-center">
-                <li class="" data-uk-filter=""><a href="#">Tous</a></li>
-                <li data-uk-filter="Administration" class=""><a href="#">Administration</a></li>
-                <li data-uk-filter="Arts &amp; Communications" class=""><a href="#">Arts &amp; Communications</a></li>
-                <li data-uk-filter="Humains" class=""><a href="#">Humains</a></li>
-                <li data-uk-filter="Physiques" class="uk-active"><a href="#">Physiques</a></li>
-                <li data-uk-filter="Santé" class=""><a href="#">Santé</a></li>
-            </ul>
-            @if (!programmes.Any())
-            {
-                <p><em>Nous avons trouvé aucun programme.</em></p>
-            }
-            else
-            {
-                @foreach (Tpgm programme in programmes)
+        <div class="col-12 firstLayer" style="position: absolute; top: 0; left: 0;">
+            <div class="shadow card-body">
+                <ul id="wk-7b0" class="uk-subnav uk-subnav-pill uk-flex-center">
+                    <li class="" data-uk-filter=""><a href="#">Tous</a></li>
+                    <li data-uk-filter="Administration" class=""><a href="#">Administration</a></li>
+                    <li data-uk-filter="Arts &amp; Communications" class=""><a href="#">Arts &amp; Communications</a></li>
+                    <li data-uk-filter="Humains" class=""><a href="#">Humains</a></li>
+                    <li data-uk-filter="Physiques" class="uk-active"><a href="#">Physiques</a></li>
+                    <li data-uk-filter="Santé" class=""><a href="#">Santé</a></li>
+                </ul>
+                @if (!programmes.Any())
                 {
-                    <!-- Affiche les informations d'un département -->
-                    <table style="position: relative">
-                        <tbody>
-                            <tr>
-                                <td valign="top">
-                                    <h4><a href="#">#@programme.PgmId</a></h4>
-                                </td>
-                                <td>
-                                    <h4>@programme.PgmTitle</h4>
-                                    <!-- Renvoit les programmes reliés au département-->
-                                </td>
-                                <td valign="top" class="flex-column">
-                                    <a class="btn btn-success" href="/Programme/@programme.PgmId.Replace('.', '-')">Consulter</a>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
+                    <p><em>Nous avons trouvé aucun programme.</em></p>
                 }
-            }
-        </div>
-        <div class="d-flex flex-column text-right pt-3 pb-3">
-            <button class="btn btn-primary" @onclick="Add"> Ajouter un département </button>
-            <div class="custom-checkbox pl-5 pt-2 disable-select">
-                <input @bind="BulkCheck" type="checkbox" class="custom-control-input" id="bulkCheckDepart" />
-                <label class="custom-control-label" for="bulkCheckDepart"> Cocher pour ajouter plus d'un département </label>
+                else
+                {
+                    @foreach (Programmes programme in programmes)
+                    {
+                        <!-- Affiche les informations d'un département -->
+                        <table style="position: relative">
+                            <tbody>
+                                <tr>
+                                    <td valign="top">
+                                        <h4><a href="#">#@programme.Id</a></h4>
+                                    </td>
+                                    <td>
+                                        <h4>@programme.Designation</h4>
+                                        <!-- Renvoit les programmes reliés au département-->
+                                    </td>
+                                    <td valign="top" class="flex-column">
+                                        <a class="btn btn-success" href="/Programme/@programme.Id.Replace('.', '-')">Consulter</a>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    }
+                }
+            </div>
+            <div class="d-flex flex-column text-right pt-3 pb-3">
+                <button class="btn btn-primary" @onclick="Add"> Ajouter un département </button>
+                <div class="custom-checkbox pl-5 pt-2 disable-select">
+                    <input @bind="BulkCheck" type="checkbox" class="custom-control-input" id="bulkCheckDepart" />
+                    <label class="custom-control-label" for="bulkCheckDepart"> Cocher pour ajouter plus d'un département </label>
+                </div>
             </div>
         </div>
-    </div>
     }
     <div class="card shadow hiddenForm col-12">
         <div class="card-header">
@@ -99,7 +100,7 @@
             <div class="form-row">
                 <div class="form-group col-12">
                     <label for="title"> Nom du programme </label>
-                    <input id="title" class="form-control @(IsValidating ? (IsTitleValid ? "is-valid": "is-invalid") : "")" @bind="@newProgram.PgmTitle" required />
+                    <input id="title" class="form-control @(IsValidating ? (IsTitleValid ? "is-valid": "is-invalid") : "")" @bind="@newProgram.Designation" required />
                     <div class="valid-feedback">
                         Semble bon!
                     </div>
@@ -111,7 +112,7 @@
             <div class="form-row">
                 <div class="form-group col-12">
                     <label for="description"> Description </label>
-                    <textarea id="description" class="form-control @(IsValidating ? (IsDescriptionValid ? "is-valid": "is-invalid"): "")" rows="4" @bind="@newProgram.PgmDesc" required></textarea>
+                    <textarea id="description" class="form-control @(IsValidating ? (IsDescriptionValid ? "is-valid": "is-invalid"): "")" rows="4" @bind="@newProgram.Description" required></textarea>
                     <div class="valid-feedback">
                         Semble bon!
                     </div>
@@ -127,8 +128,8 @@
 
 @code {
 
-    private List<Tpgm> programmes;
-    private Tpgm newProgram = new Tpgm();
+    private List<Programmes> programmes;
+    private Programmes newProgram = new Programmes();
     private bool IsCreating;
     private bool IsValidating = false;
     private bool IsTitleValid;
@@ -139,7 +140,7 @@
     {
         // part l'initialisateur chez le client
         JSRuntime.InvokeAsync<string>("modelInitializing");
-        programmes = _context.Tpgm.ToList();
+        programmes = _context.Programmes.ToList();
     }
 
     protected override void OnAfterRender(bool firstRender)
@@ -153,33 +154,32 @@
     private void Add()
     {
         JSRuntime.InvokeAsync<string>("showForm");
-        newProgram = new Tpgm();
+        newProgram = new Programmes();
         IsCreating = true;
     }
 
     private void Cancel()
     {
         JSRuntime.InvokeAsync<string>("hideForm");
-        newProgram = new Tpgm();
+        newProgram = new Programmes();
         IsCreating = false;
     }
 
     private async void SaveAsync()
     {
         IsValidating = true;
-        IsTitleValid = !string.IsNullOrEmpty(newProgram.PgmTitle);
-        IsDescriptionValid = !string.IsNullOrEmpty(newProgram.PgmDesc);
+        IsTitleValid = !string.IsNullOrEmpty(newProgram.Designation);
+        IsDescriptionValid = !string.IsNullOrEmpty(newProgram.Description);
 
         if (IsTitleValid && IsDescriptionValid)
         {
             // ajoute les données dans la database
             try
             {
-                newProgram.TrackingUserId = "00000";
-                _context.Tpgm.Add(newProgram);
+                _context.Programmes.Add(newProgram);
                 _context.SaveChanges();
 
-                newProgram = new Tpgm();
+                newProgram = new Programmes();
 
                 // si le check est true redébuter le formulaire
                 if (BulkCheck)

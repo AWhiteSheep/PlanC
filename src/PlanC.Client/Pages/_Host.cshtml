@@ -21,7 +21,7 @@
     <link href="css/site.css" rel="stylesheet" />
 
     <!-- cdn pour le richtext editor pour les css https://cdnjs.com/libraries/Trumbowyg -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Trumbowyg/2.19.1/ui/trumbowyg.min.css" integrity="sha256-iS3knajmo8cvwnS0yrVDpNnCboUEwZMJ6mVBEW1VcSA=" crossorigin="anonymous" />
+    <link rel="stylesheet" href="~/lib/trumbowyg/trumbowyg.min.css" />
 
     <!-- CDNs fontawesome, bootstrap & css style sheet pour syncfusion table -->
     <link rel="stylesheet" type="text/css" href="https://cdn.syncfusion.com/ej2/17.3.18/fabric.css" />
@@ -108,8 +108,7 @@
     <!-- Scripts custome & Blazor framework for the client -->
     <script src="~/js/site.js" asp-append-version="true"></script>
     <script src="~/_framework/blazor.server.js" autostart="false"></script>
-    <script>
-
+    <script>              
         $.ajaxPrefilter(function (options, originalOptions, xhr) {
             xhr.setRequestHeader("__RequestVerificationToken", '@GetAntiXsrfRequestToken()');
             if (options.crossDomain && jQuery.support.cors) {
@@ -136,6 +135,12 @@
                 tagsToRemove: ['script', 'embed', 'iframe'],
                 lang: 'fr', // localisation en francais
             });
+        };
+        // initialise la référence dom pour un richtext editor 
+        window.DisposeTrumbowyg = (ref) => {
+            // This the minimal code to transform a simple div into the amazing WYSIWYG editor which is Trumbowyg.
+            // Allow to sanitize the code by removing all tags you want. The tagsToRemove option is an array.
+            $(ref).trumbowyg('destroy');
         };
         // action sur le richtext editor déjà initialisé
         window.PropsTrumbowyg = (ref, attr) => {

@@ -14,7 +14,7 @@
                 <li class="breadcrumb-item"><i class="fas fa-circle" style="font-size: 5px; vertical-align: middle; padding-right: 2px;"></i></li>
                 <li class="breadcrumb-item"><a href="/Programme"> Programmes </a></li>
                 <li class="breadcrumb-item"><i class="fas fa-circle" style="font-size: 5px; vertical-align: middle; padding-right: 2px;"></i></li>
-                <li class="breadcrumb-item active" aria-current="page"> @programme.PgmTitle </li>
+                <li class="breadcrumb-item active" aria-current="page"> @programme.Designation </li>
             </ol>
         </nav>
     </div>
@@ -37,21 +37,21 @@
     <div class="col-12">
         <div class="card shadow">
             <div class="card-body">
-                @foreach (CourseTemplate course in coursesTemplate)
+                @foreach (PlansCadres course in coursesTemplate)
                 {
                     <!-- Affiche les informations d'un département -->
                     <table style="position: relative">
                         <tbody>
                             <tr>
                                 <td valign="top">
-                                    <h4><a href="#">#@course.Id</a></h4>
+                                    <h4><a href="#">#@course.CoursId</a></h4>
                                 </td>
                                 <td>
-                                    <h4>@course.Title</h4>
+                                    <h4>@course.DenominationCours</h4>
                                     <!-- Renvoit les programmes reliés au département-->
                                 </td>
                                 <td valign="top" class="flex-column">
-                                    <a class="btn btn-success" href="/Departement/@course.Id">Consulter</a>
+                                    <a class="btn btn-success" href="/Departement/@course.CoursId">Consulter</a>
                                 </td>
                             </tr>
                         </tbody>
@@ -68,14 +68,14 @@
 @code {
     [Parameter]
     public string Id { get; set; }
-    public Tpgm programme;
-    public List<CourseTemplate> coursesTemplate;
+    public Programmes programme;
+    public List<PlansCadres> coursesTemplate;
     private string tid { get; set; }
 
     protected override void OnInitialized()
     {
         tid = Id.Replace('-', '.');
-        programme = context.Tpgm.First(e => e.PgmId == tid);
-        coursesTemplate = context.Tcrstmplt.Where(e => e.PgmId == tid).ToList();
+        programme = context.Programmes.First(e => e.Id == tid);
+        coursesTemplate = context.PlansCadres.Where(e => e.ProgrammeId == tid).ToList();
     }
 }

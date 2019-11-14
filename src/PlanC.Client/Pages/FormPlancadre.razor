@@ -1,6 +1,6 @@
 ﻿@page "/programme/{id}/create"
 
-@using PlanC.WebApi.Models
+@using PlanC.EntityDataModel
 @inject NavigationManager NavigationManager
 @inject PCU001Context context
 
@@ -15,7 +15,7 @@
                 <li class="breadcrumb-item"><i class="fas fa-circle" style="font-size: 5px; vertical-align: middle; padding-right: 2px;"></i></li>
                 <li class="breadcrumb-item"><a href="/Programme"> Programmes </a></li>
                 <li class="breadcrumb-item"><i class="fas fa-circle" style="font-size: 5px; vertical-align: middle; padding-right: 2px;"></i></li>
-                <li class="breadcrumb-item"><a href="/Programme/@Id"> @program.PgmTitle </a></li>
+                <li class="breadcrumb-item"><a href="/Programme/@Id"> @program.Designation </a></li>
                 <li class="breadcrumb-item"><i class="fas fa-circle" style="font-size: 5px; vertical-align: middle; padding-right: 2px;"></i></li>
                 <li class="breadcrumb-item active" aria-current="page"> Nouveau plan cadre </li>
             </ol>
@@ -30,14 +30,14 @@
         <div class="col-lg-6">
             <div class="form-group">
                 <label class="control-label" for="CrsTitle"> Titre du cours: </label>
-                <input readonly type="text" class="form-control" id="CrsTitle" placeholder="Titre du cours" name="CrsTitle" value="@program.PgmTitle" />
+                <input readonly type="text" class="form-control" id="CrsTitle" placeholder="Titre du cours" name="CrsTitle" value="@program.Designation" />
             </div>
         </div>
         <!-- Valeur pour l'identification du cours -->
         <div class="col-lg-6">
             <div class="form-group">
                 <label class="control-label" for="CrsId"> Identifiant du cours: </label>
-                <input readonly type="text" class="form-control" id="CrsTitle" placeholder="Titre du cours" name="CrsTitle" value="@program.PgmId" />
+                <input readonly type="text" class="form-control" id="CrsTitle" placeholder="Titre du cours" name="CrsTitle" value="@program.Id" />
             </div>
         </div>
     </div>
@@ -46,7 +46,7 @@
         <div class="col-md-6">
             <div class="form-group">
                 <label class="control-label" for="Units">Nombre d'unité pour le cours: </label>
-                <input Mask="00000" @bind="CTemplate.Units" class="theme-mask" id="Units" placeholder="Nombre d'unité" />
+                <input Mask="00000" @bind="CTemplate.Unites" class="theme-mask" id="Units" placeholder="Nombre d'unité" />
             </div>
         </div>
         <!-- Ajout de la pondération -->
@@ -62,12 +62,12 @@
     <!-- les intentions du cours -->
     <div class="form-group">
         <label class="control-label" for="CrsIntent">Intention du cours: </label>
-        <textarea @bind="CTemplate.EducationalIntent" rows="4" class="form-control" id="CrsIntent" placeholder="Intention éducative..." name="CrsIntent" />
+        <textarea @bind="CTemplate.IntentionEducative" rows="4" class="form-control" id="CrsIntent" placeholder="Intention éducative..." name="CrsIntent" />
     </div>
     <!-- Entrés pour les intentions pédagogiques du cours -->
     <div class="form-group">
         <label class="control-label" for="IntentionPedagogique">Intention du pédagogique: </label>
-        <textarea @bind="CTemplate.PedagogicalIntent"  rows="4" class="form-control" id="IntentionPedagogique" placeholder="Ingore It" name="IntentionPedagogique" />
+        <textarea @bind="CTemplate.IntentionPedagogique"  rows="4" class="form-control" id="IntentionPedagogique" placeholder="Ingore It" name="IntentionPedagogique" />
     </div>
     <!-- Descriptions du cours -->
     <div class="form-group">
@@ -85,14 +85,14 @@
     [Parameter]
     public string Id { get; set; }
     public string tid { get; set; }
-    public Tpgm program;
+    public Programmes program;
 
-    private CourseTemplate CTemplate = new CourseTemplate();
+    private PlansCadres CTemplate = new PlansCadres();
 
     protected override void OnInitialized()
     {        
         tid = Id.Replace('-', '.');
-        program = context.Tpgm.First(e => e.PgmId == tid);
+        program = context.Programmes.First(e => e.Id == tid);
     }
 
     // validation côté serveur
