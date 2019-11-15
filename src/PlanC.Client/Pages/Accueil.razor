@@ -58,7 +58,7 @@
 </div>
 
 @code {
-        bool wasRender = false;
+    bool wasRender = false;
     protected override async void OnAfterRender(bool firstRender)
     {
         // la vue peut se render plusieurs fois au initialise et
@@ -77,7 +77,14 @@
     {
         if (wasRender)
         {
-            await JSRuntime.InvokeAsync<string>("DisposeTrumbowyg", "#editor");
+            try
+            {
+                await JSRuntime.InvokeAsync<string>("DisposeTrumbowyg", "#editor");
+            }
+            catch
+            {
+
+            }
         }
     }
 

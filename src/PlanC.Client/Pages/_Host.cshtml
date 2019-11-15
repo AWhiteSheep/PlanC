@@ -108,63 +108,6 @@
     <!-- Scripts custome & Blazor framework for the client -->
     <script src="~/js/site.js" asp-append-version="true"></script>
     <script src="~/_framework/blazor.server.js" autostart="false"></script>
-    <script>              
-        $.ajaxPrefilter(function (options, originalOptions, xhr) {
-            xhr.setRequestHeader("__RequestVerificationToken", '@GetAntiXsrfRequestToken()');
-            if (options.crossDomain && jQuery.support.cors) {
-                options.url = 'https://cors-anywhere.herokuapp.com/' + options.url;
-            }
-        });
-
-        // god bless stackoverflow
-        // https://stackoverflow.com/questions/57366355/how-do-i-use-blazor-server-side-inside-a-razor-component-library-using-areas
-        Blazor.start({
-            configureSignalR: function (builder) {
-                builder.withUrl("/_blazor");
-                builder.withAutomaticReconnect();
-            }
-        });
-
-        // suite au render de blazor lancer les utilitaires
-
-        // initialise la référence dom pour un richtext editor 
-        window.InitTrumbowyg = (ref) => {
-            // This the minimal code to transform a simple div into the amazing WYSIWYG editor which is Trumbowyg.
-            // Allow to sanitize the code by removing all tags you want. The tagsToRemove option is an array.
-            $(ref).trumbowyg({
-                tagsToRemove: ['script', 'embed', 'iframe'],
-                lang: 'fr', // localisation en francais
-            });
-        };
-        // initialise la référence dom pour un richtext editor 
-        window.DisposeTrumbowyg = (ref) => {
-            // This the minimal code to transform a simple div into the amazing WYSIWYG editor which is Trumbowyg.
-            // Allow to sanitize the code by removing all tags you want. The tagsToRemove option is an array.
-            $(ref).trumbowyg('destroy');
-        };
-        // action sur le richtext editor déjà initialisé
-        window.PropsTrumbowyg = (ref, attr) => {
-            if (attr == 'html')
-            {
-                return $(ref).trumbowyg(attr); // Get HTML content
-            }
-            $(ref).trumbowyg(attr);
-        };
-
-        var values = [
-            { value: 'Admin', data: '/admin' },
-            { value: 'Competence', data: '/personnel/competences' },
-            { value: 'Nouvelle competence', data: '/personnel/competences/nouvelle' },
-            { value: 'Document', data: '/personnel/documents' },
-            { value: 'Plans cadre', data: '/personnel/planscadres' },
-        ];
-
-        $('#autocomplete').autocomplete({
-            lookup: values,
-            onSelect: function (suggestion) {
-                location.replace(suggestion.value);
-            }
-        });
-    </script>
+    <script src="~/js/applicationjs.js"></script>
 </body>
 </html>

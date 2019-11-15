@@ -2,93 +2,6 @@
 // for details on configuring this project to bundle and minify static web assets.
 
 
-// animate on in 
-window.initForm = () => {
-    $('.firstLayer').show();
-    $('.hiddenForm').hide();
-
-    anime({
-        targets: '.hiddenForm',
-        translateX: '-300vh'
-    });
-    
-    anime({
-        targets: '.firstLayer',
-        translateX: '0'
-    });
-    
-}
-
-// animate on in 
-window.showForm = () => {
-    anime({
-        targets: '.hiddenForm',
-        translateX: 0,
-        easing: 'easeInOutQuad',
-        complete: function () {
-            $('.firstLayer').hide();
-        }
-    });
-
-    anime({
-        targets: '.firstLayer',
-        translateX: '300vh',
-        easing: 'easeInOutQuad',
-        begin: function () {
-            $('.hiddenForm').show();
-        }
-    });
-}
-
-// animate out
-window.hideForm = () => {
-    anime({
-        targets: '.hiddenForm',
-        translateX: '-300vh',
-        easing: 'easeInOutQuad',
-        begin: function () {
-            $('.firstLayer').show();
-        }
-    });
-
-    anime({
-        targets: '.firstLayer',
-        translateX: '0',
-        easing: 'easeInOutQuad',
-        complete: function () {
-            $('.hiddenForm').hide();
-        }
-    });
-}
-
-
-// Write your JavaScript code.
-window.alertDatabaseError = () => {
-    alert("Erreur avec la database, durant la communication.");
-}
-
-// toggle the given element
-window.toggle = (element) => {
-    $(element).toggle();
-}
-
-// Toggle the side navigation
-$("#sidebarToggle, #sidebarToggleTop").on('click', function (e) {
-    $("body").toggleClass("sidebar-toggled");
-    $(".sidebar").toggleClass("toggled");
-    if ($(".sidebar").hasClass("toggled")) {
-        $('.sidebar .collapse').collapse('hide');
-    };
-});
-
-
-window.modelInitializing = () => {
-    $("#loaderDepart").show();
-};
-window.modelLoaded = (symbol, price) => {
-    $("#loaderDepart").hide();
-};
-
 // Close any open menu accordions when window is resized below 768px
 $(window).resize(function () {
     if ($(window).width() < 768) {
@@ -123,4 +36,19 @@ $(document).on('click', 'a.scroll-to-top', function (e) {
         scrollTop: ($($anchor.attr('href')).offset().top)
     }, 1000, 'easeInOutExpo');
     e.preventDefault();
+});
+
+var values = [
+    { value: 'Admin', data: '/admin' },
+    { value: 'Competence', data: '/personnel/competences' },
+    { value: 'Nouvelle competence', data: '/personnel/competences/nouvelle' },
+    { value: 'Document', data: '/personnel/documents' },
+    { value: 'Plans cadre', data: '/personnel/planscadres' },
+];
+
+$('#autocomplete').autocomplete({
+    lookup: values,
+    onSelect: function (suggestion) {
+        location.replace(suggestion.value);
+    }
 });
