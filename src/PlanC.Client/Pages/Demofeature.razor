@@ -36,7 +36,7 @@
                         <!-- Renvoit les programmes reliés au département-->
                     </td>
                     <td valign="top" class="flex-column">
-                        <a class="btn btn-success" href="/Programme/@programme.Id.Replace('.', '-')">Consulter</a>
+                        <a class="btn btn-success" href="/Programme/@programme.Id">Consulter</a>
                     </td>
                 </tr>
             </tbody>
@@ -49,17 +49,13 @@
 @code {
     private List<Programmes> programmes;
     private Programmes newProgram = new Programmes();
-    private bool IsCreating;
-    private bool IsValidating = false;
-    private bool IsTitleValid;
-    private bool IsDescriptionValid;
-    private bool BulkCheck;
 
     protected override void OnInitialized()
     {
         // part l'initialisateur chez le client
         JSRuntime.InvokeAsync<string>("modelInitializing");
         programmes = _context.Programmes.ToList();
+
         JSRuntime.InvokeAsync<string>("requestScripts", JsonConvert.SerializeObject(new string[] {"https://unpkg.com/isotope-layout@3.0.6/dist/isotope.pkgd.min.js"}));
 
     }
@@ -70,58 +66,5 @@
         {
             JSRuntime.InvokeAsync<string>("requestScripts", JsonConvert.SerializeObject(new string[] {"/js/programme.js"}));
         }
-    }
-
-    private void Add()
-    {
-        JSRuntime.InvokeAsync<string>("showForm");
-        newProgram = new Programmes();
-        IsCreating = true;
-    }
-
-    private void Cancel()
-    {
-        JSRuntime.InvokeAsync<string>("hideForm");
-        newProgram = new Programmes();
-        IsCreating = false;
-    }
-
-    private async void SaveAsync()
-    {
-        IsValidating = true;
-        IsTitleValid = !string.IsNullOrEmpty(newProgram.Designation);
-        IsDescriptionValid = !string.IsNullOrEmpty(newProgram.Description);
-
-        if (IsTitleValid && IsDescriptionValid)
-        {
-            // ajoute les données dans la database
-            try
-            {
-                _context.Programmes.Add(newProgram);
-                _context.SaveChanges();
-
-                newProgram = new Programmes();
-
-                // si le check est true redébuter le formulaire
-                if (BulkCheck)
-                {
-                    IsCreating = true;
-                    IsValidating = false;
-                }
-                else
-                {
-                    IsCreating = false;
-                }
-
-                // update le ui
-                StateHasChanged();
-            }
-            catch (Exception e)
-            {
-                await JSRuntime.InvokeAsync<string>("alertDatabaseError");
-            }
-        }
-
-        StateHasChanged();
     }
 }
