@@ -160,7 +160,7 @@ Style de carte pour le theme
   min-height: 140px;
 }
 
-.sidebar {
+.sidebar-dark {
   background-color: #004e92;
   /*background-image: linear-gradient(180deg,#002952 80%,#004e92 100%);*/
   background-size: cover;
@@ -11053,7 +11053,7 @@ a:focus {
 }
 
 .topbar.navbar-light .navbar-nav .nav-item .nav-link {
-  color: #d1d3e2;
+  color: #6e707e;
 }
 
   .topbar.navbar-light .navbar-nav .nav-item .nav-link:hover {
@@ -11376,11 +11376,11 @@ a:focus {
 }
 
 .sidebar-light .nav-item .nav-link {
-  color: #858796;
+  color: #202020;
 }
 
   .sidebar-light .nav-item .nav-link i {
-    color: #d1d3e2;
+    color: #202020;
   }
 
   .sidebar-light .nav-item .nav-link:active, .sidebar-light .nav-item .nav-link:focus, .sidebar-light .nav-item .nav-link:hover {
