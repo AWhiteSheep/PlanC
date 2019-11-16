@@ -4,6 +4,7 @@
 // https://stackoverflow.com/questions/57366355/how-do-i-use-blazor-server-side-inside-a-razor-component-library-using-areas
 Blazor.start({
     configureSignalR: function (builder) {
+        builder.configureLogging("information"); // LogLevel.Information
         builder.withUrl("/_blazor");
         builder.withAutomaticReconnect();
     }
