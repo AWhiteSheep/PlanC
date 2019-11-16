@@ -121,3 +121,18 @@ $(document).on('click', 'a.scroll-to-top', function (e) {
     }, 1000, 'easeInOutExpo');
     e.preventDefault();
 });
+
+var values = [
+    { value: 'Admin', data: '/admin' },
+    { value: 'Competence', data: '/personnel/competences' },
+    { value: 'Nouvelle competence', data: '/personnel/competences/nouvelle' },
+    { value: 'Document', data: '/personnel/documents' },
+    { value: 'Plans cadre', data: '/personnel/planscadres' },
+];
+
+$('#autocomplete').autocomplete({
+    lookup: values,
+    onSelect: function (suggestion) {
+        location.replace(suggestion.value);
+    }
+});
