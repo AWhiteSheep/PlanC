@@ -69,7 +69,12 @@
             // call avec le jsinterop afin de lier les composantes
             // que jquery et que les plugins ui ne peuvent s'accroché
             // car elles ont un cycle différent
-            await JSRuntime.InvokeAsync<string>("InitTrumbowyg", "#editor");
+            try
+            {
+                await JSRuntime.InvokeAsync<string>("InitTrumbowyg", "#editor");
+            }
+            catch { 
+            }
         }
     }
 
