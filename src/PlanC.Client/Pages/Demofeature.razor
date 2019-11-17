@@ -4,47 +4,27 @@
 @inject PCU001Context _context
 @inject IJSRuntime JSRuntime
 
-<h1>Demo</h1>
+<h1>Demo compétences</h1>
 
-<div class="container">
-    <ul class="button-group filter-button-group uk-subnav uk-subnav-pill uk-flex-center">
-        <li><button class="btn btn-outline-info" data-filter="*">Tous</button></li>
-        <li><button class="btn btn-outline-info" data-filter=".500, .510">Arts</button></li>
-        <li><button class="btn btn-outline-info" data-filter=".420">Administration</button></li>
-        <li><button class="btn btn-outline-info" data-filter=".300">Humains</button></li>
-        <li><button class="btn btn-outline-info" data-filter=".200, .140, .420">Sciences</button></li>
-        <li><button class="btn btn-outline-info" data-filter=".111">Santé</button></li>
-    </ul>
-    @if (!programmes.Any())
-    {
-        <p><em>Nous avons trouvé aucun programme.</em></p>
-    }
-    else
-    {
-<div class="grid">
-    @foreach (Programmes programme in programmes)
-    {
-        <!-- Affiche les informations d'un département -->
-        <table style="position: relative">
-            <tbody>
-                <tr class="grid-item @programme.DepartementId">
-                    <td valign="top">
-                        <h4><a href="#">#@programme.Id</a></h4>
-                    </td>
-                    <td>
-                        <h4>@programme.Designation</h4>
-                        <!-- Renvoit les programmes reliés au département-->
-                    </td>
-                    <td valign="top" class="flex-column">
-                        <a class="btn btn-success" href="/Programme/@programme.Id">Consulter</a>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-    }
+<div class="form-group green-border-focus">
+    <label for="inputParser">Passé en utilisant la fonction copier/coller les éléments de la compétence, ainsi que ses critères. </label>
+    <textarea class="form-control" rows="6" id="inputParser"></textarea>
 </div>
- } 
-</div>
+
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th scope="col">Élément de la compétence</th>
+            <th scope="col">Critères de performance</th>
+        </tr>
+    </thead>
+    <tbody id="tableCompetence">
+    </tbody>
+</table>
+
+
+<button class="btn btn-success">Sauvegarder</button>
 
 @code {
     private List<Programmes> programmes;
@@ -53,10 +33,7 @@
     protected override void OnInitialized()
     {
         // part l'initialisateur chez le client
-        JSRuntime.InvokeAsync<string>("modelInitializing");
         programmes = _context.Programmes.ToList();
-
-        JSRuntime.InvokeAsync<string>("requestScripts", JsonConvert.SerializeObject(new string[] {"https://unpkg.com/isotope-layout@3.0.6/dist/isotope.pkgd.min.js"}));
 
     }
 
@@ -64,7 +41,7 @@
     {
         if (firstRender)
         {
-            JSRuntime.InvokeAsync<string>("requestScripts", JsonConvert.SerializeObject(new string[] {"/js/programme.js"}));
+            JSRuntime.InvokeAsync<string>("requestScripts", JsonConvert.SerializeObject(new string[] { "/js/stringparser.js" }));
         }
     }
 }

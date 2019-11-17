@@ -1,8 +1,8 @@
 ﻿@page "/programme"
-
 @*context de la base de donné et js runtime*@
 @inject PCU001Context _context
 @inject IJSRuntime JSRuntime
+@using Newtonsoft.Json
 @* les cdn(s) doivent être ajoutés pour le bon fonctionnement du componant *@
 
 <!-- Section de navigation -->
@@ -41,41 +41,46 @@
     {
         <div class="col-12 firstLayer" style="position: absolute; top: 0; left: 0;">
             <div class="shadow card-body">
-                <ul id="wk-7b0" class="uk-subnav uk-subnav-pill uk-flex-center">
-                    <li class="" data-uk-filter=""><a href="#">Tous</a></li>
-                    <li data-uk-filter="Administration" class=""><a href="#">Administration</a></li>
-                    <li data-uk-filter="Arts &amp; Communications" class=""><a href="#">Arts &amp; Communications</a></li>
-                    <li data-uk-filter="Humains" class=""><a href="#">Humains</a></li>
-                    <li data-uk-filter="Physiques" class="uk-active"><a href="#">Physiques</a></li>
-                    <li data-uk-filter="Santé" class=""><a href="#">Santé</a></li>
-                </ul>
-                @if (!programmes.Any())
-                {
-                    <p><em>Nous avons trouvé aucun programme.</em></p>
-                }
-                else
-                {
-                    @foreach (Programmes programme in programmes)
+
+                <div class="container">
+                    <ul class="button-group filter-button-group uk-subnav uk-subnav-pill uk-flex-center">
+                        <li><button class="btn btn-outline-info" data-filter="*">Tous</button></li>
+                        <li><button class="btn btn-outline-info" data-filter=".500, .510">Arts</button></li>
+                        <li><button class="btn btn-outline-info" data-filter=".420">Administration</button></li>
+                        <li><button class="btn btn-outline-info" data-filter=".300">Humains</button></li>
+                        <li><button class="btn btn-outline-info" data-filter=".200, .140, .420">Sciences</button></li>
+                        <li><button class="btn btn-outline-info" data-filter=".111">Santé</button></li>
+                    </ul>
+                    @if (!programmes.Any())
                     {
-                        <!-- Affiche les informations d'un département -->
-                        <table style="position: relative">
-                            <tbody>
-                                <tr>
-                                    <td valign="top">
-                                        <h4><a href="#">#@programme.Id</a></h4>
-                                    </td>
-                                    <td>
-                                        <h4>@programme.Designation</h4>
-                                        <!-- Renvoit les programmes reliés au département-->
-                                    </td>
-                                    <td valign="top" class="flex-column">
-                                        <a class="btn btn-success" href="/Programme/@programme.Id.Replace('.', '-')">Consulter</a>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
+                        <p><em>Nous avons trouvé aucun programme.</em></p>
                     }
-                }
+                    else
+                    {
+                        <div class="grid">
+                            @foreach (Programmes programme in programmes)
+                            {
+                                <!-- Affiche les informations d'un département -->
+                                <table style="position: relative">
+                                    <tbody>
+                                        <tr class="grid-item @programme.DepartementId">
+                                            <td valign="top">
+                                                <h4><a href="#">#@programme.Id</a></h4>
+                                            </td>
+                                            <td>
+                                                <h4>@programme.Designation</h4>
+                                                <!-- Renvoit les programmes reliés au département-->
+                                            </td>
+                                            <td valign="top" class="flex-column">
+                                                <a class="btn btn-success" href="/Programme/@programme.Id">Consulter</a>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            }
+                        </div>
+                    }
+                </div>
             </div>
             <div class="d-flex flex-column text-right pt-3 pb-3">
                 <button class="btn btn-primary" @onclick="Add"> Ajouter un département </button>
@@ -140,6 +145,8 @@
     {
         // part l'initialisateur chez le client
         JSRuntime.InvokeAsync<string>("modelInitializing");
+        JSRuntime.InvokeAsync<string>("requestScripts", JsonConvert.SerializeObject(new string[] { "https://unpkg.com/isotope-layout@3.0.6/dist/isotope.pkgd.min.js" }));
+        // contextualise les programmes
         programmes = _context.Programmes.ToList();
     }
 
@@ -147,12 +154,15 @@
     {
         if (firstRender)
         {
+            // request les javascripts obligatoires pour la page
+            JSRuntime.InvokeAsync<string>("requestScripts", JsonConvert.SerializeObject(new string[] { "/js/programme.js" }));
             JSRuntime.InvokeAsync<string>("initForm");
         }
     }
 
     private void Add()
     {
+        // affiche le formulaire pour que l'utilisateur puisse entrer de nouvelles données
         JSRuntime.InvokeAsync<string>("showForm");
         newProgram = new Programmes();
         IsCreating = true;
@@ -160,6 +170,7 @@
 
     private void Cancel()
     {
+        // cancel la demande du formulaire et retourne la table
         JSRuntime.InvokeAsync<string>("hideForm");
         newProgram = new Programmes();
         IsCreating = false;
@@ -167,6 +178,7 @@
 
     private async void SaveAsync()
     {
+        //sauvegarde le nouveau programme dans la base de données
         IsValidating = true;
         IsTitleValid = !string.IsNullOrEmpty(newProgram.Designation);
         IsDescriptionValid = !string.IsNullOrEmpty(newProgram.Description);
