@@ -18,17 +18,7 @@
         <div class="col-6">
             <div class="form-group">
                 <label class="control-label" for="PgmId">Sélectionner un programme: </label>
-                <EjsDropDownList CssClass="theme-dropdown" TValue="int" @bind-Value="skill.DisciplineId" ModelType="programme" DataSource="programmes" Placeholder="Choix des programmes..." AllowFiltering=true IgnoreAccent=true>
-                    <DropDownListTemplates>
-                        <ItemTemplate Context="modelItem">
-                            <span><span class='Title'>@((modelItem as Programmes).Designation)</span><span class='PgmId'>@((modelItem as Programmes).Id)</span></span>
-                        </ItemTemplate>
-                        <ValueTemplate Context="modelItem">
-                            <span>@((modelItem as Programmes).Designation) - @((modelItem as Programmes).Id)</span>
-                        </ValueTemplate>
-                    </DropDownListTemplates>
-                    <DropDownListFieldSettings GroupBy="" Value="PgmId" Text="PgmTitle"></DropDownListFieldSettings>
-                </EjsDropDownList>
+
             </div>
         </div>
     </div>
@@ -42,13 +32,6 @@
     </div>
     <div class="form-group">
         <label class="control-label">Élément de la compétence: </label>
-        <EjsGrid DataSource="skElements" TValue="ElementsCompetence" AllowPaging="true" Locale="fr-FR" Toolbar="@(new string[] { "Add", "Edit", "Delete", "Cancel", "Update"  })">
-            <GridEditSettings AllowAdding="true" AllowEditing="true" AllowDeleting="true" Mode="EditMode.Normal"></GridEditSettings>
-            <GridColumns>
-                <GridColumn Field=@nameof(ElementsCompetence.Libele) HeaderText="Titre élément" TextAlign="TextAlign.Right" Width="130"></GridColumn>
-                <GridColumn Field=@nameof(ElementsCompetence.Description) HeaderText="Déscription" TextAlign="TextAlign.Right" Width="200"></GridColumn>
-            </GridColumns>
-        </EjsGrid>
     </div>
     <div class="col-12">
         <button class="btn btn-default" @onclick="HandleValidSubmit">Submit</button>

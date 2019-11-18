@@ -1,17 +1,33 @@
-﻿@page "/demo"
+﻿@page "/demo/{Id}"
 @using Newtonsoft.Json
 @*context de la base de donné et js runtime*@
 @inject PCU001Context _context
 @inject IJSRuntime JSRuntime
 
 <style>
-    .ui-state-highlight { 
+    .ui-state-highlight {
         border: 2px dashed #17A2B8 !important;
         background-color: #17a2b854 !important;
     }
 </style>
 
 <h1>Demo compétences</h1>
+
+
+<!-- Formulaire pour dictant les demandes vers la database -->
+@*<div class="input-group mb-3">
+    <div class="input-group-prepend">
+        <label class="input-group-text" for="User">Choisir un programme pour lequel vous voulez créer un compétence</label>
+    </div>
+    <select class="custom-select" id="User" @bind="selectedProgramme">
+        <option value="">Faire une sélection...</option>
+        @foreach (User user in users)
+        {
+            <option value="@user.Id">@user.Name</option>
+        }
+    </select>
+    <button class="btn btn-primary" @onclick="UserSelected">Sélectionner</button>
+</div>*@
 
 <div class="form-group green-border-focus">
     <label for="inputParser">Passé en utilisant la fonction copier/coller les éléments de la compétence, ainsi que ses critères. </label>
@@ -71,12 +87,24 @@ d’interconnexion.
 
 @code {
     private List<Programmes> programmes;
-    private Programmes newProgram = new Programmes();
+    private string selectedId = "";
+
+    [Parameter]
+    public string  Id { get; set; }
 
     protected override void OnInitialized()
     {
         // part l'initialisateur chez le client
-        programmes = _context.Programmes.ToList();    
+        programmes = _context.Programmes.ToList();
+
+        //if (!string.IsNullOrEmpty(Id))
+        //{
+        //    if (programmes.Any(e => e.Id == Id)) {
+        //        selectedId = Id;
+        //    }
+        //}
+
+
         // load le draggable pour la démo
         JSRuntime.InvokeAsync<string>("requestScripts", JsonConvert.SerializeObject(new string[] { "https://code.jquery.com/ui/1.12.1/jquery-ui.js" }));
     }
@@ -84,7 +112,7 @@ d’interconnexion.
     protected override void OnAfterRender(bool firstRender)
     {
         if (firstRender)
-        {
+        {        
             JSRuntime.InvokeAsync<string>("requestScripts", JsonConvert.SerializeObject(new string[] { "/js/stringparser.js" }));
         }
     }

@@ -42,6 +42,40 @@ window.requestScripts = (args) => {
         });
     }
 };
+// appel aux nouveaux styles
+window.requestStyles = (args) => {
+    var object = JSON.parse(args);
+    if (Array.isArray(object)) {
+        object.forEach(async (value) => {
+            $.ajax({
+                type: 'GET',
+                url: value,
+                dataType: "text",
+                success: function (data) {
+                    console.log("Style has been loaded: " + value);
+                    $("head").append("<style>" + data + "</style>");
+                },
+                cache: true
+            });
+        });
+    } else {
+        $.ajax({
+            url: object,
+            dataType: "text",
+            success: function (data) {
+                console.log("Style has been loaded: " + value);
+                $("head").append("<style>" + data + "</style>");
+            },
+            cache: true
+        });
+    }
+};
+
+// initialise la table dans la page
+window.initTable = (arg) => {
+    $(arg).DataTable();
+    console.log("Datatable has been initialize: " + arg);
+};
 
 // initialise la référence dom pour un richtext editor 
 window.InitTrumbowyg = (ref) => {

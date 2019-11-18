@@ -21,9 +21,6 @@ namespace PlanC.EntityDataModel
         public bool CompetenceEstRequise { get; set; }
         public bool CompetenceEstComplentaire { get; set; }
 
-        [ForeignKey(nameof(CompetenceId))]
-        [InverseProperty(nameof(Competences.ProgrammeCompetences))]
-        public virtual Competences Competence { get; set; }
         [ForeignKey("ProgrammeId,DepartementId")]
         [InverseProperty("ProgrammeCompetences")]
         public virtual Programmes Programmes { get; set; }

@@ -36,38 +36,40 @@ else if (!programmes.Any())
 else
 {
     <div class="col-12">
-        <div class="card shadow">
-            <!-- Module table des départements -->
-            <table class="table table-striped">
-                <thead>
-                    <tr>
-                        <th scope="col">Titre du programmes</th>
-                        <th scope="col">ID</th>
-                        <th scope="col">Département ID</th>
-                        <th scope="col">Nombre de compétences obligatoires</th>
-                        <th scope="col">Nombre de compétences optionnelles</th>
-                        <th scope="col">Nombre de compétences complémentaires</th>
-                        <td></td>
-                    </tr>
-                </thead>
-                <tbody id="table">
-                    @foreach (Programmes programme in programmes)
-                    {
+        <div class="card shadow table-responsive">
+            <div class="card-body">
+                <!-- Module table des départements -->
+                <table id="table" class="table table-striped table-hover">
+                    <thead>
                         <tr>
-                            <th scope="row">@programme.Designation</th>
-                            <td>@programme.Id</td>
-                            <td>@programme.DepartementId</td>
-                            <td>@programme.NombreCompetencesObligatoires</td>
-                            <td>@programme.NombreCompetencesOptionnelles</td>
-                            <td>@programme.NombreCompetencesComplementaires</td>
-                            <td>
-                                <button type="button" class="btn btn-primary" @onclick="@(() => Edit(@programme.Id, @programme.DepartementId))" data-toggle="modal" data-target="#exampleModalCenter">modifier</button>
-                                <button class="btn btn-danger">Supprimer</button>
-                            </td>
+                            <th scope="col">Titre du programmes</th>
+                            <th scope="col">ID</th>
+                            <th scope="col">Département ID</th>
+                            <th scope="col" style="width: 60px;">Nombre de compétences obligatoires</th>
+                            <th scope="col">Nombre de compétences optionnelles</th>
+                            <th scope="col">Nombre de compétences complémentaires</th>
+                            <td></td>
                         </tr>
-                    }
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody id="table">
+                        @foreach (Programmes programme in programmes)
+                        {
+                            <tr>
+                                <th scope="row">@programme.Designation</th>
+                                <td>@programme.Id</td>
+                                <td>@programme.DepartementId</td>
+                                <td class="text-center">@programme.NombreCompetencesObligatoires</td>
+                                <td class="text-center">@programme.NombreCompetencesOptionnelles</td>
+                                <td class="text-center">@programme.NombreCompetencesComplementaires</td>
+                                <td class="d-flex">
+                                    <button type="button" class="btn btn-primary mr-2" @onclick="@(() => Edit(@programme.Id, @programme.DepartementId))" data-toggle="modal" data-target="#exampleModalCenter">modifier</button>
+                                    <button class="btn btn-danger">Supprimer</button>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 }
@@ -117,7 +119,9 @@ else
     List<Programmes> programmes;
 
     protected override void OnInitialized()
-    {
+    {        
+        JSRuntime.InvokeAsync<string>("requestScripts", JsonConvert.SerializeObject(new string[] { "https://cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js" }));
+        JSRuntime.InvokeAsync<string>("requestScripts", JsonConvert.SerializeObject(new string[] { "/js/fr-FR.js" ,  "https://cdn.datatables.net/1.10.20/js/dataTables.bootstrap4.min.js"}));
         programmes = _context.Programmes.ToList();
     }
 
@@ -129,8 +133,9 @@ else
     protected override void OnAfterRender(bool firstRender)
     {
         if (firstRender)
-        {
-            JSRuntime.InvokeAsync<string>("requestScripts", JsonConvert.SerializeObject(new string[] { "/js/fr-FR.js" }));
+        {            
+            JSRuntime.InvokeAsync<string>("initTable", "#table");
+            JSRuntime.InvokeAsync<string>("requestScripts", JsonConvert.SerializeObject(new string[] { "/js/generalAsyncJs.js" }));
         }
     }
 

@@ -27,17 +27,26 @@
 <div class="container">
     <div class="row">
         <!-- Valeur pour le titre du plan-cadre -->
+        <div class="col-12">
+            <div class="form-group">
+                <label class="control-label" for="CrsTitle"> Titre du du programme: </label>
+                <input readonly type="text" class="form-control" placeholder="Nom du programme" value="@program.Designation" />
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <!-- Valeur pour le titre du plan-cadre -->
         <div class="col-lg-6">
             <div class="form-group">
                 <label class="control-label" for="CrsTitle"> Titre du cours: </label>
-                <input readonly type="text" class="form-control" id="CrsTitle" placeholder="Titre du cours" name="CrsTitle" value="@program.Designation" />
+                <input type="text" class="form-control" placeholder="Titre du cours" value="@CTemplate.DenominationCours" />
             </div>
         </div>
         <!-- Valeur pour l'identification du cours -->
         <div class="col-lg-6">
             <div class="form-group">
                 <label class="control-label" for="CrsId"> Identifiant du cours: </label>
-                <input readonly type="text" class="form-control" id="CrsTitle" placeholder="Titre du cours" name="CrsTitle" value="@program.Id" />
+                <input type="text" class="form-control" placeholder="Id du cours" value="@CTemplate.CoursId" />
             </div>
         </div>
     </div>
@@ -45,39 +54,55 @@
         <!-- Nombre d'unités pour le cours données -->
         <div class="col-md-6">
             <div class="form-group">
-                <label class="control-label" for="Units">Nombre d'unité pour le cours: </label>
+                <label class="control-label" for="Units"> Nombre d'unités: </label>
                 <input Mask="00000" @bind="CTemplate.Unites" class="theme-mask" id="Units" placeholder="Nombre d'unité" />
             </div>
         </div>
         <!-- Ajout de la pondération -->
         <div class="col-md-6">
             <div class="form-group">
-                <label class="control-label" for="Ponderation">Pondération (propriété non trouvé): </label>
-                <input class="form-control" id="Ponderation" placeholder="Ingore It" name="Ponderation" />
+                <label class="control-label" for="Ponderation"> Pondération du cours: </label>
+                <div class="row">
+                    <div class="col-1">
+                        <input Mask="00" class="theme-mask" placeholder="##" name="HeuresTotalesThéories" @bind="CTemplate.HeuresTotalesTheorie" />
+                    </div>
+                    <div class="col-1">
+                        <input Mask="00" class="theme-mask" placeholder="##" name="HeuresTotalesPratiques" @bind="CTemplate.HeuresTotalesPratique" />
+                    </div>
+                    <div class="col-1">
+                        <input Mask="00" class="theme-mask" placeholder="##" name="HeuresTotalesMaison" @bind="CTemplate.HeuresTotalesMaison" />
+                    </div>
+                </div>
             </div>
         </div>
-    </div>
-    <!-- Séparateur -->
-    <hr />
-    <!-- les intentions du cours -->
-    <div class="form-group">
-        <label class="control-label" for="CrsIntent">Intention du cours: </label>
-        <textarea @bind="CTemplate.IntentionEducative" rows="4" class="form-control" id="CrsIntent" placeholder="Intention éducative..." name="CrsIntent" />
-    </div>
-    <!-- Entrés pour les intentions pédagogiques du cours -->
-    <div class="form-group">
-        <label class="control-label" for="IntentionPedagogique">Intention du pédagogique: </label>
-        <textarea @bind="CTemplate.IntentionPedagogique"  rows="4" class="form-control" id="IntentionPedagogique" placeholder="Ingore It" name="IntentionPedagogique" />
-    </div>
-    <!-- Descriptions du cours -->
-    <div class="form-group">
-        <label class="control-label col-12" for="CrsDesc">Description du cours: </label>
-        <textarea @bind="CTemplate.Description" rows="4" class="form-control" id="CrsIntent" placeholder="Description du cours..." name="CrsDesc" />
-    </div>
-    <!--href="/planscadres/nouveau/ponderation"-->
-    <div class="col-12">
+        <!-- Séparateur -->
+        <hr />
+        <div class="col-12">
+            <!-- Descriptions du cours -->
+            <div class="form-group">
+                <label class="control-label col-12" for="CrsDesc">Description du cours: </label>
+                <textarea @bind="CTemplate.Description" rows="4" class="form-control" id="CrsIntent" placeholder="Description du cours..." name="CrsDesc" />
+            </div>
+        </div>
+        <div class="col-12">
+            <!-- les intentions du cours -->
+            <div class="form-group">
+                <label class="control-label" for="CrsIntent">Intention du cours: </label>
+                <textarea @bind="CTemplate.IntentionEducative" rows="4" class="form-control" id="CrsIntent" placeholder="Intention éducative..." name="CrsIntent" />
+            </div>
+        </div>
+        <div class="col-12">
+            <!-- Entrés pour les intentions pédagogiques du cours -->
+            <div class="form-group">
+                <label class="control-label" for="IntentionPedagogique">Intention du pédagogique: </label>
+                <textarea @bind="CTemplate.IntentionPedagogique" rows="4" class="form-control" id="IntentionPedagogique" placeholder="Ingore It" name="IntentionPedagogique" />
+            </div>
+        </div>
         <!--href="/planscadres/nouveau/ponderation"-->
-        <button class="btn btn-dark" @onclick="HandleValidSubmit">Continuer</button>
+        <div class="col-12">
+            <!--href="/planscadres/nouveau/ponderation"-->
+            <button class="btn btn-dark" @onclick="HandleValidSubmit">Continuer</button>
+        </div>
     </div>
 </div>
 
@@ -90,7 +115,7 @@
     private PlansCadres CTemplate = new PlansCadres();
 
     protected override void OnInitialized()
-    {        
+    {
         tid = Id.Replace('-', '.');
         program = context.Programmes.First(e => e.Id == tid);
     }
@@ -98,6 +123,13 @@
     // validation côté serveur
     private void HandleValidSubmit()
     {
-        NavigationManager.NavigateTo("/planscadres/nouveau/ponderation");
+        try
+        {
+
+        }
+        catch
+        { 
+            
+        }
     }
 }

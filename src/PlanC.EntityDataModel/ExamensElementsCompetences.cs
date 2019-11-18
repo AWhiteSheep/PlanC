@@ -10,6 +10,8 @@ namespace PlanC.EntityDataModel
         [Key]
         [Column("ExamenID")]
         public int ExamenId { get; set; }
+        [Column("DisciplineID")]
+        public int DisciplineId { get; set; }
         [Key]
         [Column("CompetenceID")]
         [StringLength(4)]
@@ -22,7 +24,7 @@ namespace PlanC.EntityDataModel
         [Column(TypeName = "decimal(5, 2)")]
         public decimal? PoidElement { get; set; }
 
-        [ForeignKey("CompetenceId,ElementCompetenceSqnbr")]
+        [ForeignKey("CompetenceId,DisciplineId,ElementCompetenceSqnbr")]
         [InverseProperty("ExamensElementsCompetences")]
         public virtual ElementsCompetence ElementsCompetence { get; set; }
         [ForeignKey(nameof(ExamenId))]

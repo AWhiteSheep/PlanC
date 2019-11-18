@@ -11,19 +11,19 @@ namespace PlanC.EntityDataModel
         {
             CompetenceContextes = new HashSet<CompetenceContextes>();
             ElementsCompetence = new HashSet<ElementsCompetence>();
-            ProgrammeCompetences = new HashSet<ProgrammeCompetences>();
         }
 
         [Key]
         [Column("CompetenceID")]
         [StringLength(4)]
         public string CompetenceId { get; set; }
+        [Key]
+        [Column("DisciplineID")]
+        public int DisciplineId { get; set; }
         [StringLength(200)]
         public string Enonce { get; set; }
         [Column(TypeName = "ntext")]
         public string AttitudeAttendu { get; set; }
-        [Column("DisciplineID")]
-        public int DisciplineId { get; set; }
         public byte NombreParties { get; set; }
         public bool? CompetenceComplementaire { get; set; }
         [Column("RCD_CDTTM", TypeName = "datetime")]
@@ -35,11 +35,9 @@ namespace PlanC.EntityDataModel
         [ForeignKey(nameof(DisciplineId))]
         [InverseProperty(nameof(Departements.Competences))]
         public virtual Departements Discipline { get; set; }
-        [InverseProperty("Competence")]
+        [InverseProperty("Competences")]
         public virtual ICollection<CompetenceContextes> CompetenceContextes { get; set; }
-        [InverseProperty("Competence")]
+        [InverseProperty("Competences")]
         public virtual ICollection<ElementsCompetence> ElementsCompetence { get; set; }
-        [InverseProperty("Competence")]
-        public virtual ICollection<ProgrammeCompetences> ProgrammeCompetences { get; set; }
     }
 }

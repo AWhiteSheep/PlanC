@@ -12,7 +12,7 @@ namespace PlanC.Client.Data
 
         public PCU001Context(DbContextOptions<PCU001Context> options)
             : base(options)
-        {           
+        {
         }
 
         public virtual DbSet<CategoriesProgrammes> CategoriesProgrammes { get; set; }
@@ -45,7 +45,7 @@ namespace PlanC.Client.Data
         {
             if (!optionsBuilder.IsConfigured)
             {
-                optionsBuilder.UseSqlServer("Data Source=database-1.cai5lbxs9ofy.us-east-1.rds.amazonaws.com,1433;User ID=dbo802668235;Password=Nemesis2123%*;initial catalog=PCU001;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False");
+                optionsBuilder.UseSqlServer("Data Source=database-1.cai5lbxs9ofy.us-east-1.rds.amazonaws.com,1433;User ID=dbo802668235;Password=Nemesis2123%*;Initial Catalog=PCU001;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False");
             }
         }
 
@@ -65,7 +65,7 @@ namespace PlanC.Client.Data
 
             modelBuilder.Entity<CompetenceContextes>(entity =>
             {
-                entity.HasKey(e => new { e.ContexteId, e.CompetenceId })
+                entity.HasKey(e => new { e.CompetenceId, e.DepartementId, e.ContexteId })
                     .HasName("PK__Context_Competence");
 
                 entity.Property(e => e.CompetenceId)
@@ -76,16 +76,16 @@ namespace PlanC.Client.Data
 
                 entity.Property(e => e.RcdCdttm).HasDefaultValueSql("(getdate())");
 
-                entity.HasOne(d => d.Competence)
+                entity.HasOne(d => d.Competences)
                     .WithMany(p => p.CompetenceContextes)
-                    .HasForeignKey(d => d.CompetenceId)
+                    .HasForeignKey(d => new { d.CompetenceId, d.DepartementId })
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_TCNTXT_TSKL");
             });
 
             modelBuilder.Entity<Competences>(entity =>
             {
-                entity.HasKey(e => e.CompetenceId)
+                entity.HasKey(e => new { e.CompetenceId, e.DisciplineId })
                     .HasName("PK_TSKL");
 
                 entity.HasComment("Compétence");
@@ -105,6 +105,7 @@ namespace PlanC.Client.Data
                 entity.HasOne(d => d.Discipline)
                     .WithMany(p => p.Competences)
                     .HasForeignKey(d => d.DisciplineId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_TSKL_TDPMNT");
             });
 
@@ -254,7 +255,7 @@ namespace PlanC.Client.Data
 
                 entity.HasOne(d => d.ElementsCompetence)
                     .WithMany(p => p.CriteresElementCompetence)
-                    .HasForeignKey(d => new { d.CompetenceId, d.ElementCompetenceSqnbr })
+                    .HasForeignKey(d => new { d.CompetenceId, d.DisciplineId, d.ElementCompetenceSqnbr })
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_TSKLELEMCRT_TSKLELEM");
             });
@@ -262,8 +263,6 @@ namespace PlanC.Client.Data
             modelBuilder.Entity<Departements>(entity =>
             {
                 entity.HasComment("Département");
-
-                entity.HasKey(e => e.Id).HasName("PK_TDPTMNT");
 
                 entity.Property(e => e.Id).ValueGeneratedNever();
 
@@ -292,7 +291,7 @@ namespace PlanC.Client.Data
 
             modelBuilder.Entity<ElementsCompetence>(entity =>
             {
-                entity.HasKey(e => new { e.CompetenceId, e.ElementCompetenceSqnbr })
+                entity.HasKey(e => new { e.CompetenceId, e.DisciplineId, e.ElementCompetenceSqnbr })
                     .HasName("PK_TSKLELEM");
 
                 entity.HasComment("Élément de compétence");
@@ -305,9 +304,9 @@ namespace PlanC.Client.Data
 
                 entity.Property(e => e.TrkUid).IsUnicode(false);
 
-                entity.HasOne(d => d.Competence)
+                entity.HasOne(d => d.Competences)
                     .WithMany(p => p.ElementsCompetence)
-                    .HasForeignKey(d => d.CompetenceId)
+                    .HasForeignKey(d => new { d.CompetenceId, d.DisciplineId })
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_TSKLELEM_TSKL");
             });
@@ -382,7 +381,7 @@ namespace PlanC.Client.Data
 
                 entity.HasOne(d => d.ElementsCompetence)
                     .WithMany(p => p.ExamensElementsCompetences)
-                    .HasForeignKey(d => new { d.CompetenceId, d.ElementCompetenceSqnbr })
+                    .HasForeignKey(d => new { d.CompetenceId, d.DisciplineId, d.ElementCompetenceSqnbr })
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_TEXAMSKLELEM_TSKLELEM");
             });
@@ -503,12 +502,6 @@ namespace PlanC.Client.Data
                 entity.Property(e => e.CompetenceId)
                     .IsUnicode(false)
                     .IsFixedLength();
-
-                entity.HasOne(d => d.Competence)
-                    .WithMany(p => p.ProgrammeCompetences)
-                    .HasForeignKey(d => d.CompetenceId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_R_SKL_PGM__SKL");
 
                 entity.HasOne(d => d.Programmes)
                     .WithMany(p => p.ProgrammeCompetences)

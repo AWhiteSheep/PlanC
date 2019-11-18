@@ -8,21 +8,22 @@ namespace PlanC.EntityDataModel
     public partial class CompetenceContextes
     {
         [Key]
-        [Required]
         [Column("CompetenceID")]
         [StringLength(4)]
         public string CompetenceId { get; set; }
         [Key]
+        [Column("DepartementID")]
+        public int DepartementId { get; set; }
+        [Key]
         [Column("ContexteID")]
         public int ContexteId { get; set; }
         [Required]
-        [Column("Text")]
         public string Text { get; set; }
         [Column("RCD_CDTTM", TypeName = "datetime")]
         public DateTime? RcdCdttm { get; set; }
 
-        [ForeignKey(nameof(CompetenceId))]
-        [InverseProperty(nameof(Competences.CompetenceContextes))]
-        public virtual Competences Competence { get; set; }
+        [ForeignKey("CompetenceId,DepartementId")]
+        [InverseProperty("CompetenceContextes")]
+        public virtual Competences Competences { get; set; }
     }
 }

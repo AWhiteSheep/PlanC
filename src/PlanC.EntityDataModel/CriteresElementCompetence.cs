@@ -16,6 +16,8 @@ namespace PlanC.EntityDataModel
         [Column("CompetenceID")]
         [StringLength(4)]
         public string CompetenceId { get; set; }
+        [Column("DisciplineID")]
+        public int DisciplineId { get; set; }
         [Key]
         [Column("ElementCompetenceSQNBR")]
         public byte ElementCompetenceSqnbr { get; set; }
@@ -30,7 +32,7 @@ namespace PlanC.EntityDataModel
         [StringLength(7)]
         public string TrkUid { get; set; }
 
-        [ForeignKey("CompetenceId,ElementCompetenceSqnbr")]
+        [ForeignKey("CompetenceId,DisciplineId,ElementCompetenceSqnbr")]
         [InverseProperty("CriteresElementCompetence")]
         public virtual ElementsCompetence ElementsCompetence { get; set; }
         [InverseProperty("CriteresElementCompetence")]
