@@ -25,7 +25,7 @@ namespace PlanC.EntityDataModel
         [Column(TypeName = "ntext")]
         public string AttitudeAttendu { get; set; }
         public byte NombreParties { get; set; }
-        public bool? CompetenceComplementaire { get; set; }
+        public bool CompetenceComplementaire { get; set; }
         [Column("RCD_CDTTM", TypeName = "datetime")]
         public DateTime? RcdCdttm { get; set; }
         [Column("TRK_UID")]

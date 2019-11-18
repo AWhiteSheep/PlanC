@@ -1,65 +1,163 @@
-﻿@page "/competence"
+﻿@page "/departement/{departementId:int}/programme/{programmeId}/competence/create"
 @inject PCU001Context context
 @inject NavigationManager NavigationManager
 
+<!-- Section de navigation -->
+<div class="row mb-3">
+    <div class="col">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <!-- Donne accès au portail selon le role de l'utilisateur -->
+                <li class="breadcrumb-item"><a href="/"> Portail </a></li>
+                <li style="padding: 0 4px;"><i class="fas fa-home" style="font-size: 15px; color: #3f51b5;"></i></li>
+                <li class="breadcrumb-item"><i class="fas fa-circle" style="font-size: 5px; vertical-align: middle; padding-right: 2px;"></i></li>
+                <li class="breadcrumb-item"><a href="/Departement"> Département </a></li>
+                <li class="breadcrumb-item"><i class="fas fa-circle" style="font-size: 5px; vertical-align: middle; padding-right: 2px;"></i></li>
+                <li class="breadcrumb-item"><a href="/Departement/@departementId"> @programme.Departement.Titre </a></li>
+                <li class="breadcrumb-item"><i class="fas fa-circle" style="font-size: 5px; vertical-align: middle; padding-right: 2px;"></i></li>
+                <li class="breadcrumb-item"><a href="/Departement/@departementId/Programme"> Programme </a></li>
+                <li class="breadcrumb-item"><i class="fas fa-circle" style="font-size: 5px; vertical-align: middle; padding-right: 2px;"></i></li>
+                <li class="breadcrumb-item"><a href="/Departement/@departementId/Programme/@programmeId"> @programme.Id </a></li>
+                <li class="breadcrumb-item"><i class="fas fa-circle" style="font-size: 5px; vertical-align: middle; padding-right: 2px;"></i></li>
+                <li class="breadcrumb-item"><a href="/Departement/@departementId/Programme/@programmeId/Competence"> Compétences </a></li>
+                <li class="breadcrumb-item"><i class="fas fa-circle" style="font-size: 5px; vertical-align: middle; padding-right: 2px;"></i></li>
+                <li class="breadcrumb-item active" aria-current="page"> Nouvelle compétence </li>
+            </ol>
+        </nav>
+    </div>
+</div>
+
+
+<!-- Formulaire d'un nouveau plan-cadre -->
 <div class="container">
-    <div class="form-group">
-        <label class="control-label" for="SklTitle">Titre de la compétence: </label>
-        <input @bind="skill.Enonce" class="form-control" id="SklTitle" placeholder="Titre de la compétence" />
+    <div class="row">
+        <!-- Valeur pour le titre du plan-cadre -->
+        <div class="col-12">
+            <h3>@programme.Designation - @programme.Departement.Titre</h3>
+        </div>
     </div>
     <div class="row">
-        <div class="col-6">
-            <div class="form-group">
-                <label class="control-label" for="SklId">Numéro de la compétence: </label>
-                <input @bind="skill.CompetenceId" class="form-control" Mask="0000" id="SklId" placeholder="ex: 1051." />
+        <EditForm Model="@skill" OnValidSubmit="@HandleValidCompetence">
+            <DataAnnotationsValidator />
+            <ValidationSummary />
+            <!-- Valeur pour le numéro de la compétence -->
+            <div class="col-lg-6">
+                <div class="form-group">
+                    <label class="control-label"> Numéro de la compétence: </label>
+                    <InputText class="form-control" placeholder="Titre du cours" @bind-Value="skill.CompetenceId" />
+                    <ValidationMessage For="@(() => skill.CompetenceId)" />
+                </div>
             </div>
-        </div>
-        <!-- Sélection du programme -->
-        <div class="col-6">
-            <div class="form-group">
-                <label class="control-label" for="PgmId">Sélectionner un programme: </label>
-
+            <!-- Valeur pour l'identification du cours -->
+            <div class="col-lg-6">
+                <div class="form-group">
+                    <label class="control-label" for="CrsId"> Identifiant du cours: </label>
+                    <InputSelect @bind-Value="skill.DisciplineId" TValue="int">
+                        @foreach (Departements departement in departements)
+                        {
+                            <option value="@departement.Id">@departement.Titre</option>
+                        }
+                        <option></option>
+                    </InputSelect>
+                    <ValidationMessage For="@(() => skill.DisciplineId)" />
+                </div>
             </div>
+            <!-- Valeur pour l'énoncé de la compétence -->
+            <div class="col-12">
+                <div class="form-group">
+                    <label class="control-label"> Énoncé de la compétence: </label>
+                    <InputText class="form-control" placeholder="Énoncé de la compétence" @bind-Value="skill.Enonce" />
+                    <ValidationMessage For="@(() => skill.Enonce)" />
+                </div>
+            </div>
+            <!-- Attitude de la compétence attendu -->
+            <div class="col-12">
+                <div class="form-group">
+                    <label class="control-label"> Attitude attendue de la compétence: </label>
+                    <InputTextArea class="form-control" placeholder="Attitude attendue de la compétence" @bind-Value="skill.AttitudeAttendu" />
+                    <ValidationMessage For="@(() => skill.AttitudeAttendu)" />
+                </div>
+            </div>
+            <!-- Nombre de parties pour compléter la compétence -->
+            <div class="col-6">
+                <div class="form-group">
+                    <label class="control-label"> Nombre de parties: </label>
+                    <InputNumber class="form-control" placeholder="##" @bind-Value="nbpartie" />
+                </div>
+            </div>
+            <!-- Compétence étant complémentaire ou non -->
+            <div class="col-6">
+                <div class="form-group">
+                    <label class="control-label"> Compétence complémentaire: </label>
+                    <InputCheckbox class="form-control" @bind-Value="skill.CompetenceComplementaire" />
+                    <ValidationMessage For="@(() => skill.CompetenceComplementaire)" />
+                </div>
+            </div>
+            <button type="submit" class="btn btn-primary">Suivant</button>
+        </EditForm>
+    </div>
+    <div class="row">
+        <!-- Affiche la liste en table -->
+        <div class="form-group">
+            <label class="control-label"> Les contextes de réalisation: </label>
+            @if (contextRealisationsList != null)
+            {
+                @foreach (var context in contextRealisationsList)
+                {
+                    <div class="input-group">
+                        <input type="text" class="form-control" placeholder="Un contexte de réalisation" aria-label="Contexte de réalisation deux bouttons" aria-describedby="button-addon-context-@(contextRealisationsList.IndexOf(context)+1)">
+                        <div class="input-group-append" id="button-addon-context-@(contextRealisationsList.IndexOf(context)+1)">
+                            <button class="btn btn-outline-secondary" @onclick="@(() => RemoveContext(context.ContexteId))" type="button"><i class="fas fa-trash"></i></button>
+                        </div>
+                    </div>
+                }
+                <button class="btn btn-outline-secondary" @onclick="@(() => AjouterContext())"><i class="fas fa-plus"></i></button>
+            }
         </div>
-    </div>
-    <div class="form-group">
-        <label class="control-label" for="AsscAttd">Attente: </label>
-        <textarea @bind="skill.AttitudeAttendu" class="form-control" rows="5" id="AsscAttd" name="AsscAttd"></textarea>
-    </div>
-    <div class="form-group">
-        <label class="control-label" for="SklContext">Context de réalisation: </label>
-        <textarea @bind="cntxt.Text" class="form-control" rows="5" id="SklContext" name="SklContext"></textarea>
-    </div>
-    <div class="form-group">
-        <label class="control-label">Élément de la compétence: </label>
-    </div>
-    <div class="col-12">
-        <button class="btn btn-default" @onclick="HandleValidSubmit">Submit</button>
     </div>
 </div>
 
 @code {
+    // paramètre de l'url
     [Parameter]
-    public Programmes programme { get; set; }
+    public string programmeId { get; set; }
+    [Parameter]
+    public int departementId { get; set; }
+    public int nbpartie { get; set; }
 
+    // programme pour lequel nous formaton la nouvelle compétence
+    Programmes programme;
+
+    // discipline disponible pour le context
+    List<Departements> departements;
+
+    // les valeurs devant être initialisés pour créer un nouvelle compétence
     Competences skill = new Competences();
-    CompetenceContextes cntxt = new CompetenceContextes();
+    List<CompetenceContextes> contextRealisationsList;
+    List<ElementsCompetence> skElements;
 
-    List<ElementsCompetence> skElements = new List<ElementsCompetence>();
-    List<Programmes> programmes;
-
-
-    public async void HandleValidSubmit()
+    protected override void OnInitialized()
     {
-        skElements.ForEach(e => { e.CompetenceId = skill.CompetenceId; e.ElementCompetenceSqnbr = (byte)(skElements.IndexOf(e) + 1); });
-        skill.ElementsCompetence = skElements;
-        cntxt.CompetenceId = skill.CompetenceId;
-        skill.CompetenceContextes.Add(cntxt);
+        // recherche du programme selon les paramètres données
+        programme = context.Programmes.First(e => e.DepartementId == departementId && e.Id == programmeId);
+        departements = context.Departements.ToList();
+    }
 
-        context.Competences.Add(skill);
+    public async void HandleValidCompetence()
+    {
+        //skElements.ForEach(e => { e.CompetenceId = skill.CompetenceId; e.ElementCompetenceSqnbr = (byte)(skElements.IndexOf(e) + 1); });
+        //skill.ElementsCompetence = skElements;
+        //cntxt.CompetenceId = skill.CompetenceId;
+        //skill.CompetenceContextes.Add(cntxt);
+
         try
         {
+            // ajoute la nouvelle compétence
+            context.Competences.Add(skill);
             Console.WriteLine($"SQL return code: {await context.SaveChangesAsync()}");
+            // indexage de la liste contenant les contextes de la compétence donnée
+            contextRealisationsList = skill.CompetenceContextes.ToList();
+            AjouterContext();
         }
         catch (Exception e)
         {
@@ -68,15 +166,21 @@
         NavigationManager.NavigateTo("/");
     }
 
-    protected override void OnInitialized()
-    {
-        programmes = context.Programmes.ToList();
+    // ajoute un context pour la compétence donnée
+    async void AjouterContext() {
+        contextRealisationsList.Add(new CompetenceContextes() 
+            {
+                CompetenceId = skill.CompetenceId,
+                DepartementId = skill.DisciplineId
+            });
+        Console.WriteLine($"SQL return code: {await context.SaveChangesAsync()}");
+        StateHasChanged();
+    }
+
+    // supprime le context donné en paramètre
+    async void RemoveContext(int id) {
+        contextRealisationsList.RemoveAll(e => e.ContexteId == id);
+        Console.WriteLine($"SQL return code: {await context.SaveChangesAsync()}");
+        StateHasChanged();
     }
 }
-
-<style>
-    .PgmId {
-        right: 15px;
-        position: absolute;
-    }
-</style>
