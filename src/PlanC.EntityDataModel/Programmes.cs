@@ -39,7 +39,6 @@ namespace PlanC.EntityDataModel
         [Column("TRK_UID")]
         [StringLength(7)]
         public string TrkUid { get; set; }
-
         [ForeignKey(nameof(CodeType))]
         [InverseProperty(nameof(CategoriesProgrammes.Programmes))]
         public virtual CategoriesProgrammes CodeTypeNavigation { get; set; }

@@ -10,6 +10,11 @@ Blazor.start({
     }
 });
 
+
+window.showModal = (arg) => {
+    $(arg).modal('toggle');
+}
+
 // suite au render de blazor lancer les utilitaires
 // demande de scripts demandé pour la page en paramètre
 window.requestScripts = (args) => {

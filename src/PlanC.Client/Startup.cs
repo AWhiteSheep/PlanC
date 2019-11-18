@@ -70,6 +70,7 @@ namespace PlanC.Client
 
             app.UseEndpoints(endpoints =>
             {
+                endpoints.MapControllers();
                 endpoints.MapBlazorHub(option => {
                     option.Transports = Microsoft.AspNetCore.Http.Connections.HttpTransportType.LongPolling;
                 });

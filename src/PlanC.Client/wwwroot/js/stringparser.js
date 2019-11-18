@@ -1,6 +1,9 @@
-﻿$('#inputParser').change(function () {
+﻿var competenceFromtable;
+var élémentsCriteres = new Array();
+
+$('#inputParser').change(function () {
     var text = $('#inputParser').val();
-    var élémentsCriteres = new Array();
+    élémentsCriteres = new Array();
     // split le text, à partir de l'indicateur de order liste.
     // les éléments qui se distingerons, sont dinstinctivement, l'énoncé suivie des critères
     var élémentsCritereMix = $(this).val().split(/[0-9]+\. /g);
@@ -49,19 +52,47 @@ function trimer(str) {
 function toTable() {
     var table = $('#tableCompetence');
     table.empty();
-    élémentsCriteres.forEach((CompetenceArray) => {
-        var newrow = '<tr><th scope="row">';
+    // instancie un nouvel object contenant tous les nouvelles éléments de compétences
+    // ils seront des tables contenant les critères qui seront afficher chez l'utilisateur
+    // lors du changement dans la table cahque enregistrement seront sauvegardé
+    // dans l'objet approprié.
+    competenceFromtable = new Object();
+    // indication du nombre d'élement contenant dans l'objet
+    élémentsCriteres.forEach((CompetenceArray, findex) => {
+        // ajoute tous les critères dans l'objet agissant comme dictionnaire.
+        competenceFromtable[findex] = CompetenceArray;
+        competenceFromtable[findex]['index'] = findex; // initialisation de l'index dans la liste existante
+        // premier élément contient l'énoncé
+        var newrow = '<tr id="sorted_' + findex +'"><th scope="row">';
         newrow += '<div class="input-group input-group-sm mb-3">' +
-            '<input type="text" class="form-control" value="' + CompetenceArray[0]  + '">' +
-                    '</div>' + '</th><td>';
+            '<input type="text" class="form-control" ' +
+            'value="' + CompetenceArray[0] + '">' +
+            '</div>' + '</th><td>';
+        // itération pour trouver tous les critère d'évaluation pour les afficher
         CompetenceArray.forEach((item, index) => {
             if (index != 0) {
                 newrow += '<div class="input-group input-group-sm mb-3">' +
-                    '<textarea class="form-control">' + item +'</textarea>' +
+                    '<textarea class="form-control" ' +
+                    'name="' + competenceFromtable[findex][index] + '">' + item + '</textarea>' +
                     '</div>';
             }
         });
         newrow += '</td></tr>'
-        table.append(newrow);
+        table.append(newrow); // ajoute à la table à l'intérieur du DOM
+    });
+    console.log(competenceFromtable); // log l'objet
+
+    // ready up le sortable array
+    console.log("making sortable");
+    $('#tableCompetence').sortable({
+        forcePlaceholderSize: true,
+        placeholder: "ui-state-highlight",
+        revert: true
     });
 };
+
+function serialize() {
+    var table = $('#tableCompetence').sortable('toArray').toString();
+    $("#sorted_")
+    console.log(table);
+}
