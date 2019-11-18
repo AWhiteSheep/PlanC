@@ -1,6 +1,7 @@
 ﻿@page "/programme/{id}/create"
 
 @using PlanC.EntityDataModel
+@using Components;
 @inject NavigationManager NavigationManager
 @inject PCU001Context context
 
@@ -27,7 +28,7 @@
 <div class="container">
     <div class="row">
         <div class="col-lg-4">
-            <PlanC.Client.Components.DropdownProgramSelection />
+            <PlanC.Client.Components.DropdownProgramSelection @ref="programDropdown" />
         </div>
     </div>
     <div class="row">
@@ -35,7 +36,7 @@
         <div class="col-12">
             <div class="form-group">
                 <label class="control-label" for="CrsTitle"> Titre du du programme: </label>
-                <input readonly type="text" class="form-control" placeholder="Nom du programme" value="@program.Designation" />
+                <input readonly type="text" class="form-control" placeholder="Nom du programme" value="@program.ToString()" />
             </div>
         </div>
     </div>
@@ -117,12 +118,27 @@
     public string tid { get; set; }
     public Programmes program;
 
+    private DropdownProgramSelection programDropdown;
     private PlansCadres CTemplate = new PlansCadres();
 
     protected override void OnInitialized()
     {
         tid = Id.Replace('-', '.');
         program = context.Programmes.First(e => e.Id == tid);
+    }
+
+    protected override void OnAfterRender(bool firstRender)
+    {
+        if (firstRender)
+        {
+            programDropdown.OnChanged += UpdateProgram;
+        }
+    }
+
+    private void UpdateProgram()
+    {
+        program = programDropdown.CurrentSelection;
+        StateHasChanged();
     }
 
     // validation côté serveur
@@ -133,8 +149,8 @@
 
         }
         catch
-        { 
-            
+        {
+
         }
     }
 }
