@@ -51,5 +51,10 @@ namespace PlanC.EntityDataModel
         public virtual TypesFormationsProgrammes TypeDegreFormationNavigation { get; set; }
         [InverseProperty("Programmes")]
         public virtual ICollection<ProgrammeCompetences> ProgrammeCompetences { get; set; }
+
+        public override string ToString()
+        {
+            return $"{DepartementId}.{Id} -- {Designation}";
+        }
     }
 }
