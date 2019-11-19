@@ -5,3 +5,6 @@ User ID
 dbo802668235
 Password
 Nemesis2123%*
+
+// live share
+https://prod.liveshare.vsengsaas.visualstudio.com/join?8974A2F0885745D233DEB60BFA2F1C82760E
