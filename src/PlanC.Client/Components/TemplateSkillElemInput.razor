@@ -1,0 +1,62 @@
+﻿@using PlanC.EntityDataModel
+@using Syncfusion.EJ2.Blazor
+@using Syncfusion.EJ2.Blazor.DropDowns
+@using Syncfusion.EJ2.Blazor.Buttons
+@using Syncfusion.EJ2.Blazor.Lists
+@using Syncfusion.EJ2.Blazor.Grids
+@inject PCU001Context _context
+@inject IJSRuntime JSRuntime
+
+<EjsComboBox @ref="SkillDropdown" TValue="@Competences" DataSource="AvailableSkills">
+    <ComboBoxFieldSettings Text="ToString"></ComboBoxFieldSettings>
+</EjsComboBox>
+<EjsButton class="btn btn-info">Ajouter</EjsButton>
+
+<EjsListView DataSource="SelectedSkills">
+    <ListViewFieldSettings Text="ToString"></ListViewFieldSettings>
+</EjsListView>
+
+<EjsGrid DataSource="@SelectedSkillElements" AllowGrouping="true" Toolbar="@(new List<string>() {"Edit", "Update", "Cancel" })">
+    <GridColumns>
+        <GridColumn Field="@nameof(CoursElementsCompetences.CompetenceId)" HeaderText="Compétence"></GridColumn>
+    </GridColumns>
+</EjsGrid>
+
+
+
+@code {
+    [Parameter]
+    public Programmes SelectedProgram { get; set; }
+
+    [Parameter]
+    public PlansCadres Template { get; set; }
+
+    private List<Competences> AvailableSkills { get; set; }
+
+    private List<Competences> SelectedSkills { get; set; }
+
+    private EjsComboBox<Competences> SkillDropdown { get; set; }
+
+    private List<CoursElementsCompetences> SelectedSkillElements { get; set; }
+
+    protected override void OnInitialized()
+    {
+        SelectedSkills = new List<Competences>();
+    }
+
+    protected override void OnParametersSet()
+    {
+        List<string>
+            AvailableSkillIds = _context.ProgrammeCompetences.Where(pc => pc.Programmes == SelectedProgram)
+            .Select(pc => pc.CompetenceId)
+            .ToList();
+
+        AvailableSkills = _context.Competences.Where(c => AvailableSkillIds.Contains(c.CompetenceId)).ToList();
+    }
+
+
+    protected override void OnAfterRender(bool firstRender)
+    {
+        JSRuntime.Ejs().SetCulture("fr-CA");
+    }
+}

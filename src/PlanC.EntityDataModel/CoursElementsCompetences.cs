@@ -21,7 +21,7 @@ namespace PlanC.EntityDataModel
         [Key]
         [Column("ElementCompetenceQNBR")]
         public byte ElementCompetenceQnbr { get; set; }
-        [Column("PRTL_SKL_IND")]
+        [Column("PRTL_SKL_IND", TypeName ="char")]
         [StringLength(1)]
         public string PrtlSklInd { get; set; }
         [Column("TXNMY_CD")]

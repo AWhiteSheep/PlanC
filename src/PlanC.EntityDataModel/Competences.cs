@@ -39,5 +39,10 @@ namespace PlanC.EntityDataModel
         public virtual ICollection<CompetenceContextes> CompetenceContextes { get; set; }
         [InverseProperty("Competences")]
         public virtual ICollection<ElementsCompetence> ElementsCompetence { get; set; }
+
+        public override string ToString()
+        {
+            return $"{CompetenceId}: {Enonce}";
+        }
     }
 }
