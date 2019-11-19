@@ -7,4 +7,4 @@ Password
 Nemesis2123%*
 
 // live share
-https://prod.liveshare.vsengsaas.visualstudio.com/join?8974A2F0885745D233DEB60BFA2F1C82760E
+https://prod.liveshare.vsengsaas.visualstudio.com/join?6653C634393BBB9A0B0D3867BE0242132A3A
