@@ -28,7 +28,7 @@
 <div class="container">
     <div class="row">
         <div class="col-lg-4">
-            <PlanC.Client.Components.DropdownProgramSelection @ref="programDropdown" />
+            <PlanC.Client.Components.DropdownProgramSelection @ref="programDropdown" CurrentSelection="program"/>
         </div>
     </div>
     <div class="row">
@@ -131,13 +131,13 @@
     {
         if (firstRender)
         {
-            programDropdown.OnChanged += UpdateProgram;
+            programDropdown.ValueChanged += UpdateProgram;
         }
     }
 
-    private void UpdateProgram()
+    private void UpdateProgram(object sender, Programmes arg)
     {
-        program = programDropdown.CurrentSelection;
+        program = arg;
         StateHasChanged();
     }
 
