@@ -38,6 +38,7 @@ namespace PlanC.Client
             // Be Safe – Sanitize Your HTML 
             services.AddScoped<IHtmlSanitizer, HtmlSanitizer>(x =>
             {
+
                 // https://blog.jonblankenship.com/2019/01/27/safely-rendering-markdown-in-blazor/
                 // Configure sanitizer rules as needed here.
                 // For now, just use default rules + allow class attributes
