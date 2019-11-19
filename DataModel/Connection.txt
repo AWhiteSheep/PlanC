@@ -1,0 +1,10 @@
+"RDS_PCU001": "
+Data Source
+database-1.cai5lbxs9ofy.us-east-1.rds.amazonaws.com,1433
+User ID
+dbo802668235
+Password
+Nemesis2123%*
+
+// live share
+https://prod.liveshare.vsengsaas.visualstudio.com/join?8974A2F0885745D233DEB60BFA2F1C82760E
