@@ -1,6 +1,9 @@
-﻿@page "/departement/{departementId:int}/programme/{programmeId}/competence/create"
+﻿@using Newtonsoft.Json
+
+@page "/departement/{departementId:int}/programme/{programmeId}/competence/create"
 @inject PCU001Context context
 @inject NavigationManager NavigationManager
+@inject IJSRuntime JS
 
 <!-- Section de navigation -->
 <div class="row mb-3">
@@ -36,66 +39,64 @@
             <h3>@programme.Designation - @programme.Departement.Titre</h3>
         </div>
     </div>
-    <div class="row">
-        <EditForm Model="@skill" OnValidSubmit="@HandleValidCompetence">
-            <DataAnnotationsValidator />
-            <ValidationSummary />
-            <!-- Valeur pour le numéro de la compétence -->
-            <div class="col-lg-6">
-                <div class="form-group">
-                    <label class="control-label"> Numéro de la compétence: </label>
-                    <InputText class="form-control" placeholder="Titre du cours" @bind-Value="skill.CompetenceId" />
-                    <ValidationMessage For="@(() => skill.CompetenceId)" />
-                </div>
+    <EditForm Model="skill" OnValidSubmit="HandleValidCompetence" class="row">
+        <DataAnnotationsValidator />
+        <ValidationSummary />
+        <!-- Valeur pour le numéro de la compétence -->
+        <div class="col-md-6">
+            <div class="form-group">
+                <label for="competenceId" class="control-label"> Numéro de la compétence: </label>
+                <InputText id="competenceId" class="form-control" placeholder="Numéro de la compétence ####" @bind-Value="skill.CompetenceId" />
+                <ValidationMessage For="@(() => skill.CompetenceId)" />
             </div>
-            <!-- Valeur pour l'identification du cours -->
-            <div class="col-lg-6">
-                <div class="form-group">
-                    <label class="control-label" for="CrsId"> Identifiant du cours: </label>
-                    <InputSelect @bind-Value="skill.DisciplineId" TValue="int">
-                        @foreach (Departements departement in departements)
-                        {
-                            <option value="@departement.Id">@departement.Titre</option>
-                        }
-                        <option></option>
-                    </InputSelect>
-                    <ValidationMessage For="@(() => skill.DisciplineId)" />
-                </div>
+        </div>
+        <!-- Valeur pour l'identification du cours -->
+        <div class="col-md-6">
+            <div class="form-group">
+                <label class="control-label" for="CrsId"> Identifiant du cours: </label>
+                <PlanC.Client.Components.Models.NumberSelectComponent @bind-Value="skill.DisciplineId" class="form-control">
+                    @foreach (Departements departement in departements)
+                    {
+                        <option value="@departement.Id">@departement.Titre</option>
+                    }
+                    <option></option>
+                </PlanC.Client.Components.Models.NumberSelectComponent>
+                <ValidationMessage TValue="int" For="@(() => skill.DisciplineId)" />
             </div>
-            <!-- Valeur pour l'énoncé de la compétence -->
-            <div class="col-12">
-                <div class="form-group">
-                    <label class="control-label"> Énoncé de la compétence: </label>
-                    <InputText class="form-control" placeholder="Énoncé de la compétence" @bind-Value="skill.Enonce" />
-                    <ValidationMessage For="@(() => skill.Enonce)" />
-                </div>
+        </div>
+        <!-- Valeur pour l'énoncé de la compétence -->
+        <div class="col-12">
+            <div class="form-group">
+                <label class="control-label"> Énoncé de la compétence: </label>
+                <InputText class="form-control" placeholder="Énoncé de la compétence" @bind-Value="skill.Enonce" />
+                <ValidationMessage For="@(() => skill.Enonce)" />
             </div>
-            <!-- Attitude de la compétence attendu -->
-            <div class="col-12">
-                <div class="form-group">
-                    <label class="control-label"> Attitude attendue de la compétence: </label>
-                    <InputTextArea class="form-control" placeholder="Attitude attendue de la compétence" @bind-Value="skill.AttitudeAttendu" />
-                    <ValidationMessage For="@(() => skill.AttitudeAttendu)" />
-                </div>
+        </div>
+        <!-- Attitude de la compétence attendu -->
+        <div class="col-12">
+            <div class="form-group">
+                <label class="control-label"> Attitude attendue de la compétence: </label>
+                <InputTextArea class="form-control" placeholder="Attitude attendue de la compétence" @bind-Value="skill.AttitudeAttendu" />
+                <ValidationMessage For="@(() => skill.AttitudeAttendu)" />
             </div>
-            <!-- Nombre de parties pour compléter la compétence -->
-            <div class="col-6">
-                <div class="form-group">
-                    <label class="control-label"> Nombre de parties: </label>
-                    <InputNumber class="form-control" placeholder="##" @bind-Value="nbpartie" />
-                </div>
+        </div>
+        <!-- Nombre de parties pour compléter la compétence -->
+        <div class="col-6">
+            <div class="form-group">
+                <label class="control-label"> Nombre de parties: </label>
+                <InputNumber class="form-control" placeholder="##" @bind-Value="nbpartie" />
             </div>
-            <!-- Compétence étant complémentaire ou non -->
-            <div class="col-6">
-                <div class="form-group">
-                    <label class="control-label"> Compétence complémentaire: </label>
-                    <InputCheckbox class="form-control" @bind-Value="skill.CompetenceComplementaire" />
-                    <ValidationMessage For="@(() => skill.CompetenceComplementaire)" />
-                </div>
+        </div>
+        <!-- Compétence étant complémentaire ou non -->
+        <div class="col-6">
+            <div class="form-group">
+                <label class="control-label"> Compétence complémentaire: </label>
+                <InputCheckbox class="form-control" @bind-Value="skill.CompetenceComplementaire" />
+                <ValidationMessage For="@(() => skill.CompetenceComplementaire)" />
             </div>
-            <button type="submit" class="btn btn-primary">Suivant</button>
-        </EditForm>
-    </div>
+        </div>
+        <button type="submit" class="btn btn-primary">Suivant</button>
+    </EditForm>
     <div class="row">
         <!-- Affiche la liste en table -->
         <div class="form-group">
@@ -143,6 +144,15 @@
         departements = context.Departements.ToList();
     }
 
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await JS.InvokeAsync<string>("requestScripts",
+                JsonConvert.SerializeObject(new string[] { "/lib/jquery.validate.unobtrusive.js" }));
+        }
+    }
+
     public async void HandleValidCompetence()
     {
         //skElements.ForEach(e => { e.CompetenceId = skill.CompetenceId; e.ElementCompetenceSqnbr = (byte)(skElements.IndexOf(e) + 1); });
@@ -167,18 +177,20 @@
     }
 
     // ajoute un context pour la compétence donnée
-    async void AjouterContext() {
-        contextRealisationsList.Add(new CompetenceContextes() 
-            {
-                CompetenceId = skill.CompetenceId,
-                DepartementId = skill.DisciplineId
-            });
+    async void AjouterContext()
+    {
+        contextRealisationsList.Add(new CompetenceContextes()
+        {
+            CompetenceId = skill.CompetenceId,
+            DepartementId = skill.DisciplineId
+        });
         Console.WriteLine($"SQL return code: {await context.SaveChangesAsync()}");
         StateHasChanged();
     }
 
     // supprime le context donné en paramètre
-    async void RemoveContext(int id) {
+    async void RemoveContext(int id)
+    {
         contextRealisationsList.RemoveAll(e => e.ContexteId == id);
         Console.WriteLine($"SQL return code: {await context.SaveChangesAsync()}");
         StateHasChanged();

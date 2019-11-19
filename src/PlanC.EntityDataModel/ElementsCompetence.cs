@@ -11,6 +11,7 @@ namespace PlanC.EntityDataModel
         {
             CriteresElementCompetence = new HashSet<CriteresElementCompetence>();
             ExamensElementsCompetences = new HashSet<ExamensElementsCompetences>();
+            CoursElementsCompetences = new HashSet<CoursElementsCompetences>();
         }
 
         [Key]
@@ -40,5 +41,7 @@ namespace PlanC.EntityDataModel
         public virtual ICollection<CriteresElementCompetence> CriteresElementCompetence { get; set; }
         [InverseProperty("ElementsCompetence")]
         public virtual ICollection<ExamensElementsCompetences> ExamensElementsCompetences { get; set; }
+        [InverseProperty("ElementsCompetence")]
+        public virtual ICollection<CoursElementsCompetences> CoursElementsCompetences { get; set; }
     }
 }

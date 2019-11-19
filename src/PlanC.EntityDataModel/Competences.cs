@@ -19,6 +19,7 @@ namespace PlanC.EntityDataModel
         public string CompetenceId { get; set; }
         [Key]
         [Column("DisciplineID")]
+        [Range(0, int.MaxValue)]
         public int DisciplineId { get; set; }
         [StringLength(200)]
         public string Enonce { get; set; }

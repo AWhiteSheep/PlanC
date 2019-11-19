@@ -178,7 +178,7 @@ namespace PlanC.Client.Data
 
             modelBuilder.Entity<CoursElementsCompetences>(entity =>
             {
-                entity.HasKey(e => new { e.CoursId, e.VsnCdttm, e.CompetenceId, e.ElementCompetenceQnbr })
+                entity.HasKey(e => new { e.CoursId, e.VsnCdttm, e.CompetenceId, e.DisciplineId, e.ElementCompetenceQnbr })
                     .HasName("PK_TTMPLTSKLELEM");
 
                 entity.HasComment("Association plan-cadre -- élément de compétence");
@@ -186,6 +186,10 @@ namespace PlanC.Client.Data
                 entity.Property(e => e.CoursId)
                     .IsFixedLength()
                     .HasComment("Code d'identification d'un cours");
+
+                entity.Property(e => e.CompetenceId)
+                    .IsUnicode(false)
+                    .IsFixedLength();
 
                 entity.Property(e => e.CompetenceId)
                     .IsUnicode(false)
@@ -208,6 +212,12 @@ namespace PlanC.Client.Data
                     .HasForeignKey(d => new { d.CoursId, d.VsnCdttm })
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_TTMPLTSKLELEM_TCRSTMPLT");
+
+                entity.HasOne(d => d.ElementsCompetence)
+                    .WithMany(p => p.CoursElementsCompetences)
+                    .HasForeignKey(d => new { d.CompetenceId, d.DisciplineId, d.ElementCompetenceQnbr })
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_TTMPLTSKLELEM_TCRSSKLLCOMPENTENCE");
             });
 
             modelBuilder.Entity<CoursRequis>(entity =>
