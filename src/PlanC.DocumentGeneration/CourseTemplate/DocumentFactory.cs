@@ -20,7 +20,7 @@ namespace PlanC.DocumentGeneration.CourseTemplate
         /// <returns>
         ///     A new editable <see cref="WordprocessingDocument"/> wrapping the new document on the stream.
         /// </returns>
-        public static WordprocessingDocument Create(Stream documentStream, string author = null)
+        public static WordprocessingDocument Create(Stream documentStream, string? author = null)
         {
             return OpenXmlHelpers.CreateFromTemplate(
                 @"J:\À conserver\Session A2019\Projet\PlanC\src\PlanC.DocumentGeneration\CourseTemplate\DocumentTemplate.dotx", documentStream, author);

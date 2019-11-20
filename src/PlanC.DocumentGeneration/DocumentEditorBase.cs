@@ -22,22 +22,19 @@ namespace PlanC.DocumentGeneration
     /// </typeparam>
     public abstract class DocumentEditorBase<TModel> where TModel : class, new()
     {
-        private TModel _model;
-        private XmlSerializer _modelSerializer;
-        private XslCompiledTransform _mainDocumentPartStyleSheet;
+        private TModel? _model;
+        private XmlSerializer? _modelSerializer;
+        private XslCompiledTransform? _mainDocumentPartStyleSheet;
 
         protected DocumentEditorBase(WordprocessingDocument document)
         {
-            Contract.Requires(document != null);
-            //Contract.Requires(typeof(TModel).CustomAttributes.Any(a => a.AttributeType == typeof(SerializableAttribute)));
-
-            Document = document;
+            Document = document ?? throw new ArgumentNullException(nameof(document));
         }
-        
+
 
         //Abstract members that need to be overriden for this class to work.
 
-        
+        protected abstract XslCompiledTransform CreateMainDocumentPartStyleSheet();
 
 
         //Virtual members implementation
@@ -56,11 +53,6 @@ namespace PlanC.DocumentGeneration
             return new XmlSerializer(typeof(TModel));
         }
 
-        protected virtual XslCompiledTransform CreateMainDocumentPartStyleSheet()
-        {
-            Debug.Fail("We should override this.");
-            return new XslCompiledTransform(); //TODO: Check if an empty Xslt is valid
-        }
 
         //Non-virtual members implementation
 
@@ -70,7 +62,7 @@ namespace PlanC.DocumentGeneration
         protected WordprocessingDocument Document { get; }
 
         /// <summary>
-        ///     Gets a cached instance of the <see cref="XmlSerializer"/> when serializing or deserializing the
+        ///     Gets a cached instance of the <see cref="XmlSerializer"/> to use when serializing or deserializing the
         ///     <see cref="Model"/>.
         /// </summary>
         protected XmlSerializer ModelSerializer => _modelSerializer ?? (_modelSerializer = CreateModelSerializer());
@@ -113,23 +105,16 @@ namespace PlanC.DocumentGeneration
                     {
                         using (var modelStream = part.GetStream())
                         {
-                            _model = (TModel)_modelSerializer.Deserialize(modelStream);
+                            _model = (TModel)ModelSerializer.Deserialize(modelStream);
                         }
                     }
                 }
-
-                Contract.Ensures(_model != null);
 
                 return _model;
             }
             set
             {
-                Contract.Requires(value != null);
-
-                if (_model != value)
-                {
-                    _model = value;
-                }
+                _model = value;
             }
         }
 
@@ -156,7 +141,7 @@ namespace PlanC.DocumentGeneration
                 dataSourceStream.Flush();
                 dataSourceStream.Position = 0;
 
-                var documentXml = (string)null;
+                var documentXml = (string?)null;
                 using (var documentStream = new MemoryStream())
                 using (var dataXmlReader = XmlReader.Create(dataSourceStream))
                 {

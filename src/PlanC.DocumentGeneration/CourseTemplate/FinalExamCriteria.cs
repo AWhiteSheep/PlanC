@@ -7,10 +7,10 @@ namespace PlanC.DocumentGeneration.CourseTemplate
     [Serializable]
     public class FinalExamCriteria
     {
-        public string SkillElementId { get; set; }
+        public string? SkillElementId { get; set; }
 
-        public string Description { get; set; }
+        public string? Description { get; set; }
 
-        public decimal Weight { get; set; }
+        public decimal? Weight { get; set; }
     }
 }

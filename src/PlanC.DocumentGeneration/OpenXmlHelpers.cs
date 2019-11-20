@@ -1,6 +1,4 @@
-﻿#nullable enable
-
-using DocumentFormat.OpenXml;
+﻿using DocumentFormat.OpenXml;
 using DocumentFormat.OpenXml.Packaging;
 using System;
 using System.Collections.Generic;
