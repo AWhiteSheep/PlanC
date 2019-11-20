@@ -39,63 +39,84 @@
             <h3>@programme.Designation - @programme.Departement.Titre</h3>
         </div>
     </div>
-    <EditForm Model="skill" OnValidSubmit="HandleValidCompetence" class="row">
+    <EditForm Model="skill" OnValidSubmit="HandleValidCompetence" id="competenceForm" class="row">
         <DataAnnotationsValidator />
-        <ValidationSummary />
+        <!-- Sommaire de la validation si des erreurs existent -->
+        <div class="text-danger col-12" style="display:flex; flex-wrap: wrap;">
+            <ValidationSummary />
+        </div>
         <!-- Valeur pour le numéro de la compétence -->
         <div class="col-md-6">
             <div class="form-group">
                 <label for="competenceId" class="control-label"> Numéro de la compétence: </label>
-                <InputText id="competenceId" class="form-control" placeholder="Numéro de la compétence ####" @bind-Value="skill.CompetenceId" />
-                <ValidationMessage For="@(() => skill.CompetenceId)" />
+                <InputText id="competenceId" class="form-control" placeholder="Numéro de la compétence ####" @bind-Value="@(skill.CompetenceId)" />
+                <div class="invalid-feedback">
+                    <ValidationMessage For="@(() => skill.CompetenceId)" />
+                </div>
             </div>
         </div>
         <!-- Valeur pour l'identification du cours -->
         <div class="col-md-6">
             <div class="form-group">
                 <label class="control-label" for="CrsId"> Identifiant du cours: </label>
-                <PlanC.Client.Components.Models.NumberSelectComponent @bind-Value="skill.DisciplineId" class="form-control">
+                <PlanC.Client.Components.Models.NumberSelectComponent @bind-Value="@(skill.DisciplineId)" class="form-control">
                     @foreach (Departements departement in departements)
                     {
                         <option value="@departement.Id">@departement.Titre</option>
                     }
                     <option></option>
                 </PlanC.Client.Components.Models.NumberSelectComponent>
-                <ValidationMessage TValue="int" For="@(() => skill.DisciplineId)" />
+                <div class="invalid-feedback">
+                    <ValidationMessage TValue="int" For="@(() => skill.DisciplineId)" />
+                </div>
             </div>
         </div>
         <!-- Valeur pour l'énoncé de la compétence -->
         <div class="col-12">
             <div class="form-group">
                 <label class="control-label"> Énoncé de la compétence: </label>
-                <InputText class="form-control" placeholder="Énoncé de la compétence" @bind-Value="skill.Enonce" />
-                <ValidationMessage For="@(() => skill.Enonce)" />
+                <InputText class="form-control" placeholder="Énoncé de la compétence" @bind-Value="@(skill.Enonce)" />
+                <div class="invalid-feedback">
+                    <ValidationMessage For="@(() => skill.Enonce)" class="text-danger" />
+                </div>
             </div>
         </div>
         <!-- Attitude de la compétence attendu -->
         <div class="col-12">
             <div class="form-group">
                 <label class="control-label"> Attitude attendue de la compétence: </label>
-                <InputTextArea class="form-control" placeholder="Attitude attendue de la compétence" @bind-Value="skill.AttitudeAttendu" />
-                <ValidationMessage For="@(() => skill.AttitudeAttendu)" />
+                <InputTextArea class="form-control" placeholder="Attitude attendue de la compétence" @bind-Value="@(skill.AttitudeAttendu)" />
+                <div class="invalid-feedback">
+                    <ValidationMessage For="@(() => skill.AttitudeAttendu)" class="text-danger" />
+                </div>
             </div>
         </div>
         <!-- Nombre de parties pour compléter la compétence -->
         <div class="col-6">
             <div class="form-group">
                 <label class="control-label"> Nombre de parties: </label>
-                <InputNumber class="form-control" placeholder="##" @bind-Value="nbpartie" />
+                <InputNumber class="form-control" placeholder="##" @bind-Value="@(skill.NombreParties)" />
+                <div class="invalid-feedback">
+                    <ValidationMessage For="@(() => skill.NombreParties)" class="text-danger" />
+                </div>
             </div>
         </div>
         <!-- Compétence étant complémentaire ou non -->
         <div class="col-6">
             <div class="form-group">
-                <label class="control-label"> Compétence complémentaire: </label>
-                <InputCheckbox class="form-control" @bind-Value="skill.CompetenceComplementaire" />
-                <ValidationMessage For="@(() => skill.CompetenceComplementaire)" />
+                <div class="custom-control custom-checkbox">
+                    <label class="control-label"></label>
+                    <InputCheckbox id="CompetenceComplementaire" class="custom-control-input" @bind-Value="@(skill.CompetenceComplementaire)" />
+                    <label class="custom-control-label" for="CompetenceComplementaire">
+                        Cocher si la compétence est complémentaire
+                    </label>
+                </div>
             </div>
         </div>
-        <button type="submit" class="btn btn-primary">Suivant</button>
+
+        <div class="col-2">
+            <button onclick="validationFor('#competenceForm');" type="submit" class="btn btn-primary">Suivant</button>
+        </div>
     </EditForm>
     <div class="row">
         <!-- Affiche la liste en table -->
@@ -148,8 +169,6 @@
     {
         if (firstRender)
         {
-            await JS.InvokeAsync<string>("requestScripts",
-                JsonConvert.SerializeObject(new string[] { "/lib/jquery.validate.unobtrusive.js" }));
         }
     }
 

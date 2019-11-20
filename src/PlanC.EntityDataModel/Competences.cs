@@ -15,17 +15,24 @@ namespace PlanC.EntityDataModel
 
         [Key]
         [Column("CompetenceID")]
-        [StringLength(4)]
+        [Required(ErrorMessage = "L'identifiant de la compétence est obligatoire.")]
+        [StringLength(4, MinimumLength = 4, ErrorMessage = "La compétence doit être être une combinaison de 4 charactères alphanumériques.")]
         public string CompetenceId { get; set; }
         [Key]
         [Column("DisciplineID")]
-        [Range(0, int.MaxValue)]
+        [Range(0, int.MaxValue, ErrorMessage = "Le champ est incorrect.")]
+        [RegularExpression("/^[0-9]+$/", ErrorMessage = "La discipline doit être sélectionné.")]
         public int DisciplineId { get; set; }
-        [StringLength(200)]
+        [Required(ErrorMessage = "L'énoncé de la compétence est un champ obligatoire.")]
+        [StringLength(200, ErrorMessage = "Le champ est incorrect.")]
         public string Enonce { get; set; }
         [Column(TypeName = "ntext")]
+        [Required(ErrorMessage = "L'attitude attendu est un champ obligatoire.")]
         public string AttitudeAttendu { get; set; }
-        public byte NombreParties { get; set; }
+        [Column(TypeName = "TINYINT")]
+        [Required(ErrorMessage = "Le nombre de parties est un champ obligatoire.")]
+        [Range(1, int.MaxValue, ErrorMessage = "Nombre de parti minimum: 1.")]
+        public int NombreParties { get; set; } = 1;
         public bool CompetenceComplementaire { get; set; }
         [Column("RCD_CDTTM", TypeName = "datetime")]
         public DateTime? RcdCdttm { get; set; }
