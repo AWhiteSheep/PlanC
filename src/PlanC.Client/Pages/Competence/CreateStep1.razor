@@ -124,15 +124,27 @@
             </EditForm>
             break;
         case 2:
+            <div class="row">
+                 <div class="col-12">
+                     <div class="form-group">
+                         <label class="control-label"> Nouvelle compétence: @skill.CompetenceId : </label>
+                         <input readonly @bind="skill.Enonce" class="form-control" />                         
+                     </div>                     
+                 </div>
+            </div>
             <EditForm Model="contextRealisationsList" class="row">
                 <DataAnnotationsValidator />
                 <!-- Affiche la liste en table -->
-                <label class="control-label"> Les contextes de réalisation: </label>                    
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        <label class="control-label"> Les contextes de réalisation: </label>
+                    </div>
+                </div>                    
                 @foreach (var context in contextRealisationsList)
                 {
                     <div class="col-sm-12">
                         <div class="form-group">
-                            <textarea type="text" class="form-control" @bind="@context.Text" placeholder="Un contexte de réalisation" aria-label="Contexte de réalisation deux bouttons" aria-describedby="button-addon-context-@(contextRealisationsList.IndexOf(context)+1)" />
+                            <input type="text" class="form-control" @bind="@context.Text" placeholder="Un contexte de réalisation" aria-label="Contexte de réalisation deux bouttons" aria-describedby="button-addon-context-@(contextRealisationsList.IndexOf(context)+1)" />
                             <ValidationMessage For="@(() => context.Text)" class="text-danger" />
                             <div class="input-group-append" id="button-addon-context-@(contextRealisationsList.IndexOf(context)+1)">
                                 <button class="btn btn-outline-secondary" @onclick="@(() => RemoveContext(context.ContexteId))" type="button"><i class="fas fa-trash"></i></button>
@@ -140,89 +152,98 @@
                         </div>
                     </div>
                 }
+            <div class="col-sm-12">
                 <button class="btn btn-outline-secondary" @onclick="@(() => AjouterContext())"><i class="fas fa-plus"></i></button>
+            </div>
             </EditForm>
             break;
-        }
-    
+        case 3:
+            <!-- Entrez les éléments de compétences -->
+            break;
+        case 4:
+            <!-- Confirmation, overview et empreinte de la date -->
+            break;
+    }
+
+
 </div>
 
 @code {
     // paramètre de l'url
     [Parameter]
-    public string programmeId { get; set; }
-    [Parameter]
-    public int departementId { get; set; }
-    [Parameter]
-    public int CurrentStep { get; set; } = 1;
+        public string programmeId { get; set; }
+        [Parameter]
+        public int departementId { get; set; }
+        [Parameter]
+        public int CurrentStep { get; set; } = 1;
 
-    // programme pour lequel nous formaton la nouvelle compétence
-    Programmes programme;
+        // programme pour lequel nous formaton la nouvelle compétence
+        Programmes programme;
 
-    // discipline disponible pour le context
-    List<Departements> departements;
+        // discipline disponible pour le context
+        List<Departements> departements;
 
-    // les valeurs devant être initialisés pour créer un nouvelle compétence
-    Competences skill = new Competences();
-    List<CompetenceContextes> contextRealisationsList;
-    List<ElementsCompetence> skElements;
+        // les valeurs devant être initialisés pour créer un nouvelle compétence
+        Competences skill = new Competences();
+        List<CompetenceContextes> contextRealisationsList;
+        List<ElementsCompetence> skElements;
 
-    protected override void OnInitialized()
-    {
-        // recherche du programme selon les paramètres données
-        programme = context.Programmes.First(e => e.DepartementId == departementId && e.Id == programmeId);
-        // faire du premier choix de la discpline à la discipline du département du programme.
-        skill.DisciplineId = programme.DepartementId;
-        departements = context.Departements.ToList();
-    }
-
-    public async void HandleValidCompetence()
-    {
-        //skElements.ForEach(e => { e.CompetenceId = skill.CompetenceId; e.ElementCompetenceSqnbr = (byte)(skElements.IndexOf(e) + 1); });
-        //skill.ElementsCompetence = skElements;
-        //cntxt.CompetenceId = skill.CompetenceId;
-        //skill.CompetenceContextes.Add(cntxt);
-
-        try
+        protected override void OnInitialized()
         {
-            // ajoute la nouvelle compétence
-            context.Competences.Add(skill);
+            // recherche du programme selon les paramètres données
+            programme = context.Programmes.First(e => e.DepartementId == departementId && e.Id == programmeId);
+            // faire du premier choix de la discpline à la discipline du département du programme.
+            skill.DisciplineId = programme.DepartementId;
+            departements = context.Departements.ToList();
+        }
+
+        public async void HandleValidCompetence()
+        {
+            //skElements.ForEach(e => { e.CompetenceId = skill.CompetenceId; e.ElementCompetenceSqnbr = (byte)(skElements.IndexOf(e) + 1); });
+            //skill.ElementsCompetence = skElements;
+            //cntxt.CompetenceId = skill.CompetenceId;
+            //skill.CompetenceContextes.Add(cntxt);
+
+            try
+            {
+                // ajoute la nouvelle compétence
+                context.Competences.Add(skill);
+                Console.WriteLine($"SQL return code: {await context.SaveChangesAsync()}");
+                // indexage de la liste contenant les contextes de la compétence donnée
+                contextRealisationsList = skill.CompetenceContextes.ToList();
+                AjouterContext();
+                // rendu au step 2 de rentrer tous les contextes allant avec la compétence donnée
+                CurrentStep = 2;
+                StateHasChanged();
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine($"Error: {e.Message} -- {e.InnerException}");
+            }
+        }
+
+        int positionIncrement = 1;
+
+        // ajoute un context pour la compétence donnée
+        async void AjouterContext()
+        {
+            contextRealisationsList.Add(new CompetenceContextes()
+            {
+                CompetenceId = skill.CompetenceId,
+                DepartementId = skill.DisciplineId,
+                ContexteId = positionIncrement
+            });
+            positionIncrement++;
             Console.WriteLine($"SQL return code: {await context.SaveChangesAsync()}");
-            // indexage de la liste contenant les contextes de la compétence donnée
-            contextRealisationsList = skill.CompetenceContextes.ToList();
-            AjouterContext();
-            // rendu au step 2 de rentrer tous les contextes allant avec la compétence donnée
-            CurrentStep = 2;
             StateHasChanged();
         }
-        catch (Exception e)
+
+
+        // supprime le context donné en paramètre
+        async void RemoveContext(int id)
         {
-            Console.WriteLine($"Error: {e.Message} -- {e.InnerException}");
+            contextRealisationsList.Remove(contextRealisationsList.First(e => e.ContexteId == id));
+            Console.WriteLine($"SQL return code: {await context.SaveChangesAsync()}");
+            StateHasChanged();
         }
     }
-
-    int positionIncrement = 1;
-
-    // ajoute un context pour la compétence donnée
-    async void AjouterContext()
-    {
-        contextRealisationsList.Add(new CompetenceContextes()
-        {
-            CompetenceId = skill.CompetenceId,
-            DepartementId = skill.DisciplineId,
-            ContexteId = positionIncrement
-        });
-        positionIncrement++;
-        Console.WriteLine($"SQL return code: {await context.SaveChangesAsync()}");
-        StateHasChanged();
-    }
-
-
-    // supprime le context donné en paramètre
-    async void RemoveContext(int id)
-    {
-        contextRealisationsList.Remove(contextRealisationsList.First(e => e.ContexteId == id));
-        Console.WriteLine($"SQL return code: {await context.SaveChangesAsync()}");
-        StateHasChanged();
-    }
-}

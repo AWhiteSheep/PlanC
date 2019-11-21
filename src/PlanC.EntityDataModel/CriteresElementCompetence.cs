@@ -23,6 +23,7 @@ namespace PlanC.EntityDataModel
         public byte ElementCompetenceSqnbr { get; set; }
         [Key]
         [Column("CritereElementCompetenceSQNBR")]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public byte CritereElementCompetenceSqnbr { get; set; }
         public string DescriptionCritere { get; set; }
         [Column("RCD_CDTTM", TypeName = "datetime")]
