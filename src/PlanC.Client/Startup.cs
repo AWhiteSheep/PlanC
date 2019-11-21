@@ -66,7 +66,7 @@ namespace PlanC.Client
             app.UseHttpsRedirection();
             app.UseStaticFiles();
 
-            app.UseRouting();
+            app.UseRouting();            
 
             app.UseEndpoints(endpoints =>
             {

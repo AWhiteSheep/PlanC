@@ -1,0 +1,228 @@
+﻿@using Newtonsoft.Json
+@layout MultiFormLayout
+@page "/departement/{departementId:int}/programme/{programmeId}/competence/create"
+@inject PCU001Context context
+@inject NavigationManager NavigationManager
+@inject IJSRuntime JS
+
+<!-- Section de navigation -->
+<div class="row mb-3">
+    <div class="col">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <!-- Donne accès au portail selon le role de l'utilisateur -->
+                <li class="breadcrumb-item"><a href="/"> Portail </a></li>
+                <li style="padding: 0 4px;"><i class="fas fa-home" style="font-size: 15px; color: #3f51b5;"></i></li>
+                <li class="breadcrumb-item"><i class="fas fa-circle" style="font-size: 5px; vertical-align: middle; padding-right: 2px;"></i></li>
+                <li class="breadcrumb-item"><a href="/Departement"> Département </a></li>
+                <li class="breadcrumb-item"><i class="fas fa-circle" style="font-size: 5px; vertical-align: middle; padding-right: 2px;"></i></li>
+                <li class="breadcrumb-item"><a href="/Departement/@departementId"> @programme.Departement.Titre </a></li>
+                <li class="breadcrumb-item"><i class="fas fa-circle" style="font-size: 5px; vertical-align: middle; padding-right: 2px;"></i></li>
+                <li class="breadcrumb-item"><a href="/Departement/@departementId/Programme"> Programme </a></li>
+                <li class="breadcrumb-item"><i class="fas fa-circle" style="font-size: 5px; vertical-align: middle; padding-right: 2px;"></i></li>
+                <li class="breadcrumb-item"><a href="/Departement/@departementId/Programme/@programmeId"> @programme.Id </a></li>
+                <li class="breadcrumb-item"><i class="fas fa-circle" style="font-size: 5px; vertical-align: middle; padding-right: 2px;"></i></li>
+                <li class="breadcrumb-item"><a href="/Departement/@departementId/Programme/@programmeId/Competence"> Compétences </a></li>
+                <li class="breadcrumb-item"><i class="fas fa-circle" style="font-size: 5px; vertical-align: middle; padding-right: 2px;"></i></li>
+                <li class="breadcrumb-item active" aria-current="page"> Nouvelle compétence </li>
+            </ol>
+        </nav>
+    </div>
+</div>
+
+
+<!-- Formulaire d'un nouveau plan-cadre -->
+<div class="container">
+    <div class="row">
+        <!-- Valeur pour le titre du plan-cadre -->
+        <div class="col-12">
+            <h3>@programme.Designation - @programme.Departement.Titre</h3>
+        </div>
+    </div>
+    @switch (CurrentStep)
+    {
+        @case 1:
+            <EditForm Model="skill" OnValidSubmit="HandleValidCompetence" id="competenceForm" class="row">
+                <DataAnnotationsValidator />
+                <!-- Sommaire de la validation si des erreurs existent -->
+                <div class="text-danger col-12" style="display:flex; flex-wrap: wrap;">
+                    <ValidationSummary />
+                </div>
+                <!-- Valeur pour le numéro de la compétence -->
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        <label for="competenceId" class="control-label"> Numéro de la compétence: </label>
+                        <InputText id="competenceId" class="form-control" placeholder="Numéro de la compétence ####" @bind-Value="@(skill.CompetenceId)" />
+                        <div class="invalid-feedback">
+                            <ValidationMessage For="@(() => skill.CompetenceId)" />
+                        </div>
+                    </div>
+                </div>
+                <!-- Valeur pour l'identification du cours -->
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        <label class="control-label" for="CrsId"> Identifiant du cours: </label>
+                        <PlanC.Client.Components.Models.NumberSelectComponent @bind-Value="@(skill.DisciplineId)" class="form-control">
+                            @foreach (Departements departement in departements)
+                            {
+                                <option value="@departement.Id">@departement.Titre</option>
+                            }
+                        </PlanC.Client.Components.Models.NumberSelectComponent>
+                        <div class="invalid-feedback">
+                            <ValidationMessage TValue="int" For="@(() => skill.DisciplineId)" />
+                        </div>
+                    </div>
+                </div>
+                <!-- Valeur pour l'énoncé de la compétence -->
+                <div class="col-sm-12">
+                    <div class="form-group">
+                        <label class="control-label"> Énoncé de la compétence: </label>
+                        <InputText class="form-control" placeholder="Énoncé de la compétence" @bind-Value="@(skill.Enonce)" />
+                        <div class="invalid-feedback">
+                            <ValidationMessage For="@(() => skill.Enonce)" class="text-danger" />
+                        </div>
+                    </div>
+                </div>
+                <!-- Attitude de la compétence attendu -->
+                <div class="col-sm-12">
+                    <div class="form-group">
+                        <label class="control-label"> Attitude attendue de la compétence: </label>
+                        <InputTextArea row="5" class="form-control" placeholder="Attitude attendue de la compétence" @bind-Value="@(skill.AttitudeAttendu)" />
+                        <div class="invalid-feedback">
+                            <ValidationMessage For="@(() => skill.AttitudeAttendu)" class="text-danger" />
+                        </div>
+                    </div>
+                </div>
+                <!-- Nombre de parties pour compléter la compétence -->
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        <label class="control-label"> Nombre de parties: </label>
+                        <InputNumber class="form-control" placeholder="##" @bind-Value="@(skill.NombreParties)" />
+                        <div class="invalid-feedback">
+                            <ValidationMessage For="@(() => skill.NombreParties)" class="text-danger" />
+                        </div>
+                    </div>
+                </div>
+                <!-- Compétence étant complémentaire ou non -->
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        <div class="custom-control custom-checkbox">
+                            <label class="control-label"></label>
+                            <InputCheckbox id="CompetenceComplementaire" class="custom-control-input" @bind-Value="@(skill.CompetenceComplementaire)" />
+                            <label class="custom-control-label" for="CompetenceComplementaire">
+                                Cocher si la compétence est complémentaire
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-sm-2">
+                    <!-- appelle fonction javascript permettant d'ajouter le .wasvalidated sur la division du formulaire -->
+                    <!-- suite au poste validate nous envoyons l'utilisateur vers la deuxième partie celle de remplire les contextes et les éléments de compétence-->
+                    <button onclick="validationFor('#competenceForm');" type="submit" class="btn btn-primary">Suivant</button>
+                </div>
+            </EditForm>
+            break;
+        case 2:
+            <EditForm Model="contextRealisationsList" class="row">
+                <DataAnnotationsValidator />
+                <!-- Affiche la liste en table -->
+                <label class="control-label"> Les contextes de réalisation: </label>                    
+                @foreach (var context in contextRealisationsList)
+                {
+                    <div class="col-sm-12">
+                        <div class="form-group">
+                            <textarea type="text" class="form-control" @bind="@context.Text" placeholder="Un contexte de réalisation" aria-label="Contexte de réalisation deux bouttons" aria-describedby="button-addon-context-@(contextRealisationsList.IndexOf(context)+1)" />
+                            <ValidationMessage For="@(() => context.Text)" class="text-danger" />
+                            <div class="input-group-append" id="button-addon-context-@(contextRealisationsList.IndexOf(context)+1)">
+                                <button class="btn btn-outline-secondary" @onclick="@(() => RemoveContext(context.ContexteId))" type="button"><i class="fas fa-trash"></i></button>
+                            </div>
+                        </div>
+                    </div>
+                }
+                <button class="btn btn-outline-secondary" @onclick="@(() => AjouterContext())"><i class="fas fa-plus"></i></button>
+            </EditForm>
+            break;
+        }
+    
+</div>
+
+@code {
+    // paramètre de l'url
+    [Parameter]
+    public string programmeId { get; set; }
+    [Parameter]
+    public int departementId { get; set; }
+    [Parameter]
+    public int CurrentStep { get; set; } = 1;
+
+    // programme pour lequel nous formaton la nouvelle compétence
+    Programmes programme;
+
+    // discipline disponible pour le context
+    List<Departements> departements;
+
+    // les valeurs devant être initialisés pour créer un nouvelle compétence
+    Competences skill = new Competences();
+    List<CompetenceContextes> contextRealisationsList;
+    List<ElementsCompetence> skElements;
+
+    protected override void OnInitialized()
+    {
+        // recherche du programme selon les paramètres données
+        programme = context.Programmes.First(e => e.DepartementId == departementId && e.Id == programmeId);
+        // faire du premier choix de la discpline à la discipline du département du programme.
+        skill.DisciplineId = programme.DepartementId;
+        departements = context.Departements.ToList();
+    }
+
+    public async void HandleValidCompetence()
+    {
+        //skElements.ForEach(e => { e.CompetenceId = skill.CompetenceId; e.ElementCompetenceSqnbr = (byte)(skElements.IndexOf(e) + 1); });
+        //skill.ElementsCompetence = skElements;
+        //cntxt.CompetenceId = skill.CompetenceId;
+        //skill.CompetenceContextes.Add(cntxt);
+
+        try
+        {
+            // ajoute la nouvelle compétence
+            context.Competences.Add(skill);
+            Console.WriteLine($"SQL return code: {await context.SaveChangesAsync()}");
+            // indexage de la liste contenant les contextes de la compétence donnée
+            contextRealisationsList = skill.CompetenceContextes.ToList();
+            AjouterContext();
+            // rendu au step 2 de rentrer tous les contextes allant avec la compétence donnée
+            CurrentStep = 2;
+            StateHasChanged();
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine($"Error: {e.Message} -- {e.InnerException}");
+        }
+    }
+
+    int positionIncrement = 1;
+
+    // ajoute un context pour la compétence donnée
+    async void AjouterContext()
+    {
+        contextRealisationsList.Add(new CompetenceContextes()
+        {
+            CompetenceId = skill.CompetenceId,
+            DepartementId = skill.DisciplineId,
+            ContexteId = positionIncrement
+        });
+        positionIncrement++;
+        Console.WriteLine($"SQL return code: {await context.SaveChangesAsync()}");
+        StateHasChanged();
+    }
+
+
+    // supprime le context donné en paramètre
+    async void RemoveContext(int id)
+    {
+        contextRealisationsList.Remove(contextRealisationsList.First(e => e.ContexteId == id));
+        Console.WriteLine($"SQL return code: {await context.SaveChangesAsync()}");
+        StateHasChanged();
+    }
+}

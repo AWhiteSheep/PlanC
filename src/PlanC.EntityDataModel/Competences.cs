@@ -21,7 +21,7 @@ namespace PlanC.EntityDataModel
         [Key]
         [Column("DisciplineID")]
         [Range(0, int.MaxValue, ErrorMessage = "Le champ est incorrect.")]
-        [RegularExpression("/^[0-9]+$/", ErrorMessage = "La discipline doit être sélectionné.")]
+        [Required(ErrorMessage = "La discipline doit être sélectionné.")]
         public int DisciplineId { get; set; }
         [Required(ErrorMessage = "L'énoncé de la compétence est un champ obligatoire.")]
         [StringLength(200, ErrorMessage = "Le champ est incorrect.")]
