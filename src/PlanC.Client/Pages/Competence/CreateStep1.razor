@@ -32,7 +32,7 @@
 
 
 <!-- Formulaire d'un nouveau plan-cadre -->
-<div class="container">
+<div class="container shadow p-5">
     <div class="row">
         <!-- Valeur pour le titre du plan-cadre -->
         <div class="col-12">
@@ -42,10 +42,11 @@
     @switch (CurrentStep)
     {
         @case 1:
-            <EditForm Model="skill" OnValidSubmit="HandleValidCompetence" id="competenceForm" class="row">
+            <EditForm EditContext="@CompetenceForm" OnValidSubmit="HandleValidCompetence" id="competenceForm" class="row">
                 <DataAnnotationsValidator />
                 <!-- Sommaire de la validation si des erreurs existent -->
                 <div class="text-danger col-12" style="display:flex; flex-wrap: wrap;">
+                    <div class="alert @StatusClass" style="width:100%;">@StatusMessage</div>
                     <ValidationSummary />
                 </div>
                 <!-- Valeur pour le numéro de la compétence -->
@@ -105,9 +106,9 @@
                 </div>
                 <!-- Compétence étant complémentaire ou non -->
                 <div class="col-sm-6">
+                    <label class="control-label"> Optionnelle: </label>
                     <div class="form-group">
                         <div class="custom-control custom-checkbox">
-                            <label class="control-label"></label>
                             <InputCheckbox id="CompetenceComplementaire" class="custom-control-input" @bind-Value="@(skill.CompetenceComplementaire)" />
                             <label class="custom-control-label" for="CompetenceComplementaire">
                                 Cocher si la compétence est complémentaire
@@ -132,28 +133,34 @@
                      </div>                     
                  </div>
             </div>
-            <EditForm Model="contextRealisationsList" class="row">
+            <!-- call du onsubmit afin de faire notre propre validation -->
+            <EditForm id="contextForm" EditContext="EditConContext" class="row" OnSubmit="HandleValidContext">
                 <DataAnnotationsValidator />
                 <!-- Affiche la liste en table -->
                 <div class="col-sm-6">
-                    <div class="form-group">
-                        <label class="control-label"> Les contextes de réalisation: </label>
-                    </div>
-                </div>                    
+                    <label class="control-label"> Les contextes de réalisation: </label>
+                </div>
                 @foreach (var context in contextRealisationsList)
                 {
-                    <div class="col-sm-12">
-                        <div class="form-group">
+                    <div class="col-sm-12 mb-3">
+                        <div class="input-group">
                             <input type="text" class="form-control" @bind="@context.Text" placeholder="Un contexte de réalisation" aria-label="Contexte de réalisation deux bouttons" aria-describedby="button-addon-context-@(contextRealisationsList.IndexOf(context)+1)" />
-                            <ValidationMessage For="@(() => context.Text)" class="text-danger" />
                             <div class="input-group-append" id="button-addon-context-@(contextRealisationsList.IndexOf(context)+1)">
                                 <button class="btn btn-outline-secondary" @onclick="@(() => RemoveContext(context.ContexteId))" type="button"><i class="fas fa-trash"></i></button>
                             </div>
+                            <ValidationMessage For="@(() => context.Text)" class="text-danger" />
                         </div>
                     </div>
                 }
-            <div class="col-sm-12">
-                <button class="btn btn-outline-secondary" @onclick="@(() => AjouterContext())"><i class="fas fa-plus"></i></button>
+                <div class="col-sm-12 row justify-content-center">
+                    <div class="col-sm-4" style="font-weight: 400;">
+                        <button class="btn btn-success w-100" @onclick="@(() => AjouterContext())">Ajouter un contexte <i class="fas fa-plus-circle ml-3" style="vertical-align: middle;"></i></button>
+                    </div>
+                </div>
+            <div class="col-sm-2">
+                <!-- appelle fonction javascript permettant d'ajouter le .wasvalidated sur la division du formulaire -->
+                <!-- suite au poste validate nous envoyons l'utilisateur vers la deuxième partie celle de remplire les contextes et les éléments de compétence-->
+                <button onclick="validationFor('#contextForm');" type="submit" class="btn btn-primary">Suivant</button>
             </div>
             </EditForm>
             break;
@@ -171,39 +178,56 @@
 @code {
     // paramètre de l'url
     [Parameter]
-        public string programmeId { get; set; }
-        [Parameter]
-        public int departementId { get; set; }
-        [Parameter]
-        public int CurrentStep { get; set; } = 1;
+    public string programmeId { get; set; }
+    [Parameter]
+    public int departementId { get; set; }
+    [Parameter]
+    public int CurrentStep { get; set; } = 1;
 
-        // programme pour lequel nous formaton la nouvelle compétence
-        Programmes programme;
+    // programme pour lequel nous formaton la nouvelle compétence
+    Programmes programme;
 
-        // discipline disponible pour le context
-        List<Departements> departements;
+    EditContext CompetenceForm;
+    EditContext EditConContext;
 
-        // les valeurs devant être initialisés pour créer un nouvelle compétence
-        Competences skill = new Competences();
-        List<CompetenceContextes> contextRealisationsList;
-        List<ElementsCompetence> skElements;
+    // discipline disponible pour le context
+    List<Departements> departements;
 
-        protected override void OnInitialized()
+    // les valeurs devant être initialisés pour créer un nouvelle compétence
+    Competences skill = new Competences();
+    List<CompetenceContextes> contextRealisationsList;
+    List<ElementsCompetence> skElements;
+
+    private string StatusClass;
+    private string StatusMessage;
+
+    protected override void OnInitialized()
+    {
+        CompetenceForm = new EditContext(skill);
+        // recherche du programme selon les paramètres données
+        programme = context.Programmes.First(e => e.DepartementId == departementId && e.Id == programmeId);
+        // faire du premier choix de la discpline à la discipline du département du programme.
+        skill.DisciplineId = programme.DepartementId;
+        departements = context.Departements.ToList();
+    }
+
+    public async void HandleValidCompetence()
+    {
+        //skElements.ForEach(e => { e.CompetenceId = skill.CompetenceId; e.ElementCompetenceSqnbr = (byte)(skElements.IndexOf(e) + 1); });
+        //skill.ElementsCompetence = skElements;
+        //cntxt.CompetenceId = skill.CompetenceId;
+        //skill.CompetenceContextes.Add(cntxt);
+
+        var duplicate = context.Competences.Find(skill.CompetenceId, skill.DisciplineId);
+        if (duplicate != null)
         {
-            // recherche du programme selon les paramètres données
-            programme = context.Programmes.First(e => e.DepartementId == departementId && e.Id == programmeId);
-            // faire du premier choix de la discpline à la discipline du département du programme.
-            skill.DisciplineId = programme.DepartementId;
-            departements = context.Departements.ToList();
+            StatusClass = "alert-danger";
+            StatusMessage = string.Format("La compétence {0} existe déjà pour le département {1}.", duplicate.CompetenceId, duplicate.Discipline.Titre);
+            skill.CompetenceId = "";
+            CompetenceForm.Validate();
+            StateHasChanged();
         }
-
-        public async void HandleValidCompetence()
-        {
-            //skElements.ForEach(e => { e.CompetenceId = skill.CompetenceId; e.ElementCompetenceSqnbr = (byte)(skElements.IndexOf(e) + 1); });
-            //skill.ElementsCompetence = skElements;
-            //cntxt.CompetenceId = skill.CompetenceId;
-            //skill.CompetenceContextes.Add(cntxt);
-
+        else {
             try
             {
                 // ajoute la nouvelle compétence
@@ -211,6 +235,8 @@
                 Console.WriteLine($"SQL return code: {await context.SaveChangesAsync()}");
                 // indexage de la liste contenant les contextes de la compétence donnée
                 contextRealisationsList = skill.CompetenceContextes.ToList();
+                // sest le edit context pour les contextes de réalisation
+                EditConContext = new EditContext(contextRealisationsList);
                 AjouterContext();
                 // rendu au step 2 de rentrer tous les contextes allant avec la compétence donnée
                 CurrentStep = 2;
@@ -221,29 +247,35 @@
                 Console.WriteLine($"Error: {e.Message} -- {e.InnerException}");
             }
         }
-
-        int positionIncrement = 1;
-
-        // ajoute un context pour la compétence donnée
-        async void AjouterContext()
-        {
-            contextRealisationsList.Add(new CompetenceContextes()
-            {
-                CompetenceId = skill.CompetenceId,
-                DepartementId = skill.DisciplineId,
-                ContexteId = positionIncrement
-            });
-            positionIncrement++;
-            Console.WriteLine($"SQL return code: {await context.SaveChangesAsync()}");
-            StateHasChanged();
-        }
-
-
-        // supprime le context donné en paramètre
-        async void RemoveContext(int id)
-        {
-            contextRealisationsList.Remove(contextRealisationsList.First(e => e.ContexteId == id));
-            Console.WriteLine($"SQL return code: {await context.SaveChangesAsync()}");
-            StateHasChanged();
-        }
     }
+
+    void HandleValidContext() {
+        // validation si la liste n'est pas vide.
+    }
+
+    int positionIncrement = 1;
+
+    // ajoute un context pour la compétence donnée
+    async void AjouterContext()
+    {
+        contextRealisationsList.Add(new CompetenceContextes()
+        {
+            CompetenceId = skill.CompetenceId,
+            DepartementId = skill.DisciplineId,
+            ContexteId = positionIncrement
+        });
+        positionIncrement++;
+        Console.WriteLine($"SQL return code: {await context.SaveChangesAsync()}");
+        StateHasChanged();
+    }
+
+
+    // supprime le context donné en paramètre
+    async void RemoveContext(int id)
+    {
+        contextRealisationsList.Remove(contextRealisationsList.First(e => e.ContexteId == id));
+        Console.WriteLine($"SQL return code: {await context.SaveChangesAsync()}");
+        StateHasChanged();
+    }
+
+}

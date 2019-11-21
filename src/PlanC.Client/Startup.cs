@@ -47,6 +47,7 @@ namespace PlanC.Client
                 "div"});
                 return sanitizer;
             });
+            services.AddCors();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -62,6 +63,8 @@ namespace PlanC.Client
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
+            app.UseCors(o => o.AllowAnyOrigin()
+                .AllowAnyHeader().AllowAnyMethod());
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();
