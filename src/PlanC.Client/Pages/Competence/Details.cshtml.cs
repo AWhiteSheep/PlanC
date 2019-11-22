@@ -19,7 +19,7 @@ namespace PlanC.Client.Pages.Competence
             _context = context;
         }
 
-        public ElementsCompetence ElementsCompetence { get; set; }
+        public Competences Competences { get; set; }
 
         public async Task<IActionResult> OnGetAsync(string id)
         {
@@ -28,10 +28,10 @@ namespace PlanC.Client.Pages.Competence
                 return NotFound();
             }
 
-            ElementsCompetence = await _context.ElementsCompetence
-                .Include(e => e.Competences).FirstOrDefaultAsync(m => m.CompetenceId == id);
+            Competences = await _context.Competences
+                .Include(c => c.Discipline).FirstOrDefaultAsync(m => m.CompetenceId == id);
 
-            if (ElementsCompetence == null)
+            if (Competences == null)
             {
                 return NotFound();
             }

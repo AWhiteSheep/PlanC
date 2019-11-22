@@ -1,11 +1,45 @@
 ﻿@page
 @model PlanC.Client.Pages.Competence.CreateModel
 
-<h4>ElementsCompetence</h4>
+<h4>Competences</h4>
 <hr />
 <div class="row">
     <div class="col-md-4">
-        
+        <form method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="Competences.CompetenceId" class="control-label"></label>
+                <input asp-for="Competences.CompetenceId" class="form-control" />
+                <span asp-validation-for="Competences.CompetenceId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Competences.DisciplineId" class="control-label"></label>
+                <select asp-for="Competences.DisciplineId" class ="form-control" asp-items="ViewBag.DisciplineId"></select>
+            </div>
+            <div class="form-group">
+                <label asp-for="Competences.Enonce" class="control-label"></label>
+                <input asp-for="Competences.Enonce" class="form-control" />
+                <span asp-validation-for="Competences.Enonce" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Competences.AttitudeAttendu" class="control-label"></label>
+                <input asp-for="Competences.AttitudeAttendu" class="form-control" />
+                <span asp-validation-for="Competences.AttitudeAttendu" class="text-danger"></span>
+            </div>
+            <div class="form-group form-check">
+                <label class="form-check-label">
+                    <input class="form-check-input" asp-for="Competences.CompetenceComplementaire" /> @Html.DisplayNameFor(model => model.Competences.CompetenceComplementaire)
+                </label>
+            </div>
+            <div class="form-group">
+                <label asp-for="Competences.TrkUid" class="control-label"></label>
+                <input asp-for="Competences.TrkUid" class="form-control" />
+                <span asp-validation-for="Competences.TrkUid" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
     </div>
 </div>
 

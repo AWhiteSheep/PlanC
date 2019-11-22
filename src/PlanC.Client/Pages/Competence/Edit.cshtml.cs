@@ -21,7 +21,7 @@ namespace PlanC.Client.Pages.Competence
         }
 
         [BindProperty]
-        public ElementsCompetence ElementsCompetence { get; set; }
+        public Competences Competences { get; set; }
 
         public async Task<IActionResult> OnGetAsync(string id)
         {
@@ -30,14 +30,14 @@ namespace PlanC.Client.Pages.Competence
                 return NotFound();
             }
 
-            ElementsCompetence = await _context.ElementsCompetence
-                .Include(e => e.Competences).FirstOrDefaultAsync(m => m.CompetenceId == id);
+            Competences = await _context.Competences
+                .Include(c => c.Discipline).FirstOrDefaultAsync(m => m.CompetenceId == id);
 
-            if (ElementsCompetence == null)
+            if (Competences == null)
             {
                 return NotFound();
             }
-           ViewData["CompetenceId"] = new SelectList(_context.Competences, "CompetenceId", "CompetenceId");
+           ViewData["DisciplineId"] = new SelectList(_context.Departements, "Id", "Id");
             return Page();
         }
 
@@ -50,7 +50,7 @@ namespace PlanC.Client.Pages.Competence
                 return Page();
             }
 
-            _context.Attach(ElementsCompetence).State = EntityState.Modified;
+            _context.Attach(Competences).State = EntityState.Modified;
 
             try
             {
@@ -58,7 +58,7 @@ namespace PlanC.Client.Pages.Competence
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!ElementsCompetenceExists(ElementsCompetence.CompetenceId))
+                if (!CompetencesExists(Competences.CompetenceId))
                 {
                     return NotFound();
                 }
@@ -71,9 +71,9 @@ namespace PlanC.Client.Pages.Competence
             return RedirectToPage("./Index");
         }
 
-        private bool ElementsCompetenceExists(string id)
+        private bool CompetencesExists(string id)
         {
-            return _context.ElementsCompetence.Any(e => e.CompetenceId == id);
+            return _context.Competences.Any(e => e.CompetenceId == id);
         }
     }
 }

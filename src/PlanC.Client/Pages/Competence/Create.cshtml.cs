@@ -21,12 +21,12 @@ namespace PlanC.Client.Pages.Competence
 
         public IActionResult OnGet()
         {
-            ViewData["CompetenceId"] = new SelectList(_context.Competences, "CompetenceId", "CompetenceId");
+        ViewData["DisciplineId"] = new SelectList(_context.Departements, "Id", "Id");
             return Page();
         }
 
         [BindProperty]
-        public ElementsCompetence ElementsCompetence { get; set; }
+        public Competences Competences { get; set; }
 
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for
         // more details see https://aka.ms/RazorPagesCRUD.
@@ -37,7 +37,7 @@ namespace PlanC.Client.Pages.Competence
                 return Page();
             }
 
-            _context.ElementsCompetence.Add(ElementsCompetence);
+            _context.Competences.Add(Competences);
             await _context.SaveChangesAsync();
 
             return RedirectToPage("./Index");

@@ -3,45 +3,56 @@
 
 <h3>Are you sure you want to delete this?</h3>
 <div>
-    <h4>ElementsCompetence</h4>
+    <h4>Competences</h4>
     <hr />
     <dl class="row">
         <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.ElementsCompetence.Libele)
+            @Html.DisplayNameFor(model => model.Competences.Enonce)
         </dt>
         <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.ElementsCompetence.Libele)
+            @Html.DisplayFor(model => model.Competences.Enonce)
         </dd>
         <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.ElementsCompetence.Description)
+            @Html.DisplayNameFor(model => model.Competences.AttitudeAttendu)
         </dt>
         <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.ElementsCompetence.Description)
+            @Html.DisplayFor(model => model.Competences.AttitudeAttendu)
         </dd>
         <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.ElementsCompetence.RcdCdttm)
+            @Html.DisplayNameFor(model => model.Competences.NombreParties)
         </dt>
         <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.ElementsCompetence.RcdCdttm)
+            @Html.DisplayFor(model => model.Competences.NombreParties)
         </dd>
         <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.ElementsCompetence.TrkUid)
+            @Html.DisplayNameFor(model => model.Competences.CompetenceComplementaire)
         </dt>
         <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.ElementsCompetence.TrkUid)
+            @Html.DisplayFor(model => model.Competences.CompetenceComplementaire)
         </dd>
         <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.ElementsCompetence.Competences)
+            @Html.DisplayNameFor(model => model.Competences.RcdCdttm)
         </dt>
         <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.ElementsCompetence.Competences.CompetenceId)
+            @Html.DisplayFor(model => model.Competences.RcdCdttm)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Competences.TrkUid)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Competences.TrkUid)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Competences.Discipline)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Competences.Discipline.Id)
         </dd>
     </dl>
     
     <form method="post">
-        <input type="hidden" asp-for="ElementsCompetence.CompetenceId" />
-        <input type="hidden" asp-for="ElementsCompetence.DisciplineId" />
-        <input type="hidden" asp-for="ElementsCompetence.ElementCompetenceSqnbr" />
+        <input type="hidden" asp-for="Competences.CompetenceId" />
+        <input type="hidden" asp-for="Competences.DisciplineId" />
         <input type="submit" value="Delete" class="btn btn-danger" /> |
         <a asp-page="./Index">Back to List</a>
     </form>

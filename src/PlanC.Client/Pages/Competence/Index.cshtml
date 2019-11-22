@@ -1,4 +1,4 @@
-﻿@page
+﻿@page "/Departement/{id?}"
 @model PlanC.Client.Pages.Competence.IndexModel
 
 <p>
@@ -8,31 +8,43 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.ElementsCompetence[0].Libele)
+                @Html.DisplayNameFor(model => model.Competences[0].Enonce)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.ElementsCompetence[0].Description)
+                @Html.DisplayNameFor(model => model.Competences[0].AttitudeAttendu)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.ElementsCompetence[0].RcdCdttm)
+                @Html.DisplayNameFor(model => model.Competences[0].NombreParties)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.ElementsCompetence[0].TrkUid)
+                @Html.DisplayNameFor(model => model.Competences[0].CompetenceComplementaire)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.ElementsCompetence[0].Competences)
+                @Html.DisplayNameFor(model => model.Competences[0].RcdCdttm)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Competences[0].TrkUid)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Competences[0].Discipline)
             </th>
             <th></th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model.ElementsCompetence) {
+@foreach (var item in Model.Competences) {
         <tr>
             <td>
-                @Html.DisplayFor(modelItem => item.Libele)
+                @Html.DisplayFor(modelItem => item.Enonce)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Description)
+                @Html.DisplayFor(modelItem => item.AttitudeAttendu)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.NombreParties)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.CompetenceComplementaire)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.RcdCdttm)
@@ -41,7 +53,7 @@
                 @Html.DisplayFor(modelItem => item.TrkUid)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Competences.CompetenceId)
+                @Html.DisplayFor(modelItem => item.Discipline.Id)
             </td>
             <td>
                 @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |

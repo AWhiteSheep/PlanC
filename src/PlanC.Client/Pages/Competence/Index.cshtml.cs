@@ -12,6 +12,8 @@ namespace PlanC.Client.Pages.Competence
 {
     public class IndexModel : PageModel
     {
+        // identification du département donné afin de trouver tous les compétences associées
+        public int Id { get; set; }
         private readonly PlanC.Client.Data.PCU001Context _context;
 
         public IndexModel(PlanC.Client.Data.PCU001Context context)
@@ -19,12 +21,18 @@ namespace PlanC.Client.Pages.Competence
             _context = context;
         }
 
-        public IList<ElementsCompetence> ElementsCompetence { get;set; }
+        public IList<Competences> Competences { get;set; }
 
         public async Task OnGetAsync()
         {
-            ElementsCompetence = await _context.ElementsCompetence
-                .Include(e => e.Competences).ToListAsync();
+            Competences = await _context.Competences
+                .Include(c => c.Discipline).ToListAsync();
+        }
+
+        public async Task OnGetAsync(int id)
+        {
+            Competences = await _context.Competences.Where(p => p.DisciplineId == id)
+                .Include(c => c.Discipline).ToListAsync();
         }
     }
 }
