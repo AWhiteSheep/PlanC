@@ -1,0 +1,54 @@
+﻿@page
+@model PlanC.Client.Pages.Competence.IndexModel
+
+<p>
+    <a asp-page="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.ElementsCompetence[0].Libele)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ElementsCompetence[0].Description)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ElementsCompetence[0].RcdCdttm)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ElementsCompetence[0].TrkUid)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ElementsCompetence[0].Competences)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model.ElementsCompetence) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Libele)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Description)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.RcdCdttm)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.TrkUid)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Competences.CompetenceId)
+            </td>
+            <td>
+                @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |
+                @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |
+                @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

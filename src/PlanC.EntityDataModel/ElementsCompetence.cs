@@ -23,6 +23,7 @@ namespace PlanC.EntityDataModel
         public int DisciplineId { get; set; }
         [Key]
         [Column("ElementCompetenceSQNBR")]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public byte ElementCompetenceSqnbr { get; set; }
         [StringLength(255)]
         public string Libele { get; set; }

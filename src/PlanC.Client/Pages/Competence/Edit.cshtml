@@ -1,0 +1,46 @@
+﻿@page
+@model PlanC.Client.Pages.Competence.EditModel
+
+<h4>ElementsCompetence</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="ElementsCompetence.CompetenceId" />
+            <input type="hidden" asp-for="ElementsCompetence.DisciplineId" />
+            <input type="hidden" asp-for="ElementsCompetence.ElementCompetenceSqnbr" />
+            <div class="form-group">
+                <label asp-for="ElementsCompetence.Libele" class="control-label"></label>
+                <input asp-for="ElementsCompetence.Libele" class="form-control" />
+                <span asp-validation-for="ElementsCompetence.Libele" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ElementsCompetence.Description" class="control-label"></label>
+                <input asp-for="ElementsCompetence.Description" class="form-control" />
+                <span asp-validation-for="ElementsCompetence.Description" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ElementsCompetence.RcdCdttm" class="control-label"></label>
+                <input asp-for="ElementsCompetence.RcdCdttm" class="form-control" />
+                <span asp-validation-for="ElementsCompetence.RcdCdttm" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ElementsCompetence.TrkUid" class="control-label"></label>
+                <input asp-for="ElementsCompetence.TrkUid" class="form-control" />
+                <span asp-validation-for="ElementsCompetence.TrkUid" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-page="./Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

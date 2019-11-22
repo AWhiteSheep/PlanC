@@ -1,0 +1,12 @@
+﻿@layout MultiFormLayout
+
+<div class="form-group">
+    <input @bind-value="element.Libele" class="form-control" />
+</div>
+
+@code {    
+    public ElementsCompetence element { get; set; }
+
+    [Parameter]
+    public Competences Competence { get; set; }
+}
