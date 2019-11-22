@@ -1,6 +1,7 @@
 ﻿@using Newtonsoft.Json
 @layout MultiFormLayout
-@page "/departement/{departementId:int}/programme/{programmeId}/competence/create"
+@page "/departement/{departementId:int}/competence/create"
+@page "/departement/{departementId:int}/competence/{competenceId}/create"
 @inject PCU001Context context
 @inject NavigationManager NavigationManager
 @inject IJSRuntime JS
@@ -16,13 +17,9 @@
                 <li class="breadcrumb-item"><i class="fas fa-circle" style="font-size: 5px; vertical-align: middle; padding-right: 2px;"></i></li>
                 <li class="breadcrumb-item"><a href="/Departement"> Département </a></li>
                 <li class="breadcrumb-item"><i class="fas fa-circle" style="font-size: 5px; vertical-align: middle; padding-right: 2px;"></i></li>
-                <li class="breadcrumb-item"><a href="/Departement/@departementId"> @programme.Departement.Titre </a></li>
+                <li class="breadcrumb-item"><a href="/Departement/@departementId"> @departement.Titre </a></li>
                 <li class="breadcrumb-item"><i class="fas fa-circle" style="font-size: 5px; vertical-align: middle; padding-right: 2px;"></i></li>
-                <li class="breadcrumb-item"><a href="/Departement/@departementId/Programme"> Programme </a></li>
-                <li class="breadcrumb-item"><i class="fas fa-circle" style="font-size: 5px; vertical-align: middle; padding-right: 2px;"></i></li>
-                <li class="breadcrumb-item"><a href="/Departement/@departementId/Programme/@programmeId"> @programme.Id </a></li>
-                <li class="breadcrumb-item"><i class="fas fa-circle" style="font-size: 5px; vertical-align: middle; padding-right: 2px;"></i></li>
-                <li class="breadcrumb-item"><a href="/Departement/@departementId/Programme/@programmeId/Competence"> Compétences </a></li>
+                <li class="breadcrumb-item"><a href="/Departement/@departementId/Competence"> Compétences </a></li>
                 <li class="breadcrumb-item"><i class="fas fa-circle" style="font-size: 5px; vertical-align: middle; padding-right: 2px;"></i></li>
                 <li class="breadcrumb-item active" aria-current="page"> Nouvelle compétence </li>
             </ol>
@@ -36,7 +33,7 @@
     <div class="row">
         <!-- Valeur pour le titre du plan-cadre -->
         <div class="col-12">
-            <h3>@programme.Designation - @programme.Departement.Titre</h3>
+            <h3>Département: @departement.Titre</h3>
         </div>
     </div>
     @switch (CurrentStep)
@@ -53,10 +50,20 @@
                 <div class="col-sm-6">
                     <div class="form-group">
                         <label for="competenceId" class="control-label"> Numéro de la compétence: </label>
-                        <InputText id="competenceId" class="form-control" placeholder="Numéro de la compétence ####" @bind-Value="@(skill.CompetenceId)" />
-                        <div class="invalid-feedback">
-                            <ValidationMessage For="@(() => skill.CompetenceId)" />
-                        </div>
+                        @if (!isEditing)
+                        {
+                            <InputText id="competenceId" class="form-control" placeholder="Numéro de la compétence ####" @bind-Value="@(skill.CompetenceId)" />
+                            <div class="invalid-feedback">
+                                <ValidationMessage For="@(() => skill.CompetenceId)" />
+                            </div>
+                        }
+                        else
+                        {
+                            <InputText readonly id="competenceId" class="form-control" placeholder="Numéro de la compétence ####" @bind-Value="@(skill.CompetenceId)" />
+                            <div class="invalid-feedback">
+                                <ValidationMessage For="@(() => skill.CompetenceId)" />
+                            </div>
+                        }
                     </div>
                 </div>
                 <!-- Valeur pour l'identification du cours -->
@@ -134,7 +141,10 @@
                  </div>
             </div>
             <!-- call du onsubmit afin de faire notre propre validation -->
-            <EditForm id="contextForm" EditContext="EditConContext" class="row" OnSubmit="HandleValidContext">
+            <EditForm id="contextForm" EditContext="EditConContext" class="row" OnSubmit="HandleValidContext">                
+                <div class="text-danger col-12" style="display:flex; flex-wrap: wrap;">
+                    <div class="alert alert-danger alert-dismissible" style="width:100%;">@StatusMessage</div>
+                </div>
                 <DataAnnotationsValidator />
                 <!-- Affiche la liste en table -->
                 <div class="col-sm-6">
@@ -155,7 +165,8 @@
                 <div class="col-sm-12 row justify-content-center">
                     <div class="col-sm-4" style="font-weight: 400;">
                         <button class="btn btn-success w-100" @onclick="@(() => AjouterContext())">Ajouter un contexte <i class="fas fa-plus-circle ml-3" style="vertical-align: middle;"></i></button>
-                    </div>
+                    </div>                    
+                    <small>Tout champ vide ne seront pas sauvegardé.</small>
                 </div>
             <div class="col-sm-2">
                 <!-- appelle fonction javascript permettant d'ajouter le .wasvalidated sur la division du formulaire -->
@@ -166,7 +177,7 @@
             break;
         case 3:
             <!-- Entrez les éléments de compétences -->
-
+            <FormElement @bind-Message="elementsMessage" Competence="@skill" OnSubmit="HandleValidElements"></FormElement>
             break;
         case 4:
             <!-- Confirmation, overview et empreinte de la date -->
@@ -179,19 +190,24 @@
 @code {
     // paramètre de l'url
     [Parameter]
-    public string programmeId { get; set; }
-    [Parameter]
     public int departementId { get; set; }
     [Parameter]
     public int CurrentStep { get; set; } = 1;
+    [Parameter]
+    public string competenceId { get; set; }
+
+    // si la compétence à déjà été créé certaine étape peuvent être sauté comme certaine vérification
+    bool isEditing = false;
 
     // programme pour lequel nous formaton la nouvelle compétence
-    Programmes programme;
+    Departements departement;
 
+    // form context
+    IReadOnlyDictionary<string, object> inputCompetenceAttributes = new Dictionary<string, object>();
     EditContext CompetenceForm;
     EditContext EditConContext;
 
-    // discipline disponible pour le context
+    // discipline disponible pour le context doit être initialisé pour le dropdown
     List<Departements> departements;
 
     // les valeurs devant être initialisés pour créer un nouvelle compétence
@@ -201,15 +217,44 @@
 
     private string StatusClass;
     private string StatusMessage;
+    private string infoMessage;
 
     protected override void OnInitialized()
     {
-        CompetenceForm = new EditContext(skill);
-        // recherche du programme selon les paramètres données
-        programme = context.Programmes.First(e => e.DepartementId == departementId && e.Id == programmeId);
-        // faire du premier choix de la discpline à la discipline du département du programme.
-        skill.DisciplineId = programme.DepartementId;
         departements = context.Departements.ToList();
+        // vérifi si le département existe bel et bien
+        departement = departements.First(e => e.Id == departementId);
+        if (departement == null)
+            NavigationManager.NavigateTo("/error");
+
+        // si non null nous continuons la création d'une compétence ou nous la modification
+        if (!string.IsNullOrEmpty(competenceId))
+        {
+            var vcompetence = context.Competences
+                .First(e =>
+                    e.DisciplineId == departementId &&
+                    e.CompetenceId == competenceId
+                );
+            if (vcompetence == null)
+            {
+                // sort une erreur si la compétence n'existe pas
+                NavigationManager.NavigateTo("/error");
+            }
+            isEditing = true;
+            // lecture seul
+            inputCompetenceAttributes.Append(new KeyValuePair<string, object>("readonly", "readonly"));
+            skill = vcompetence;
+            // continuation de la modification
+            CompetenceForm = new EditContext(skill);
+        }
+        else
+        {
+            // la compétence n'existe pas alors la créer selon le département
+            CompetenceForm = new EditContext(skill);
+            // faire du premier choix de la discpline à la discipline du département du programme.
+            skill.DisciplineId = departement.Id;
+            departements = context.Departements.ToList();
+        }
     }
 
     public async void HandleValidCompetence()
@@ -218,13 +263,19 @@
         //skill.ElementsCompetence = skElements;
         //cntxt.CompetenceId = skill.CompetenceId;
         //skill.CompetenceContextes.Add(cntxt);
-
-        var duplicate = context.Competences.Find(skill.CompetenceId, skill.DisciplineId);
-        if (duplicate != null)
+        Competences duplicate;
+        if (isEditing)
+        {
+            // ef doit être updaté.
+            Console.WriteLine($"SQL return code: {await context.SaveChangesAsync()}");
+            SettingContext();
+        }
+        else if ((duplicate = context.Competences.Find(skill.CompetenceId, skill.DisciplineId)) != null)
         {
             StatusClass = "alert-danger";
             StatusMessage = string.Format("La compétence {0} existe déjà pour le département {1}.", duplicate.CompetenceId, duplicate.Discipline.Titre);
             skill.CompetenceId = "";
+            // trigger la validation afin de pouvoir afficher l'erreur
             CompetenceForm.Validate();
             StateHasChanged();
         }
@@ -234,14 +285,7 @@
                 // ajoute la nouvelle compétence
                 context.Competences.Add(skill);
                 Console.WriteLine($"SQL return code: {await context.SaveChangesAsync()}");
-                // indexage de la liste contenant les contextes de la compétence donnée
-                contextRealisationsList = skill.CompetenceContextes.ToList();
-                // sest le edit context pour les contextes de réalisation
-                EditConContext = new EditContext(contextRealisationsList);
-                AjouterContext();
-                // rendu au step 2 de rentrer tous les contextes allant avec la compétence donnée
-                CurrentStep = 2;
-                StateHasChanged();
+                SettingContext();
             }
             catch (Exception e)
             {
@@ -250,24 +294,51 @@
         }
     }
 
+    void SettingContext()
+    {
+        // indexage de la liste contenant les contextes de la compétence donnée
+        contextRealisationsList = skill.CompetenceContextes.ToList();
+        // sest le edit context pour les contextes de réalisation
+        EditConContext = new EditContext(contextRealisationsList);
+
+        // check if only editing, sinon nous créons un champ vide pour la nouvelle compétence
+        if (!isEditing)
+        {
+            AjouterContext();
+        }
+
+        // rendu au step 2 de rentrer tous les contextes allant avec la compétence donnée
+        CurrentStep = 2;
+        StateHasChanged();
+    }
+
     void HandleValidContext() {
-        // validation si la liste n'est pas vide.
+        // validation si la liste n'est pas vide?. certaines compétences peuvent ne pas comporter de context
+        contextRealisationsList.RemoveAll(e => string.IsNullOrEmpty(e.Text));
     }
 
     int positionIncrement = 1;
+    string contextValidationMessage;
 
     // ajoute un context pour la compétence donnée
     async void AjouterContext()
     {
-        contextRealisationsList.Add(new CompetenceContextes()
+        if (contextRealisationsList.Any(e => string.IsNullOrEmpty(e.Text)))
         {
-            CompetenceId = skill.CompetenceId,
-            DepartementId = skill.DisciplineId,
-            ContexteId = positionIncrement
-        });
-        positionIncrement++;
-        Console.WriteLine($"SQL return code: {await context.SaveChangesAsync()}");
-        StateHasChanged();
+            contextValidationMessage = "SVP, remplir tous les contextes de réalisation avant d'ajouter un suivant.";
+        }
+        else
+        {
+            contextRealisationsList.Add(new CompetenceContextes()
+            {
+                CompetenceId = skill.CompetenceId,
+                DepartementId = skill.DisciplineId,
+                ContexteId = positionIncrement
+            });
+            positionIncrement++;
+            Console.WriteLine($"SQL return code: {await context.SaveChangesAsync()}");
+            StateHasChanged();
+        }
     }
 
 
@@ -279,4 +350,25 @@
         StateHasChanged();
     }
 
+    string elementsMessage;
+
+    private void HandleValidElements(MouseEventArgs e)
+    {
+        if (skill.ElementsCompetence.First().Libele == "")
+        {
+            elementsMessage = "Veuillez au minimum un élément de compétence.";
+        }
+        else
+        {
+            elementsMessage = "";
+            try
+            {
+                Console.WriteLine($"SQL return code: {context.SaveChanges()}");
+            }
+            catch {
+                CurrentStep = 4;
+            }
+        }
+
+    }
 }

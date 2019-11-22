@@ -20,7 +20,8 @@ namespace PlanC.EntityDataModel
         public int DisciplineId { get; set; }
         [Key]
         [Column("ElementCompetenceQNBR")]
-        public byte ElementCompetenceQnbr { get; set; }
+        [DataType("TINYINT")]
+        public int ElementCompetenceQnbr { get; set; }
         [Column("PRTL_SKL_IND")]
         [StringLength(1)]
         public string PrtlSklInd { get; set; }

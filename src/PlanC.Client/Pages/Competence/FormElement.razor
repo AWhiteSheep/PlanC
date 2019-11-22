@@ -1,12 +1,75 @@
-﻿@layout MultiFormLayout
+﻿@inject PCU001Context context
 
-    <div class="form-group">
-        <input @bind-value="element.Libele" class="form-control" />
+<EditForm id="elementForm" class="row">
+    @if (Message != "") 
+    {        
+        <div class="text-danger col-12" style="display:flex; flex-wrap: wrap;">
+            <div class="alert alert-danger" style="width:100%;">@Message</div>
+        </div>
+    }
+    @foreach (var context in Competence.ElementsCompetence)
+    {
+        <div class="col-sm-12 mb-3">
+            <div class="input-group">
+                <input type="text" class="form-control" @bind="context.Libele" placeholder="Un contexte de réalisation" aria-label="Contexte de réalisation deux bouttons" aria-describedby="button-addon-context-@(Competence.ElementsCompetence.IndexOf(context)+1)" />
+                <div class="input-group-append" id="button-addon-context-@(Competence.ElementsCompetence.IndexOf(context)+1)">
+                    <button class="btn btn-outline-secondary" @onclick="@(() => RemoveContext(context.ElementCompetenceSqnbr))" type="button"><i class="fas fa-trash"></i></button>
+                </div>
+            </div>
+        </div>
+    }
+    <div class="col-sm-12 row justify-content-center">
+        <div class="col-sm-4" style="font-weight: 400;">
+            <button class="btn btn-success w-100" @onclick="@(() => AjouterContext())">Ajouter un contexte <i class="fas fa-plus-circle ml-3" style="vertical-align: middle;"></i></button>
+        </div>
     </div>
+    <div class="col-sm-2">
+        <!-- appelle fonction javascript permettant d'ajouter le .wasvalidated sur la division du formulaire -->
+        <!-- suite au poste validate nous envoyons l'utilisateur vers la deuxième partie celle de remplire les contextes et les éléments de compétence-->
+        <button @onclick="OnSubmit" class="btn btn-primary">Suivant</button>
+    </div>
+</EditForm>
 
-@code {    
-    public ElementsCompetence element { get; set; }
 
+@code {
     [Parameter]
     public Competences Competence { get; set; }
+    [Parameter]
+    public EventCallback<MouseEventArgs> OnSubmit { get; set; }
+    [Bindable(true)]
+    public string Message { get; set; }
+
+    protected override void OnInitialized()
+    {
+        if (Competence.ElementsCompetence.Count <= 0)
+        {
+            Competence.AddElement(null);
+        }
+    }
+
+    // supprime le context donné en paramètre
+    async void RemoveContext(int id)
+    {
+        var list = Competence.ElementsCompetence;
+        list.Remove(list.First(e => e.ElementCompetenceSqnbr == id));
+        Console.WriteLine($"SQL return code: {await context.SaveChangesAsync()}");
+        StateHasChanged();
+    }
+
+
+    // ajoute un context pour la compétence donnée
+    async void AjouterContext()
+    {
+        if (Competence.ElementsCompetence.Any(e => string.IsNullOrEmpty(e.Libele)))
+        {
+            Message = "S'il vous plait inscrire les libélés manquant.";
+        }
+        else
+        {
+            Message = "";
+            Competence.AddElement(null);
+            Console.WriteLine($"SQL return code: {await context.SaveChangesAsync()}");
+            StateHasChanged();
+        }
+    }
 }

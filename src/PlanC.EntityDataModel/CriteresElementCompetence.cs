@@ -19,12 +19,14 @@ namespace PlanC.EntityDataModel
         [Column("DisciplineID")]
         public int DisciplineId { get; set; }
         [Key]
+        [DataType("TINYINT")]
         [Column("ElementCompetenceSQNBR")]
-        public byte ElementCompetenceSqnbr { get; set; }
+        public int ElementCompetenceSqnbr { get; set; }
         [Key]
+        [DataType("TINYINT")]
         [Column("CritereElementCompetenceSQNBR")]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public byte CritereElementCompetenceSqnbr { get; set; }
+        public int CritereElementCompetenceSqnbr { get; set; }
         public string DescriptionCritere { get; set; }
         [Column("RCD_CDTTM", TypeName = "datetime")]
         public DateTime RcdCdttm { get; set; }

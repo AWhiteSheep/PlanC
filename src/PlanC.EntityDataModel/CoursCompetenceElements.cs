@@ -12,10 +12,12 @@ namespace PlanC.EntityDataModel
         [StringLength(4)]
         public string CompetenceId { get; set; }
         [Key]
+        [DataType("TINYINT")]
         [Column("ElementCompetenceSQNBR")]
-        public byte ElementCompetenceSqnbr { get; set; }
+        public int ElementCompetenceSqnbr { get; set; }
         [Column("CritereElementCompetenceSQNBR")]
-        public byte? CritereElementCompetenceSqnbr { get; set; }
+        [DataType("TINYINT")]
+        public int? CritereElementCompetenceSqnbr { get; set; }
         [Key]
         [Column("CoursID")]
         [StringLength(10)]

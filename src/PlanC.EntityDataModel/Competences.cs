@@ -47,5 +47,24 @@ namespace PlanC.EntityDataModel
         public virtual ICollection<CompetenceContextes> CompetenceContextes { get; set; }
         [InverseProperty("Competences")]
         public virtual ICollection<ElementsCompetence> ElementsCompetence { get; set; }
+
+        /// <summary>
+        /// Ajoute un nouvel élément à la liste des éléments de compétence
+        /// En donnant soigneusement l'identification de la compétence et de la displine 
+        /// de la compétence à l'éléments 
+        /// </summary>
+        public void AddElement(ElementsCompetence element) {
+            var velement = element;
+            if (velement == null) 
+            {
+                velement = new ElementsCompetence() { CompetenceId = this.CompetenceId, DisciplineId = this.DisciplineId };
+            }
+            else
+            {
+                velement.CompetenceId = this.CompetenceId;
+                velement.DisciplineId = this.DisciplineId;
+            }
+            this.ElementsCompetence.Add(velement);
+        }
     }
 }
