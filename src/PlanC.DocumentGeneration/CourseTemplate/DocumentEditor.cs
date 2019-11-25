@@ -5,7 +5,9 @@ using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 using System.IO;
 using System.Linq;
+using System.Resources;
 using System.Text;
+using System.Xml;
 using System.Xml.Xsl;
 
 namespace PlanC.DocumentGeneration.CourseTemplate
@@ -17,9 +19,10 @@ namespace PlanC.DocumentGeneration.CourseTemplate
 
         protected override XslCompiledTransform CreateMainDocumentPartStyleSheet()
         {
-            var location = @"J:\À conserver\Session A2019\Projet\PlanC\src\PlanC.DocumentGeneration\CourseTemplate\MainPartTemplate.xslt";
+            var location = @"res:PlanC.DocumentGeneration.Templates/CourseTemplateMainDocumentPart.xslt";
             var stylesheet = new XslCompiledTransform();
-            stylesheet.Load(location);
+            stylesheet.Load(location, XsltSettings.Default, new XmlResourceResolver(typeof(DocumentEditor).Assembly));
+
             return stylesheet;
         }
     }
