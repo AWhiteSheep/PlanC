@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Data.SqlTypes;
 using Microsoft.EntityFrameworkCore;
 using PlanC.EntityDataModel;
 
@@ -306,11 +307,14 @@ namespace PlanC.Client.Data
 
                 entity.HasComment("Élément de compétence");
 
+                entity.Property(e => e.ElementCompetenceSqnbr).HasDefaultValueSql("(identity(1,1))");
+
                 entity.Property(e => e.CompetenceId)
                     .IsUnicode(false)
                     .IsFixedLength();
 
                 entity.Property(e => e.RcdCdttm).HasDefaultValueSql("(getdate())");
+
 
                 entity.Property(e => e.TrkUid).IsUnicode(false);
 

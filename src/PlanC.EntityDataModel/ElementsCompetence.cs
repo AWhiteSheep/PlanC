@@ -24,7 +24,7 @@ namespace PlanC.EntityDataModel
         [Key]
         [Column("ElementCompetenceSQNBR")]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int ElementCompetenceSqnbr { get; set; }
+        public byte ElementCompetenceSqnbr { get; set; }
         [StringLength(255)]
         public string Libele { get; set; }
         [Column(TypeName = "ntext")]

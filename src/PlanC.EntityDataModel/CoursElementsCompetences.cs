@@ -21,7 +21,7 @@ namespace PlanC.EntityDataModel
         [Key]
         [Column("ElementCompetenceQNBR")]
         [DataType("TINYINT")]
-        public int ElementCompetenceQnbr { get; set; }
+        public byte ElementCompetenceQnbr { get; set; }
         [Column("PRTL_SKL_IND")]
         [StringLength(1)]
         public string PrtlSklInd { get; set; }

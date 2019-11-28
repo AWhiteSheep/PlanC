@@ -1,8 +1,8 @@
 ﻿@inject PCU001Context context
 
 <EditForm Model="skill" id="elementForm" class="row">
-    @if (Message != "") 
-    {        
+    @if (!string.IsNullOrEmpty(Message)) 
+    {
         <div class="text-danger col-12" style="display:flex; flex-wrap: wrap;">
             <div class="alert alert-danger" style="width:100%;">@Message</div>
         </div>
@@ -20,10 +20,20 @@
     }
     <div class="col-sm-12 row justify-content-center">
         <div class="col-sm-4" style="font-weight: 400;">
-            <button class="btn btn-success w-100" @onclick="@(() => AddElement())">Ajouter un contexte <i class="fas fa-plus-circle ml-3" style="vertical-align: middle;"></i></button>
+            <div class="input-group">
+                <label> Nouvel élément: </label>
+                @if(!string.IsNullOrEmpty(newMessage))
+                {
+                    <div class="text-danger col-12" style="display:flex; flex-wrap: wrap;">
+                        <div class="alert alert-danger" style="width:100%;">@newMessage</div>
+                    </div>
+                }
+                <input type="text" class="form-control" @bind="currentElement.Libele" placeholder="Un contexte de réalisation" />
+                <button class="btn btn-success w-100" @onclick="@(() => AddElement())">Ajouter un contexte <i class="fas fa-plus-circle ml-3" style="vertical-align: middle;"></i></button>
+            </div>
         </div>
     </div>
-    <div class="col-sm-2">
+    <div class="col-12 d-flex justify-content-end">
         <!-- appelle fonction javascript permettant d'ajouter le .wasvalidated sur la division du formulaire -->
         <!-- suite au poste validate nous envoyons l'utilisateur vers la deuxième partie celle de remplire les contextes et les éléments de compétence-->
         <button @onclick="OnSubmit" class="btn btn-primary">Suivant</button>
@@ -36,21 +46,20 @@
     [CascadingParameter]
     protected Competences skill { get; set; }
 
+    protected ElementsCompetence currentElement = new ElementsCompetence();
+
     [Parameter]
     public EventCallback<MouseEventArgs> OnSubmit { get; set; }
 
     public string Message { get; set; }
+    public string newMessage { get; set; }
 
     protected override void OnInitialized()
     {
-        if (skill.ElementsCompetence.Count <= 0)
-        {
-            skill.AddElement(null);
-        }
     }
 
     // supprime le context donné en paramètre
-    async void RemoveElement(int id)
+    async void RemoveElement(byte id)
     {
         var list = skill.ElementsCompetence;
         list.Remove(list.First(e => e.ElementCompetenceSqnbr == id));
@@ -62,14 +71,14 @@
     // ajoute un context pour la compétence donnée
     async void AddElement()
     {
-        if (skill.ElementsCompetence.Any(e => string.IsNullOrEmpty(e.Libele)))
+        if (string.IsNullOrEmpty(currentElement.Libele))
         {
-            Message = "S'il vous plait inscrire les libélés manquant.";
+            newMessage = "S'il vous plait inscrire le titre.";
         }
         else
         {
-            Message = "";
-            skill.AddElement(null);
+            newMessage = "";
+            skill.ElementsCompetence.Add(currentElement);
             Console.WriteLine($"SQL return code: {await context.SaveChangesAsync()}");
             StateHasChanged();
         }

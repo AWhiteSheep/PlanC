@@ -14,7 +14,7 @@ namespace PlanC.EntityDataModel
         [Key]
         [DataType("TINYINT")]
         [Column("ElementCompetenceSQNBR")]
-        public int ElementCompetenceSqnbr { get; set; }
+        public byte ElementCompetenceSqnbr { get; set; }
         [Column("CritereElementCompetenceSQNBR")]
         [DataType("TINYINT")]
         public int? CritereElementCompetenceSqnbr { get; set; }

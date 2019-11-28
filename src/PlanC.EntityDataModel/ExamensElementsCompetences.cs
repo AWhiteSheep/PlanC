@@ -19,7 +19,7 @@ namespace PlanC.EntityDataModel
         [Key]
         [Column("ElementCompetenceSQNBR")]
         [DataType("TINYINT")]
-        public int ElementCompetenceSqnbr { get; set; }
+        public byte ElementCompetenceSqnbr { get; set; }
         [Column("RCD_CDTTM", TypeName = "datetime")]
         public DateTime? RcdCdttm { get; set; }
         [Column(TypeName = "decimal(5, 2)")]
