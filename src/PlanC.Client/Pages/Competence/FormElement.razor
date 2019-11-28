@@ -1,26 +1,26 @@
 ﻿@inject PCU001Context context
 
-<EditForm id="elementForm" class="row">
+<EditForm Model="skill" id="elementForm" class="row">
     @if (Message != "") 
     {        
         <div class="text-danger col-12" style="display:flex; flex-wrap: wrap;">
             <div class="alert alert-danger" style="width:100%;">@Message</div>
         </div>
     }
-    @foreach (var context in Competence.ElementsCompetence)
+    @foreach (var context in skill.ElementsCompetence)
     {
         <div class="col-sm-12 mb-3">
             <div class="input-group">
-                <input type="text" class="form-control" @bind="context.Libele" placeholder="Un contexte de réalisation" aria-label="Contexte de réalisation deux bouttons" aria-describedby="button-addon-context-@(Competence.ElementsCompetence.IndexOf(context)+1)" />
-                <div class="input-group-append" id="button-addon-context-@(Competence.ElementsCompetence.IndexOf(context)+1)">
-                    <button class="btn btn-outline-secondary" @onclick="@(() => RemoveContext(context.ElementCompetenceSqnbr))" type="button"><i class="fas fa-trash"></i></button>
+                <input type="text" class="form-control" @bind="context.Libele" placeholder="Un contexte de réalisation" aria-label="Contexte de réalisation deux bouttons" aria-describedby="button-addon-context-@(skill.ElementsCompetence.IndexOf(context)+1)" />
+                <div class="input-group-append" id="button-addon-context-@(skill.ElementsCompetence.IndexOf(context)+1)">
+                    <button class="btn btn-outline-secondary" @onclick="@(() => RemoveElement(context.ElementCompetenceSqnbr))" type="button"><i class="fas fa-trash"></i></button>
                 </div>
             </div>
         </div>
     }
     <div class="col-sm-12 row justify-content-center">
         <div class="col-sm-4" style="font-weight: 400;">
-            <button class="btn btn-success w-100" @onclick="@(() => AjouterContext())">Ajouter un contexte <i class="fas fa-plus-circle ml-3" style="vertical-align: middle;"></i></button>
+            <button class="btn btn-success w-100" @onclick="@(() => AddElement())">Ajouter un contexte <i class="fas fa-plus-circle ml-3" style="vertical-align: middle;"></i></button>
         </div>
     </div>
     <div class="col-sm-2">
@@ -32,25 +32,27 @@
 
 
 @code {
-    [Parameter]
-    public Competences Competence { get; set; }
+    // recoit en cascade l'instance de la compétence
+    [CascadingParameter]
+    protected Competences skill { get; set; }
+
     [Parameter]
     public EventCallback<MouseEventArgs> OnSubmit { get; set; }
-    [Bindable(true)]
+
     public string Message { get; set; }
 
     protected override void OnInitialized()
     {
-        if (Competence.ElementsCompetence.Count <= 0)
+        if (skill.ElementsCompetence.Count <= 0)
         {
-            Competence.AddElement(null);
+            skill.AddElement(null);
         }
     }
 
     // supprime le context donné en paramètre
-    async void RemoveContext(int id)
+    async void RemoveElement(int id)
     {
-        var list = Competence.ElementsCompetence;
+        var list = skill.ElementsCompetence;
         list.Remove(list.First(e => e.ElementCompetenceSqnbr == id));
         Console.WriteLine($"SQL return code: {await context.SaveChangesAsync()}");
         StateHasChanged();
@@ -58,16 +60,16 @@
 
 
     // ajoute un context pour la compétence donnée
-    async void AjouterContext()
+    async void AddElement()
     {
-        if (Competence.ElementsCompetence.Any(e => string.IsNullOrEmpty(e.Libele)))
+        if (skill.ElementsCompetence.Any(e => string.IsNullOrEmpty(e.Libele)))
         {
             Message = "S'il vous plait inscrire les libélés manquant.";
         }
         else
         {
             Message = "";
-            Competence.AddElement(null);
+            skill.AddElement(null);
             Console.WriteLine($"SQL return code: {await context.SaveChangesAsync()}");
             StateHasChanged();
         }

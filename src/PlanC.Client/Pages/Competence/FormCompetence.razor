@@ -1,11 +1,10 @@
 ﻿@using Newtonsoft.Json
-@layout MultiFormLayout
 @page "/departement/{departementId:int}/competence/create"
 @page "/departement/{departementId:int}/competence/{competenceId}/create"
-@inject PCU001Context context
+@layout MultiFormLayout
+@inherits FormCompetenceBase
 @inject NavigationManager NavigationManager
 @inject IJSRuntime JS
-
 <!-- Section de navigation -->
 <div class="row mb-3">
     <div class="col">
@@ -36,188 +35,83 @@
             <h3>Département: @departement.Titre</h3>
         </div>
     </div>
-    @switch (CurrentStep)
-    {
-        @case 1:
-            <EditForm EditContext="@CompetenceForm" OnValidSubmit="HandleValidCompetence" id="competenceForm" class="row">
-                <DataAnnotationsValidator />
-                <!-- Sommaire de la validation si des erreurs existent -->
-                <div class="text-danger col-12" style="display:flex; flex-wrap: wrap;">
-                    <div class="alert @StatusClass" style="width:100%;">@StatusMessage</div>
-                    <ValidationSummary />
-                </div>
-                <!-- Valeur pour le numéro de la compétence -->
-                <div class="col-sm-6">
-                    <div class="form-group">
-                        <label for="competenceId" class="control-label"> Numéro de la compétence: </label>
-                        @if (!isEditing)
-                        {
-                            <InputText id="competenceId" class="form-control" placeholder="Numéro de la compétence ####" @bind-Value="@(skill.CompetenceId)" />
-                            <div class="invalid-feedback">
-                                <ValidationMessage For="@(() => skill.CompetenceId)" />
-                            </div>
-                        }
-                        else
-                        {
-                            <InputText readonly id="competenceId" class="form-control" placeholder="Numéro de la compétence ####" @bind-Value="@(skill.CompetenceId)" />
-                            <div class="invalid-feedback">
-                                <ValidationMessage For="@(() => skill.CompetenceId)" />
-                            </div>
-                        }
-                    </div>
-                </div>
-                <!-- Valeur pour l'identification du cours -->
-                <div class="col-sm-6">
-                    <div class="form-group">
-                        <label class="control-label" for="CrsId"> Identifiant du cours: </label>
-                        <PlanC.Client.Components.Models.NumberSelectComponent @bind-Value="@(skill.DisciplineId)" class="form-control">
-                            @foreach (Departements departement in departements)
-                            {
-                                <option value="@departement.Id">@departement.Titre</option>
-                            }
-                        </PlanC.Client.Components.Models.NumberSelectComponent>
-                        <div class="invalid-feedback">
-                            <ValidationMessage TValue="int" For="@(() => skill.DisciplineId)" />
-                        </div>
-                    </div>
-                </div>
-                <!-- Valeur pour l'énoncé de la compétence -->
-                <div class="col-sm-12">
-                    <div class="form-group">
-                        <label class="control-label"> Énoncé de la compétence: </label>
-                        <InputText class="form-control" placeholder="Énoncé de la compétence" @bind-Value="@(skill.Enonce)" />
-                        <div class="invalid-feedback">
-                            <ValidationMessage For="@(() => skill.Enonce)" class="text-danger" />
-                        </div>
-                    </div>
-                </div>
-                <!-- Attitude de la compétence attendu -->
-                <div class="col-sm-12">
-                    <div class="form-group">
-                        <label class="control-label"> Attitude attendue de la compétence: </label>
-                        <InputTextArea row="5" class="form-control" placeholder="Attitude attendue de la compétence" @bind-Value="@(skill.AttitudeAttendu)" />
-                        <div class="invalid-feedback">
-                            <ValidationMessage For="@(() => skill.AttitudeAttendu)" class="text-danger" />
-                        </div>
-                    </div>
-                </div>
-                <!-- Nombre de parties pour compléter la compétence -->
-                <div class="col-sm-6">
-                    <div class="form-group">
-                        <label class="control-label"> Nombre de parties: </label>
-                        <InputNumber class="form-control" placeholder="##" @bind-Value="@(skill.NombreParties)" />
-                        <div class="invalid-feedback">
-                            <ValidationMessage For="@(() => skill.NombreParties)" class="text-danger" />
-                        </div>
-                    </div>
-                </div>
-                <!-- Compétence étant complémentaire ou non -->
-                <div class="col-sm-6">
-                    <label class="control-label"> Optionnelle: </label>
-                    <div class="form-group">
-                        <div class="custom-control custom-checkbox">
-                            <InputCheckbox id="CompetenceComplementaire" class="custom-control-input" @bind-Value="@(skill.CompetenceComplementaire)" />
-                            <label class="custom-control-label" for="CompetenceComplementaire">
-                                Cocher si la compétence est complémentaire
-                            </label>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-sm-2">
-                    <!-- appelle fonction javascript permettant d'ajouter le .wasvalidated sur la division du formulaire -->
-                    <!-- suite au poste validate nous envoyons l'utilisateur vers la deuxième partie celle de remplire les contextes et les éléments de compétence-->
-                    <button onclick="validationFor('#competenceForm');" type="submit" class="btn btn-primary">Suivant</button>
-                </div>
-            </EditForm>
-            break;
-        case 2:
-            <div class="row">
-                 <div class="col-12">
-                     <div class="form-group">
-                         <label class="control-label"> Nouvelle compétence: @skill.CompetenceId : </label>
-                         <input readonly @bind="skill.Enonce" class="form-control" />                         
-                     </div>                     
-                 </div>
-            </div>
-            <!-- call du onsubmit afin de faire notre propre validation -->
-            <EditForm id="contextForm" EditContext="EditConContext" class="row" OnSubmit="HandleValidContext">                
-                <div class="text-danger col-12" style="display:flex; flex-wrap: wrap;">
-                    <div class="alert alert-danger alert-dismissible" style="width:100%;">@StatusMessage</div>
-                </div>
-                <DataAnnotationsValidator />
-                <!-- Affiche la liste en table -->
-                <div class="col-sm-6">
-                    <label class="control-label"> Les contextes de réalisation: </label>
-                </div>
-                @foreach (var context in contextRealisationsList)
+    @*Envoit le paramètre à tous les enfants*@
+    <CascadingValue TValue="Competences" Value="skill">
+        <CascadingValue TValue="List<Departements>" Value="departements">
+            <CascadingValue TValue="bool" Value="isEditing">
+                @switch (CurrentStep)
                 {
-                    <div class="col-sm-12 mb-3">
-                        <div class="input-group">
-                            <input type="text" class="form-control" @bind="@context.Text" placeholder="Un contexte de réalisation" aria-label="Contexte de réalisation deux bouttons" aria-describedby="button-addon-context-@(contextRealisationsList.IndexOf(context)+1)" />
-                            <div class="input-group-append" id="button-addon-context-@(contextRealisationsList.IndexOf(context)+1)">
-                                <button class="btn btn-outline-secondary" @onclick="@(() => RemoveContext(context.ContexteId))" type="button"><i class="fas fa-trash"></i></button>
+                    @case 1:
+                    <EditFormCompetence CompetenceForm="CompetenceForm" NextStepTrigger="SettingContext"></EditFormCompetence>
+                    break;
+                case 2:
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="form-group">
+                                <label class="control-label"> Nouvelle compétence: @skill.CompetenceId : </label>
+                                <input readonly @bind="skill.Enonce" class="form-control" />
                             </div>
-                            <ValidationMessage For="@(() => context.Text)" class="text-danger" />
                         </div>
                     </div>
-                }
-                <div class="col-sm-12 row justify-content-center">
-                    <div class="col-sm-4" style="font-weight: 400;">
-                        <button class="btn btn-success w-100" @onclick="@(() => AjouterContext())">Ajouter un contexte <i class="fas fa-plus-circle ml-3" style="vertical-align: middle;"></i></button>
-                    </div>                    
-                    <small>Tout champ vide ne seront pas sauvegardé.</small>
-                </div>
-            <div class="col-sm-2">
-                <!-- appelle fonction javascript permettant d'ajouter le .wasvalidated sur la division du formulaire -->
-                <!-- suite au poste validate nous envoyons l'utilisateur vers la deuxième partie celle de remplire les contextes et les éléments de compétence-->
-                <button onclick="validationFor('#contextForm');" type="submit" class="btn btn-primary">Suivant</button>
-            </div>
-            </EditForm>
-            break;
-        case 3:
-            <!-- Entrez les éléments de compétences -->
-            <FormElement @bind-Message="elementsMessage" Competence="@skill" OnSubmit="HandleValidElements"></FormElement>
-            break;
-        case 4:
-            <!-- Confirmation, overview et empreinte de la date -->
-            break;
-    }
+                    <!-- call du onsubmit afin de faire notre propre validation -->
+                    <EditForm id="contextForm" Model="skill" class="row">
+                        @if(!string.IsNullOrEmpty(contextValidationMessage)) {
+                            <div class="text-danger col-12" style="display:flex; flex-wrap: wrap;">
+                                <div class="alert alert-warning alert-dismissible fade show w-100" role="alert">
+                                    @contextValidationMessage
+                                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                            </div>
+                        }
+                        <DataAnnotationsValidator />
+                        <!-- Affiche la liste en table -->
+                        <div class="col-sm-6">
+                            <label class="control-label"> Les contextes de réalisation: </label>
+                        </div>
+                        @foreach (var context in contextRealisationsList)
+                        {
+                            <div class="col-sm-12 mb-3">
+                                <div class="input-group">
+                                    <input type="text" class="form-control" @bind="@context.Text" placeholder="Un contexte de réalisation" aria-label="Contexte de réalisation deux bouttons" aria-describedby="button-addon-context-@(contextRealisationsList.IndexOf(context)+1)" />
+                                    <div class="input-group-append" id="button-addon-context-@(contextRealisationsList.IndexOf(context)+1)">
+                                        <button class="btn btn-outline-secondary" @onclick="@(() => RemoveContext(context.ContexteId))" type="button"><i class="fas fa-trash"></i></button>
+                                    </div>
+                                    <ValidationMessage For="@(() => context.Text)" class="text-danger" />
+                                </div>
+                            </div>
+                        }
+                        <div class="col-12">
+                            <div style="font-weight: 400;">
+                                <button class="btn btn-success" @onclick="@(() => AjouterContext())">Ajouter un contexte <i class="fas fa-plus-circle ml-3" style="vertical-align: middle;"></i></button>
+                                <br />
+                                <small class="mt-1">Tout champ vide ne seront pas sauvegardé.</small>
+                            </div>
+                        </div>
+                        <div class="col-12 d-flex justify-content-end">
+                            <!-- appelle fonction javascript permettant d'ajouter le .wasvalidated sur la division du formulaire -->
+                            <!-- suite au poste validate nous envoyons l'utilisateur vers la deuxième partie celle de remplire les contextes et les éléments de compétence-->
+                            <button @onclick="HandleValidContext" type="submit" class="btn btn-primary">Suivant</button>
+                        </div>
+                    </EditForm>
+                    break;
+                case 3:
+                    <!-- Entrez les éléments de compétences -->
+                    <FormElement OnSubmit="HandleValidElements"></FormElement>
+                    break;
+                case 4:
+                    <!-- Confirmation, overview et empreinte de la date -->
+                    break;
+            }
+            </CascadingValue>
+        </CascadingValue>
+    </CascadingValue>
 
 
 </div>
 
 @code {
-    // paramètre de l'url
-    [Parameter]
-    public int departementId { get; set; }
-    [Parameter]
-    public int CurrentStep { get; set; } = 1;
-    [Parameter]
-    public string competenceId { get; set; }
-
-    // si la compétence à déjà été créé certaine étape peuvent être sauté comme certaine vérification
-    bool isEditing = false;
-
-    // programme pour lequel nous formaton la nouvelle compétence
-    Departements departement;
-
-    // form context
-    IReadOnlyDictionary<string, object> inputCompetenceAttributes = new Dictionary<string, object>();
-    EditContext CompetenceForm;
-    EditContext EditConContext;
-
-    // discipline disponible pour le context doit être initialisé pour le dropdown
-    List<Departements> departements;
-
-    // les valeurs devant être initialisés pour créer un nouvelle compétence
-    Competences skill = new Competences();
-    List<CompetenceContextes> contextRealisationsList;
-    List<ElementsCompetence> skElements;
-
-    private string StatusClass;
-    private string StatusMessage;
-    private string infoMessage;
 
     protected override void OnInitialized()
     {
@@ -257,91 +151,6 @@
         }
     }
 
-    public async void HandleValidCompetence()
-    {
-        //skElements.ForEach(e => { e.CompetenceId = skill.CompetenceId; e.ElementCompetenceSqnbr = (byte)(skElements.IndexOf(e) + 1); });
-        //skill.ElementsCompetence = skElements;
-        //cntxt.CompetenceId = skill.CompetenceId;
-        //skill.CompetenceContextes.Add(cntxt);
-        Competences duplicate;
-        if (isEditing)
-        {
-            // ef doit être updaté.
-            Console.WriteLine($"SQL return code: {await context.SaveChangesAsync()}");
-            SettingContext();
-        }
-        else if ((duplicate = context.Competences.Find(skill.CompetenceId, skill.DisciplineId)) != null)
-        {
-            StatusClass = "alert-danger";
-            StatusMessage = string.Format("La compétence {0} existe déjà pour le département {1}.", duplicate.CompetenceId, duplicate.Discipline.Titre);
-            skill.CompetenceId = "";
-            // trigger la validation afin de pouvoir afficher l'erreur
-            CompetenceForm.Validate();
-            StateHasChanged();
-        }
-        else {
-            try
-            {
-                // ajoute la nouvelle compétence
-                context.Competences.Add(skill);
-                Console.WriteLine($"SQL return code: {await context.SaveChangesAsync()}");
-                SettingContext();
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine($"Error: {e.Message} -- {e.InnerException}");
-            }
-        }
-    }
-
-    void SettingContext()
-    {
-        // indexage de la liste contenant les contextes de la compétence donnée
-        contextRealisationsList = skill.CompetenceContextes.ToList();
-        // sest le edit context pour les contextes de réalisation
-        EditConContext = new EditContext(contextRealisationsList);
-
-        // check if only editing, sinon nous créons un champ vide pour la nouvelle compétence
-        if (!isEditing)
-        {
-            AjouterContext();
-        }
-
-        // rendu au step 2 de rentrer tous les contextes allant avec la compétence donnée
-        CurrentStep = 2;
-        StateHasChanged();
-    }
-
-    void HandleValidContext() {
-        // validation si la liste n'est pas vide?. certaines compétences peuvent ne pas comporter de context
-        contextRealisationsList.RemoveAll(e => string.IsNullOrEmpty(e.Text));
-    }
-
-    int positionIncrement = 1;
-    string contextValidationMessage;
-
-    // ajoute un context pour la compétence donnée
-    async void AjouterContext()
-    {
-        if (contextRealisationsList.Any(e => string.IsNullOrEmpty(e.Text)))
-        {
-            contextValidationMessage = "SVP, remplir tous les contextes de réalisation avant d'ajouter un suivant.";
-        }
-        else
-        {
-            contextRealisationsList.Add(new CompetenceContextes()
-            {
-                CompetenceId = skill.CompetenceId,
-                DepartementId = skill.DisciplineId,
-                ContexteId = positionIncrement
-            });
-            positionIncrement++;
-            Console.WriteLine($"SQL return code: {await context.SaveChangesAsync()}");
-            StateHasChanged();
-        }
-    }
-
-
     // supprime le context donné en paramètre
     async void RemoveContext(int id)
     {
@@ -365,7 +174,8 @@
             {
                 Console.WriteLine($"SQL return code: {context.SaveChanges()}");
             }
-            catch {
+            catch
+            {
                 CurrentStep = 4;
             }
         }

@@ -1,0 +1,153 @@
+﻿@inject PCU001Context context
+
+<EditForm EditContext="@CompetenceForm" OnValidSubmit="HandleValidCompetence" id="competenceForm" class="row">
+    <DataAnnotationsValidator />
+    <!-- Sommaire de la validation si des erreurs existent -->
+    <div class="text-danger col-12" style="display:flex; flex-wrap: wrap;">
+        <div class="alert @StatusClass" style="width:100%;">@StatusMessage</div>
+        <ValidationSummary />
+    </div>
+    <!-- Valeur pour le numéro de la compétence -->
+    <div class="col-sm-6">
+        <div class="form-group">
+            <label for="competenceId" class="control-label"> Numéro de la compétence: </label>
+            @if (!isEditing)
+            {
+                <InputText id="competenceId" class="form-control" placeholder="Numéro de la compétence ####" @bind-Value="@(skill.CompetenceId)" />
+                <div class="invalid-feedback">
+                    <ValidationMessage For="@(() => skill.CompetenceId)" />
+                </div>
+            }
+            else
+            {
+                <InputText readonly id="competenceId" class="form-control" placeholder="Numéro de la compétence ####" @bind-Value="@(skill.CompetenceId)" />
+                <div class="invalid-feedback">
+                    <ValidationMessage For="@(() => skill.CompetenceId)" />
+                </div>
+            }
+        </div>
+    </div>
+    <!-- Valeur pour l'identification du cours -->
+    <div class="col-sm-6">
+        <div class="form-group">
+            <label class="control-label" for="CrsId"> Identifiant du cours: </label>
+            <PlanC.Client.Components.Models.NumberSelectComponent @bind-Value="@(skill.DisciplineId)" class="form-control">
+                @foreach (Departements departement in departements)
+                {
+                    <option value="@departement.Id">@departement.Titre</option>
+                }
+            </PlanC.Client.Components.Models.NumberSelectComponent>
+            <div class="invalid-feedback">
+                <ValidationMessage TValue="int" For="@(() => skill.DisciplineId)" />
+            </div>
+        </div>
+    </div>
+    <!-- Valeur pour l'énoncé de la compétence -->
+    <div class="col-sm-12">
+        <div class="form-group">
+            <label class="control-label"> Énoncé de la compétence: </label>
+            <InputText class="form-control" placeholder="Énoncé de la compétence" @bind-Value="@(skill.Enonce)" />
+            <div class="invalid-feedback">
+                <ValidationMessage For="@(() => skill.Enonce)" class="text-danger" />
+            </div>
+        </div>
+    </div>
+    <!-- Attitude de la compétence attendu -->
+    <div class="col-sm-12">
+        <div class="form-group">
+            <label class="control-label"> Attitude attendue de la compétence: </label>
+            <InputTextArea row="5" class="form-control" placeholder="Attitude attendue de la compétence" @bind-Value="@(skill.AttitudeAttendu)" />
+            <div class="invalid-feedback">
+                <ValidationMessage For="@(() => skill.AttitudeAttendu)" class="text-danger" />
+            </div>
+        </div>
+    </div>
+    <!-- Nombre de parties pour compléter la compétence -->
+    <div class="col-sm-6">
+        <div class="form-group">
+            <label class="control-label"> Nombre de parties: </label>
+            <InputNumber class="form-control" placeholder="##" @bind-Value="@(skill.NombreParties)" />
+            <div class="invalid-feedback">
+                <ValidationMessage For="@(() => skill.NombreParties)" class="text-danger" />
+            </div>
+        </div>
+    </div>
+    <!-- Compétence étant complémentaire ou non -->
+    <div class="col-sm-6">
+        <label class="control-label"> Optionnelle: </label>
+        <div class="form-group">
+            <div class="custom-control custom-checkbox">
+                <InputCheckbox id="CompetenceComplementaire" class="custom-control-input" @bind-Value="@(skill.CompetenceComplementaire)" />
+                <label class="custom-control-label" for="CompetenceComplementaire">
+                    Cocher si la compétence est complémentaire
+                </label>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-sm-2">
+        <!-- appelle fonction javascript permettant d'ajouter le .wasvalidated sur la division du formulaire -->
+        <!-- suite au poste validate nous envoyons l'utilisateur vers la deuxième partie celle de remplire les contextes et les éléments de compétence-->
+        <button onclick="validationFor('#competenceForm');" type="submit" class="btn btn-primary">Suivant</button>
+    </div>
+</EditForm>
+@code {
+    // recoit en cascade l'instance de la compétence
+    [CascadingParameter]
+    protected Competences skill { get; set; }
+    [CascadingParameter]
+    protected List<Departements> departements { get; set; }
+    [CascadingParameter]
+    protected bool isEditing { get; set; }
+
+    // context d'édition pour le formulaire
+    [Bindable]
+    [Parameter]
+    public EditContext CompetenceForm { get; set; }
+
+    // settings on new step trigger
+    [Parameter]
+    public EventCallback NextStepTrigger { get; set; }
+    
+    // update ui pour afficher des erreurs
+    private string StatusClass;
+    private string StatusMessage;
+
+    public async void HandleValidCompetence()
+    {
+        //skElements.ForEach(e => { e.CompetenceId = skill.CompetenceId; e.ElementCompetenceSqnbr = (byte)(skElements.IndexOf(e) + 1); });
+        //skill.ElementsCompetence = skElements;
+        //cntxt.CompetenceId = skill.CompetenceId;
+        //skill.CompetenceContextes.Add(cntxt);
+        Competences duplicate;
+        if (isEditing)
+        {
+            // ef doit être updaté.
+            Console.WriteLine($"SQL return code: {await context.SaveChangesAsync()}");
+            await NextStepTrigger.InvokeAsync(EventArgs.Empty);
+        }
+        else if ((duplicate = context.Competences.Find(skill.CompetenceId, skill.DisciplineId)) != null)
+        {
+            StatusClass = "alert-danger";
+            StatusMessage = string.Format("La compétence {0} existe déjà pour le département {1}.", duplicate.CompetenceId, duplicate.Discipline.Titre);
+            skill.CompetenceId = "";
+            // trigger la validation afin de pouvoir afficher l'erreur
+            CompetenceForm.Validate();
+            StateHasChanged();
+        }
+        else
+        {
+            try
+            {
+                // ajoute la nouvelle compétence
+                context.Competences.Add(skill);
+                Console.WriteLine($"SQL return code: {await context.SaveChangesAsync()}");
+                await NextStepTrigger.InvokeAsync(EventArgs.Empty);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine($"Error: {e.Message} -- {e.InnerException}");
+            }
+        }
+    }
+}

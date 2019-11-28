@@ -27,7 +27,7 @@ namespace PlanC.EntityDataModel
         [StringLength(200, ErrorMessage = "Le champ est incorrect.")]
         public string Enonce { get; set; }
         [Column(TypeName = "ntext")]
-        [Required(ErrorMessage = "L'attitude attendu est un champ obligatoire.")]
+        //[Required(ErrorMessage = "L'attitude attendu est un champ obligatoire.")]
         public string AttitudeAttendu { get; set; }
         [Column(TypeName = "TINYINT")]
         [Required(ErrorMessage = "Le nombre de parties est un champ obligatoire.")]
