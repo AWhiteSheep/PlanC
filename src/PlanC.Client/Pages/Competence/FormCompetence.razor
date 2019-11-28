@@ -1,0 +1,184 @@
+﻿@using Newtonsoft.Json
+@page "/departement/{departementId:int}/competence/create"
+@page "/departement/{departementId:int}/competence/{competenceId}/create"
+@layout MultiFormLayout
+@inherits FormCompetenceBase
+@inject NavigationManager NavigationManager
+@inject IJSRuntime JS
+<!-- Section de navigation -->
+<div class="row mb-3">
+    <div class="col">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <!-- Donne accès au portail selon le role de l'utilisateur -->
+                <li class="breadcrumb-item"><a href="/"> Portail </a></li>
+                <li style="padding: 0 4px;"><i class="fas fa-home" style="font-size: 15px; color: #3f51b5;"></i></li>
+                <li class="breadcrumb-item"><i class="fas fa-circle" style="font-size: 5px; vertical-align: middle; padding-right: 2px;"></i></li>
+                <li class="breadcrumb-item"><a href="/Departement"> Département </a></li>
+                <li class="breadcrumb-item"><i class="fas fa-circle" style="font-size: 5px; vertical-align: middle; padding-right: 2px;"></i></li>
+                <li class="breadcrumb-item"><a href="/Departement/@departementId"> @departement.Titre </a></li>
+                <li class="breadcrumb-item"><i class="fas fa-circle" style="font-size: 5px; vertical-align: middle; padding-right: 2px;"></i></li>
+                <li class="breadcrumb-item"><a href="/Departement/@departementId/Competence"> Compétences </a></li>
+                <li class="breadcrumb-item"><i class="fas fa-circle" style="font-size: 5px; vertical-align: middle; padding-right: 2px;"></i></li>
+                <li class="breadcrumb-item active" aria-current="page"> Nouvelle compétence </li>
+            </ol>
+        </nav>
+    </div>
+</div>
+
+
+<!-- Formulaire d'un nouveau plan-cadre -->
+<div class="container shadow p-5">
+    <div class="row">
+        <!-- Valeur pour le titre du plan-cadre -->
+        <div class="col-12">
+            <h3>Département: @departement.Titre</h3>
+        </div>
+    </div>
+    @*Envoit le paramètre à tous les enfants*@
+    <CascadingValue TValue="Competences" Value="skill">
+        <CascadingValue TValue="List<Departements>" Value="departements">
+            <CascadingValue TValue="bool" Value="isEditing">
+                @switch (CurrentStep)
+                {
+                    @case 1:
+                    <EditFormCompetence CompetenceForm="CompetenceForm" NextStepTrigger="SettingContext"></EditFormCompetence>
+                    break;
+                case 2:
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="form-group">
+                                <label class="control-label"> Nouvelle compétence: @skill.CompetenceId : </label>
+                                <input readonly @bind="skill.Enonce" class="form-control" />
+                            </div>
+                        </div>
+                    </div>
+                    <!-- call du onsubmit afin de faire notre propre validation -->
+                    <EditForm id="contextForm" Model="skill" class="row">
+                        @if(!string.IsNullOrEmpty(contextValidationMessage)) {
+                            <div class="text-danger col-12" style="display:flex; flex-wrap: wrap;">
+                                <div class="alert alert-warning alert-dismissible fade show w-100" role="alert">
+                                    @contextValidationMessage
+                                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                            </div>
+                        }
+                        <DataAnnotationsValidator />
+                        <!-- Affiche la liste en table -->
+                        <div class="col-sm-6">
+                            <label class="control-label"> Les contextes de réalisation: </label>
+                        </div>
+                        @foreach (var context in contextRealisationsList)
+                        {
+                            <div class="col-sm-12 mb-3">
+                                <div class="input-group">
+                                    <input type="text" class="form-control" @bind="@context.Text" placeholder="Un contexte de réalisation" aria-label="Contexte de réalisation deux bouttons" aria-describedby="button-addon-context-@(contextRealisationsList.IndexOf(context)+1)" />
+                                    <div class="input-group-append" id="button-addon-context-@(contextRealisationsList.IndexOf(context)+1)">
+                                        <button class="btn btn-outline-secondary" @onclick="@(() => RemoveContext(context.ContexteId))" type="button"><i class="fas fa-trash"></i></button>
+                                    </div>
+                                    <ValidationMessage For="@(() => context.Text)" class="text-danger" />
+                                </div>
+                            </div>
+                        }
+                        <div class="col-12">
+                            <div style="font-weight: 400;">
+                                <button class="btn btn-success" @onclick="@(() => AjouterContext())">Ajouter un contexte <i class="fas fa-plus-circle ml-3" style="vertical-align: middle;"></i></button>
+                                <br />
+                                <small class="mt-1">Tout champ vide ne seront pas sauvegardé.</small>
+                            </div>
+                        </div>
+                        <div class="col-12 d-flex justify-content-end">
+                            <!-- appelle fonction javascript permettant d'ajouter le .wasvalidated sur la division du formulaire -->
+                            <!-- suite au poste validate nous envoyons l'utilisateur vers la deuxième partie celle de remplire les contextes et les éléments de compétence-->
+                            <button @onclick="HandleValidContext" type="submit" class="btn btn-primary">Suivant</button>
+                        </div>
+                    </EditForm>
+                    break;
+                case 3:
+                    <!-- Entrez les éléments de compétences -->
+                    <FormElement OnSubmit="HandleValidElements"></FormElement>
+                    break;
+                case 4:
+                    <!-- Confirmation, overview et empreinte de la date -->
+                    break;
+            }
+            </CascadingValue>
+        </CascadingValue>
+    </CascadingValue>
+
+
+</div>
+
+@code {
+
+    protected override void OnInitialized()
+    {
+        departements = context.Departements.ToList();
+        // vérifi si le département existe bel et bien
+        departement = departements.First(e => e.Id == departementId);
+        if (departement == null)
+            NavigationManager.NavigateTo("/error");
+
+        // si non null nous continuons la création d'une compétence ou nous la modification
+        if (!string.IsNullOrEmpty(competenceId))
+        {
+            var vcompetence = context.Competences
+                .First(e =>
+                    e.DisciplineId == departementId &&
+                    e.CompetenceId == competenceId
+                );
+            if (vcompetence == null)
+            {
+                // sort une erreur si la compétence n'existe pas
+                NavigationManager.NavigateTo("/error");
+            }
+            isEditing = true;
+            // lecture seul
+            inputCompetenceAttributes.Append(new KeyValuePair<string, object>("readonly", "readonly"));
+            skill = vcompetence;
+            // continuation de la modification
+            CompetenceForm = new EditContext(skill);
+        }
+        else
+        {
+            // la compétence n'existe pas alors la créer selon le département
+            CompetenceForm = new EditContext(skill);
+            // faire du premier choix de la discpline à la discipline du département du programme.
+            skill.DisciplineId = departement.Id;
+            departements = context.Departements.ToList();
+        }
+    }
+
+    // supprime le context donné en paramètre
+    async void RemoveContext(int id)
+    {
+        contextRealisationsList.Remove(contextRealisationsList.First(e => e.ContexteId == id));
+        Console.WriteLine($"SQL return code: {await context.SaveChangesAsync()}");
+        StateHasChanged();
+    }
+
+    string elementsMessage;
+
+    private void HandleValidElements(MouseEventArgs e)
+    {
+        if (skill.ElementsCompetence.First().Libele == "")
+        {
+            elementsMessage = "Veuillez au minimum un élément de compétence.";
+        }
+        else
+        {
+            elementsMessage = "";
+            try
+            {
+                Console.WriteLine($"SQL return code: {context.SaveChanges()}");
+            }
+            catch
+            {
+                CurrentStep = 4;
+            }
+        }
+
+    }
+}

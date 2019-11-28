@@ -186,3 +186,11 @@ window.modelInitializing = () => {
 window.modelLoaded = (symbol, price) => {
     $("#loaderDepart").hide();
 };
+
+// mets en valeur que le formulaire doit avoir un wasvalidated pour loader le css de validation
+function validationFor(arg) {
+    var form = $(arg);
+    if (!form.hasClass("was-validated")) {
+        form.addClass("was-validated");
+    }
+}

@@ -9,13 +9,14 @@ namespace PlanC.EntityDataModel
     {
         [Key]
         [Column("CompetenceID")]
-        [StringLength(4)]
+        [StringLength(4)]        
         public string CompetenceId { get; set; }
         [Key]
         [Column("DepartementID")]
         public int DepartementId { get; set; }
         [Key]
         [Column("ContexteID")]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int ContexteId { get; set; }
         [Required]
         public string Text { get; set; }

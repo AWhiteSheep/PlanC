@@ -1,0 +1,98 @@
+﻿@page "/ditto/create"
+@model PlanC.Client.Pages.PlanCadre.CreateModel
+
+<h4>PlansCadres</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="PlansCadres.CoursId" class="control-label"></label>
+                <input asp-for="PlansCadres.CoursId" class="form-control" />
+                <span asp-validation-for="PlansCadres.CoursId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="PlansCadres.VsnCdttm" class="control-label"></label>
+                <input asp-for="PlansCadres.VsnCdttm" class="form-control" />
+                <span asp-validation-for="PlansCadres.VsnCdttm" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="PlansCadres.ProgrammeId" class="control-label"></label>
+                <input asp-for="PlansCadres.ProgrammeId" class="form-control" />
+                <span asp-validation-for="PlansCadres.ProgrammeId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="PlansCadres.DenominationCours" class="control-label"></label>
+                <input asp-for="PlansCadres.DenominationCours" class="form-control" />
+                <span asp-validation-for="PlansCadres.DenominationCours" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="PlansCadres.Unites" class="control-label"></label>
+                <input asp-for="PlansCadres.Unites" class="form-control" />
+                <span asp-validation-for="PlansCadres.Unites" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="PlansCadres.Description" class="control-label"></label>
+                <input asp-for="PlansCadres.Description" class="form-control" />
+                <span asp-validation-for="PlansCadres.Description" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="PlansCadres.IntentionEducative" class="control-label"></label>
+                <input asp-for="PlansCadres.IntentionEducative" class="form-control" />
+                <span asp-validation-for="PlansCadres.IntentionEducative" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="PlansCadres.IntentionPedagogique" class="control-label"></label>
+                <input asp-for="PlansCadres.IntentionPedagogique" class="form-control" />
+                <span asp-validation-for="PlansCadres.IntentionPedagogique" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="PlansCadres.HeuresTotalesTheorie" class="control-label"></label>
+                <input asp-for="PlansCadres.HeuresTotalesTheorie" class="form-control" />
+                <span asp-validation-for="PlansCadres.HeuresTotalesTheorie" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="PlansCadres.HeuresTotalesPratique" class="control-label"></label>
+                <input asp-for="PlansCadres.HeuresTotalesPratique" class="form-control" />
+                <span asp-validation-for="PlansCadres.HeuresTotalesPratique" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="PlansCadres.HeuresTotalesMaison" class="control-label"></label>
+                <input asp-for="PlansCadres.HeuresTotalesMaison" class="form-control" />
+                <span asp-validation-for="PlansCadres.HeuresTotalesMaison" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="PlansCadres.DateApprobationDepartement" class="control-label"></label>
+                <input asp-for="PlansCadres.DateApprobationDepartement" class="form-control" />
+                <span asp-validation-for="PlansCadres.DateApprobationDepartement" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="PlansCadres.DateApprobationCommite" class="control-label"></label>
+                <input asp-for="PlansCadres.DateApprobationCommite" class="form-control" />
+                <span asp-validation-for="PlansCadres.DateApprobationCommite" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="PlansCadres.DateApprobationCadre" class="control-label"></label>
+                <input asp-for="PlansCadres.DateApprobationCadre" class="form-control" />
+                <span asp-validation-for="PlansCadres.DateApprobationCadre" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="PlansCadres.TrkUid" class="control-label"></label>
+                <input asp-for="PlansCadres.TrkUid" class="form-control" />
+                <span asp-validation-for="PlansCadres.TrkUid" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-page="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

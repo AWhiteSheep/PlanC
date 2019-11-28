@@ -37,7 +37,7 @@ namespace PlanC.Client
 
             // Be Safe – Sanitize Your HTML 
             services.AddScoped<IHtmlSanitizer, HtmlSanitizer>(x =>
-            {
+            {                
                 // https://blog.jonblankenship.com/2019/01/27/safely-rendering-markdown-in-blazor/
                 // Configure sanitizer rules as needed here.
                 // For now, just use default rules + allow class attributes
@@ -47,6 +47,7 @@ namespace PlanC.Client
                 "div"});
                 return sanitizer;
             });
+            services.AddCors();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -62,11 +63,13 @@ namespace PlanC.Client
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
+            app.UseCors(o => o.AllowAnyOrigin()
+                .AllowAnyHeader().AllowAnyMethod());
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();
 
-            app.UseRouting();
+            app.UseRouting();            
 
             app.UseEndpoints(endpoints =>
             {
