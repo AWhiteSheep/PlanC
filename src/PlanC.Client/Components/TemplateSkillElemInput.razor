@@ -10,7 +10,7 @@
 <EjsComboBox @ref="SkillDropdown" TValue="@Competences" DataSource="AvailableSkills">
     <ComboBoxFieldSettings Text="ToString"></ComboBoxFieldSettings>
 </EjsComboBox>
-<EjsButton class="btn btn-info">Ajouter</EjsButton>
+<EjsButton class="btn btn-info" onclick="@AddSkill(SkillDropdown.Value)">Ajouter</EjsButton>
 
 <EjsListView DataSource="SelectedSkills">
     <ListViewFieldSettings Text="ToString"></ListViewFieldSettings>
@@ -18,7 +18,10 @@
 
 <EjsGrid DataSource="@SelectedSkillElements" AllowGrouping="true" Toolbar="@(new List<string>() {"Edit", "Update", "Cancel" })">
     <GridColumns>
-        <GridColumn Field="@nameof(CoursElementsCompetences.CompetenceId)" HeaderText="Compétence"></GridColumn>
+        <GridColumn Field="@nameof(EntityDataModel.CoursElementsCompetences.CompetenceId)" HeaderText="Compétence" AllowEditing="false"></GridColumn>
+        <GridColumn Field="@nameof(EntityDataModel.CoursElementsCompetences.ElementsCompetence.Libele)" HeaderText="Élément" AllowEditing="false"></GridColumn>
+        <GridColumn Field="@nameof(EntityDataModel.CoursElementsCompetences.IsPartial)" HeaderText="Partielle?" EditType="EditType.BooleanEdit" DefaultValue="false" AllowEditing="true"></GridColumn>
+        <GridColumn Field="@nameof(EntityDataModel.CoursElementsCompetences.LongDescription)" HeaderText="Précisions sur le contenu" AllowEditing="true"></GridColumn>
     </GridColumns>
 </EjsGrid>
 
@@ -46,17 +49,47 @@
 
     protected override void OnParametersSet()
     {
-        List<string>
-            AvailableSkillIds = _context.ProgrammeCompetences.Where(pc => pc.Programmes == SelectedProgram)
-            .Select(pc => pc.CompetenceId)
-            .ToList();
-
-        AvailableSkills = _context.Competences.Where(c => AvailableSkillIds.Contains(c.CompetenceId)).ToList();
+        RefreshSkills();
     }
 
 
     protected override void OnAfterRender(bool firstRender)
     {
         JSRuntime.Ejs().SetCulture("fr-CA");
+    }
+
+    protected void RefreshSkills()
+    {
+        List<string>
+            AvailableSkillIds = _context.ProgrammeCompetences.Where(pc => pc.Programmes == SelectedProgram)
+            .Select(pc => pc.CompetenceId)
+            .ToList();
+
+        AvailableSkills =  _context.Competences .Where(c => AvailableSkillIds.Contains(c.CompetenceId))
+                                                .Except(SelectedSkills)
+                                                .ToList();
+
+        List<ElementsCompetence> AssociatedSkillElems = _context.ElementsCompetence.Where(ec => AvailableSkills.Contains(ec.Competences)).ToList();
+
+        foreach(ElementsCompetence sklelem in AssociatedSkillElems)
+        {
+            SelectedSkillElements.Add(new CoursElementsCompetences
+            {
+                CoursId = Template.CoursId,
+                CompetenceId = sklelem.CompetenceId,
+                ElementCompetenceQnbr = sklelem.ElementCompetenceSqnbr,
+                VsnCdttm = Template.VsnCdttm,
+                DisciplineId = sklelem.DisciplineId
+            });
+        }
+    }
+
+    protected object AddSkill(Competences skill)
+    {
+        SelectedSkills.Add(skill);
+
+        RefreshSkills();
+
+        return 0;
     }
 }

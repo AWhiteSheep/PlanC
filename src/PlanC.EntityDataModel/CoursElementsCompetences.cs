@@ -45,5 +45,20 @@ namespace PlanC.EntityDataModel
         [ForeignKey("CompetenceID,DisciplineId,ElementCompetenceQNBR")]
         [InverseProperty("CoursElementsCompetences")]
         public virtual ElementsCompetence ElementsCompetence { get; set; }
+
+        [Required]
+        public bool IsPartial
+        {
+            get
+            {
+                return PrtlSklInd == "0";
+            }
+            set
+            {
+                IsPartial = value;
+
+                PrtlSklInd = IsPartial?  "1" : "0";
+            }
+        }
     }
 }
