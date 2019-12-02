@@ -1,0 +1,98 @@
+﻿@using PlanC.EntityDataModel
+@using Syncfusion.EJ2.Blazor
+@using Syncfusion.EJ2.Blazor.DropDowns
+@using Syncfusion.EJ2.Blazor.Buttons
+@using Syncfusion.EJ2.Blazor.Lists
+@using Syncfusion.EJ2.Blazor.Grids
+@inject PCU001Context _context
+@inject IJSRuntime JSRuntime
+
+<EjsComboBox @ref="SkillDropdown" TValue="@Competences" DataSource="AvailableSkills">
+    <ComboBoxFieldSettings Text="ToString"></ComboBoxFieldSettings>
+</EjsComboBox>
+<EjsButton class="btn btn-info" onclick="@AddSkill(SkillDropdown.Value)">Ajouter</EjsButton>
+
+<EjsListView DataSource="SelectedSkills">
+    <ListViewFieldSettings Text="ToString"></ListViewFieldSettings>
+</EjsListView>
+
+<EjsGrid DataSource="@SelectedSkillElements" AllowGrouping="true" Toolbar="@(new List<string>() {"Edit", "Update", "Cancel" })">
+    <GridColumns>
+        <GridColumn Field="@nameof(EntityDataModel.CoursElementsCompetences.CompetenceId)" HeaderText="Compétence" AllowEditing="false"></GridColumn>
+        <GridColumn Field="@nameof(EntityDataModel.CoursElementsCompetences.ElementsCompetence.Libele)" HeaderText="Élément" AllowEditing="false"></GridColumn>
+        <GridColumn Field="@nameof(EntityDataModel.CoursElementsCompetences.IsPartial)" HeaderText="Partielle?" EditType="EditType.BooleanEdit" DefaultValue="false" AllowEditing="true"></GridColumn>
+        <GridColumn Field="@nameof(EntityDataModel.CoursElementsCompetences.LongDescription)" HeaderText="Précisions sur le contenu" AllowEditing="true"></GridColumn>
+    </GridColumns>
+</EjsGrid>
+
+
+
+@code {
+    [Parameter]
+    public Programmes SelectedProgram { get; set; }
+
+    [Parameter]
+    public PlansCadres Template { get; set; }
+
+    private List<Competences> AvailableSkills { get; set; }
+
+    private List<Competences> SelectedSkills { get; set; }
+
+    private EjsComboBox<Competences> SkillDropdown { get; set; }
+
+    public List<CoursElementsCompetences> SelectedSkillElements { get; private set; }
+
+    protected override void OnInitialized()
+    {
+        SelectedSkills = new List<Competences>();
+    }
+
+    protected override void OnParametersSet()
+    {
+        RefreshSkills();
+    }
+
+
+    protected override void OnAfterRender(bool firstRender)
+    {
+        JSRuntime.Ejs().SetCulture("fr-CA");
+    }
+
+    protected void RefreshSkills()
+    {
+        List<string>
+            AvailableSkillIds = _context.ProgrammeCompetences.Where(pc => pc.Programmes == SelectedProgram)
+            .Select(pc => pc.CompetenceId)
+            .ToList();
+
+        AvailableSkills = _context.Competences.Where(c => AvailableSkillIds.Contains(c.CompetenceId))
+                                                .Except(SelectedSkills)
+                                                .ToList();
+
+        List<ElementsCompetence> AssociatedSkillElems = _context.ElementsCompetence.Where(ec => AvailableSkills.Contains(ec.IdentityKeyCompetencesNavigation)).ToList();
+
+        foreach (ElementsCompetence sklelem in AssociatedSkillElems)
+        {
+            SelectedSkillElements.Add(new CoursElementsCompetences
+            {
+                CoursId = Template.CoursId,
+                CompetenceId = sklelem.IdentityKeyCompetencesNavigation.CompetenceId,
+                ElementCompetenceQnbr = (Int16)sklelem.ElementCompetenceSqnbr,
+                VsnCdttm = Template.VsnCdttm,
+                DisciplineId = sklelem.IdentityKeyCompetencesNavigation.DisciplineId,
+                TrkUid = "rtadmin"
+            });
+        }
+
+        StateHasChanged();
+    }
+
+    protected object AddSkill(Competences skill)
+    {
+        SelectedSkills.Add(skill);
+
+        RefreshSkills();
+
+        return 0;
+    }
+}

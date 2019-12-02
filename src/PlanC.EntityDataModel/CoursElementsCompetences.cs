@@ -19,9 +19,8 @@ namespace PlanC.EntityDataModel
         [Column("DisciplineId")]     
         public int DisciplineId { get; set; }
         [Key]
-        [Column("ElementCompetenceQNBR")]
-        [DataType("TINYINT")]
-        public byte ElementCompetenceQnbr { get; set; }
+        [Column("ElementCompetenceQNBR", TypeName = "smallint")]
+        public Int16 ElementCompetenceQnbr { get; set; }
         [Column("PRTL_SKL_IND")]
         [StringLength(1)]
         public string PrtlSklInd { get; set; }
@@ -46,5 +45,20 @@ namespace PlanC.EntityDataModel
         [ForeignKey("CompetenceID,DisciplineId,ElementCompetenceQNBR")]
         [InverseProperty("CoursElementsCompetences")]
         public virtual ElementsCompetence ElementsCompetence { get; set; }
+
+        [Required]
+        public bool IsPartial
+        {
+            get
+            {
+                return PrtlSklInd == "0";
+            }
+            set
+            {
+                IsPartial = value;
+
+                PrtlSklInd = IsPartial ? "1" : "0";
+            }
+        }
     }
 }
