@@ -1,0 +1,145 @@
+﻿@using Microsoft.EntityFrameworkCore
+@using System.ComponentModel.DataAnnotations
+
+<!-- STEP 2 création des contextes de réalisation pour la nouvelle compétence -->
+
+<div class="row">
+    <div class="col-12">
+        <div class="form-group">
+            <label class="control-label"> Nouvelle compétence: @compentence.CompetenceId : </label>
+            <input readonly @bind="compentence.Enonce" class="form-control" />
+        </div>
+    </div>
+</div>
+<div class="row">
+    <!-- call du onsubmit afin de faire notre propre validation -->
+    <EditForm Model="compentence" id="contextForm" class="col-12">
+        <!-- Affiche la liste en table -->
+        <div class="col-sm-6">
+            <label class="control-label"> Les contextes de réalisation: </label>
+        </div>
+        @foreach (var itemContext in contextRealisationsList)
+        {
+            <div class="col-sm-12 mb-3">
+                <div class="input-group">
+                    <input type="text" class="form-control" @bind="itemContext.Text" placeholder="Un contexte de réalisation" aria-label="Contexte de réalisation deux bouttons" 
+                               aria-describedby="button-addon-context-@(contextRealisationsList.IndexOf(itemContext) + 1)" />
+                    <div class="input-group-append" id="button-addon-context-@(contextRealisationsList.IndexOf(itemContext) + 1)">
+                        <button class="btn btn-outline-secondary" @onclick="@(() => RemoveContext(itemContext.ContexteId))" type="button"><i class="fas fa-trash"></i></button>
+                    </div>
+                </div>
+            </div>
+        }
+    </EditForm>
+    <EditForm Model="newContextNotAssociated" class="col-12">
+        @if (!string.IsNullOrEmpty(contextValidationMessage))
+        {
+            <div class="text-danger col-12" style="display:flex; flex-wrap: wrap;">
+                <div class="alert alert-warning alert-dismissible fade show w-100" role="alert">
+                    @contextValidationMessage
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+            </div>
+        }
+        <div class="col-sm-12">
+            <div class="input-group">
+                <InputText id="newContextNoAssociation" type="text" class="form-control" @bind-Value="newContextNotAssociated.Libele" placeholder="Un contexte de réalisation" aria-label="Contexte de réalisation deux bouttons" aria-describedby="context-not-associated" />
+                <div class="input-group-append" id="context-not-associated">
+                    <button class="btn btn-outline-secondary" onclick="$('#newContextNoAssociation').val('');" type="button"><i class="fas fa-trash"></i></button>
+                </div>
+            </div>
+            <div class="input-group pt-3">
+                <button @onclick="AjouterContext" class="btn btn-success"> Ajouter <i class="fas fa-plus-circle ml-3" style="vertical-align: middle;"></i></button>
+            </div>
+        </div>
+    </EditForm>
+    <div class="col-12 d-flex justify-content-end">
+        <!-- appelle fonction javascript permettant d'ajouter le .wasvalidated sur la division du formulaire -->
+        <!-- suite au poste validate nous envoyons l'utilisateur vers la deuxième partie celle de remplire les contextes et les éléments de compétence-->
+        <button @onclick="HandleValidContext" class="btn btn-primary">Suivant</button>
+    </div>
+</div>
+
+@code {
+        // recoit en cascade l'instance du context
+    [CascadingParameter]
+    protected PCU001Context context { get; set; }
+    [CascadingParameter]
+    protected Competences compentence { get; set; }
+    [CascadingParameter]
+    protected List<Departements> departements { get; set; }
+    [CascadingParameter]
+    protected bool isEditing { get; set; }
+
+    // settings on new step trigger
+    [Parameter]
+    public EventCallback NextStepTrigger { get; set; }
+
+    contextModel newContextNotAssociated = new contextModel();
+    public List<CompetenceContextes> contextRealisationsList;
+    public string contextValidationMessage;
+
+    // ajoute un nouveau context pour la compétence venant créé STEP 2 création des contextes de réalisation
+    protected override void OnInitialized()
+    {
+        // indexage de la liste contenant les contextes de la compétence donnée
+        contextRealisationsList =
+            compentence.CompetenceContextes.ToList();
+    }
+
+
+    public async void HandleValidContext()
+    {
+        // validation si la liste n'est pas vide?. certaines compétences peuvent ne pas comporter de context
+        contextRealisationsList.ForEach(e => {
+            if(string.IsNullOrEmpty(e.Text))
+                compentence.CompetenceContextes.Remove(e);
+        });
+        context.SaveChanges();
+        await NextStepTrigger.InvokeAsync(EventArgs.Empty);
+    }
+
+    // ajoute un context pour la compétence donnée
+    public async void AjouterContext()
+    {
+        if (string.IsNullOrEmpty(newContextNotAssociated.Libele))
+        {
+            contextValidationMessage = "SVP, remplir le contextes de réalisation avant de faire l'ajout.";
+        }
+        else
+        {
+            contextValidationMessage = "";
+            // ajoute au contexte  le nouveau contexte
+            compentence.CompetenceContextes.Add(new CompetenceContextes() { Text = newContextNotAssociated.Libele });
+            await SaveChangesAsync();
+            contextRealisationsList = compentence.CompetenceContextes.ToList();
+            // renouvell le context model
+            newContextNotAssociated = new contextModel();
+        }
+
+        StateHasChanged();
+    }
+
+
+    // supprime le context donné en paramètre
+    async void RemoveContext(int id)
+    {
+        contextRealisationsList.Remove(contextRealisationsList.First(e => e.ContexteId == id));
+        Console.WriteLine($"SQL return code: {await context.SaveChangesAsync()}");
+        StateHasChanged();
+    }
+
+
+    private async Task SaveChangesAsync()
+    {
+        Console.WriteLine($"SQL return code: {await context.SaveChangesAsync()}");
+    }
+
+    class contextModel
+    {
+        [Required]
+        public string Libele;
+    }
+}

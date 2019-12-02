@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
 using PlanC.Client.Data;
 using PlanC.EntityDataModel;
+using Microsoft.EntityFrameworkCore;
 
 namespace PlanC.Client.Pages.Competence
 {
@@ -13,6 +14,8 @@ namespace PlanC.Client.Pages.Competence
     {
         [Inject]
         protected PCU001Context context { get; set; }
+        [Inject]
+        protected NavigationManager NavigationManager { get; set; }
 
         // paramètre de l'url
         [Parameter]
@@ -38,62 +41,52 @@ namespace PlanC.Client.Pages.Competence
 
         // les valeurs devant être initialisés pour créer un nouvelle compétence
         public Competences skill = new Competences();
-        public List<CompetenceContextes> contextRealisationsList;
         public List<CompetenceContextes> contextRealisationsCache;
         public List<ElementsCompetence> skElements;
 
         public string StatusMessage;
         public string infoMessage;
-        public string contextValidationMessage;
 
-        // ajoute un nouveau context pour la compétence demandé
-        public async void SettingContext()
+        // lorsque le component initiaalise
+        protected override void OnInitialized()
         {
-            // indexage de la liste contenant les contextes de la compétence donnée
-            contextRealisationsList = context.CompetenceContextes
-                .Where(e=> skill.CompetenceId == e.CompetenceId && e.DepartementId == skill.DisciplineId)
-                .ToList();
-            Console.WriteLine($"SQL return code: {await context.SaveChangesAsync()}");
+            departements = context.Departements.ToList();
+            // vérifi si le département dans le GET:/{departementId} existe bel et bien
+            departement = departements.First(e => e.Id == departementId);
+            if (departement == null)
+                NavigationManager.NavigateTo("/error");
 
-            // check if only editing, sinon nous créons un champ vide pour la nouvelle compétence
-            if (!contextRealisationsList.Any())
+            // si non null nous continuons la création d'une compétence ou nous la modification
+            if (!string.IsNullOrEmpty(competenceId))
             {
-                AjouterContext();
-            }
-
-            // rendu au step 2 de rentrer tous les contextes allant avec la compétence donnée
-            CurrentStep = 2;
-            StateHasChanged();
-        }
-
-        // ajoute un context pour la compétence donnée
-        public async void AjouterContext()
-        {
-            if (contextRealisationsList.Any(e => string.IsNullOrEmpty(e.Text)))
-            {
-                contextValidationMessage = "SVP, remplir tous les contextes de réalisation avant d'ajouter un suivant.";
-                StateHasChanged();
+                // La compétence n'est pas null donc on fait la recherche pour vérifier
+                // si une combinaison du id de compétence et de département existe déjà
+                var vcompetence = context.Competences
+                    .Include(e => e.CompetenceContextes)
+                    .First(d => d.CompetenceId == competenceId
+                    && d.DisciplineId == departementId);
+                if (vcompetence == null)
+                {
+                    // si la compétence n'existe pas nous affichons un message d'erreur
+                    // sort une erreur si la compétence n'existe pas
+                    NavigationManager.NavigateTo("/error");
+                }
+                isEditing = true;
+                // lecture seul
+                inputCompetenceAttributes.Append(new KeyValuePair<string, object>("readonly", "readonly"));
+                skill = vcompetence;
+                // continuation de la modification
+                CompetenceForm = new EditContext(skill);
             }
             else
             {
-                contextValidationMessage = "";
-
-                skill.CompetenceContextes.Add(new CompetenceContextes() { Text = "" });
-                Console.WriteLine($"SQL return code: {await context.SaveChangesAsync()}");
-
-                contextRealisationsList = skill.CompetenceContextes
-                    .Where(e => skill.CompetenceId == e.CompetenceId && e.DepartementId == skill.DisciplineId)
-                    .ToList();
-                StateHasChanged();
+                // la compétence n'existe pas alors nous lui associons un département
+                skill.DisciplineId = departement.Id;
+                CompetenceForm = new EditContext(skill);
+                // faire du premier choix de la discpline à la discipline du département du programme.
+                departements = context.Departements.ToList();
             }
         }
-        public async void HandleValidContext()
-        {
-            // validation si la liste n'est pas vide?. certaines compétences peuvent ne pas comporter de context
-            contextRealisationsList.RemoveAll(e => string.IsNullOrEmpty(e.Text));
-            Console.WriteLine($"SQL return code on context saving: {await context.SaveChangesAsync()}");
-            CurrentStep = 3;
-            StateHasChanged();
-        }
+
     }
 }

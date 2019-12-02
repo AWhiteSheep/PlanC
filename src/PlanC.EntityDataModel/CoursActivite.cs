@@ -13,21 +13,21 @@ namespace PlanC.EntityDataModel
         }
 
         [Key]
+        public int Identity { get; set; }
+        [Required]
         [Column("CoursID")]
         [StringLength(10)]
         public string CoursId { get; set; }
-        [Key]
+        [Required]
         [Column("TCHR_UID")]
         [StringLength(7)]
         public string TchrUid { get; set; }
-        [Key]
         [Column("PLN_VSN_CDTTM", TypeName = "datetime")]
         public DateTime PlnVsnCdttm { get; set; }
-        [Key]
+        [Required]
         [Column("SessionID")]
         [StringLength(3)]
         public string SessionId { get; set; }
-        [Key]
         [Column("ACTVT_SQNBR")]
         public short ActvtSqnbr { get; set; }
         [Column("ACTVT_LGNTH")]
@@ -43,7 +43,7 @@ namespace PlanC.EntityDataModel
         [ForeignKey("CoursId,TchrUid,PlnVsnCdttm,SessionId")]
         [InverseProperty("CoursActivite")]
         public virtual PlansCours PlansCours { get; set; }
-        [InverseProperty("CoursActivite")]
+        [InverseProperty("IdendityCoursActivityNavigation")]
         public virtual ICollection<CoursCompetenceElements> CoursCompetenceElements { get; set; }
     }
 }

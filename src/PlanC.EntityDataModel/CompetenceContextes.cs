@@ -8,23 +8,18 @@ namespace PlanC.EntityDataModel
     public partial class CompetenceContextes
     {
         [Key]
-        [Column("CompetenceID")]
-        [StringLength(4)]        
-        public string CompetenceId { get; set; }
-        [Key]
-        [Column("DepartementID")]
-        public int DepartementId { get; set; }
+        public int IdentityKeyCompetence { get; set; }
         [Key]
         [Column("ContexteID")]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int ContexteId { get; set; }
         [Required]
+        [MinLength(6, ErrorMessage = "Le descriptif doit être au moins 6 charactères.")]
         public string Text { get; set; }
         [Column("RCD_CDTTM", TypeName = "datetime")]
         public DateTime? RcdCdttm { get; set; }
 
-        [ForeignKey("CompetenceId,DepartementId")]
-        [InverseProperty("CompetenceContextes")]
-        public virtual Competences Competences { get; set; }
+        [ForeignKey(nameof(IdentityKeyCompetence))]
+        [InverseProperty(nameof(Competences.CompetenceContextes))]
+        public virtual Competences IdentityKeyCompetenceNavigation { get; set; }
     }
 }

@@ -23,6 +23,7 @@ ALTER TABLE dbo.CriteresElementCompetence
 GO
 ALTER TABLE dbo.ExamensElementsCompetences
 	DROP CONSTRAINT FK_TEXAMSKLELEM_TSKLELEM
+CONSTRAINT FK_TEXAMSKLELEM_TSKLELEM foreign key (CompetenceID, DiscpilineID, ElementsCompetenceSQNBR) references ElementsCompetence (CompetenceID, DiscpilineID, ElementsCompetenceSQNBR)
 GO---
 ALTER TABLE dbo.CoursElementsCompetences
 	DROP CONSTRAINT FK_TTMPLTSKLELEM_TCRSSKLLCOMPENTENCE

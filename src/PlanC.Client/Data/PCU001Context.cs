@@ -21,7 +21,6 @@ namespace PlanC.Client.Data
         public virtual DbSet<Competences> Competences { get; set; }
         public virtual DbSet<CoursActivite> CoursActivite { get; set; }
         public virtual DbSet<CoursCompetenceElements> CoursCompetenceElements { get; set; }
-        public virtual DbSet<CoursElementsCompetences> CoursElementsCompetences { get; set; }
         public virtual DbSet<CoursRequis> CoursRequis { get; set; }
         public virtual DbSet<CriteresElementCompetence> CriteresElementCompetence { get; set; }
         public virtual DbSet<Departements> Departements { get; set; }
@@ -32,9 +31,11 @@ namespace PlanC.Client.Data
         public virtual DbSet<ExamensElementsCompetences> ExamensElementsCompetences { get; set; }
         public virtual DbSet<ExamensFinalsCertificatifs> ExamensFinalsCertificatifs { get; set; }
         public virtual DbSet<MaterielsCours> MaterielsCours { get; set; }
+        public virtual DbSet<PlanCadreCompetenceElements> PlanCadreCompetenceElements { get; set; }
         public virtual DbSet<PlansCadres> PlansCadres { get; set; }
         public virtual DbSet<PlansCours> PlansCours { get; set; }
         public virtual DbSet<ProgrammeCompetences> ProgrammeCompetences { get; set; }
+        public virtual DbSet<ProgrammeDepartementView> ProgrammeDepartementView { get; set; }
         public virtual DbSet<Programmes> Programmes { get; set; }
         public virtual DbSet<Roles> Roles { get; set; }
         public virtual DbSet<RolesUtilisateur> RolesUtilisateur { get; set; }
@@ -66,28 +67,24 @@ namespace PlanC.Client.Data
 
             modelBuilder.Entity<CompetenceContextes>(entity =>
             {
-                entity.HasKey(e => new { e.CompetenceId, e.DepartementId, e.ContexteId })
+                entity.HasKey(e => new { e.IdentityKeyCompetence, e.ContexteId })
                     .HasName("PK__Context_Competence");
-
-                entity.Property(e => e.CompetenceId)
-                    .IsUnicode(false)
-                    .IsFixedLength();
 
                 entity.Property(e => e.ContexteId).ValueGeneratedOnAdd();
 
                 entity.Property(e => e.RcdCdttm).HasDefaultValueSql("(getdate())");
 
-                entity.HasOne(d => d.Competences)
+                entity.HasOne(d => d.IdentityKeyCompetenceNavigation)
                     .WithMany(p => p.CompetenceContextes)
-                    .HasForeignKey(d => new { d.CompetenceId, d.DepartementId })
+                    .HasForeignKey(d => d.IdentityKeyCompetence)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_TCNTXT_TSKL");
+                    .HasConstraintName("FK__Competenc__Ident__68687968");
             });
 
             modelBuilder.Entity<Competences>(entity =>
             {
-                entity.HasKey(e => new { e.CompetenceId, e.DisciplineId })
-                    .HasName("PK_TSKL");
+                entity.HasKey(e => e.IdentityKey)
+                    .HasName("PK__tmp_ms_x__796424B81FB8FA6E");
 
                 entity.HasComment("Compétence");
 
@@ -112,24 +109,30 @@ namespace PlanC.Client.Data
 
             modelBuilder.Entity<CoursActivite>(entity =>
             {
-                entity.HasKey(e => new { e.CoursId, e.TchrUid, e.PlnVsnCdttm, e.SessionId, e.ActvtSqnbr })
-                    .HasName("PK_TCRSACTVT");
+                entity.HasKey(e => e.Identity)
+                    .HasName("PK__tmp_ms_x__6E2BA98B3D6EAA7F")
+                    .IsClustered(false);
 
                 entity.HasComment("Calendrier des activités");
+
+                entity.HasIndex(e => new { e.CoursId, e.TchrUid, e.PlnVsnCdttm, e.SessionId, e.ActvtSqnbr })
+                    .HasName("PK_TCRSACTVT")
+                    .IsUnique()
+                    .IsClustered();
+
+                entity.Property(e => e.ActvtLgnth).HasComment("Nombre de semaines consacrées à cette activité");
 
                 entity.Property(e => e.CoursId)
                     .IsFixedLength()
                     .HasComment("Code d'identification d'un cours");
 
-                entity.Property(e => e.TchrUid).IsUnicode(false);
+                entity.Property(e => e.RcdCdttm).HasDefaultValueSql("(getdate())");
 
                 entity.Property(e => e.SessionId)
                     .IsUnicode(false)
                     .IsFixedLength();
 
-                entity.Property(e => e.ActvtLgnth).HasComment("Nombre de semaines consacrées à cette activité");
-
-                entity.Property(e => e.RcdCdttm).HasDefaultValueSql("(getdate())");
+                entity.Property(e => e.TchrUid).IsUnicode(false);
 
                 entity.Property(e => e.TrkUid).IsUnicode(false);
 
@@ -142,83 +145,26 @@ namespace PlanC.Client.Data
 
             modelBuilder.Entity<CoursCompetenceElements>(entity =>
             {
-                entity.HasKey(e => new { e.ElementCompetenceSqnbr, e.CompetenceId, e.CoursId, e.TchrUid, e.PlnVsnCdttm, e.SessionId, e.AcitiviteSqnbr })
+                entity.HasKey(e => new { e.IdentityCritereElementCompetence, e.IdendityCoursActivity, e.AcitiviteSqnbr })
                     .HasName("PK_TACTELEM");
 
                 entity.HasComment("Association activité -- élément de compétence");
 
-                entity.Property(e => e.CompetenceId)
-                    .IsUnicode(false)
-                    .IsFixedLength();
-
-                entity.Property(e => e.CoursId)
-                    .IsFixedLength()
-                    .HasComment("Code d'identification d'un cours");
-
-                entity.Property(e => e.TchrUid).IsUnicode(false);
-
-                entity.Property(e => e.SessionId)
-                    .IsUnicode(false)
-                    .IsFixedLength();
-
                 entity.Property(e => e.RcdCdttm).HasDefaultValueSql("(getdate())");
 
                 entity.Property(e => e.TrkUid).IsUnicode(false);
 
-                entity.HasOne(d => d.CriteresElementCompetence)
+                entity.HasOne(d => d.IdendityCoursActivityNavigation)
                     .WithMany(p => p.CoursCompetenceElements)
-                    .HasForeignKey(d => new { d.CompetenceId, d.ElementCompetenceSqnbr, d.CritereElementCompetenceSqnbr })
-                    .HasConstraintName("FK_TACTELEM_TSKLELEM");
+                    .HasForeignKey(d => d.IdendityCoursActivity)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK__CoursComp__Idend__3F6663D5");
 
-                entity.HasOne(d => d.CoursActivite)
+                entity.HasOne(d => d.IdentityCritereElementCompetenceNavigation)
                     .WithMany(p => p.CoursCompetenceElements)
-                    .HasForeignKey(d => new { d.CoursId, d.TchrUid, d.PlnVsnCdttm, d.SessionId, d.AcitiviteSqnbr })
+                    .HasForeignKey(d => d.IdentityCritereElementCompetence)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_TACTELEM_TCRSACTVT");
-            });
-
-            modelBuilder.Entity<CoursElementsCompetences>(entity =>
-            {
-                entity.HasKey(e => new { e.CoursId, e.VsnCdttm, e.CompetenceId, e.DisciplineId, e.ElementCompetenceQnbr })
-                    .HasName("PK_TTMPLTSKLELEM");
-
-                entity.HasComment("Association plan-cadre -- élément de compétence");
-
-                entity.Property(e => e.CoursId)
-                    .IsFixedLength()
-                    .HasComment("Code d'identification d'un cours");
-
-                entity.Property(e => e.CompetenceId)
-                    .IsUnicode(false)
-                    .IsFixedLength();
-
-                entity.Property(e => e.CompetenceId)
-                    .IsUnicode(false)
-                    .IsFixedLength();
-
-                entity.Property(e => e.PrtlSklInd)
-                    .IsUnicode(false)
-                    .IsFixedLength();
-
-                entity.Property(e => e.RcdCdttm).HasDefaultValueSql("(getdate())");
-
-                entity.Property(e => e.TrkUid).IsUnicode(false);
-
-                entity.Property(e => e.TxnmyCd)
-                    .IsUnicode(false)
-                    .IsFixedLength();
-
-                entity.HasOne(d => d.PlansCadres)
-                    .WithMany(p => p.CoursElementsCompetences)
-                    .HasForeignKey(d => new { d.CoursId, d.VsnCdttm })
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_TTMPLTSKLELEM_TCRSTMPLT");
-
-                entity.HasOne(d => d.ElementsCompetence)
-                    .WithMany(p => p.CoursElementsCompetences)
-                    .HasForeignKey(d => new { d.CompetenceId, d.DisciplineId, d.ElementCompetenceQnbr })
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_TTMPLTSKLELEM_TCRSSKLLCOMPENTENCE");
+                    .HasConstraintName("FK__CoursComp__Ident__3E723F9C");
             });
 
             modelBuilder.Entity<CoursRequis>(entity =>
@@ -251,12 +197,8 @@ namespace PlanC.Client.Data
 
             modelBuilder.Entity<CriteresElementCompetence>(entity =>
             {
-                entity.HasKey(e => new { e.CompetenceId, e.ElementCompetenceSqnbr, e.CritereElementCompetenceSqnbr })
-                    .HasName("PK_TSKLELEMCRT");
-
-                entity.Property(e => e.CompetenceId)
-                    .IsUnicode(false)
-                    .IsFixedLength();
+                entity.HasKey(e => e.IdentityKey)
+                    .HasName("PK__tmp_ms_x__796424B8AC031FFF");
 
                 entity.Property(e => e.RcdCdttm).HasDefaultValueSql("(getdate())");
 
@@ -264,11 +206,11 @@ namespace PlanC.Client.Data
                     .IsUnicode(false)
                     .HasDefaultValueSql("('ANO')");
 
-                entity.HasOne(d => d.ElementsCompetence)
+                entity.HasOne(d => d.ElementCompetence)
                     .WithMany(p => p.CriteresElementCompetence)
-                    .HasForeignKey(d => new { d.CompetenceId, d.DisciplineId, d.ElementCompetenceSqnbr })
+                    .HasForeignKey(d => d.ElementCompetenceId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_TSKLELEMCRT_TSKLELEM");
+                    .HasConstraintName("FK__CriteresE__Eleme__5FD33367");
             });
 
             modelBuilder.Entity<Departements>(entity =>
@@ -302,27 +244,25 @@ namespace PlanC.Client.Data
 
             modelBuilder.Entity<ElementsCompetence>(entity =>
             {
-                entity.HasKey(e => new { e.CompetenceId, e.DisciplineId, e.ElementCompetenceSqnbr })
-                    .HasName("PK_TSKLELEM");
-
                 entity.HasComment("Élément de compétence");
 
-                entity.Property(e => e.ElementCompetenceSqnbr).HasDefaultValueSql("(identity(1,1))");
+                entity.HasIndex(e => new { e.IdentityKeyCompetences, e.ElementCompetenceSqnbr })
+                    .HasName("unique_TSKLELEM")
+                    .IsUnique();
 
-                entity.Property(e => e.CompetenceId)
-                    .IsUnicode(false)
-                    .IsFixedLength();
+                entity.Property(e => e.Id).HasDefaultValueSql("(newid())");
+
+                entity.Property(e => e.ElementCompetenceSqnbr).ValueGeneratedOnAdd();
 
                 entity.Property(e => e.RcdCdttm).HasDefaultValueSql("(getdate())");
 
-
                 entity.Property(e => e.TrkUid).IsUnicode(false);
 
-                entity.HasOne(d => d.Competences)
+                entity.HasOne(d => d.IdentityKeyCompetencesNavigation)
                     .WithMany(p => p.ElementsCompetence)
-                    .HasForeignKey(d => new { d.CompetenceId, d.DisciplineId })
+                    .HasForeignKey(d => d.IdentityKeyCompetences)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_TSKLELEM_TSKL");
+                    .HasConstraintName("FK__ElementsC__Ident__61BB7BD9");
             });
 
             modelBuilder.Entity<Examens>(entity =>
@@ -376,28 +316,23 @@ namespace PlanC.Client.Data
 
             modelBuilder.Entity<ExamensElementsCompetences>(entity =>
             {
-                entity.HasKey(e => new { e.ExamenId, e.CompetenceId, e.ElementCompetenceSqnbr })
-                    .HasName("PK_TEXAMSKLELEM");
+                entity.HasKey(e => e.IdentityKey)
+                    .HasName("PK__tmp_ms_x__796424B81103DB33");
 
                 entity.HasComment("Association examen -- élément de compétence");
 
-                entity.Property(e => e.CompetenceId)
-                    .IsUnicode(false)
-                    .IsFixedLength();
-
                 entity.Property(e => e.RcdCdttm).HasDefaultValueSql("(getdate())");
+
+                entity.HasOne(d => d.ElementCompetence)
+                    .WithMany(p => p.ExamensElementsCompetences)
+                    .HasForeignKey(d => d.ElementCompetenceId)
+                    .HasConstraintName("FK__ExamensEl__Eleme__60C757A0");
 
                 entity.HasOne(d => d.Examen)
                     .WithMany(p => p.ExamensElementsCompetences)
                     .HasForeignKey(d => d.ExamenId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_TEXAMSKLELEM_TEXAM");
-
-                entity.HasOne(d => d.ElementsCompetence)
-                    .WithMany(p => p.ExamensElementsCompetences)
-                    .HasForeignKey(d => new { d.CompetenceId, d.DisciplineId, d.ElementCompetenceSqnbr })
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_TEXAMSKLELEM_TSKLELEM");
             });
 
             modelBuilder.Entity<ExamensFinalsCertificatifs>(entity =>
@@ -454,6 +389,43 @@ namespace PlanC.Client.Data
                     .HasForeignKey(d => new { d.CoursId, d.TchrUid, d.PlnVsnCdttm, d.SessionId })
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_TCRSMTRL_TCRSPLN");
+            });
+
+            modelBuilder.Entity<PlanCadreCompetenceElements>(entity =>
+            {
+                entity.HasKey(e => e.IdentityKey)
+                    .HasName("PK__tmp_ms_x__796424B8098CBD08");
+
+                entity.HasComment("Association plan-cadre -- élément de compétence");
+
+                entity.Property(e => e.CoursId)
+                    .IsFixedLength()
+                    .HasComment("Code d'identification d'un cours");
+
+                entity.Property(e => e.ElementCompetenceId).HasDefaultValueSql("('1F19D42E-3929-487B-9551-FA4C67EC6951')");
+
+                entity.Property(e => e.PrtlSklInd)
+                    .IsUnicode(false)
+                    .IsFixedLength();
+
+                entity.Property(e => e.RcdCdttm).HasDefaultValueSql("(getdate())");
+
+                entity.Property(e => e.TrkUid).IsUnicode(false);
+
+                entity.Property(e => e.TxnmyCd)
+                    .IsUnicode(false)
+                    .IsFixedLength();
+
+                entity.HasOne(d => d.ElementCompetence)
+                    .WithMany(p => p.PlanCadreCompetenceElements)
+                    .HasForeignKey(d => d.ElementCompetenceId)
+                    .HasConstraintName("FK__PlanCadre__Eleme__5EDF0F2E");
+
+                entity.HasOne(d => d.PlansCadres)
+                    .WithMany(p => p.PlanCadreCompetenceElements)
+                    .HasForeignKey(d => new { d.CoursId, d.VsnCdttm })
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_TTMPLTSKLELEM_TCRSTMPLT");
             });
 
             modelBuilder.Entity<PlansCadres>(entity =>
@@ -522,6 +494,13 @@ namespace PlanC.Client.Data
                     .HasForeignKey(d => new { d.ProgrammeId, d.DepartementId })
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_R_SKL_PGM__PGM");
+            });
+
+            modelBuilder.Entity<ProgrammeDepartementView>(entity =>
+            {
+                entity.HasNoKey();
+
+                entity.ToView("ProgrammeDepartementView");
             });
 
             modelBuilder.Entity<Programmes>(entity =>

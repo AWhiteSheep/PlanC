@@ -9,9 +9,9 @@ namespace PlanC.EntityDataModel
     {
         public PlansCadres()
         {
-            CoursElementsCompetences = new HashSet<CoursElementsCompetences>();
             CoursRequis = new HashSet<CoursRequis>();
             ExamensFinalsCertificatifs = new HashSet<ExamensFinalsCertificatifs>();
+            PlanCadreCompetenceElements = new HashSet<PlanCadreCompetenceElements>();
         }
 
         [Key]
@@ -50,10 +50,10 @@ namespace PlanC.EntityDataModel
         public DateTime? RcdCdttm { get; set; }
 
         [InverseProperty("PlansCadres")]
-        public virtual ICollection<CoursElementsCompetences> CoursElementsCompetences { get; set; }
-        [InverseProperty("PlansCadres")]
         public virtual ICollection<CoursRequis> CoursRequis { get; set; }
         [InverseProperty("PlansCadres")]
         public virtual ICollection<ExamensFinalsCertificatifs> ExamensFinalsCertificatifs { get; set; }
+        [InverseProperty("PlansCadres")]
+        public virtual ICollection<PlanCadreCompetenceElements> PlanCadreCompetenceElements { get; set; }
     }
 }

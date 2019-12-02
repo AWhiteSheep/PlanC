@@ -1,10 +1,14 @@
-﻿@inject PCU001Context context
+﻿<!-- STEP 1 -->
 
 <EditForm EditContext="@CompetenceForm" OnValidSubmit="HandleValidCompetence" id="competenceForm" class="row">
     <DataAnnotationsValidator />
     <!-- Sommaire de la validation si des erreurs existent -->
     <div class="text-danger col-12" style="display:flex; flex-wrap: wrap;">
-        <div class="alert @StatusClass" style="width:100%;">@StatusMessage</div>
+        @if (!string.IsNullOrEmpty(StatusMessage)) {         
+            <div class="alert alert-danger" style="width:100%; display: block !important">
+                @StatusMessage <a onmouseup="location.href = '/departement/@skill.DisciplineId/competence/@duplicate.CompetenceId/create';" href="/departement/@skill.DisciplineId/competence/@duplicate.CompetenceId/create"> ici</a>.
+            </div>
+        }
         <ValidationSummary />
     </div>
     <!-- Valeur pour le numéro de la compétence -->
@@ -92,7 +96,9 @@
     </div>
 </EditForm>
 @code {
-    // recoit en cascade l'instance de la compétence
+    // recoit en cascade l'instance du context et de la compétence et tous ceux qui suivent
+    [CascadingParameter]
+    protected PCU001Context context { get; set; }
     [CascadingParameter]
     protected Competences skill { get; set; }
     [CascadingParameter]
@@ -112,24 +118,28 @@
     // update ui pour afficher des erreurs
     private string StatusClass;
     private string StatusMessage;
+    private string link;
 
+    
+    Competences duplicate;
     public async void HandleValidCompetence()
     {
         //skElements.ForEach(e => { e.CompetenceId = skill.CompetenceId; e.ElementCompetenceSqnbr = (byte)(skElements.IndexOf(e) + 1); });
         //skill.ElementsCompetence = skElements;
         //cntxt.CompetenceId = skill.CompetenceId;
         //skill.CompetenceContextes.Add(cntxt);
-        Competences duplicate;
-        if (isEditing)
+        if (isEditing && CompetenceForm.Validate())
         {
             // ef doit être updaté.
             Console.WriteLine($"SQL return code: {await context.SaveChangesAsync()}");
             await NextStepTrigger.InvokeAsync(EventArgs.Empty);
         }
-        else if ((duplicate = context.Competences.Find(skill.CompetenceId, skill.DisciplineId)) != null)
+        else if ((duplicate = context.Competences
+            .First(e => skill.CompetenceId == e.CompetenceId 
+            &&  skill.DisciplineId == e.DisciplineId)) != null)
         {
             StatusClass = "alert-danger";
-            StatusMessage = string.Format("La compétence {0} existe déjà pour le département {1}.", duplicate.CompetenceId, duplicate.Discipline.Titre);
+            StatusMessage = string.Format("La compétence {0} existe déjà pour le département {1}, vous pouvez vous diriger vers pour continuer sa modification", duplicate.CompetenceId, duplicate.Discipline.Titre);
             skill.CompetenceId = "";
             // trigger la validation afin de pouvoir afficher l'erreur
             CompetenceForm.Validate();

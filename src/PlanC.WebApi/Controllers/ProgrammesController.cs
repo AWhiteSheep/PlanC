@@ -52,7 +52,7 @@ namespace PlanC.WebApi.Controllers
         {
             if (!(programmeId == programmes.Id && departementId == programmes.DepartementId))
             {
-                var badRequest = BadRequest(new { "" });
+                var badRequest = BadRequest();
                 return BadRequest();
             }
 
@@ -64,7 +64,7 @@ namespace PlanC.WebApi.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!ProgrammesExists(id))
+                if (!ProgrammesExists(programmeId))
                 {
                     return NotFound();
                 }

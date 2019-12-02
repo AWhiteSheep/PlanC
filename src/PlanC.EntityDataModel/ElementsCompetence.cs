@@ -11,38 +11,34 @@ namespace PlanC.EntityDataModel
         {
             CriteresElementCompetence = new HashSet<CriteresElementCompetence>();
             ExamensElementsCompetences = new HashSet<ExamensElementsCompetences>();
-            CoursElementsCompetences = new HashSet<CoursElementsCompetences>();
+            PlanCadreCompetenceElements = new HashSet<PlanCadreCompetenceElements>();
         }
 
         [Key]
-        [Column("CompetenceID")]
-        [StringLength(4)]
-        public string CompetenceId { get; set; }
-        [Key]
-        [Column("DisciplineID")]
-        public int DisciplineId { get; set; }
-        [Key]
+        [Column("ID")]
+        [StringLength(100)]
+        public string Id { get; set; }// auto généré
+        public int IdentityKeyCompetences { get; set; }// association vers compétences
         [Column("ElementCompetenceSQNBR")]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public byte ElementCompetenceSqnbr { get; set; }
+        public int ElementCompetenceSqnbr { get; set; }// auto généré
         [StringLength(255)]
-        public string Libele { get; set; }
+        public string Libele { get; set; }// à remplir
         [Column(TypeName = "ntext")]
-        public string Description { get; set; }
+        public string Description { get; set; }// à remplir
         [Column("RCD_CDTTM", TypeName = "datetime")]
-        public DateTime? RcdCdttm { get; set; }
+        public DateTime RcdCdttm { get; set; }
         [Column("TRK_UID")]
         [StringLength(7)]
         public string TrkUid { get; set; }
 
-        [ForeignKey("CompetenceId,DisciplineId")]
-        [InverseProperty("ElementsCompetence")]
-        public virtual Competences Competences { get; set; }
-        [InverseProperty("ElementsCompetence")]
+        [ForeignKey(nameof(IdentityKeyCompetences))]
+        [InverseProperty(nameof(Competences.ElementsCompetence))]
+        public virtual Competences IdentityKeyCompetencesNavigation { get; set; }
+        [InverseProperty("ElementCompetence")]
         public virtual ICollection<CriteresElementCompetence> CriteresElementCompetence { get; set; }
-        [InverseProperty("ElementsCompetence")]
+        [InverseProperty("ElementCompetence")]
         public virtual ICollection<ExamensElementsCompetences> ExamensElementsCompetences { get; set; }
-        [InverseProperty("ElementsCompetence")]
-        public virtual ICollection<CoursElementsCompetences> CoursElementsCompetences { get; set; }
+        [InverseProperty("ElementCompetence")]
+        public virtual ICollection<PlanCadreCompetenceElements> PlanCadreCompetenceElements { get; set; }
     }
 }

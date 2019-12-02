@@ -13,19 +13,11 @@ namespace PlanC.EntityDataModel
         }
 
         [Key]
-        [Column("CompetenceID")]
-        [StringLength(4)]
-        public string CompetenceId { get; set; }
-        [Column("DisciplineID")]
-        public int DisciplineId { get; set; }
-        [Key]
-        [DataType("TINYINT")]
-        [Column("ElementCompetenceSQNBR")]
-        public byte ElementCompetenceSqnbr { get; set; }
-        [Key]
-        [DataType("TINYINT")]
+        public int IdentityKey { get; set; }
+        [Required]
+        [StringLength(100)]
+        public string ElementCompetenceId { get; set; }
         [Column("CritereElementCompetenceSQNBR")]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int CritereElementCompetenceSqnbr { get; set; }
         public string DescriptionCritere { get; set; }
         [Column("RCD_CDTTM", TypeName = "datetime")]
@@ -35,10 +27,10 @@ namespace PlanC.EntityDataModel
         [StringLength(7)]
         public string TrkUid { get; set; }
 
-        [ForeignKey("CompetenceId,DisciplineId,ElementCompetenceSqnbr")]
-        [InverseProperty("CriteresElementCompetence")]
-        public virtual ElementsCompetence ElementsCompetence { get; set; }
-        [InverseProperty("CriteresElementCompetence")]
+        [ForeignKey(nameof(ElementCompetenceId))]
+        [InverseProperty(nameof(ElementsCompetence.CriteresElementCompetence))]
+        public virtual ElementsCompetence ElementCompetence { get; set; }
+        [InverseProperty("IdentityCritereElementCompetenceNavigation")]
         public virtual ICollection<CoursCompetenceElements> CoursCompetenceElements { get; set; }
     }
 }
