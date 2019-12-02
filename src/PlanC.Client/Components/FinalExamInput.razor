@@ -1,0 +1,24 @@
+﻿@using PlanC.EntityDataModel
+@using Syncfusion.EJ2.Blazor
+@using Syncfusion.EJ2.Blazor.DropDowns
+@using Syncfusion.EJ2.Blazor.Buttons
+@using Syncfusion.EJ2.Blazor.Lists
+@using Syncfusion.EJ2.Blazor.Grids
+@inject PCU001Context _context
+@inject IJSRuntime JSRuntime
+
+
+
+@code {
+    [Parameter]
+    public PlansCadres Template { get; set; }
+
+    [Parameter]
+    public List<CoursElementsCompetences> SkillElements { get; set; }
+
+    public List<Examens> ExamInput { get; private set; }
+
+    public List<ExamensFinalsCertificatifs> FinalExamInput { get; private set; }
+
+    public List<ExamensElementsCompetences> ExamSkillElemInput { get; private set; }
+}
