@@ -43,7 +43,8 @@
                 {
                     @case 1:
                         <!-- STEP 1: Création de toute information de base-->
-                        <EditFormCompetence CompetenceForm="CompetenceForm" NextStepTrigger="StepContextRealisation"></EditFormCompetence>
+                        <EditFormCompetence departementId="@departementId" competenceId="@competenceId"
+                                CompetenceForm="CompetenceForm" NextStepTrigger="StepContextRealisation"></EditFormCompetence>
                     break;
                     case 2:
                         <!--  STEP 2:  Ajout de contextes de  réalisations -->
@@ -69,8 +70,7 @@
 @code {
     // switch à la création des contextes de réalisation
     public void StepContextRealisation() {
-        CompetenceForm = null;
-        CurrentStep = 2;
+        CurrentStep = 2; // go to step 2 normally
         StateHasChanged();
     }
 

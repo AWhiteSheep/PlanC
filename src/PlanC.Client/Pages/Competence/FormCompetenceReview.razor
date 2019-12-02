@@ -9,7 +9,7 @@
         </tr>
     </thead>
 </table>
-<table class="mt-3" style="width:100%; border: 1px solid deepskyblue;">
+<table class="mt-3" style="width:100%; border: 2px solid deepskyblue;">
     <thead>
         <tr style="border-bottom: 1px solid deepskyblue;">
             <th>Énoncé de la compétence</th>
@@ -18,7 +18,11 @@
     </thead>
     <tbody>
         <tr>
-            <td valign="top">@compentence.Enonce</td>
+            <td valign="top">
+                <ul>
+                    <li>@compentence.Enonce</li>    
+                </ul>
+            </td>
             <td>
                 <ul>
                     @foreach (var itemContext in compentence.CompetenceContextes)
@@ -41,7 +45,11 @@
         @foreach (var itemContext in compentence.ElementsCompetence)
         {
             <tr>
-                <td>@itemContext.Libele</td>
+                <td valign="top">
+                    <ol start="@(compentence.ElementsCompetence.IndexOf(itemContext)+1)">
+                        <li>@itemContext.Libele</li>
+                    </ol>
+                </td>
                 <td>
                     <ul>
                         @foreach (var elementsCriteria in itemContext.CriteresElementCompetence)

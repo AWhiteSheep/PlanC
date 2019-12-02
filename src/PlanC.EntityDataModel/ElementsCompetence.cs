@@ -20,6 +20,7 @@ namespace PlanC.EntityDataModel
         public string Id { get; set; }// auto généré
         public int IdentityKeyCompetences { get; set; }// association vers compétences
         [Column("ElementCompetenceSQNBR")]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int ElementCompetenceSqnbr { get; set; }// auto généré
         [StringLength(255)]
         public string Libele { get; set; }// à remplir

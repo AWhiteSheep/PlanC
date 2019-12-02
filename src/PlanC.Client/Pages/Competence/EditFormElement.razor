@@ -1,66 +1,145 @@
-﻿<!-- STEP 3: création des éléments de compétence -->
+﻿@inject PCU001Context context
+@using Microsoft.EntityFrameworkCore
+<!-- STEP 3: création des éléments de compétence -->
 
-<EditForm Model="competence" id="elementForm" class="row">
+<div class="row">
+    <div class="col-12">
+        <div class="form-group">
+            <label class="control-label"> Nouvelle compétence: @competence.CompetenceId : </label>
+            <input readonly @bind="competence.Enonce" class="form-control" />
+        </div>
+    </div>
+</div>
+<div class="row">
     @if (!string.IsNullOrEmpty(Message))
     {
         <div class="text-danger col-12" style="display:flex; flex-wrap: wrap;">
             <div class="alert alert-danger" style="width:100%;">@Message</div>
         </div>
     }
-    @foreach (var context in competence.ElementsCompetence)
+    <!-- Affiche la liste en table -->
+    <div class="col-sm-6">
+        <label class="control-label"> Les éléments de compétence: </label>
+    </div>
+    @if (!string.IsNullOrEmpty(ErrorCriteria))
     {
-        <div class="col-sm-12 mb-3">
-            <div class="input-group">
-                <input type="text" class="form-control" @bind="context.Libele" placeholder="Un contexte de réalisation" aria-label="Contexte de réalisation deux bouttons" aria-describedby="button-addon-context-@(competence.ElementsCompetence.IndexOf(context)+1)" />
-                <div class="input-group-append" id="button-addon-context-@(competence.ElementsCompetence.IndexOf(context)+1)">
-                    <button class="btn btn-outline-secondary" @onclick="@(() => RemoveElement(context.ElementCompetenceSqnbr))" type="button"><i class="fas fa-trash"></i></button>
-                </div>
-            </div>
+        <div class="text-danger col-12" style="display:flex; flex-wrap: wrap;">
+            <div class="alert alert-danger alert-dismissible" style="width:100%;">@ErrorCriteria</div>
         </div>
     }
-    <div class="col-sm-12 row justify-content-center">
-        <div class="col-sm-4" style="font-weight: 400;">
-            <div class="input-group">
-                <label> Nouvel élément: </label>
-                @if (!string.IsNullOrEmpty(newMessage))
+    <div class="col-12">
+        <table class="table table-striped" style="width: 100%;">
+            <thead>
+                <tr>
+                    <th scope="col">Élément de la compétence</th>
+                    <th scope="col">Critères de performance</th>
+                    <th scope="col"></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var element in elementsCompetences)
                 {
-                    <div class="text-danger col-12" style="display:flex; flex-wrap: wrap;">
-                        <div class="alert alert-danger" style="width:100%;">@newMessage</div>
-                    </div>
+                    <tr>
+                        <td>
+                            <input type="text" class="form-control" @bind="element.Libele" />
+                        </td>
+                        <td aria-describedby="button-addon-element-@(competence.ElementsCompetence.IndexOf(element)+1)" class="row">
+                            @foreach (var criteria in element.CriteresElementCompetence)
+                            {
+                                <div class="input-group col-12 mb-3">
+                                    <input type="text" class="form-control" @bind="criteria.DescriptionCritere" placeholder="Un contexte de réalisation" aria-label="Contexte de réalisation deux bouttons" aria-describedby="button-addon-criteria-@(element.CriteresElementCompetence.IndexOf(criteria)+1)" />
+                                    <div class="input-group-append" id="button-addon-criteria-@(element.CriteresElementCompetence.IndexOf(criteria)+1)">
+                                        <button class="btn text-danger" @onclick="() => RemoveCriteria(element.Id, criteria)" type="button"><i class="fas fa-minus-circle"></i></button>
+                                    </div>
+                                </div>
+                            }
+                            <div class="col-sm-12">
+                                @if (CurrentCriteria?.localParentId == competence.ElementsCompetence.IndexOf(element) + 1)
+                                {
+                                    <hr />
+                                    <label> Nouveau critère: </label>
+                                    <div class="input-group mb-3">
+                                        <input id="criteria" type="text" class="form-control" @bind="CurrentCriteria.Description" placeholder="Un contexte de réalisation"
+                                               aria-describedby="clear-criteria" />
+                                        <div class="input-group-append" id="clear-criteria">
+                                            <button class="btn text-warning" @onclick="() => CancelCriteria()" type="button"><i class="fas fa-eraser"></i></button>
+                                        </div>
+                                    </div>
+
+                                    <div style="width: 100%; text-align: left;" id="criteria-btn-@(competence.ElementsCompetence.IndexOf(element) + 1)">
+                                        <button class="btn btn-success" type="button" @onclick="() => AddCriteria(element)"> Ajouter <i class="far fa-plus-square"></i></button>
+                                    </div>
+                                }
+                                else
+                                {
+                                    <div style="width: 100%; @(element.CriteresElementCompetence.Any() ? "text-align: right;" : "text-align: left;")" id="criteria-btn-@(competence.ElementsCompetence.IndexOf(element) + 1)">
+                                        <button class="btn text-success" type="button" @onclick="() => AddCriteria(element)"><i class="fas fa-plus-circle"></i></button>
+                                    </div>
+                                }
+                            </div>
+                        </td>
+                        <td>
+                            <button class="btn text-danger" @onclick="() => RemoveElement(element)" type="button"><i class="fas fa-trash"></i></button>
+                        </td>
+                    </tr>
                 }
-                <input type="text" class="form-control" @bind="newLibele" placeholder="Un contexte de réalisation" />
-                <button class="btn btn-success w-100" @onclick="@(() => AddElement())">Ajouter un contexte <i class="fas fa-plus-circle ml-3" style="vertical-align: middle;"></i></button>
-            </div>
+            </tbody>
+        </table>
+
+    </div>
+    <div class="col-sm-12">
+        <hr />
+        <div class="form-group">
+            <label> Nouvel élément: </label>
+            @if (!string.IsNullOrEmpty(newMessage))
+            {
+                <div class="text-danger col-12" style="display:flex; flex-wrap: wrap;">
+                    <div class="alert alert-danger" style="width:100%;">@newMessage</div>
+                </div>
+            }
+            <input type="text" class="form-control" @bind="newLibele" placeholder="Un contexte de réalisation" />
         </div>
+        <button class="btn btn-success" @onclick="() => AddElement()">Ajouter un contexte <i class="fas fa-plus-circle ml-3" style="vertical-align: middle;"></i></button>
     </div>
     <div class="col-12 d-flex justify-content-end">
         <!-- appelle fonction javascript permettant d'ajouter le .wasvalidated sur la division du formulaire -->
         <!-- suite au poste validate nous envoyons l'utilisateur vers la deuxième partie celle de remplire les contextes et les éléments de compétence-->
         <button @onclick="SubmitElements" class="btn btn-primary">Suivant</button>
     </div>
-</EditForm>
+</div>
 
 
 @code {
     // recoit en cascade l'instance du context
     [CascadingParameter]
-    protected PCU001Context context { get; set; }
-    [CascadingParameter]
     protected Competences competence { get; set; }
+    [Parameter]
+    public int departementId { get; set; }
+    [Parameter]
+    public string competenceId { get; set; }
 
     // settings on new step trigger
     [Parameter]
     public EventCallback NextStepTrigger { get; set; }
 
     // appuit la création des nouvel éléments de compétence
+    protected List<ElementsCompetence> elementsCompetences;
     protected ElementsCompetence currentElement = new ElementsCompetence();
     protected string newLibele;
     string elementsMessage;
 
+    protected override void OnInitialized()
+    {
+        competence = context.Competences
+            .Include(e => e.ElementsCompetence)
+            .ThenInclude(d => d.CriteresElementCompetence)
+            .First(c => c.IdentityKey == competence.IdentityKey);
+        elementsCompetences = competence.ElementsCompetence.ToList();
+    }
 
     private async void SubmitElements()
     {
-        if (competence.ElementsCompetence.First().Libele == "")
+        if (competence.ElementsCompetence.Any(e => e.Libele == ""))
         {
             elementsMessage = "Veuillez au minimum un élément de compétence.";
         }
@@ -81,31 +160,100 @@
 
     public string Message { get; set; }
     public string newMessage { get; set; }
+    public string ErrorCriteria { get; set; }
+    public CriteresElementCompetenceModel CurrentCriteria { get; set; }
 
     // supprime le context donné en paramètre
-    async void RemoveElement(int id)
+    void RemoveElement(ElementsCompetence element)
     {
-        var list = competence.ElementsCompetence;
-        list.Remove(list.First(e => e.ElementCompetenceSqnbr == id));
-        Console.WriteLine($"SQL return code: {await context.SaveChangesAsync()}");
+        competence.ElementsCompetence.Remove(element);
+        Console.WriteLine($"SQL return code: {context.SaveChanges()}");
+        elementsCompetences = competence.ElementsCompetence.ToList();
+        StateHasChanged();
+    }
+
+    // supprime le context donné en paramètre
+    void RemoveCriteria(string elementId, CriteresElementCompetence criteres)
+    {
+        competence.ElementsCompetence
+            .First(e => e.Id == elementId)
+            .CriteresElementCompetence.Remove(criteres); // supression du critère
+        Console.WriteLine($"SQL return code: {context.SaveChanges()}");
+        elementsCompetences = competence.ElementsCompetence.ToList();
+        StateHasChanged();
+    }
+
+    void CancelCriteria()
+    {
+        CurrentCriteria = null;
         StateHasChanged();
     }
 
 
     // ajoute un context pour la compétence donnée
-    async void AddElement()
+    void AddElement()
     {
         if (string.IsNullOrWhiteSpace(newLibele))
         {
-            newMessage = "S'il vous plait inscrire le titre.";
+            newMessage = "S'il vous plait remplir le champ du nouvel élément.";
         }
         else
         {
             newMessage = "";
+            // ajout à la liste le nouvel élément
             competence.ElementsCompetence.Add(new ElementsCompetence() { Libele = newLibele });
-            Console.WriteLine($"SQL return code: {await context.SaveChangesAsync()}");
+            Console.WriteLine($"SQL return code: {context.SaveChanges()}");
+            elementsCompetences = competence.ElementsCompetence.ToList();
             newLibele = "";
             StateHasChanged();
         }
+    }
+
+    // ajoute un context pour la compétence donnée
+    void AddCriteria(ElementsCompetence element)
+    {
+        var index = competence.ElementsCompetence.IndexOf(element)+1;
+        if (CurrentCriteria == null)
+        {
+            ErrorCriteria = "";
+            CurrentCriteria = new CriteresElementCompetenceModel { localParentId = index };
+        }
+        else if (CurrentCriteria.localParentId != index)
+        {
+            ErrorCriteria = $"Veuillez finir le critère pour l'élément {index} avant de remplir un autre.";
+        }
+        else if (string.IsNullOrWhiteSpace(CurrentCriteria.Description))
+        {
+            ErrorCriteria = $"Veuillez finir le critère pour l'élément {index}.";
+        }
+        else
+        {
+            ErrorCriteria = "";
+            // ajout à la liste le nouvel élément le critère
+            try
+            {
+                competence.ElementsCompetence.First(e => e.Id == element.Id)
+                        .CriteresElementCompetence.Add(new CriteresElementCompetence()
+                        {
+                            DescriptionCritere = CurrentCriteria.Description
+                        }
+                    );
+                // essait la sauvegarde à la base de données
+                Console.WriteLine($"SQL return code: {context.SaveChanges()}");
+                elementsCompetences = competence.ElementsCompetence.ToList();
+                CurrentCriteria = null;
+            }
+            catch (Exception e) {
+                ErrorCriteria = "Une erreur avec le serveur est survenue, action suspendu.";
+                Console.WriteLine(e);
+            }
+            StateHasChanged();
+        }
+    }
+
+    public class CriteresElementCompetenceModel
+    {
+        public int localParentId { get; set; }
+        public string Description { get; set; }
     }
 }

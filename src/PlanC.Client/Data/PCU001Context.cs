@@ -209,8 +209,8 @@ namespace PlanC.Client.Data
                 entity.HasOne(d => d.ElementCompetence)
                     .WithMany(p => p.CriteresElementCompetence)
                     .HasForeignKey(d => d.ElementCompetenceId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__CriteresE__Eleme__5FD33367");
+                    .OnDelete(DeleteBehavior.Cascade)
+                    .HasConstraintName("FK__CriteresE__Eleme__70FDBF69");
             });
 
             modelBuilder.Entity<Departements>(entity =>
@@ -261,8 +261,8 @@ namespace PlanC.Client.Data
                 entity.HasOne(d => d.IdentityKeyCompetencesNavigation)
                     .WithMany(p => p.ElementsCompetence)
                     .HasForeignKey(d => d.IdentityKeyCompetences)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__ElementsC__Ident__61BB7BD9");
+                    .OnDelete(DeleteBehavior.Cascade)
+                    .HasConstraintName("FK__ElementsC__Ident__6A50C1DA");
             });
 
             modelBuilder.Entity<Examens>(entity =>

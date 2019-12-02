@@ -21,9 +21,9 @@ namespace PlanC.Client.Pages.Competence
         [Parameter]
         public int departementId { get; set; }
         [Parameter]
-        public int CurrentStep { get; set; } = 1;
-        [Parameter]
         public string competenceId { get; set; }
+        [Parameter]
+        public int CurrentStep { get; set; } = 1;
 
         // si la compétence à déjà été créé certaine étape peuvent être sauté comme certaine vérification
         public bool isEditing = false;
@@ -63,6 +63,7 @@ namespace PlanC.Client.Pages.Competence
                 // si une combinaison du id de compétence et de département existe déjà
                 var vcompetence = context.Competences
                     .Include(e => e.CompetenceContextes)
+                    .Include(p => p.ElementsCompetence)
                     .First(d => d.CompetenceId == competenceId
                     && d.DisciplineId == departementId);
                 if (vcompetence == null)
