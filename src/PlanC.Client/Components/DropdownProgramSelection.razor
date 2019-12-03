@@ -5,7 +5,7 @@
 @inject PCU001Context _context
 @inject IJSRuntime JSRuntime
 
-<EjsComboBox TValue="@Programmes" DataSource="programs">
+<EjsComboBox CssClass="theme-dropdown" TValue="@Programmes" DataSource="programs">
     <ComboBoxEvents TValue="string" ValueChange="OnValueChanged"></ComboBoxEvents>
     <ComboBoxFieldSettings Value="Designation" Text="Designation"></ComboBoxFieldSettings>
 </EjsComboBox>

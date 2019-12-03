@@ -30,7 +30,7 @@
         </div>
     }
 </EditForm>
-<EditForm Model="newContextNotAssociated" class="row">
+<EditForm Model="newContextNotAssociated" class="row" OnValidSubmit="HandleValidContext">
     <div class="col-sm-12">
         <hr />
         @if (!string.IsNullOrEmpty(contextValidationMessage))
@@ -53,11 +53,6 @@
         <div class="form-group pt-3">
             <button @onclick="AjouterContext" class="btn btn-success"> Ajouter <i class="fas fa-plus-circle ml-3" style="vertical-align: middle;"></i></button>
         </div>
-    </div>
-    <div class="d-flex justify-content-end col-12">
-        <!-- appelle fonction javascript permettant d'ajouter le .wasvalidated sur la division du formulaire -->
-        <!-- suite au poste validate nous envoyons l'utilisateur vers la deuxième partie celle de remplire les contextes et les éléments de compétence-->
-        <button @onclick="HandleValidContext" class="btn btn-primary">Suivant</button>
     </div>
 </EditForm>
 

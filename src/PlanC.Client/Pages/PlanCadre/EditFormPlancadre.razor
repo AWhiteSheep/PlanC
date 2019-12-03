@@ -1,42 +1,12 @@
-﻿@page "/programme/{id}/create"
-
-@using PlanC.EntityDataModel
-@using Components;
-@inject NavigationManager NavigationManager
-@inject PCU001Context context
-
-<!-- Section de navigation -->
-<div class="row mb-3">
-    <div class="col">
-        <nav aria-label="breadcrumb">
-            <ol class="breadcrumb">
-                <!-- Donne accès au portail selon le role de l'utilisateur -->
-                <li class="breadcrumb-item"><a href="/"> Portail </a></li>
-                <li style="padding: 0 4px;"><i class="fas fa-home" style="font-size: 15px; color: #3f51b5;"></i></li>
-                <li class="breadcrumb-item"><i class="fas fa-circle" style="font-size: 5px; vertical-align: middle; padding-right: 2px;"></i></li>
-                <li class="breadcrumb-item"><a href="/Programme"> Programmes </a></li>
-                <li class="breadcrumb-item"><i class="fas fa-circle" style="font-size: 5px; vertical-align: middle; padding-right: 2px;"></i></li>
-                <li class="breadcrumb-item"><a href="/Programme/@Id"> @program.Designation </a></li>
-                <li class="breadcrumb-item"><i class="fas fa-circle" style="font-size: 5px; vertical-align: middle; padding-right: 2px;"></i></li>
-                <li class="breadcrumb-item active" aria-current="page"> Nouveau plan cadre </li>
-            </ol>
-        </nav>
-    </div>
-</div>
-
+﻿
 <!-- Formulaire d'un nouveau plan-cadre -->
 <div class="container">
-    <div class="row">
-        <div class="col-lg-4">
-            <PlanC.Client.Components.DropdownProgramSelection @ref="programDropdown" CurrentSelection="program"/>
-        </div>
-    </div>
     <div class="row">
         <!-- Valeur pour le titre du plan-cadre -->
         <div class="col-12">
             <div class="form-group">
                 <label class="control-label" for="CrsTitle"> Titre du du programme: </label>
-                <input readonly type="text" class="form-control" placeholder="Nom du programme" value="@program.ToString()" />
+                <input readonly type="text" class="form-control" placeholder="Nom du programme" value="@Program.ToString()" />
             </div>
         </div>
     </div>
@@ -113,32 +83,17 @@
 </div>
 
 @code {
+    [Bindable]
     [Parameter]
-    public string Id { get; set; }
-    public string tid { get; set; }
-    public Programmes program;
+    public Programmes Program { get; set; }
 
-    private DropdownProgramSelection programDropdown;
+    [CascadingParameter] // donne a tous enfants le demandant le a valeur bindé
+    protected PCU001Context context { get; set; }
+    public string tid { get; set; }
     private PlansCadres CTemplate = new PlansCadres();
 
     protected override void OnInitialized()
     {
-        tid = Id.Replace('-', '.');
-        program = context.Programmes.First(e => e.Id == tid);
-    }
-
-    protected override void OnAfterRender(bool firstRender)
-    {
-        if (firstRender)
-        {
-            programDropdown.ValueChanged += UpdateProgram;
-        }
-    }
-
-    private void UpdateProgram(object sender, Programmes arg)
-    {
-        program = arg;
-        StateHasChanged();
     }
 
     // validation côté serveur

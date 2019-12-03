@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Components.Forms;
 using PlanC.Client.Data;
 using PlanC.EntityDataModel;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.JSInterop;
 
 namespace PlanC.Client.Pages.Competence
 {
@@ -16,6 +17,8 @@ namespace PlanC.Client.Pages.Competence
         protected PCU001Context context { get; set; }
         [Inject]
         protected NavigationManager NavigationManager { get; set; }
+        [Inject]
+        protected IJSRuntime JSRuntime { get; set; }
 
         // paramètre de l'url
         [Parameter]
