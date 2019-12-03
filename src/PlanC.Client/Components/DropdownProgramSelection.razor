@@ -5,10 +5,21 @@
 @inject PCU001Context _context
 @inject IJSRuntime JSRuntime
 
-<EjsComboBox CssClass="theme-dropdown" TValue="@Programmes" DataSource="programs">
-    <ComboBoxEvents TValue="string" ValueChange="OnValueChanged"></ComboBoxEvents>
-    <ComboBoxFieldSettings Value="Designation" Text="Designation"></ComboBoxFieldSettings>
-</EjsComboBox>
+    <div class="row">
+        <div class="col-12">
+            <label> Sélection du programme: </label>
+        </div>
+        <div class="col-12">
+            <div class="form-group">
+                <EjsComboBox CssClass="theme-dropdown" TValue="@Programmes" DataSource="programs">
+                    <ComboBoxEvents TValue="string" ValueChange="OnValueChanged"></ComboBoxEvents>
+                    <ComboBoxFieldSettings Value="Designation" Text="Designation"></ComboBoxFieldSettings>
+                </EjsComboBox>
+            </div>
+        </div>
+    </div>
+
+
 
 @code {
     private List<Programmes> programs;

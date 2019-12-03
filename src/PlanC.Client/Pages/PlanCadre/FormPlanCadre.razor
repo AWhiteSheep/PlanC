@@ -19,11 +19,11 @@
     </div>
 </div>
 
-<div class="container shadow">
-    @*Envoit le paramètre à tous les enfants*@
+<div class="container shadow p-5">
+        @*Envoit le paramètre à tous les enfants*@
     <CascadingValue TValue="PCU001Context" Value="context">
-
         <PlanC.Client.Components.DropdownProgramSelection @ref="ProgramSelect"></PlanC.Client.Components.DropdownProgramSelection>
+
 
         @if (programme != null)
         {
