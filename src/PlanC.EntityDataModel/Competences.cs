@@ -1,5 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore.Metadata.Internal;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -20,7 +19,6 @@ namespace PlanC.EntityDataModel
         [Column("CompetenceID")]
         [StringLength(4)]
         public string CompetenceId { get; set; }
-        [Required]
         [Column("DisciplineID")]
         public int DisciplineId { get; set; }
         [Required]
@@ -30,7 +28,7 @@ namespace PlanC.EntityDataModel
         [Column(TypeName = "ntext")]
         public string AttitudeAttendu { get; set; }
         public int NombreParties { get; set; }
-        public bool CompetenceComplementaire { get; set; }
+        public bool? CompetenceComplementaire { get; set; }
         [Column("RCD_CDTTM", TypeName = "datetime")]
         public DateTime? RcdCdttm { get; set; }
         [Column("TRK_UID")]

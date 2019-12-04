@@ -2,6 +2,9 @@
 for details on configuring this project to bundle and minify static web assets. */
 
 /* card container for the rotation */
+.clickable {
+    cursor: pointer;
+}
 
 .hiddenForm {
     position: absolute;

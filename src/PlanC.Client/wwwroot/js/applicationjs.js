@@ -193,4 +193,11 @@ function validationFor(arg) {
     if (!form.hasClass("was-validated")) {
         form.addClass("was-validated");
     }
-}
+};
+
+window.LoadCollapse = () => {
+    $("div[data-collapse-id]").on('click', function (enventData) {
+        var id = $(this).attr("data-collapse-id");
+        $(id).collapse("toggle");
+    });
+};

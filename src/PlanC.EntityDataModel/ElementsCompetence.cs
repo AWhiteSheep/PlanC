@@ -17,17 +17,16 @@ namespace PlanC.EntityDataModel
         [Key]
         [Column("ID")]
         [StringLength(100)]
-        public string Id { get; set; }// auto généré
-        public int IdentityKeyCompetences { get; set; }// association vers compétences
+        public string Id { get; set; }
+        public int IdentityKeyCompetences { get; set; }
         [Column("ElementCompetenceSQNBR")]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int ElementCompetenceSqnbr { get; set; }// auto généré
+        public int ElementCompetenceSqnbr { get; set; }
         [StringLength(255)]
-        public string Libele { get; set; }// à remplir
+        public string Libele { get; set; }
         [Column(TypeName = "ntext")]
-        public string Description { get; set; }// à remplir
+        public string Description { get; set; }
         [Column("RCD_CDTTM", TypeName = "datetime")]
-        public DateTime RcdCdttm { get; set; }
+        public DateTime? RcdCdttm { get; set; }
         [Column("TRK_UID")]
         [StringLength(7)]
         public string TrkUid { get; set; }

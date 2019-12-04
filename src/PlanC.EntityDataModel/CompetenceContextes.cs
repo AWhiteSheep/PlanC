@@ -13,7 +13,6 @@ namespace PlanC.EntityDataModel
         [Column("ContexteID")]
         public int ContexteId { get; set; }
         [Required]
-        [MinLength(6, ErrorMessage = "Le descriptif doit être au moins 6 charactères.")]
         public string Text { get; set; }
         [Column("RCD_CDTTM", TypeName = "datetime")]
         public DateTime? RcdCdttm { get; set; }

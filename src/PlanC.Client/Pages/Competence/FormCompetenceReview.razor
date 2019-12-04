@@ -11,10 +11,7 @@
         <div class="form-group">
             <label class="control-label" for="CrsId"> Identifiant du cours: </label>
             <select readonly @bind="@(compentence.DisciplineId)" class="form-control">
-                @foreach (Departements departement in departements)
-                {
-                    <option value="@departement.Id">@departement.Titre</option>
-                }
+                <option value="@compentence.Discipline.Id">@compentence.Discipline.Titre</option>
             </select>
         </div>
     </div>
@@ -57,7 +54,7 @@
 <table style="width:100%">
     <thead>
         <tr>
-            <th style="text-align: right" colspan="2">Code: @compentence.CompetenceId</th>
+            <th style="text-align: center" colspan="2">Code: @compentence.CompetenceId</th>
         </tr>
         <tr class="font-italic text-center" style="color:deepskyblue; font-weight: bold">
             <th>Objectif</th>
@@ -120,16 +117,7 @@
 </table>
 
 @code {
-    // recoit en cascade l'instance du context
     [CascadingParameter]
-    protected PCU001Context context { get; set; }
-    [CascadingParameter]
-    protected Competences compentence { get; set; }
-
-    protected List<Departements> departements { get; set; }
-
-    protected override void OnParametersSet() 
-    {
-        departements = context.Departements.ToList();
-    }
+    [Parameter]
+    public Competences compentence { get; set; }
 }

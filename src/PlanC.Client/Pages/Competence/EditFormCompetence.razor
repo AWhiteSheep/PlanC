@@ -83,7 +83,7 @@
         <label class="control-label"> Optionnelle: </label>
         <div class="form-group">
             <div class="custom-control custom-checkbox">
-                <InputCheckbox id="CompetenceComplementaire" class="custom-control-input" @bind-Value="@(skill.CompetenceComplementaire)" />
+                <InputCheckbox id="CompetenceComplementaire" class="custom-control-input" @bind-Value="competenceComplemetaire" />
                 <label class="custom-control-label" for="CompetenceComplementaire">
                     Cocher si la compétence est complémentaire
                 </label>
@@ -100,6 +100,7 @@
     protected PCU001Context context { get; set; }
     [CascadingParameter]
     protected Competences skill { get; set; }
+    bool competenceComplemetaire;
     [CascadingParameter]
     protected List<Departements> departements { get; set; }
     [CascadingParameter]
@@ -146,7 +147,7 @@
         else
         {
             try
-            {
+            {                
                 // ajoute la nouvelle compétence
                 context.Competences.Add(skill);
                 SaveChanges();
@@ -162,7 +163,8 @@
     void SaveChanges()
     {
         try
-        {
+        {            
+            skill.CompetenceComplementaire = competenceComplemetaire;
             Console.WriteLine($"SQL return code: {context.SaveChanges()}");
         }
         catch (Exception e)
