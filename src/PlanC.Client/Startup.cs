@@ -28,12 +28,13 @@ namespace PlanC.Client
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
+            // Ajout de la dbContext
+            services.AddDbContext<PCU001Context>(options => 
+                options.UseSqlServer(Configuration.GetConnectionString("RDS_PCU001")));
+
             services.AddRazorPages();
             services.AddServerSideBlazor();
 
-            // Ajout de la dbContext
-            services.AddDbContext<PCU001Context>(options =>
-               options.UseSqlServer(Configuration.GetConnectionString("RDS_PCU001")));
 
             // Be Safe – Sanitize Your HTML 
             services.AddScoped<IHtmlSanitizer, HtmlSanitizer>(x =>

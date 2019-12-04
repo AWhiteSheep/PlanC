@@ -16,7 +16,7 @@ namespace PlanC.EntityDataModel
 
         [Key]
         [Column("CoursID")]
-        [StringLength(10, MinimumLength = 9)]
+        [StringLength(10)]
         public string CoursId { get; set; }
         [Key]
         [Column("VSN_CDTTM", TypeName = "datetime")]
@@ -34,9 +34,9 @@ namespace PlanC.EntityDataModel
         public string IntentionEducative { get; set; }
         [Column(TypeName = "ntext")]
         public string IntentionPedagogique { get; set; }
-        public int HeuresTotalesTheorie { get; set; }
-        public int HeuresTotalesPratique { get; set; }
-        public int HeuresTotalesMaison { get; set; }
+        public int? HeuresTotalesTheorie { get; set; }
+        public int? HeuresTotalesPratique { get; set; }
+        public int? HeuresTotalesMaison { get; set; }
         [Column(TypeName = "date")]
         public DateTime? DateApprobationDepartement { get; set; }
         [Column(TypeName = "date")]

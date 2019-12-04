@@ -209,7 +209,6 @@ namespace PlanC.Client.Data
                 entity.HasOne(d => d.ElementCompetence)
                     .WithMany(p => p.CriteresElementCompetence)
                     .HasForeignKey(d => d.ElementCompetenceId)
-                    .OnDelete(DeleteBehavior.Cascade)
                     .HasConstraintName("FK__CriteresE__Eleme__70FDBF69");
             });
 
@@ -261,15 +260,12 @@ namespace PlanC.Client.Data
                 entity.HasOne(d => d.IdentityKeyCompetencesNavigation)
                     .WithMany(p => p.ElementsCompetence)
                     .HasForeignKey(d => d.IdentityKeyCompetences)
-                    .OnDelete(DeleteBehavior.Cascade)
                     .HasConstraintName("FK__ElementsC__Ident__6A50C1DA");
             });
 
             modelBuilder.Entity<Examens>(entity =>
             {
                 entity.HasComment("Entité de base pour un examen");
-
-                entity.Property(e => e.Id).ValueGeneratedNever();
 
                 entity.Property(e => e.RcdCdttm).HasDefaultValueSql("(getdate())");
 
