@@ -1,4 +1,4 @@
-﻿@page "/departement/{id:int}"
+﻿@page "/departements/{id:int}"
 @inject PCU001Context context
 
 @using PlanC.Client.Components
@@ -11,7 +11,7 @@
                 <li class="breadcrumb-item"><a href="/"> Portail </a></li>
                 <li style="padding: 0 4px;"><i class="fas fa-home" style="font-size: 15px; color: #3f51b5;"></i></li>
                 <li class="breadcrumb-item"><i class="fas fa-circle" style="font-size: 5px; vertical-align: middle; padding-right: 2px;"></i></li>
-                <li class="breadcrumb-item"><a href="/departement"> Départements </a></li>
+                <li class="breadcrumb-item"><a href="/departements"> Départements </a></li>
                 <li class="breadcrumb-item active" aria-current="page"> @department.Id </li>
             </ol>
         </nav>

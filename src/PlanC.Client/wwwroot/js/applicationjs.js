@@ -230,11 +230,11 @@ window.LoadCollapse = () => {
                 }
             }
 
-            // remplacer le text selon le text
+            // remplacer le text selon la class
             if (!$("#" + id).hasClass("show")) {
-                $(target).text("Élargir");
+                $(target).text("Afficher");
             } else {
-                $(target).text("Raccourcir");
+                $(target).text("Masquer");
             }
 
         } else {
@@ -254,9 +254,9 @@ window.LoadCollapse = () => {
             // remplacer le text selon le text
             var button = $("[data-expend-button='" + id + "']");
             if (!$("#" + id).hasClass("show")) {
-                button.first().text("Élargir");
+                button.first().text("Afficher");
             } else {
-                button.first().text("Raccourcir");
+                button.first().text("Masquer");
             }
         }
     });

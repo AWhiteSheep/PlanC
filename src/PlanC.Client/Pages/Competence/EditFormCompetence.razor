@@ -1,17 +1,16 @@
 ﻿@using Microsoft.EntityFrameworkCore
 <!-- STEP 1 -->
 
-<EditForm EditContext="@CompetenceForm" OnValidSubmit="HandleValidCompetence" id="competenceForm" class="row">
+<EditForm EditContext="@CompetenceForm" OnValidSubmit="_HandleValidCompetence" id="competenceForm" class="row">
     <DataAnnotationsValidator />
     <!-- Sommaire de la validation si des erreurs existent -->
     <div class="text-danger col-12" style="display:flex; flex-wrap: wrap;">
         @if (!string.IsNullOrEmpty(StatusMessage))
         {
             <div class="alert alert-danger" style="width:100%; display: block !important">
-                @StatusMessage @if (isDuplicate) {<a onmouseup="location.href = '/departement/@skill.DisciplineId/competence/@duplicate.CompetenceId/create';" href="/departement/@skill.DisciplineId/competence/@duplicate.CompetenceId/create"> ici</a>}.
+                @StatusMessage @if (isDuplicate) {<a onmouseup="location.href = '/departement/@skill.DisciplineId/competence/@competenceId/create';" href="/departement/@skill.DisciplineId/competence/@competenceId/create"> ici</a>}.
             </div>
         }
-        <ValidationSummary />
     </div>
     <!-- Valeur pour le numéro de la compétence -->
     <div class="col-sm-6">
@@ -100,7 +99,7 @@
     protected PCU001Context context { get; set; }
     [CascadingParameter]
     protected Competences skill { get; set; }
-    bool competenceComplemetaire;
+    public bool competenceComplemetaire;
     [CascadingParameter]
     protected List<Departements> departements { get; set; }
     [CascadingParameter]
@@ -111,68 +110,75 @@
     [Parameter]
     public EditContext CompetenceForm { get; set; }
 
-    // settings on new step trigger
-    [Parameter]
-    public EventCallback NextStepTrigger { get; set; }
 
-    
     private string StatusMessage; // update ui pour afficher des erreurs
     private bool isDuplicate; // vérifie si c'est un duplicate pour le différent message
 
-
-    Competences duplicate;
-    public async void HandleValidCompetence() // post validation
+    public bool HandleValidCompetence() // post validation
     {
-        //skElements.ForEach(e => { e.CompetenceId = skill.CompetenceId; e.ElementCompetenceSqnbr = (byte)(skElements.IndexOf(e) + 1); });
-        //skill.ElementsCompetence = skElements;
-        //cntxt.CompetenceId = skill.CompetenceId;
-        //skill.CompetenceContextes.Add(cntxt);
-        if (isEditing && CompetenceForm.Validate())
-        {
-            // ef doit être updaté.
-            SaveChanges();
-        }
-        else if ((duplicate = context.Competences
-                    .Include(e => e.CompetenceContextes)
-                    .First(d => d.CompetenceId == competenceId
-                    && d.DisciplineId == departementId)) != null)
-        {
-            isDuplicate = true;
-            StatusMessage = string.Format("La compétence {0} existe déjà pour le département {1}, vous pouvez vous diriger vers pour continuer sa modification", duplicate.CompetenceId, duplicate.Discipline.Titre);
-            skill.CompetenceId = "";
-            // trigger la validation afin de pouvoir afficher l'erreur
-            CompetenceForm.Validate();
-            StateHasChanged();
-        }
-        else
-        {
-            try
-            {                
-                // ajoute la nouvelle compétence
-                context.Competences.Add(skill);
-                SaveChanges();
-                await NextStepTrigger.InvokeAsync(EventArgs.Empty); // next step ready
-            }
-            catch (Exception e)
+        if (CompetenceForm.Validate()) {
+            //skElements.ForEach(e => { e.CompetenceId = skill.CompetenceId; e.ElementCompetenceSqnbr = (byte)(skElements.IndexOf(e) + 1); });
+            //skill.ElementsCompetence = skElements;
+            //cntxt.CompetenceId = skill.CompetenceId;
+            //skill.CompetenceContextes.Add(cntxt);
+            if (isEditing)
             {
-                Console.WriteLine($"Error: {e.Message} -- {e.InnerException}");
+                // ef doit être updaté.
+                SaveChanges();
+                return true;
+            }
+            else if (context.Competences
+                        .FirstOrDefault(d => d.CompetenceId == skill.CompetenceId
+                        && d.DisciplineId == skill.DisciplineId) != null)
+            {
+                isDuplicate = true;
+                StatusMessage = string.Format("La compétence {0} existe déjà pour le département {1}, vous pouvez vous diriger vers pour continuer sa modification", competenceId, departementId);
+                competenceId = skill.CompetenceId;
+                skill.CompetenceId = "";
+                // trigger la validation afin de pouvoir afficher l'erreur
+                CompetenceForm.Validate();
+                StateHasChanged();
+                return false;
+            }
+            else
+            {
+                try
+                {
+                    // ajoute la nouvelle compétence
+                    context.Competences.Add(skill);
+                    SaveChanges();
+                    return true;
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine($"Error: {e.Message} -- {e.InnerException}");
+                    return false;
+                }
             }
         }
+
+        return false;
+    }
+
+
+    private void _HandleValidCompetence() {
+        HandleValidCompetence();
     }
 
     void SaveChanges()
     {
         try
-        {            
+        {
             skill.CompetenceComplementaire = competenceComplemetaire;
             Console.WriteLine($"SQL return code: {context.SaveChanges()}");
         }
         catch (Exception e)
-        {            
+        {
             isDuplicate = false;
             Console.WriteLine($"Error: {e.Message} -- {e.InnerException}");
             StatusMessage = "Une erreur est survenue, si cela persiste veuillez contacter votre administrateur.";
             StateHasChanged();
         }
     }
+
 }

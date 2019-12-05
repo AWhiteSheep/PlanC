@@ -1,5 +1,5 @@
-﻿@page "/competence/list"
-@page "/competence/list/{Filter}"
+﻿@page "/competences"
+@page "/competences/{Filter}"
 @using Microsoft.EntityFrameworkCore
 @using Newtonsoft.Json
 @inject PCU001Context context
@@ -23,13 +23,17 @@
     <div class="row">
         @if (competences != null)
         {
-            <h1>Liste des compétences:</h1>
+            <h3>Liste des compétences:</h3>
             <div class="col-12">
-                <div class="form-group">
-                    <input type="text" class="form-control" @bind="Filter" />
+                <div class="input-group">
+                    <input type="text" class="form-control" @bind="Filter"
+                           placeholder="Entrer le filtre" aria-describedby="input-recherche" />
+                    <div class="input-group-append" id="input-recherche">
+                        <button class="btn btn-primary" @onclick="DoFilter" type="button"><i class="fas fa-search"></i></button>
+                    </div>
                 </div>
             </div>
-            <div class="col-12">
+            <div class="col-12 pt-3 d-flex justify-content-between">
                 <div class="form-group">
                     <div class="btn-group btn-group-toggle" data-toggle="buttons">
                         <input class="btn btn-primary @(OptionFilter == "Numéro" ? "active" : "")" type="button"
@@ -40,6 +44,7 @@
                                 checked="@(OptionFilter == "Département")" @onclick="@(() => OptionFilter = "Département")" value="Département" />
                     </div>
                 </div>
+                <a href="/competences/creation">Formulaire d'une nouvelle compétence</a>
             </div>
             @foreach (var competence in competences)
             {
@@ -47,7 +52,7 @@
                     <div class="card">
                         <div class="card-header clickable d-flex justify-content-between" data-collapse-id="@competence.IdentityKey">
                             <h3 class="panel-title">@competence.CompetenceId</h3>
-                            <button class="btn btn-primary press" data-expend-button="@competence.IdentityKey">Élargir</button>
+                            <button class="btn btn-primary press" data-expend-button="@competence.IdentityKey">Afficher</button>
                         </div>
                         <div class="collapse" id="@competence.IdentityKey">
                             <div class="card-body">
@@ -87,7 +92,7 @@
     public void DoFilter() 
     {        
         // update le filter
-        if (!string.IsNullOrWhiteSpace(_filter))
+        if (!string.IsNullOrWhiteSpace(_filter) && _competences != null)
         {
             // filter sous la propriété choisie
             switch (_optionFilter)

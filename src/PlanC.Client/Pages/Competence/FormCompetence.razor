@@ -1,9 +1,9 @@
 ﻿@using Newtonsoft.Json
-@page "/departement/{departementId:int}/competence/create"
-@page "/departement/{departementId:int}/competence/{competenceId}/create"
+@page "/departements/{departementId:int}/competences/creation"
+@page "/departements/{departementId:int}/competences/create"
+@page "/departements/{departementId:int}/competences/{competenceId}/create"
 @layout MultiFormLayout
 @inherits FormCompetenceBase
-
 <!-- Section de navigation -->
 <div class="row mb-3">
     <div class="col">
@@ -28,10 +28,18 @@
 
 <!-- Formulaire d'un nouveau plan-cadre -->
 <div class="container shadow p-5">
+    <div class="text-danger col-12" style="display:flex; flex-wrap: wrap;">
+        @if (!string.IsNullOrEmpty(StatusMessage))
+        {
+            <div class="alert alert-danger" style="width:100%; display: block !important">
+                @StatusMessage
+            </div>
+        }
+    </div>
     <div class="row">
         <!-- Valeur pour le titre du plan-cadre -->
         <div class="col-12">
-            <h3>Département: @departement.Titre</h3>
+            <h4>@departement.Titre</h4>
         </div>
     </div>
     @*Envoit le paramètre à tous les enfants*@
@@ -43,16 +51,16 @@
                     {
                         @case 1:
                         <!-- STEP 1: Création de toute information de base-->
-                        <EditFormCompetence departementId="@departementId" competenceId="@competenceId"
+                        <EditFormCompetence @ref="formCompetence" departementId="@departementId" competenceId="@competenceId"
                                             CompetenceForm="CompetenceForm"></EditFormCompetence>
                         break;
                     case 2:
                         <!--  STEP 2:  Ajout de contextes de  réalisations -->
-                        <EditFormContextRealisation></EditFormContextRealisation>
+                        <EditFormContextRealisation @ref="formRealisation"></EditFormContextRealisation>
                         break;
                     case 3:
                         <!-- STEP 3: Ajout des éléments de compétences -->
-                        <EditFormElement></EditFormElement>
+                        <EditFormElement @ref="formElement"></EditFormElement>
                         break;
                     case 4:
                         <!-- Confirmation, overview et empreinte de la date -->
@@ -65,38 +73,84 @@
     </CascadingValue>
 
     <div class="row">
-        <div class="col-12 d-flex justify-content-between">
-            <!-- appelle fonction javascript permettant d'ajouter le .wasvalidated sur la division du formulaire -->
-            <!-- suite au poste validate nous envoyons l'utilisateur vers la deuxième partie celle de remplire les contextes et les éléments de compétence-->
-            <button @onclick="StepBackward" class="btn btn-primary">Précédent</button>
-            <button @onclick="StepNext" class="btn btn-primary">Suivant</button>
-        </div>
+        @switch (CurrentStep)
+        {
+            case 1:
+                <div class="col-12 d-flex justify-content-end">
+                    <button @onclick="StepNext" class="btn btn-primary">Suivant</button>
+                </div>
+                break;
+            case 4:
+                <div class="col-12 d-flex justify-content-end">
+                    <button @onclick="FinirAsync" class="btn btn-primary">Terminer</button>
+                </div>
+                break;
+            default:
+                <div class="col-12 d-flex justify-content-between">
+                    <!-- appelle fonction javascript permettant d'ajouter le .wasvalidated sur la division du formulaire -->
+                    <!-- suite au poste validate nous envoyons l'utilisateur vers la deuxième partie celle de remplire les contextes et les éléments de compétence-->
+                    <button @onclick="StepBackward" class="btn btn-primary">Précédent</button>
+                    <button @onclick="StepNext" class="btn btn-primary">Suivant</button>
+                </div>
+                break;
+        }
     </div>
 </div>
 
 @code {
-    public async void StepNext()
+    public void StepNext()
     {
-        if (CurrentStep >= 4)
+        switch (CurrentStep)
         {
-            return;
+            case 1:
+                if (formCompetence.HandleValidCompetence())
+                {
+                    CurrentStep++;                    
+                    isEditing = true;
+                }
+                break;
+            case 2:
+                if (formRealisation.HandleValidContext())
+                {
+                    CurrentStep++;
+                }
+                break;
+            case 3:
+                if (formElement.SubmitElements())
+                {
+                    CurrentStep++;
+                }
+                break;
+            default:
+                break;
         }
-        else if (CurrentStep == 1)
-        {
-            await JSRuntime.InvokeAsync<string>("validationFor", "#competenceForm");
-        }
-        CurrentStep++;
         StateHasChanged();
     }
 
     public void StepBackward()
     {
-        if (CurrentStep <= 1)
+        switch (CurrentStep)
         {
-            // oops do nothing
-            return;
+            case 2:
+                if (formRealisation.HandleValidContext())
+                {
+                    CurrentStep--;
+                }
+                break;
+            case 3:
+                if (formElement.SubmitElements())
+                {
+                    CurrentStep--;
+                }
+                break;
+            default:
+                break;
         }
-        CurrentStep--;
         StateHasChanged();
+    }
+
+    public async void FinirAsync()
+    {
+        await JSRuntime.InvokeAsync<string>("showModal", "#competenceCreated");
     }
 }

@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Runtime.Serialization;
+using System.Text.Json.Serialization;
 
 namespace PlanC.EntityDataModel
 {
@@ -19,10 +21,13 @@ namespace PlanC.EntityDataModel
         [Column("CompetenceID")]
         [StringLength(4)]
         public string CompetenceId { get; set; }
+        [Required]
         [Column("DisciplineID")]
         public int DisciplineId { get; set; }
+        [Required]
         [StringLength(200)]
         public string Enonce { get; set; }
+        [Required]
         [Column(TypeName = "ntext")]
         public string AttitudeAttendu { get; set; }
         public int NombreParties { get; set; }
@@ -35,6 +40,8 @@ namespace PlanC.EntityDataModel
 
         [ForeignKey(nameof(DisciplineId))]
         [InverseProperty(nameof(Departements.Competences))]
+        [JsonIgnore]
+        [IgnoreDataMember]
         public virtual Departements Discipline { get; set; }
         [InverseProperty("IdentityKeyCompetenceNavigation")]
         public virtual ICollection<CompetenceContextes> CompetenceContextes { get; set; }

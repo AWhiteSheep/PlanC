@@ -132,23 +132,25 @@
         elementsCompetences = competence.ElementsCompetence.ToList();
     }
 
-    private async void SubmitElements()
+    public bool SubmitElements()
     {
         if (competence.ElementsCompetence.Any(e => e.Libele == ""))
         {
             elementsMessage = "Veuillez au minimum un élément de compétence.";
+            return false;
         }
         else
         {
             elementsMessage = "";
             try
             {
-                Console.WriteLine($"SQL return code: {await context.SaveChangesAsync()}");
-                await NextStepTrigger.InvokeAsync(EventCallback.Empty);
+                Console.WriteLine($"SQL return code: {context.SaveChanges()}");                
+                return true;
             }
             catch
             {
             }
+            return false;
         }
 
     }

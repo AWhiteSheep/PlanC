@@ -32,15 +32,18 @@ namespace PlanC.Client.Pages.Competence
         public bool isEditing = false;
 
         // programme pour lequel nous formaton la nouvelle compétence
-        public Departements departement;
+        public PlanC.EntityDataModel.Departements departement;
 
         // form context
         public IReadOnlyDictionary<string, object> inputCompetenceAttributes = new Dictionary<string, object>();
         public EditContext CompetenceForm;
+        public EditFormCompetence formCompetence;
+        public EditFormContextRealisation formRealisation;
+        public EditFormElement formElement;
         public EditContext EditConContext;
 
         // discipline disponible pour le context doit être initialisé pour le dropdown
-        public List<Departements> departements;
+        public List<EntityDataModel.Departements> departements;
 
         // les valeurs devant être initialisés pour créer un nouvelle compétence
         public Competences skill = new Competences();
@@ -86,9 +89,23 @@ namespace PlanC.Client.Pages.Competence
             {
                 // la compétence n'existe pas alors nous lui associons un département
                 skill.DisciplineId = departement.Id;
+                skill.NombreParties = 1;
                 CompetenceForm = new EditContext(skill);
                 // faire du premier choix de la discpline à la discipline du département du programme.
                 departements = context.Departements.ToList();
+            }
+        }
+        public void SaveChanges()
+        {
+            try
+            {
+                Console.WriteLine($"SQL return code: {context.SaveChanges()}");
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine($"Error: {e.Message} -- {e.InnerException}");
+                StatusMessage = "Une erreur est survenue, si cela persiste veuillez contacter votre administrateur.";
+                StateHasChanged();
             }
         }
 

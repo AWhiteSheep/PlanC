@@ -1,5 +1,6 @@
 ﻿@page "/demo/{Id}"
 @using Newtonsoft.Json
+@using PlanC.EntityDataModel
 @*context de la base de donné et js runtime*@
 @inject PCU001Context _context
 @inject IJSRuntime JSRuntime
@@ -86,7 +87,7 @@ d’interconnexion.
 <button onclick="serialize()" class="btn btn-success">Sauvegarder</button>
 
 @code {
-    private List<Programmes> programmes;
+    private List<EntityDataModel.Programmes> programmes;
     private string selectedId = "";
 
     [Parameter]

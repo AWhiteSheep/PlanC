@@ -1,5 +1,5 @@
 ﻿@*non sensible à la case peut obtenir la page en donnant en paramètre un id du programme*@
-@page "/programme/{id}"
+@page "/programmes/{id}"
 
 @inject PCU001Context context
 @inject IJSRuntime JSRuntime
@@ -12,7 +12,7 @@
                 <li class="breadcrumb-item"><a href="/"> Portail </a></li>
                 <li style="padding: 0 4px;"><i class="fas fa-home" style="font-size: 15px; color: #3f51b5;"></i></li>
                 <li class="breadcrumb-item"><i class="fas fa-circle" style="font-size: 5px; vertical-align: middle; padding-right: 2px;"></i></li>
-                <li class="breadcrumb-item"><a href="/Programme"> Programmes </a></li>
+                <li class="breadcrumb-item"><a href="/programmes"> Programmes </a></li>
                 <li class="breadcrumb-item"><i class="fas fa-circle" style="font-size: 5px; vertical-align: middle; padding-right: 2px;"></i></li>
                 <li class="breadcrumb-item active" aria-current="page"> @programme.Designation </li>
             </ol>

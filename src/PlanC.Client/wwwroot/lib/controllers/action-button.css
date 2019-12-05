@@ -1,0 +1,17 @@
+.top-right-icon {
+	webkit-appearance: none;
+	appearance: none;
+	position: absolute;
+	top: -15px;
+	right: -15px;
+	width: 35px;
+	height: 35px;
+	color: #fff;
+	font-size: 14px;
+	background: #222;
+	border: none;
+	outline: none;
+	border-radius: 50%;
+	cursor: pointer;
+	vertical-align: middle;
+}

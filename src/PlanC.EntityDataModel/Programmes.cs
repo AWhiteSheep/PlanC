@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Runtime.Serialization;
+using System.Text.Json.Serialization;
 
 namespace PlanC.EntityDataModel
 {
@@ -45,6 +47,8 @@ namespace PlanC.EntityDataModel
         public virtual CategoriesProgrammes CodeTypeNavigation { get; set; }
         [ForeignKey(nameof(DepartementId))]
         [InverseProperty(nameof(Departements.Programmes))]
+        [JsonIgnore]
+        [IgnoreDataMember]
         public virtual Departements Departement { get; set; }
         [ForeignKey(nameof(TypeDegreFormation))]
         [InverseProperty(nameof(TypesFormationsProgrammes.Programmes))]

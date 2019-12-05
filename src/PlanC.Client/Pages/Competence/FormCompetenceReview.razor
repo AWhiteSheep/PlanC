@@ -3,7 +3,7 @@
     <div class="col-sm-6">
         <div class="form-group">
             <label for="competenceId" class="control-label"> Numéro de la compétence: </label>
-            <input readonly id="competenceId" class="form-control" placeholder="Numéro de la compétence ####" @bind="compentence.CompetenceId" />
+            <input readonly id="competenceId" class="form-control" @bind="compentence.CompetenceId" />
         </div>
     </div>
     <!-- Valeur pour l'identification du cours -->
@@ -19,21 +19,21 @@
     <div class="col-sm-12">
         <div class="form-group">
             <label class="control-label"> Énoncé de la compétence: </label>
-            <input readonly class="form-control" placeholder="Énoncé de la compétence" @bind="compentence.Enonce" />
+            <input readonly class="form-control" @bind="compentence.Enonce" />
         </div>
     </div>
     <!-- Attitude de la compétence attendu -->
     <div class="col-sm-12">
         <div class="form-group">
             <label class="control-label"> Attitude attendue de la compétence: </label>
-            <input readonly row="5" class="form-control" placeholder="Attitude attendue de la compétence" @bind="compentence.AttitudeAttendu" />
+            <input readonly row="5" class="form-control" @bind="compentence.AttitudeAttendu" />
         </div>
     </div>
     <!-- Nombre de parties pour compléter la compétence -->
     <div class="col-sm-6">
         <div class="form-group">
             <label class="control-label"> Nombre de parties: </label>
-            <input readonly class="form-control" placeholder="##" @bind="compentence.NombreParties" />
+            <input readonly class="form-control" @bind="compentence.NombreParties" />
         </div>
     </div>
     <!-- Compétence étant complémentaire ou non -->
@@ -51,11 +51,8 @@
 </div>
 
 
-<table style="width:100%">
+<table style="width:100%" class="pt-3">
     <thead>
-        <tr>
-            <th style="text-align: center" colspan="2">Code: @compentence.CompetenceId</th>
-        </tr>
         <tr class="font-italic text-center" style="color:deepskyblue; font-weight: bold">
             <th>Objectif</th>
             <th>Standard</th>
