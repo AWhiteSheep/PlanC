@@ -1,4 +1,5 @@
 ﻿@page "/competence/list"
+@page "/competence/list/{Filter}"
 @using Microsoft.EntityFrameworkCore
 @using Newtonsoft.Json
 @inject PCU001Context context
@@ -22,6 +23,24 @@
     <div class="row">
         @if (competences != null)
         {
+            <h1>Liste des compétences:</h1>
+            <div class="col-12">
+                <div class="form-group">
+                    <input type="text" class="form-control" @bind="Filter" />
+                </div>
+            </div>
+            <div class="col-12">
+                <div class="form-group">
+                    <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                        <input class="btn btn-primary @(OptionFilter == "Numéro" ? "active" : "")" type="button"
+                                checked="@(OptionFilter == "Numéro")" @onclick="@(() => OptionFilter = "Numéro")" value="Numéro" />
+                        <input class="btn btn-primary @(OptionFilter == "Énoncé" ? "active" : "")" type="button"
+                                checked="@(OptionFilter == "Énoncé")" @onclick="@(() => OptionFilter = "Énoncé")" value="Énoncé" />
+                        <input class="btn btn-primary @(OptionFilter == "Département" ? "active" : "")" type="button"
+                                checked="@(OptionFilter == "Département")" @onclick="@(() => OptionFilter = "Département")" value="Département" />
+                    </div>
+                </div>
+            </div>
             @foreach (var competence in competences)
             {
                 <div id="container-@competence.IdentityKey" class="col-sm-12 col-lg-6 p-2">
@@ -46,20 +65,62 @@
 
 @code{
 
+    [Parameter]
+    public string Filter {
+        get { return _filter; }
+        set {
+            _filter = value;
+            DoFilter();
+        }
+    }
+    public string OptionFilter {
+        get { return _optionFilter; }
+        set {
+            _optionFilter = value;
+            // update le filter
+            DoFilter();
+        }
+    }
+    private string _filter { get; set; }
+    private string _optionFilter = "Énoncé";
+
+    public void DoFilter() 
+    {        
+        // update le filter
+        if (!string.IsNullOrWhiteSpace(_filter))
+        {
+            // filter sous la propriété choisie
+            switch (_optionFilter)
+            {
+                case "Département":                    
+                    competences = _competences.Where(e => e.Discipline.Titre.Contains(_filter)).ToList();
+                    break;
+                case "Numéro":                    
+                    competences = _competences.Where(e => e.CompetenceId.Contains(_filter)).ToList();
+                    break;
+                default:                     
+                    competences = _competences.Where(e => e.Enonce.Contains(_filter)).ToList();
+                    break;
+            }
+        }
+        else
+        {
+            competences = _competences;
+        }
+    }
+
     List<Competences> competences;
+    List<Competences> _competences;
 
     protected override void OnInitialized()
     {
-        competences = context.Competences.Include(d => d.Discipline).ToList();
+        competences = _competences = context.Competences.Include(d => d.Discipline).ToList();
     }
 
 
     protected override void OnAfterRender(bool firstRender)
     {
-        if (firstRender)
-        {
-            // render le script pour les collapsible
-            JSRuntime.InvokeAsync<string>("LoadCollapse");
-        }
+        // render le script pour les collapsible
+        JSRuntime.InvokeAsync<string>("LoadCollapse");
     }
 }
