@@ -24,10 +24,8 @@ namespace PlanC.EntityDataModel
         [Required]
         [Column("DisciplineID")]
         public int DisciplineId { get; set; }
-        [Required]
         [StringLength(200)]
         public string Enonce { get; set; }
-        [Required]
         [Column(TypeName = "ntext")]
         public string AttitudeAttendu { get; set; }
         public int NombreParties { get; set; }

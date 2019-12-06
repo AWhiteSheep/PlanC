@@ -197,67 +197,37 @@ function validationFor(arg) {
 
 
 window.LoadCollapse = () => {
-    $("div[data-collapse-id]").on('mouseup', function (enventData) {
-        var id = $(this).attr("data-collapse-id");
-        var target = enventData.target;
-        var containerButton = $("#container-" + $(target).attr("data-expend-button"));
-        if ($(target).attr("data-expend-button") != null) { // vérifie si c'est            
-            // a-t-il la classe?
-            if (containerButton.hasClass("col-12-important")) {
-                // si il à la classe show l'enlever et fermer et enlever la class
-                if ($("#"+id).hasClass("show")) {
-                    $("#"+id).collapse("toggle"); // enlève le toggle
-                    // wait pour un peu d'animation
-                    setTimeout(function () {
-                        containerButton.removeClass("col-12-important") // enlêve la class qui la ouvre
-                    }, 350);
-                }
-                // sinon fermer l'expend et ne rien faire d'autre
-                else {
-                    containerButton.removeClass("col-12-important") // enlêve la class qui la ouvre
-                }
-            }
-            // n'a pas la classe
-            else
-            {
-                containerButton.addClass("col-12-important");
-                // ajouter la classe si toggle n'est pas là le toggle
-                if (!$("#"+id).hasClass("show")) {
-                    // wait pour un peu d'animation
-                    setTimeout(function () {
-                        $("#"+id).collapse("toggle"); // toggle le collapse afin qu'il souvre!
-                    }, 350);
-                }
-            }
-
-            // remplacer le text selon la class
-            if (!$("#" + id).hasClass("show")) {
-                $(target).text("Afficher");
-            } else {
-                $(target).text("Masquer");
-            }
-
-        } else {
-            // si le container à le show fermer le collapse et ensuite enlever la class
-            if ($("#"+id).hasClass("show")) {
-                $("#"+id).collapse("toggle"); // toggle le collapse afin qu'il souvre!
+    $("button[data-expend-button]").on('mouseup', function (enventData) {
+        var id = "#"+$(this).attr("data-expend-button");
+        var container = $("#container-" + $(this).attr("data-expend-button"));        
+        // a-t-il la classe?
+        if (container.hasClass("col-12-important")) {            
+            // si il à la classe show l'enlever et fermer et enlever la class
+            if ($(id).hasClass("show")) {
+                $(id).collapse("toggle"); // enlève le toggle
                 // wait pour un peu d'animation
                 setTimeout(function () {
-                    $("#container-" + id).removeClass("col-12-important");
-                }, 275);
+                    container.removeClass("col-12-important") // enlêve la class qui la ouvre
+                }, 350);
             }
-            // sinon juste l'ouvrir
-            else {                
-                $("#"+id).collapse("toggle");
+            // sinon fermer l'expend et ne rien faire d'autre
+            else {
+                container.removeClass("col-12-important") // enlêve la class qui la ouvre
             }
-
-            // remplacer le text selon le text
-            var button = $("[data-expend-button='" + id + "']");
-            if (!$("#" + id).hasClass("show")) {
-                button.first().text("Afficher");
-            } else {
-                button.first().text("Masquer");
-            }
+            $(this).text("Afficher");
         }
+        // n'a pas la classe
+        else
+        {
+            container.addClass("col-12-important");
+            $(this).text("Masquer");
+            // ajouter la classe si toggle n'est pas là le toggle
+            if (!$(id).hasClass("show")) {
+                // wait pour un peu d'animation
+                setTimeout(function () {
+                    $(id).collapse("toggle"); // toggle le collapse afin qu'il souvre!                
+                }, 350);
+            }
+        }  
     });
 };

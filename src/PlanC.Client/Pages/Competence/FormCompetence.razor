@@ -37,8 +37,12 @@
         }
     </div>
     <div class="row">
+        <div class="col-12 d-flex justify-content-center">
+            <PlanC.Client.Components.ProgressBar steps="@(new List<string>{ "Descriptions", "Réalisation", "Éléments", "Révision" })"
+                            Current="CurrentStep"></PlanC.Client.Components.ProgressBar>
+        </div>
         <!-- Valeur pour le titre du plan-cadre -->
-        <div class="col-12">
+        <div class="col-12 pt-5">
             <h4>@departement.Titre</h4>
         </div>
     </div>
@@ -49,7 +53,7 @@
                 <CascadingValue TValue="bool" Value="isEditing">
                     @switch (CurrentStep)
                     {
-                        @case 1:
+                        case 1:
                         <!-- STEP 1: Création de toute information de base-->
                         <EditFormCompetence @ref="formCompetence" departementId="@departementId" competenceId="@competenceId"
                                             CompetenceForm="CompetenceForm"></EditFormCompetence>
@@ -94,8 +98,8 @@
                 </div>
                 break;
         }
+        </div>
     </div>
-</div>
 
 @code {
     public void StepNext()
