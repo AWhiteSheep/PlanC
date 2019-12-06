@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace PlanC.EntityDataModel
 {
@@ -27,6 +28,7 @@ namespace PlanC.EntityDataModel
         [StringLength(7)]
         public string TrkUid { get; set; }
 
+        [JsonIgnore]
         [InverseProperty("Discipline")]
         public virtual ICollection<Competences> Competences { get; set; }
         [InverseProperty("Departement")]

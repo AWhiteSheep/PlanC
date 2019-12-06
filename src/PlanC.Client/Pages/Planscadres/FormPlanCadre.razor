@@ -2,7 +2,8 @@
 @page "/plancadre/{id}/create"
 
 @using PlanC.EntityDataModel
-@using Components;
+@using Components
+@using System.Collections.Generic;
 @inject NavigationManager NavigationManager
 @inject PCU001Context context
 <!-- Section de navigation -->
@@ -20,40 +21,93 @@
 </div>
 
 <div class="container shadow p-5">
-        @*Envoit le paramètre à tous les enfants*@
+    @*Envoit le paramètre à tous les enfants*@
     <CascadingValue TValue="PCU001Context" Value="context">
-        <PlanC.Client.Components.DropdownProgramSelection @ref="ProgramSelect"></PlanC.Client.Components.DropdownProgramSelection>
+                @if(CurrentForm is EditFormPlancadre)
+                {
+                    <EditFormPlancadre @bind-Template="Template" @ref="CurrentForm"></EditFormPlancadre>
+                }
+                else if(CurrentForm is TemplateSkillElemInput)
+                {
+                    <PlanC.Client.Components.TemplateSkillElemInput @bind-Template="Template" @ref="CurrentForm"></PlanC.Client.Components.TemplateSkillElemInput>
+                }
+                else if(CurrentForm is FinalExamInput)
+                {
+                    <PlanC.Client.Components.FinalExamInput @bind-Template="Template" @ref="CurrentForm"></PlanC.Client.Components.FinalExamInput>
+                }
+     </CascadingValue>
 
+</div>
 
-        @if (programme != null)
-        {
-            <EditFormPlancadre Program="programme"></EditFormPlancadre>
-        }
+<div class="row">
 
-    </CascadingValue>
+    <div class="col-12 d-flex justify-content-between">
+        <!-- appelle fonction javascript permettant d'ajouter le .wasvalidated sur la division du formulaire -->
+        <!-- suite au poste validate nous envoyons l'utilisateur vers la deuxième partie celle de remplire les contextes et les éléments de compétence-->
+        <button @onclick="NavigatePrevious" disabled="@(CurrentNode.Previous == null)" class="btn btn-primary">Précédent</button>
+        <button @onclick="NavigateNext" disabled="@(CurrentNode.Next == null)" class="btn btn-primary">Suivant</button>
+    </div>
 </div>
 
 
 @code{
     [Parameter]
     public string Id { get; set; }
-    public string programmeId { get; set; }
-    public Programmes programme { get; set; }
-    private EditFormPlancadre TemplateForm { get; set; }
 
-    DropdownProgramSelection ProgramSelect;
+    public CourseTemplateFormComponent CurrentForm { get; set; }
+
+    private LinkedListNode<CourseTemplateFormComponent> CurrentNode { get; set; }
+    private LinkedList<CourseTemplateFormComponent> Forms { get; set; }
+
+    [Parameter]
+    public PlansCadres Template { get; set; }
 
     ChangeEventArgs<DropdownProgramSelection> programSelectChange;
 
-    protected override void OnAfterRender(bool first)
+    protected override void OnInitialized()
     {
-        if(first)
-            ProgramSelect.ValueChanged += UpdateProgram;
+        //Si la page reçoit un ID spécifique, ce processus le charge en mémoire. Sinon, il génère un nouvel objet.
+        PlansCadres SpecifiedTemplate = context.PlansCadres .Where(cadre => cadre.CoursId == this.Id)
+                                                            .OrderByDescending(cadre => cadre.VsnCdttm)
+                                                            .FirstOrDefault();
+
+        if (SpecifiedTemplate != null)
+        {
+            Template = SpecifiedTemplate;
+        }
+        else
+        {
+            Template = new PlansCadres();
+        }
+
+
+        //Création des composantes du wizard et ajout à la liste liée.
+        Forms = new LinkedList<CourseTemplateFormComponent>();
+
+        Forms.AddLast(new EditFormPlancadre());
+        Forms.AddLast(new TemplateSkillElemInput());
+        Forms.AddLast(new FinalExamInput());
+
+        CurrentNode = Forms.First;
+        CurrentForm = CurrentNode.Value;
+        StateHasChanged();
     }
 
-    private void UpdateProgram(object sender, Programmes arg)
+    private void NavigateNext()
     {
-        programme = arg;
+        if (CurrentForm.SaveProgress())
+        {
+            CurrentForm = CurrentNode.Next.Value;
+            StateHasChanged();
+        }
+        else
+        {
+            return;
+        }
+    }
+    private void NavigatePrevious()
+    {
+        CurrentForm = CurrentNode.Previous.Value;
         StateHasChanged();
     }
 }

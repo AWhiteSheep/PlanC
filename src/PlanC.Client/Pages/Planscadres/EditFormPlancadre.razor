@@ -1,101 +1,129 @@
-﻿
+﻿@using PlanC.Client.Components
+@inherits CourseTemplateFormComponent
 <!-- Formulaire d'un nouveau plan-cadre -->
 <!-- Valeur pour le titre du plan-cadre -->
-<div class="row">
-    <div class="col-12">
-        <h3> Formulaire de plan-cadre: </h3>
-    </div>
-    <div class="col-12">
-        <div class="form-group">
-            <label class="control-label" for="CrsTitle"> Titre du du programme: </label>
-            <input readonly type="text" class="form-control" value="@Program.ToString()" />
-        </div>
-    </div>
-</div>
 
-<div class="row">
-    <!-- Valeur pour le titre du plan-cadre -->
-    <div class="col-lg-6">
-        <div class="form-group">
-            <label class="control-label" for="CrsTitle"> Titre du cours: </label>
-            <input type="text" class="form-control" value="@CTemplate.DenominationCours" />
+<PlanC.Client.Components.DropdownProgramSelection @ref="ProgramSelect" CurrentSelection="Program"></PlanC.Client.Components.DropdownProgramSelection>
+    <div class="row">
+        <div class="col-12">
+            <h3> Formulaire de plan-cadre: </h3>
         </div>
-    </div>
-    <!-- Valeur pour l'identification du cours -->
-    <div class="col-lg-6">
-        <div class="form-group">
-            <label class="control-label" for="CrsId"> Identifiant du cours: </label>
-            <input type="text" class="form-control" value="@CTemplate.CoursId" />
-        </div>
-    </div>
-</div>
-<div class="row">
-    <!-- Nombre d'unités pour le cours données -->
-    <div class="col-md-6">
-        <div class="form-group">
-            <label class="control-label" for="Units"> Nombre d'unités: </label>
-            <input Mask="00000" @bind="CTemplate.Unites" class="theme-mask" id="Units" />
-        </div>
-    </div>
-    <!-- Ajout de la pondération -->
-    <div class="col-md-6">
-        <div class="form-group">
-            <label class="control-label" for="Ponderation"> Pondération du cours: </label>
-            <div class="row">
-                <div class="col-1">
-                    <input Mask="00" class="theme-mask" name="HeuresTotalesThéories" @bind="CTemplate.HeuresTotalesTheorie" />
-                </div>
-                <div class="col-1">
-                    <input Mask="00" class="theme-mask" name="HeuresTotalesPratiques" @bind="CTemplate.HeuresTotalesPratique" />
-                </div>
-                <div class="col-1">
-                    <input Mask="00" class="theme-mask" name="HeuresTotalesMaison" @bind="CTemplate.HeuresTotalesMaison" />
-                </div>
+        <div class="col-12">
+            <div class="form-group">
+                <label class="control-label" for="CrsTitle"> Titre du du programme: </label>
+                <input readonly type="text" class="form-control" value="@Program.ToString()" />
             </div>
         </div>
     </div>
-    <!-- Séparateur -->
-    <hr />
-    <div class="col-12">
-        <!-- Descriptions du cours -->
-        <div class="form-group">
-            <label class="control-label col-12" for="CrsDesc">Description du cours: </label>
-            <textarea @bind="CTemplate.Description" rows="4" class="form-control" id="CrsIntent" name="CrsDesc" />
+ <EditForm EditContext="editContext">
+    <DataAnnotationsValidator />
+        <div class="row">
+            <!-- Valeur pour le titre du plan-cadre -->
+            <div class="col-lg-6">
+                <div class="form-group">
+                    <label class="control-label" for="CrsTitle"> Titre du cours: </label>
+                    <input type="text" @bind="Template.DenominationCours" class="form-control" />
+                </div>
+            </div>
+            <!-- Valeur pour l'identification du cours -->
+            <div class="col-lg-6">
+                <div class="form-group">
+                    <label class="control-label" for="CrsId"> Identifiant du cours: </label>
+                    <InputText type="text" @bind-Value="Template.CoursId" class="form-control" />
+                    <ValidationMessage For="(() => Template.CoursId)"></ValidationMessage>
+                </div>
+            </div>
         </div>
-    </div>
-    <div class="col-12">
-        <!-- les intentions du cours -->
-        <div class="form-group">
-            <label class="control-label" for="CrsIntent">Intention du cours: </label>
-            <textarea @bind="CTemplate.IntentionEducative" rows="4" class="form-control" id="CrsIntent" name="CrsIntent" />
+        <div class="row">
+            <!-- Nombre d'unités pour le cours données -->
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label class="control-label" for="Units"> Nombre d'unités: </label>
+                    <input Mask="00000" @bind="Template.Unites" class="theme-mask" id="Units" />
+                </div>
+            </div>
+            <!-- Ajout de la pondération -->
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label class="control-label" for="Ponderation"> Pondération du cours: </label>
+                    <div class="row">
+                        <div class="col-1">
+                            <input Mask="00" class="theme-mask" name="HeuresTotalesThéories" @bind="Template.HeuresTotalesTheorie" />
+                        </div>
+                        <div class="col-1">
+                            <input Mask="00" class="theme-mask" name="HeuresTotalesPratiques" @bind="Template.HeuresTotalesPratique" />
+                        </div>
+                        <div class="col-1">
+                            <input Mask="00" class="theme-mask" name="HeuresTotalesMaison" @bind="Template.HeuresTotalesMaison" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Séparateur -->
+            <hr />
+            <div class="col-12">
+                <!-- Descriptions du cours -->
+                <div class="form-group">
+                    <label class="control-label col-12" for="CrsDesc">Description du cours: </label>
+                    <textarea @bind="Template.Description" rows="4" class="form-control" id="CrsIntent" name="CrsDesc" />
+                </div>
+            </div>
+            <div class="col-12">
+                <!-- les intentions du cours -->
+                <div class="form-group">
+                    <label class="control-label" for="CrsIntent">Intentions éducatives: </label>
+                    <textarea @bind="Template.IntentionEducative" rows="4" class="form-control" id="CrsIntent" name="CrsIntent" />
+                </div>
+            </div>
+            <div class="col-12">
+                <!-- Entrés pour les intentions pédagogiques du cours -->
+                <div class="form-group">
+                    <label class="control-label" for="IntentionPedagogique">Intentions pédagogiques: </label>
+                    <textarea @bind="Template.IntentionPedagogique" rows="4" class="form-control" id="IntentionPedagogique" name="IntentionPedagogique" />
+                </div>
+            </div>
         </div>
-    </div>
-    <div class="col-12">
-        <!-- Entrés pour les intentions pédagogiques du cours -->
-        <div class="form-group">
-            <label class="control-label" for="IntentionPedagogique">Intention du pédagogique: </label>
-            <textarea @bind="CTemplate.IntentionPedagogique" rows="4" class="form-control" id="IntentionPedagogique" name="IntentionPedagogique" />
-        </div>
-    </div>
-    <!--href="/planscadres/nouveau/ponderation"-->
-    <div class="col-12">
-        <!--href="/planscadres/nouveau/ponderation"-->
-        <button class="btn btn-dark" @onclick="HandleValidSubmit">Continuer</button>
-    </div>
+    </EditForm>
 
-</div>
+
 @code {
-    [Bindable]
-    [Parameter]
     public Programmes Program { get; set; }
 
-    [CascadingParameter] // donne a tous enfants le demandant le a valeur bindé
+    [Parameter]
+    public PlansCadres Template { get; set; }
+
+    [Parameter]
+    public EventCallback<PlansCadres> TemplateChanged { get; set; }
+
+    [CascadingParameter] 
     protected PCU001Context context { get; set; }
+
     public string tid { get; set; }
-    private PlansCadres CTemplate = new PlansCadres();
+
+    private DropdownProgramSelection ProgramSelect { get; set; }
+
+    [Bindable]
+    [Parameter]
+    public EditContext editContext { get; set; }
+
+    private void UpdateProgram(object sender, Programmes arg)
+    {
+        Program = arg;
+        StateHasChanged();
+    }
 
     protected override void OnInitialized()
     {
+        editContext = new EditContext(Template);
+        Program = context.Programmes.First();
+    }
+
+    protected override void OnAfterRender(bool firstRender)
+    {
+        if (firstRender)
+        {
+            ProgramSelect.ValueChanged += UpdateProgram;
+        }
     }
 
     // validation côté serveur
@@ -103,11 +131,45 @@
     {
         try
         {
+            Template.VsnCdttm = DateTime.Now;
 
+            context.PlansCadres.Add(Template);
         }
-        catch
+        catch (Exception except)
         {
-
+            Console.WriteLine($"Template input error: {except.Message} /// {except.InnerException.Message}");
         }
     }
+
+    public override bool SaveProgress()
+    {
+        if (editContext.Validate())
+        {
+
+            try
+            {
+                Template.ProgrammeId = Program.Id;
+                Template.VsnCdttm = DateTime.Now;
+
+                context.PlansCadres.Add(Template);
+
+                if (context.SaveChanges() > 0)
+                {
+                    return true;
+                }
+                else return false;
+            }
+            catch (Exception except)
+            {
+                Console.WriteLine($"Template input error: {except.Message} /// {except.InnerException.Message}");
+                return false;
+            }
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    public event Action<EditFormPlancadre> NotifyParent;
 }

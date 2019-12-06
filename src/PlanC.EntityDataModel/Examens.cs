@@ -16,6 +16,7 @@ namespace PlanC.EntityDataModel
 
         [Key]
         [Column("ID")]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
         [StringLength(2)]
         public string TypeExamenCode { get; set; }

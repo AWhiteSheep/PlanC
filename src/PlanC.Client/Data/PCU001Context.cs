@@ -266,6 +266,8 @@ namespace PlanC.Client.Data
             {
                 entity.HasComment("Entité de base pour un examen");
 
+                entity.Property(e => e.Id).UseIdentityColumn();
+
                 entity.Property(e => e.RcdCdttm).HasDefaultValueSql("(getdate())");
 
                 entity.Property(e => e.TrkUid).IsUnicode(false);

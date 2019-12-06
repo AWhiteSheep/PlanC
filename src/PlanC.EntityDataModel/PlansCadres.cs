@@ -16,6 +16,7 @@ namespace PlanC.EntityDataModel
 
         [Key]
         [Column("CoursID")]
+        [Required]
         [StringLength(10)]
         public string CoursId { get; set; }
         [Key]
