@@ -30,14 +30,14 @@
                                     <div class="form-row">
                                         <div class="form-group col-12">
                                             <label for="titleedit"> Nom du département </label>
-                                            <OnStringInput @bind-Value="@(NewDepartement.Titre)" class="form-control" placeholder="Titre du département"></OnStringInput>
+                                            <OnStringInput @bind-Value="@(NewDepartement.Titre)" class="form-control"></OnStringInput>
                                             <ValidationMessage For="@(() => NewDepartement.Titre)" />
                                         </div>
                                     </div>
                                     <div class="form-row">
                                         <div class="form-group col-12">
                                             <label for="policyedit"> Politique du département </label>
-                                            <textarea @bind="@NewDepartement.Politique" class="form-control" placeholder="Politique de département" rows="4"></textarea>
+                                            <textarea @bind="@NewDepartement.Politique" class="form-control" rows="4"></textarea>
                                             <ValidationMessage For="@(() => NewDepartement.Politique)" />
                                         </div>
                                     </div>

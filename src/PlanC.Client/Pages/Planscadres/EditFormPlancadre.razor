@@ -8,7 +8,7 @@
     <div class="col-12">
         <div class="form-group">
             <label class="control-label" for="CrsTitle"> Titre du du programme: </label>
-            <input readonly type="text" class="form-control" placeholder="Nom du programme" value="@Program.ToString()" />
+            <input readonly type="text" class="form-control" value="@Program.ToString()" />
         </div>
     </div>
 </div>
@@ -18,14 +18,14 @@
     <div class="col-lg-6">
         <div class="form-group">
             <label class="control-label" for="CrsTitle"> Titre du cours: </label>
-            <input type="text" class="form-control" placeholder="Titre du cours" value="@CTemplate.DenominationCours" />
+            <input type="text" class="form-control" value="@CTemplate.DenominationCours" />
         </div>
     </div>
     <!-- Valeur pour l'identification du cours -->
     <div class="col-lg-6">
         <div class="form-group">
             <label class="control-label" for="CrsId"> Identifiant du cours: </label>
-            <input type="text" class="form-control" placeholder="Id du cours" value="@CTemplate.CoursId" />
+            <input type="text" class="form-control" value="@CTemplate.CoursId" />
         </div>
     </div>
 </div>
@@ -34,7 +34,7 @@
     <div class="col-md-6">
         <div class="form-group">
             <label class="control-label" for="Units"> Nombre d'unités: </label>
-            <input Mask="00000" @bind="CTemplate.Unites" class="theme-mask" id="Units" placeholder="Nombre d'unité" />
+            <input Mask="00000" @bind="CTemplate.Unites" class="theme-mask" id="Units" />
         </div>
     </div>
     <!-- Ajout de la pondération -->
@@ -43,13 +43,13 @@
             <label class="control-label" for="Ponderation"> Pondération du cours: </label>
             <div class="row">
                 <div class="col-1">
-                    <input Mask="00" class="theme-mask" placeholder="##" name="HeuresTotalesThéories" @bind="CTemplate.HeuresTotalesTheorie" />
+                    <input Mask="00" class="theme-mask" name="HeuresTotalesThéories" @bind="CTemplate.HeuresTotalesTheorie" />
                 </div>
                 <div class="col-1">
-                    <input Mask="00" class="theme-mask" placeholder="##" name="HeuresTotalesPratiques" @bind="CTemplate.HeuresTotalesPratique" />
+                    <input Mask="00" class="theme-mask" name="HeuresTotalesPratiques" @bind="CTemplate.HeuresTotalesPratique" />
                 </div>
                 <div class="col-1">
-                    <input Mask="00" class="theme-mask" placeholder="##" name="HeuresTotalesMaison" @bind="CTemplate.HeuresTotalesMaison" />
+                    <input Mask="00" class="theme-mask" name="HeuresTotalesMaison" @bind="CTemplate.HeuresTotalesMaison" />
                 </div>
             </div>
         </div>
@@ -60,21 +60,21 @@
         <!-- Descriptions du cours -->
         <div class="form-group">
             <label class="control-label col-12" for="CrsDesc">Description du cours: </label>
-            <textarea @bind="CTemplate.Description" rows="4" class="form-control" id="CrsIntent" placeholder="Description du cours..." name="CrsDesc" />
+            <textarea @bind="CTemplate.Description" rows="4" class="form-control" id="CrsIntent" name="CrsDesc" />
         </div>
     </div>
     <div class="col-12">
         <!-- les intentions du cours -->
         <div class="form-group">
             <label class="control-label" for="CrsIntent">Intention du cours: </label>
-            <textarea @bind="CTemplate.IntentionEducative" rows="4" class="form-control" id="CrsIntent" placeholder="Intention éducative..." name="CrsIntent" />
+            <textarea @bind="CTemplate.IntentionEducative" rows="4" class="form-control" id="CrsIntent" name="CrsIntent" />
         </div>
     </div>
     <div class="col-12">
         <!-- Entrés pour les intentions pédagogiques du cours -->
         <div class="form-group">
             <label class="control-label" for="IntentionPedagogique">Intention du pédagogique: </label>
-            <textarea @bind="CTemplate.IntentionPedagogique" rows="4" class="form-control" id="IntentionPedagogique" placeholder="Ingore It" name="IntentionPedagogique" />
+            <textarea @bind="CTemplate.IntentionPedagogique" rows="4" class="form-control" id="IntentionPedagogique" name="IntentionPedagogique" />
         </div>
     </div>
     <!--href="/planscadres/nouveau/ponderation"-->

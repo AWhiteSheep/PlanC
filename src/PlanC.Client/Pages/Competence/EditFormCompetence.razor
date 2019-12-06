@@ -18,14 +18,14 @@
             <label for="competenceId" class="control-label"> Numéro de la compétence: </label>
             @if (!isEditing)
             {
-                <InputText id="competenceId" class="form-control" placeholder="Numéro de la compétence ####" @bind-Value="@(skill.CompetenceId)" />
+                <InputText id="competenceId" class="form-control" @bind-Value="@(skill.CompetenceId)" />
                 <div class="invalid-feedback">
                     <ValidationMessage For="@(() => skill.CompetenceId)" />
                 </div>
             }
             else
             {
-                <InputText readonly id="competenceId" class="form-control" placeholder="Numéro de la compétence ####" @bind-Value="@(skill.CompetenceId)" />
+                <InputText readonly id="competenceId" class="form-control" @bind-Value="@(skill.CompetenceId)" />
                 <div class="invalid-feedback">
                     <ValidationMessage For="@(() => skill.CompetenceId)" />
                 </div>
@@ -51,7 +51,7 @@
     <div class="col-sm-12">
         <div class="form-group">
             <label class="control-label"> Énoncé de la compétence: </label>
-            <InputText class="form-control" placeholder="Énoncé de la compétence" @bind-Value="@(skill.Enonce)" />
+            <InputText class="form-control" @bind-Value="@(skill.Enonce)" />
             <div class="invalid-feedback">
                 <ValidationMessage For="@(() => skill.Enonce)" class="text-danger" />
             </div>
@@ -61,7 +61,7 @@
     <div class="col-sm-12">
         <div class="form-group">
             <label class="control-label"> Attitude attendue de la compétence: </label>
-            <InputTextArea row="5" class="form-control" placeholder="Attitude attendue de la compétence" @bind-Value="@(skill.AttitudeAttendu)" />
+            <InputTextArea row="5" class="form-control" @bind-Value="@(skill.AttitudeAttendu)" />
             <div class="invalid-feedback">
                 <ValidationMessage For="@(() => skill.AttitudeAttendu)" class="text-danger" />
             </div>
@@ -71,7 +71,7 @@
     <div class="col-sm-6">
         <div class="form-group">
             <label class="control-label"> Nombre de parties: </label>
-            <InputNumber class="form-control" placeholder="##" @bind-Value="@(skill.NombreParties)" />
+            <InputNumber class="form-control" @bind-Value="@(skill.NombreParties)" />
             <div class="invalid-feedback">
                 <ValidationMessage For="@(() => skill.NombreParties)" class="text-danger" />
             </div>

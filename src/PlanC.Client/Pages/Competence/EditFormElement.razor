@@ -47,7 +47,7 @@
                             @foreach (var criteria in element.CriteresElementCompetence)
                             {
                                 <div class="input-group col-12 mb-3">
-                                    <input type="text" class="form-control" @bind="criteria.DescriptionCritere" placeholder="Un contexte de réalisation" aria-label="Contexte de réalisation deux bouttons" aria-describedby="button-addon-criteria-@(element.CriteresElementCompetence.IndexOf(criteria)+1)" />
+                                    <input type="text" class="form-control" @bind="criteria.DescriptionCritere" aria-label="Contexte de réalisation deux bouttons" aria-describedby="button-addon-criteria-@(element.CriteresElementCompetence.IndexOf(criteria)+1)" />
                                     <div class="input-group-append" id="button-addon-criteria-@(element.CriteresElementCompetence.IndexOf(criteria)+1)">
                                         <button class="btn text-danger" @onclick="() => RemoveCriteria(element.Id, criteria)" type="button"><i class="fas fa-minus-circle"></i></button>
                                     </div>
@@ -59,7 +59,7 @@
                                     <hr />
                                     <label> Nouveau critère: </label>
                                     <div class="input-group mb-3">
-                                        <input id="criteria" type="text" class="form-control" @bind="CurrentCriteria.Description" placeholder="Un contexte de réalisation"
+                                        <input id="criteria" type="text" class="form-control" @bind="CurrentCriteria.Description"
                                                aria-describedby="clear-criteria" />
                                         <div class="input-group-append" id="clear-criteria">
                                             <button class="btn text-warning" @onclick="() => CancelCriteria()" type="button"><i class="fas fa-eraser"></i></button>
@@ -97,7 +97,7 @@
                     <div class="alert alert-danger" style="width:100%;">@newMessage</div>
                 </div>
             }
-            <input type="text" class="form-control" @bind="newLibele" placeholder="Un contexte de réalisation" />
+            <input type="text" class="form-control" @bind="newLibele" />
         </div>
         <button class="btn btn-success" @onclick="() => AddElement()">Ajouter un contexte <i class="fas fa-plus-circle ml-3" style="vertical-align: middle;"></i></button>
     </div>

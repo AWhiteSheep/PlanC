@@ -1,7 +1,7 @@
 ﻿<style>    
 .container-bar {
   counter-reset: step;
-  width: 480px;
+  width: 680px;
   z-index: 1;
 }
 
@@ -49,13 +49,22 @@
   background: #3aac5d;
   color: white
 }
+.progressbar li.current::after {
+  background: #009688;
+}
+
+.progressbar li.current::before {
+  border-color: #009688;
+  background: #009688;
+  color: white
+}
 </style>
 
 <div class="container-bar">
     <ul style="list-style-type: none" class="progressbar">
         @foreach (var step in steps)
         {
-            <li class="@(steps.IndexOf(step)+1 <= Current ? "active": "")">@step</li>
+            <li class="@(steps.IndexOf(step) > Current ? "" : ( steps.IndexOf(step) == Current ? "current" :"active"))">@step</li>
         }
     </ul>
 </div>

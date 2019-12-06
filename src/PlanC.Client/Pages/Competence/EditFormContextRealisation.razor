@@ -21,7 +21,7 @@
     {
         <div class="col-sm-12 mb-3">
             <div class="input-group">
-                <input type="text" class="form-control" @bind="itemContext.Text" placeholder="Un contexte de réalisation" aria-label="Contexte de réalisation deux bouttons" 
+                <input type="text" class="form-control" @bind="itemContext.Text" aria-label="Contexte de réalisation deux bouttons" 
                             aria-describedby="button-addon-context-@(contextRealisationsList.IndexOf(itemContext) + 1)" />
                 <div class="input-group-append" id="button-addon-context-@(contextRealisationsList.IndexOf(itemContext) + 1)">
                     <button class="btn btn-outline-secondary" @onclick="@(() => RemoveContext(itemContext.ContexteId))" type="button"><i class="fas fa-trash"></i></button>
@@ -45,7 +45,7 @@
             </div>
         }
         <div class="input-group">
-            <InputText id="newContextNoAssociation" type="text" class="form-control" @bind-Value="newContextNotAssociated.Libele" placeholder="Un contexte de réalisation" aria-label="Contexte de réalisation deux bouttons" aria-describedby="context-not-associated" />
+            <InputText id="newContextNoAssociation" type="text" class="form-control" @bind-Value="newContextNotAssociated.Libele" aria-label="Contexte de réalisation deux bouttons" aria-describedby="context-not-associated" />
             <div class="input-group-append" id="context-not-associated">
                 <button class="btn btn-outline-secondary" onclick="$('#newContextNoAssociation').val('');" type="button"><i class="fas fa-trash"></i></button>
             </div>
