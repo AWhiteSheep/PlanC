@@ -5,7 +5,7 @@
 
 # User-specific files
 *.suo
-*.user
+.pubxml.user
 *.userosscache
 *.sln.docstates
 
@@ -166,10 +166,8 @@ publish/
 
 # Publish Web Output
 *.[Pp]ublish.xml
-*.azurePubxml
 # Note: Comment the next line if you want to checkin your web deploy settings,
 # but database connection strings (with potential passwords) will be unencrypted
-*.pubxml
 *.publishproj
 
 # Microsoft Azure Web App publish settings. Comment the next line if you want to

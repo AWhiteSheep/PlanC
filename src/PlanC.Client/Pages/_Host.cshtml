@@ -1,10 +1,22 @@
 ﻿@page "/"
 @namespace PlanC.Client.Pages
 @addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
-
+@using System.IO
 
 @inject Microsoft.AspNetCore.Antiforgery.IAntiforgery Xsrf
 @functions{
+
+    public List<string> filesNames = new List<string>();
+
+    public List<string> GetBanner() {     
+        string routhPath = Directory.GetCurrentDirectory() + "\\wwwroot";
+        string path = routhPath + "\\images\\banner";
+        List<string> temp;
+        temp = Directory.GetFiles(path).ToList();
+        temp.ForEach(e => filesNames.Add(e.Replace(routhPath, "")));
+        return filesNames;
+    }
+
     public string GetAntiXsrfRequestToken()
     {
         return Xsrf.GetAndStoreTokens(HttpContext).RequestToken;
@@ -23,6 +35,9 @@
 
     <!-- cdn pour le richtext editor pour les css https://cdnjs.com/libraries/Trumbowyg -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Trumbowyg/2.19.1/ui/trumbowyg.min.css" integrity="sha256-iS3knajmo8cvwnS0yrVDpNnCboUEwZMJ6mVBEW1VcSA=" crossorigin="anonymous" />
+
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css?family=Nunito:200,600" rel="stylesheet">
 
     <!-- CDNs fontawesome, bootstrap & css style sheet pour syncfusion table -->
     <link rel="stylesheet" type="text/css" href="https://cdn.syncfusion.com/ej2/17.3.18/fabric.css" />
@@ -44,14 +59,24 @@
                 <partial name="../Shared/_Topbar.cshtml" />
                 <!-- End of Topbar -->
                 <!-- Begin Page Content -->
-                <div class="container-fluid" style="position:relative">
-                    <app>
+                <div style="position:relative">
+                    <div class="banner-image">
+                        @foreach (var path in GetBanner())
+                        {
+                            <img src="@path" />
+                        }
+                    </div>
+                </div>
+                <div class="container-fluid" style="margin-top: 160px">
+                    <app style="background-color: white">
                         @(await Html.RenderComponentAsync<App>(RenderMode.ServerPrerendered))
                     </app>
                 </div>
             </div>
         </div>
     </div>
+
+
     <!-- Modal de déconnection -->
     <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
@@ -68,11 +93,12 @@
                 <!-- Option du modal -->
                 <div class="modal-footer">
                     <button class="btn btn-secondary" type="button" data-dismiss="modal"> Canceler </button>
-                    <a class="btn btn-primary" href="login.html"> Déconnexion </a>
+                    <a class="btn btn-danger" asp-area="AzureAD" asp-controller="Account" asp-action="SignOut">Déconnexion</a>
                 </div>
             </div>
         </div>
     </div>
+
     <!-- End of Page Wrapper -->
     <!-- Scroll to Top Button-->
     <a class="scroll-to-top rounded" href="#page-top">

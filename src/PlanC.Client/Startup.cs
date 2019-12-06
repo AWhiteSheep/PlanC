@@ -2,16 +2,20 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Ganss.XSS;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.OpenIdConnect;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
 using PlanC.Client.Data;
+using Microsoft.EntityFrameworkCore;
+using Ganss.XSS;
+using Microsoft.Extensions.Hosting;
 
 namespace PlanC.Client
 {
@@ -25,20 +29,56 @@ namespace PlanC.Client
         public IConfiguration Configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
-        // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
+
             // Ajout de la dbContext
-            services.AddDbContext<PCU001Context>(options => 
+            services.AddDbContext<PCU001Context>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("RDS_PCU001")));
 
-            services.AddRazorPages();
+            services.AddAuthentication(sharedOptions =>
+            {
+                sharedOptions.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+                sharedOptions.DefaultChallengeScheme = OpenIdConnectDefaults.AuthenticationScheme;
+            })
+            .AddAzureAd(options => Configuration.Bind("AzureAd", options))
+            .AddCookie();
+
+            services.AddAuthorization(options => {
+                options.AddPolicy("AuthorizationNemesisGroupPolicy", policyBuilder =>
+                policyBuilder.RequireClaim("groups",
+                Configuration.GetValue<string>("AzureADGroup:AuthorizeAuthorizationNemesisGroupId")));
+            });
+
+            services.AddMvc(options =>
+            {
+                var policy = new AuthorizationPolicyBuilder()
+                    .RequireAuthenticatedUser()
+                    .Build();
+                options.Filters.Add(new AuthorizeFilter(policy));
+            })
+            .AddRazorPagesOptions(options =>
+            {
+                options.Conventions.AllowAnonymousToFolder("/Account");
+            });
+
+
+            services.AddRazorPages().AddRazorPagesOptions(options =>
+            {
+                options.Conventions.AllowAnonymousToFolder("/Pages/Public");
+            });
             services.AddServerSideBlazor();
+
+            services.AddAuthorization(options => {
+                options.AddPolicy("AuthorizationNemesisGroupPolicy", policyBuilder =>
+                policyBuilder.RequireClaim("groups",
+                Configuration.GetValue<string>("AzureADGroup:AuthorizeAuthorizationNemesisGroupId")));
+            });
 
 
             // Be Safe – Sanitize Your HTML 
             services.AddScoped<IHtmlSanitizer, HtmlSanitizer>(x =>
-            {                
+            {
                 // https://blog.jonblankenship.com/2019/01/27/safely-rendering-markdown-in-blazor/
                 // Configure sanitizer rules as needed here.
                 // For now, just use default rules + allow class attributes
@@ -64,13 +104,20 @@ namespace PlanC.Client
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
+
             app.UseCors(o => o.AllowAnyOrigin()
                 .AllowAnyHeader().AllowAnyMethod());
 
             app.UseHttpsRedirection();
+
+            // ajoute le static files plus les default file et browser le directory
             app.UseStaticFiles();
 
-            app.UseRouting();            
+            app.UseAuthorization();
+            // identity authentication
+            app.UseAuthentication();
+
+            app.UseRouting();
 
             app.UseEndpoints(endpoints =>
             {

@@ -1,4 +1,6 @@
-﻿<nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
+﻿@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+
+<nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
 
     <!-- Sidebar Toggle (Topbar) -->
     <button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3">
@@ -42,38 +44,6 @@
 
         <!-- Nav Item - Centre de notifications -->
         <!-- Nav Item - Profil de l'utilisateur -->
-        <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                <img class="img-profile rounded-circle" src="~/images/avatars/girl-1.svg">
-            </a>
-            <!-- Dropdown - Options pour l'utilisateur -->
-            <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="userDropdown">
-                <a class="dropdown-item" href="#">
-                    <i class="fas fa-user fa-sm fa-fw mr-2"></i>
-                    Mon profil
-                </a>
-                <a class="dropdown-item" href="#">
-                    <i class="fas fa-file fa-sm fa-fw mr-2"></i>
-                    Mes documents
-                </a>
-                <a class="dropdown-item" href="#">
-                    <i class="fas fa-info fa-sm fa-fw mr-2"></i>
-                    Aide
-                </a>
-                <div class="dropdown-divider"></div>
-                <a class="dropdown-item" href="#">
-                    <i class="fas fa-comment fa-sm fa-fw mr-2"></i>
-                    Commentaire
-                </a>
-            </div>
-        </li>
-
-        <!-- Nav Item - Déconnexion de l'utilisateur -->
-        <li class="nav-item dropdown">
-            <a class="theme-link" href="#" data-toggle="modal" data-target="#logoutModal">
-                <i class="theme-circle-button theme-logout fas fa-power-off"></i>
-            </a>
-        </li>
-
+        <partial name="../Shared/_LoginPartial.cshtml" />
     </ul>
 </nav>

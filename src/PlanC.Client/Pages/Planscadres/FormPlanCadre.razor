@@ -5,6 +5,7 @@
 @using Components;
 @inject NavigationManager NavigationManager
 @inject PCU001Context context
+@attribute [Authorize("AuthorizationNemesisGroupPolicy")]
 <!-- Section de navigation -->
 <div class="row mb-3">
     <div class="col">
@@ -20,7 +21,7 @@
 </div>
 
 <div class="container shadow p-5">
-        @*Envoit le paramètre à tous les enfants*@
+    @*Envoit le paramètre à tous les enfants*@
     <CascadingValue TValue="PCU001Context" Value="context">
         <PlanC.Client.Components.DropdownProgramSelection @ref="ProgramSelect"></PlanC.Client.Components.DropdownProgramSelection>
 
@@ -47,7 +48,7 @@
 
     protected override void OnAfterRender(bool first)
     {
-        if(first)
+        if (first)
             ProgramSelect.ValueChanged += UpdateProgram;
     }
 

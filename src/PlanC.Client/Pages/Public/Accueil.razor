@@ -1,8 +1,6 @@
 ﻿@page "/"
-
 @inject IJSRuntime JSRuntime
 @implements IDisposable
-
 
 <div id="editor">
     <div class="row">
@@ -57,6 +55,7 @@
 
 @code {
     bool wasRender = false;
+
     protected override async void OnAfterRender(bool firstRender)
     {
         // la vue peut se render plusieurs fois au initialise et
@@ -71,7 +70,8 @@
             {
                 await JSRuntime.InvokeAsync<string>("InitTrumbowyg", "#editor");
             }
-            catch { 
+            catch
+            {
             }
         }
     }

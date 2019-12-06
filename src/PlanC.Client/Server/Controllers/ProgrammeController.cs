@@ -11,6 +11,7 @@ namespace PlanC.Client.Server.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Microsoft.AspNetCore.Authorization.Authorize]
     public class ProgrammeController : Controller
     {
         public ProgrammeController(PCU001Context context) {

@@ -1,10 +1,12 @@
 ﻿using System;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using PlanC.EntityDataModel;
 
 namespace PlanC.Client.Data
 {
-    public partial class PCU001Context : DbContext
+    public partial class PCU001Context : IdentityDbContext<IdentityUser>
     {
         public PCU001Context()
         {
@@ -36,7 +38,7 @@ namespace PlanC.Client.Data
         public virtual DbSet<ProgrammeCompetences> ProgrammeCompetences { get; set; }
         public virtual DbSet<ProgrammeDepartementView> ProgrammeDepartementView { get; set; }
         public virtual DbSet<Programmes> Programmes { get; set; }
-        public virtual DbSet<Roles> Roles { get; set; }
+        public virtual DbSet<Roles> PCURoles { get; set; }
         public virtual DbSet<RolesUtilisateur> RolesUtilisateur { get; set; }
         public virtual DbSet<Sessions> Sessions { get; set; }
         public virtual DbSet<TypesFormationsProgrammes> TypesFormationsProgrammes { get; set; }
@@ -52,6 +54,7 @@ namespace PlanC.Client.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            base.OnModelCreating(modelBuilder);
             modelBuilder.Entity<CategoriesProgrammes>(entity =>
             {
                 entity.HasKey(e => e.CategorieId)

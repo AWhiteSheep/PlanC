@@ -1,7 +1,7 @@
 ﻿@page "/portail"
 
 @namespace PlanC.Client.Pages
-
+@attribute [Authorize("AuthorizationNemesisGroupPolicy")]
 <!-- Section de navigation -->
 <div class="row mb-3">
     <div class="col-lg-8">
@@ -11,9 +11,8 @@
             Tout ce dont vous avez besoin afin de créer des plans de cours à une vitesse éclaire!
             <div class="d-flex flex-row card-area">
                 <div class="d-flex flex-row">
-                    <a href="~/Personnel/PlansCadres"> Créer un plans-cadres </a>
-                    <a href="~/Personnel/PlansCours"> Les plans de cours </a>
-                    <a href="~/Personnel"> Voir l'ensemble </a>
+                    <a href="/plancadres/create"> Créer un plans-cadres </a>
+                    <a href="/documents"> Voir tout les documents </a>
                 </div>
             </div>
         </p>
