@@ -12,7 +12,7 @@ namespace PlanC.EntityDataModel
         [Key]
         [Column("ContexteID")]
         public int ContexteId { get; set; }
-        [Required]
+        [Required(ErrorMessage = "Ce champ est obligatoire")]
         public string Text { get; set; }
         [Column("RCD_CDTTM", TypeName = "datetime")]
         public DateTime? RcdCdttm { get; set; }

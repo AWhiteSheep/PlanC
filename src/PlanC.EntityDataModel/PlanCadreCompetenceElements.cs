@@ -9,7 +9,7 @@ namespace PlanC.EntityDataModel
     {
         [Key]
         public int IdentityKey { get; set; }
-        [Required]
+        [Required(ErrorMessage = "Ce champ est obligatoire")]
         [Column("CoursID")]
         [StringLength(10)]
         public string CoursId { get; set; }

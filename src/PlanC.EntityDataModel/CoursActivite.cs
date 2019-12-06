@@ -14,17 +14,17 @@ namespace PlanC.EntityDataModel
 
         [Key]
         public int Identity { get; set; }
-        [Required]
+        [Required(ErrorMessage = "Ce champ est obligatoire")]
         [Column("CoursID")]
         [StringLength(10)]
         public string CoursId { get; set; }
-        [Required]
+        [Required(ErrorMessage = "Ce champ est obligatoire")]
         [Column("TCHR_UID")]
         [StringLength(7)]
         public string TchrUid { get; set; }
         [Column("PLN_VSN_CDTTM", TypeName = "datetime")]
         public DateTime PlnVsnCdttm { get; set; }
-        [Required]
+        [Required(ErrorMessage = "Ce champ est obligatoire")]
         [Column("SessionID")]
         [StringLength(3)]
         public string SessionId { get; set; }

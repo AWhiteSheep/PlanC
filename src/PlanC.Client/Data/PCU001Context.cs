@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Data.SqlTypes;
 using Microsoft.EntityFrameworkCore;
 using PlanC.EntityDataModel;
 
@@ -88,11 +87,11 @@ namespace PlanC.Client.Data
 
                 entity.HasComment("Compétence");
 
+                entity.Property(e => e.AttitudeAttendu).HasDefaultValueSql("('(la description d''une ou plusieurs attitudes est attendue.)')");
+
                 entity.Property(e => e.CompetenceId)
                     .IsUnicode(false)
                     .IsFixedLength();
-
-                entity.Property(e => e.Enonce).IsUnicode(false);
 
                 entity.Property(e => e.NombreParties).HasDefaultValueSql("((1))");
 

@@ -17,15 +17,17 @@ namespace PlanC.EntityDataModel
 
         [Key]
         public int IdentityKey { get; set; }
-        [Required]
+        [Required(ErrorMessage = "Ce champ est obligatoire")]
         [Column("CompetenceID")]
         [StringLength(4)]
         public string CompetenceId { get; set; }
-        [Required]
+        [Required(ErrorMessage = "Ce champ est obligatoire")]
         [Column("DisciplineID")]
         public int DisciplineId { get; set; }
+        [Required(ErrorMessage = "Ce champ est obligatoire")]
         [StringLength(200)]
         public string Enonce { get; set; }
+        [Required(ErrorMessage = "Ce champ est obligatoire")]
         [Column(TypeName = "ntext")]
         public string AttitudeAttendu { get; set; }
         public int NombreParties { get; set; }

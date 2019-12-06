@@ -16,7 +16,7 @@ namespace PlanC.EntityDataModel
         [Column("ID")]
         [StringLength(3)]
         public string Id { get; set; }
-        [Required]
+        [Required(ErrorMessage = "Ce champ est obligatoire")]
         [StringLength(60)]
         public string Designation { get; set; }
 

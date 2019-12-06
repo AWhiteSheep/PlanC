@@ -14,7 +14,7 @@ namespace PlanC.EntityDataModel
 
         [Key]
         public int IdentityKey { get; set; }
-        [Required]
+        [Required(ErrorMessage = "Ce champ est obligatoire")]
         [StringLength(100)]
         public string ElementCompetenceId { get; set; }
         [Column("CritereElementCompetenceSQNBR")]
@@ -22,7 +22,7 @@ namespace PlanC.EntityDataModel
         public string DescriptionCritere { get; set; }
         [Column("RCD_CDTTM", TypeName = "datetime")]
         public DateTime RcdCdttm { get; set; }
-        [Required]
+        [Required(ErrorMessage = "Ce champ est obligatoire")]
         [Column("TRK_UID")]
         [StringLength(7)]
         public string TrkUid { get; set; }
