@@ -54,4 +54,7 @@
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
     </Content>
   </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Areas\Identity\Pages\Manage\" />
+  </ItemGroup>
 </Project>

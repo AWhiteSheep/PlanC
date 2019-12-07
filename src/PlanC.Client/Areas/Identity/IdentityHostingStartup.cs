@@ -5,7 +5,8 @@ using Microsoft.AspNetCore.Identity.UI;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using PlanC.Client.Models;
+using PlanC.Client.Data;
+using PlanC.EntityDataModel;
 
 [assembly: HostingStartup(typeof(PlanC.Client.Areas.Identity.IdentityHostingStartup))]
 namespace PlanC.Client.Areas.Identity
@@ -15,12 +16,8 @@ namespace PlanC.Client.Areas.Identity
         public void Configure(IWebHostBuilder builder)
         {
             builder.ConfigureServices((context, services) => {
-                services.AddDbContext<PlanCClientContext>(options =>
-                    options.UseSqlServer(
-                        context.Configuration.GetConnectionString("PlanCClientContextConnection")));
-
-                services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
-                    .AddEntityFrameworkStores<PlanCClientContext>();
+                services.AddDefaultIdentity<Utilisateurs>(options => options.SignIn.RequireConfirmedAccount = true)
+                    .AddEntityFrameworkStores<PCU001Context>().AddDefaultUI();
             });
         }
     }

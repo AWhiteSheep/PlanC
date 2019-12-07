@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -7,27 +9,33 @@ using System.Text.Json.Serialization;
 
 namespace PlanC.EntityDataModel
 {
-    public partial class Utilisateurs
+    public partial class Utilisateurs : IdentityUser
     {
-        public Utilisateurs()
+        public Utilisateurs() : base()
         {
             DisponibilitesUtilisateur = new HashSet<DisponibilitesUtilisateur>();
-            RolesUtilisateur = new HashSet<RolesUtilisateur>();
+        }
+
+        public Utilisateurs(string userName) : base(userName)
+        {
         }
 
         [Key]
         [Column("ID")]
         [StringLength(7)]
-        public string Id { get; set; }
+        public override string Id { get; set; }
         [Column("DepartementID")]
+        [PersonalData]
         public int? DepartementId { get; set; }
         [Column("GVN_NM")]
         [StringLength(50)]
-        public string GvnNm { get; set; }
+        [PersonalData]
+        public string GvnNm { get; set; } // prénom
         [Column("SNM")]
         [StringLength(50)]
         public string Snm { get; set; }
         [Column("RCD_CDTTM", TypeName = "datetime")]
+        [PersonalData]
         public DateTime? RcdCdttm { get; set; }
 
         [ForeignKey(nameof(DepartementId))]
@@ -37,7 +45,5 @@ namespace PlanC.EntityDataModel
         public virtual Departements Departement { get; set; }
         [InverseProperty("U")]
         public virtual ICollection<DisponibilitesUtilisateur> DisponibilitesUtilisateur { get; set; }
-        [InverseProperty("Utilisateur")]
-        public virtual ICollection<RolesUtilisateur> RolesUtilisateur { get; set; }
     }
 }

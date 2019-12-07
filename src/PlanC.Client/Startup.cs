@@ -34,7 +34,7 @@ namespace PlanC.Client
 
             services.AddRazorPages();
             services.AddServerSideBlazor();
-
+            services.AddMvc();
 
             // Be Safe – Sanitize Your HTML 
             services.AddScoped<IHtmlSanitizer, HtmlSanitizer>(x =>
@@ -64,13 +64,16 @@ namespace PlanC.Client
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
-            app.UseCors(o => o.AllowAnyOrigin()
-                .AllowAnyHeader().AllowAnyMethod());
-
             app.UseHttpsRedirection();
             app.UseStaticFiles();
 
-            app.UseRouting();            
+            app.UseRouting();    
+
+
+            app.UseCors(o => o.AllowAnyOrigin()
+                .AllowAnyHeader().AllowAnyMethod());
+
+            app.UseAuthentication();
 
             app.UseEndpoints(endpoints =>
             {
