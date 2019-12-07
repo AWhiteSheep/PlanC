@@ -4,6 +4,7 @@
 @using PlanC.EntityDataModel
 @using Components
 @using System.Collections.Generic;
+@using Microsoft.EntityFrameworkCore;
 @inject NavigationManager NavigationManager
 @inject PCU001Context context
 <!-- Section de navigation -->
@@ -23,18 +24,20 @@
 <div class="container shadow p-5">
     @*Envoit le paramètre à tous les enfants*@
     <CascadingValue TValue="PCU001Context" Value="context">
-                @if(CurrentForm is EditFormPlancadre)
-                {
-                    <EditFormPlancadre @bind-Template="Template" @ref="CurrentForm"></EditFormPlancadre>
-                }
-                else if(CurrentForm is TemplateSkillElemInput)
-                {
-                    <PlanC.Client.Components.TemplateSkillElemInput @bind-Template="Template" @ref="CurrentForm"></PlanC.Client.Components.TemplateSkillElemInput>
-                }
-                else if(CurrentForm is FinalExamInput)
-                {
-                    <PlanC.Client.Components.FinalExamInput @bind-Template="Template" @ref="CurrentForm"></PlanC.Client.Components.FinalExamInput>
-                }
+        <CascadingValue TValue="FormMode" Value="CurrentMode">
+            @if (CurrentForm is EditFormPlancadre)
+            {
+                <EditFormPlancadre @bind-Template="Template" @ref="CurrentForm"></EditFormPlancadre>
+            }
+            else if (CurrentForm is TemplateSkillElemInput)
+            {
+                <PlanC.Client.Components.TemplateSkillElemInput @bind-Template="Template" @ref="CurrentForm"></PlanC.Client.Components.TemplateSkillElemInput>
+            }
+            else if (CurrentForm is FinalExamInput)
+            {
+                <PlanC.Client.Components.FinalExamInput @bind-Template="Template" @ref="CurrentForm"></PlanC.Client.Components.FinalExamInput>
+            }
+        </CascadingValue>
      </CascadingValue>
 
 </div>
@@ -54,6 +57,9 @@
     [Parameter]
     public string Id { get; set; }
 
+    [CascadingParameter]
+    public FormMode CurrentMode { get; set; }
+
     public CourseTemplateFormComponent CurrentForm { get; set; }
 
     private LinkedListNode<CourseTemplateFormComponent> CurrentNode { get; set; }
@@ -67,17 +73,20 @@
     protected override void OnInitialized()
     {
         //Si la page reçoit un ID spécifique, ce processus le charge en mémoire. Sinon, il génère un nouvel objet.
-        PlansCadres SpecifiedTemplate = context.PlansCadres .Where(cadre => cadre.CoursId == this.Id)
+        PlansCadres SpecifiedTemplate = context.PlansCadres .Include(tmp => tmp.PlanCadreCompetenceElements)
+                                                            .Where(cadre => cadre.CoursId.Trim() == this.Id)
                                                             .OrderByDescending(cadre => cadre.VsnCdttm)
                                                             .FirstOrDefault();
 
         if (SpecifiedTemplate != null)
         {
             Template = SpecifiedTemplate;
+            CurrentMode = FormMode.EDIT;
         }
         else
         {
             Template = new PlansCadres();
+            CurrentMode = FormMode.CREATE;
         }
 
 
@@ -97,7 +106,8 @@
     {
         if (CurrentForm.SaveProgress())
         {
-            CurrentForm = CurrentNode.Next.Value;
+            CurrentNode = CurrentNode.Next;
+            CurrentForm = CurrentNode.Value;
             StateHasChanged();
         }
         else
@@ -107,7 +117,14 @@
     }
     private void NavigatePrevious()
     {
-        CurrentForm = CurrentNode.Previous.Value;
+        CurrentNode = CurrentNode.Previous;
+        CurrentForm = CurrentNode.Value;
         StateHasChanged();
+    }
+
+    public enum FormMode
+    {
+        CREATE = 1,
+        EDIT = 2
     }
 }

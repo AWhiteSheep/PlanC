@@ -46,19 +46,6 @@ namespace PlanC.EntityDataModel
         [InverseProperty("CoursElementsCompetences")]
         public virtual ElementsCompetence ElementsCompetence { get; set; }
 
-        [Required(ErrorMessage = "Ce champ est obligatoire")]
-        public bool IsPartial
-        {
-            get
-            {
-                return PrtlSklInd == "0";
-            }
-            set
-            {
-                IsPartial = value;
-
-                PrtlSklInd = IsPartial ? "1" : "0";
-            }
-        }
+        
     }
 }

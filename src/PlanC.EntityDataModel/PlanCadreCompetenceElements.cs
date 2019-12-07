@@ -37,5 +37,19 @@ namespace PlanC.EntityDataModel
         [ForeignKey("CoursId,VsnCdttm")]
         [InverseProperty("PlanCadreCompetenceElements")]
         public virtual PlansCadres PlansCadres { get; set; }
+
+        [NotMapped]
+        [Required(ErrorMessage = "Ce champ est obligatoire")]
+        public bool IsPartial
+        {
+            get
+            {
+                return PrtlSklInd == "1";
+            }
+            set
+            {
+                PrtlSklInd = value ? "1" : "0";
+            }
+        }
     }
 }

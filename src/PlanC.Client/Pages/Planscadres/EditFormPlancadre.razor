@@ -3,7 +3,8 @@
 <!-- Formulaire d'un nouveau plan-cadre -->
 <!-- Valeur pour le titre du plan-cadre -->
 
-<PlanC.Client.Components.DropdownProgramSelection @ref="ProgramSelect" CurrentSelection="Program"></PlanC.Client.Components.DropdownProgramSelection>
+
+    <PlanC.Client.Components.DropdownProgramSelection @ref="ProgramSelect"></PlanC.Client.Components.DropdownProgramSelection>
     <div class="row">
         <div class="col-12">
             <h3> Formulaire de plan-cadre: </h3>
@@ -35,11 +36,11 @@
             </div>
         </div>
         <div class="row">
-            <!-- Nombre d'unités pour le cours données -->
+            <!-- Nombre d'unités pour le cours donné -->
             <div class="col-md-6">
                 <div class="form-group">
                     <label class="control-label" for="Units"> Nombre d'unités: </label>
-                    <input Mask="00000" @bind="Template.Unites" class="theme-mask" id="Units" />
+                    <InputNumber TValue="decimal" @bind-Value="Template.UnitsAccessor" class="theme-mask" id="Units" />
                 </div>
             </div>
             <!-- Ajout de la pondération -->
@@ -89,33 +90,57 @@
 @code {
     public Programmes Program { get; set; }
 
+    //Passed by the parent form with two-way binding so that changes made in this component propagate upwards.
     [Parameter]
     public PlansCadres Template { get; set; }
 
+    //Required by blazor to handle two-way binding
     [Parameter]
     public EventCallback<PlansCadres> TemplateChanged { get; set; }
 
-    [CascadingParameter] 
+    //Passed down by the parent form
+    [CascadingParameter]
     protected PCU001Context context { get; set; }
 
-    public string tid { get; set; }
+    //Passed down by the parent form. Determines data access behavior.
+    [CascadingParameter]
+    public FormPlanCadre.FormMode CurrentMode { get; set; }
 
+    //Dropdown list populated with database program data.
     private DropdownProgramSelection ProgramSelect { get; set; }
 
+    //Blazor component which implements validation using EF model data annotations.
     [Bindable]
     [Parameter]
     public EditContext editContext { get; set; }
 
+    //Callback given to the program selection dropdown box. Updates program property.
     private void UpdateProgram(object sender, Programmes arg)
     {
         Program = arg;
         StateHasChanged();
     }
 
+    //Initializes the validator with the EF model.
     protected override void OnInitialized()
     {
         editContext = new EditContext(Template);
-        Program = context.Programmes.First();
+    }
+
+    //If in edit mode, fetches the 
+    protected override void OnParametersSet()
+    {
+        switch (CurrentMode)
+        {
+            case FormPlanCadre.FormMode.CREATE:
+                Program = context.Programmes.FirstOrDefault();
+                break;
+            case FormPlanCadre.FormMode.EDIT:
+                Program = context.Programmes.SingleOrDefault(p => p.Id == Template.ProgrammeId);
+                break;
+            default:
+                throw new Exception($"Error in {this}: CurrentMode is {CurrentMode}");
+        }
     }
 
     protected override void OnAfterRender(bool firstRender)
@@ -126,50 +151,57 @@
         }
     }
 
-    // validation côté serveur
-    private void HandleValidSubmit()
-    {
-        try
-        {
-            Template.VsnCdttm = DateTime.Now;
-
-            context.PlansCadres.Add(Template);
-        }
-        catch (Exception except)
-        {
-            Console.WriteLine($"Template input error: {except.Message} /// {except.InnerException.Message}");
-        }
-    }
-
     public override bool SaveProgress()
     {
         if (editContext.Validate())
         {
-
-            try
+            switch (CurrentMode)
             {
-                Template.ProgrammeId = Program.Id;
-                Template.VsnCdttm = DateTime.Now;
+                case FormPlanCadre.FormMode.CREATE:
+                    try
+                    {
+                        Template.ProgrammeId = Program.Id;
+                        Template.VsnCdttm = DateTime.Now;
 
-                context.PlansCadres.Add(Template);
+                        context.PlansCadres.Add(Template);
 
-                if (context.SaveChanges() > 0)
-                {
-                    return true;
-                }
-                else return false;
+                        if (context.SaveChanges() > 0)
+                        {
+                            return true;
+                        }
+                        else return false;
+                    }
+                    catch (Exception except)
+                    {
+                        Console.WriteLine($"Template input error: {except.Message} /// {except.InnerException.Message}");
+                        return false;
+                    }
+                case FormPlanCadre.FormMode.EDIT:
+                    try
+                    {
+                        Template.ProgrammeId = Program.Id;
+
+                        context.PlansCadres.Update(Template);
+
+                        if (context.SaveChanges() > 0)
+                        {
+                            return true;
+                        }
+                        else return false;
+                    }
+                    catch (Exception except)
+                    {
+                        Console.WriteLine($"Template input error: {except.Message} /// {except.InnerException.Message}");
+                        return false;
+                    }
+                default:
+                    throw new Exception($"Error in {this}: CurrentMode is {CurrentMode}");
             }
-            catch (Exception except)
-            {
-                Console.WriteLine($"Template input error: {except.Message} /// {except.InnerException.Message}");
-                return false;
-            }
+
         }
         else
         {
             return false;
         }
     }
-
-    public event Action<EditFormPlancadre> NotifyParent;
 }

@@ -28,6 +28,7 @@ namespace PlanC.EntityDataModel
         [StringLength(50)]
         public string DenominationCours { get; set; }
         [Column(TypeName = "decimal(3, 2)")]
+        [Range(0, 9.99, ErrorMessage = "Format: 9.99")]
         public decimal? Unites { get; set; }
         [Column(TypeName = "ntext")]
         public string Description { get; set; }
@@ -56,5 +57,19 @@ namespace PlanC.EntityDataModel
         public virtual ICollection<ExamensFinalsCertificatifs> ExamensFinalsCertificatifs { get; set; }
         [InverseProperty("PlansCadres")]
         public virtual ICollection<PlanCadreCompetenceElements> PlanCadreCompetenceElements { get; set; }
+
+        [NotMapped]
+        [Range(0, 9.99, ErrorMessage = "Format: 9.99")]
+        public decimal UnitsAccessor
+        {
+            get
+            {
+                return Unites.GetValueOrDefault();
+            }
+            set
+            {
+                Unites = decimal.Round(value, 2);
+            }
+        }
     }
 }

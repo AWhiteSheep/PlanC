@@ -46,6 +46,7 @@ namespace PlanC.EntityDataModel
         [InverseProperty("IdentityKeyCompetenceNavigation")]
         public virtual ICollection<CompetenceContextes> CompetenceContextes { get; set; }
         [InverseProperty("IdentityKeyCompetencesNavigation")]
+        [IgnoreDataMember]
         public virtual ICollection<ElementsCompetence> ElementsCompetence { get; set; }
 
         public override string ToString()

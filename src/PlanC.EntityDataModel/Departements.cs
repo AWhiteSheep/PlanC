@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Runtime.Serialization;
 using System.Text.Json.Serialization;
 
 namespace PlanC.EntityDataModel
@@ -30,6 +31,7 @@ namespace PlanC.EntityDataModel
 
         [JsonIgnore]
         [InverseProperty("Discipline")]
+        [IgnoreDataMember]
         public virtual ICollection<Competences> Competences { get; set; }
         [InverseProperty("Departement")]
         public virtual ICollection<Programmes> Programmes { get; set; }
