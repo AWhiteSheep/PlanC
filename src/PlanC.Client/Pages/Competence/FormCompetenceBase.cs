@@ -8,6 +8,7 @@ using PlanC.Client.Data;
 using PlanC.EntityDataModel;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.JSInterop;
+using PlanC.Client.Pages.Competence;
 
 namespace PlanC.Client.Pages.Competence
 {
