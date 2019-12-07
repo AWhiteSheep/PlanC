@@ -27,7 +27,7 @@
             <div class="col-12">
                 <div class="input-group">
                     <input type="text" class="form-control" @bind="Filter"
-                          aria-describedby="input-recherche" />
+                           aria-describedby="input-recherche" />
                     <div class="input-group-append" id="input-recherche">
                         <button class="btn btn-primary" @onclick="DoFilter" type="button"><i class="fas fa-search"></i></button>
                     </div>
@@ -37,11 +37,11 @@
                 <div class="form-group">
                     <div class="btn-group btn-group-toggle" data-toggle="buttons">
                         <input class="btn btn-primary @(OptionFilter == "Numéro" ? "active" : "")" type="button"
-                                checked="@(OptionFilter == "Numéro")" @onclick="@(() => OptionFilter = "Numéro")" value="Numéro" />
+                               checked="@(OptionFilter == "Numéro")" @onclick="@(() => OptionFilter = "Numéro")" value="Numéro" />
                         <input class="btn btn-primary @(OptionFilter == "Énoncé" ? "active" : "")" type="button"
-                                checked="@(OptionFilter == "Énoncé")" @onclick="@(() => OptionFilter = "Énoncé")" value="Énoncé" />
+                               checked="@(OptionFilter == "Énoncé")" @onclick="@(() => OptionFilter = "Énoncé")" value="Énoncé" />
                         <input class="btn btn-primary @(OptionFilter == "Département" ? "active" : "")" type="button"
-                                checked="@(OptionFilter == "Département")" @onclick="@(() => OptionFilter = "Département")" value="Département" />
+                               checked="@(OptionFilter == "Département")" @onclick="@(() => OptionFilter = "Département")" value="Département" />
                     </div>
                 </div>
                 <a href="/competences/creation">Formulaire d'une nouvelle compétence</a>
@@ -71,16 +71,20 @@
 @code{
 
     [Parameter]
-    public string Filter {
+    public string Filter
+    {
         get { return _filter; }
-        set {
+        set
+        {
             _filter = value;
             DoFilter();
         }
     }
-    public string OptionFilter {
+    public string OptionFilter
+    {
         get { return _optionFilter; }
-        set {
+        set
+        {
             _optionFilter = value;
             // update le filter
             DoFilter();
@@ -89,21 +93,21 @@
     private string _filter { get; set; }
     private string _optionFilter = "Énoncé";
 
-    public void DoFilter() 
-    {        
+    public void DoFilter()
+    {
         // update le filter
         if (!string.IsNullOrWhiteSpace(_filter) && _competences != null)
         {
             // filter sous la propriété choisie
             switch (_optionFilter)
             {
-                case "Département":                    
+                case "Département":
                     competences = _competences.Where(e => e.Discipline.Titre.Contains(_filter)).ToList();
                     break;
-                case "Numéro":                    
+                case "Numéro":
                     competences = _competences.Where(e => e.CompetenceId.Contains(_filter)).ToList();
                     break;
-                default:                     
+                default:
                     competences = _competences.Where(e => e.Enonce.Contains(_filter)).ToList();
                     break;
             }

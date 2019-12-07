@@ -37,9 +37,6 @@ namespace PlanC.Client.Pages.Competence
         // form context
         public IReadOnlyDictionary<string, object> inputCompetenceAttributes = new Dictionary<string, object>();
         public EditContext CompetenceForm;
-        public EditFormCompetence formCompetence;
-        public EditFormContextRealisation formRealisation;
-        public EditFormElement formElement;
         public EditContext EditConContext;
 
         // discipline disponible pour le context doit être initialisé pour le dropdown
