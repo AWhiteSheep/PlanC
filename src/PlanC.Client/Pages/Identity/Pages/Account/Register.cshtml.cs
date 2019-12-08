@@ -18,12 +18,11 @@ using Microsoft.Extensions.Logging;
 using PlanC.Client.Data;
 using PlanC.EntityDataModel;
 
-namespace PlanC.Client.Areas.Identity.Pages.Account
+namespace PlanC.Client.Pages.Identity.Pages.Account
 {
     [AllowAnonymous]
     public class RegisterModel : PageModel
     {
-        public PCU001Context context { get; set; }
         private readonly SignInManager<Utilisateurs> _signInManager;
         private readonly UserManager<Utilisateurs> _userManager;
         private readonly ILogger<RegisterModel> _logger;
@@ -45,8 +44,6 @@ namespace PlanC.Client.Areas.Identity.Pages.Account
         public InputModel Input { get; set; }
 
         public string ReturnUrl { get; set; }
-
-        public IList<AuthenticationScheme> ExternalLogins { get; set; }
 
         public class InputModel : Utilisateurs
         {     
@@ -97,16 +94,15 @@ namespace PlanC.Client.Areas.Identity.Pages.Account
             public string Clef { get; set; }
         }
 
-        public async Task OnGetAsync(string returnUrl = null)
+        public IActionResult OnGet(string returnUrl = null)
         {
             ReturnUrl = returnUrl;
-            ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
+            return Page();
         }
 
         public async Task<IActionResult> OnPostAsync(string returnUrl = null)
         {
             returnUrl = returnUrl ?? Url.Content("~/");
-            ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
 
             if (Input.Clef != "585858") {
                 ModelState.AddModelError("Clef", "La clée n'a pas été trouvée, s'il vous plaît contacter l'administrateur du système.");

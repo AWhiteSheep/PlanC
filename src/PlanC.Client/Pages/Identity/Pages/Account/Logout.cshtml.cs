@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
 using PlanC.EntityDataModel;
 
-namespace PlanC.Client.Areas.Identity.Pages.Account
+namespace PlanC.Client.Pages.Identity.Pages.Account
 {
     [AllowAnonymous]
     public class LogoutModel : PageModel

@@ -6,12 +6,15 @@ using Ganss.XSS;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.HttpsPolicy;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using PlanC.Client.Data;
+using PlanC.EntityDataModel;
 
 namespace PlanC.Client
 {
@@ -28,16 +31,31 @@ namespace PlanC.Client
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
+            services.Configure<CookiePolicyOptions>(options =>
+            {
+                options.CheckConsentNeeded = context => false;
+                options.MinimumSameSitePolicy = SameSiteMode.None;
+            });
+
             // Ajout de la dbContext
             services.AddDbContext<PCU001Context>(options => 
-                options.UseSqlServer(Configuration.GetConnectionString("RDS_PCU001")));
+                options.UseSqlServer("Data Source=database-1.cai5lbxs9ofy.us-east-1.rds.amazonaws.com,1433;User ID=dbo802668235;Password=Nemesis2123%*;Initial Catalog=PCU001;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False"));
 
-            services.AddRazorPages()
-                .AddRazorPagesOptions(options =>
-                {
-                    options.Conventions.AuthorizeFolder("/Pages");
-                    options.Conventions.AuthorizeFolder("/Components");
-                });
+            // ajout du identity store et provider
+                services.AddDefaultIdentity<Utilisateurs>(options => options.SignIn.RequireConfirmedAccount = true)
+                    .AddEntityFrameworkStores<PCU001Context>().AddDefaultUI()
+                .AddDefaultTokenProviders();
+
+            services.AddRazorPages();
+
+            services.AddMvc();
+
+            services.ConfigureApplicationCookie(options =>
+            {
+                options.LoginPath = $"/Compte/Login";
+                options.LogoutPath = $"/Identity/Account/Logout";
+                options.AccessDeniedPath = $"/Identity/Account/AccessDenied";
+            });
 
             services.AddServerSideBlazor();
             services.AddMvc();
@@ -74,7 +92,6 @@ namespace PlanC.Client
             app.UseStaticFiles();
 
             app.UseRouting();    
-
 
             app.UseCors(o => o.AllowAnyOrigin()
                 .AllowAnyHeader().AllowAnyMethod());

@@ -8,16 +8,14 @@ using Microsoft.Extensions.DependencyInjection;
 using PlanC.Client.Data;
 using PlanC.EntityDataModel;
 
-[assembly: HostingStartup(typeof(PlanC.Client.Areas.Identity.IdentityHostingStartup))]
-namespace PlanC.Client.Areas.Identity
+[assembly: HostingStartup(typeof(PlanC.Client.Pages.Identity.Pages.IdentityHostingStartup))]
+namespace PlanC.Client.Pages.Identity.Pages
 {
     public class IdentityHostingStartup : IHostingStartup
     {
         public void Configure(IWebHostBuilder builder)
         {
             builder.ConfigureServices((context, services) => {
-                services.AddDefaultIdentity<Utilisateurs>(options => options.SignIn.RequireConfirmedAccount = true)
-                    .AddEntityFrameworkStores<PCU001Context>().AddDefaultUI();
             });
         }
     }
