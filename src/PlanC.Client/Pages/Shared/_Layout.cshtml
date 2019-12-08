@@ -7,7 +7,7 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - PlanC.Client</title>
+    <title>@ViewData["Title"] - Plans Cadres</title>
 
     <environment include="Development">
         <link rel="stylesheet" href="~/Identity/lib/bootstrap/dist/css/bootstrap.css" />
@@ -23,13 +23,15 @@
     <header>
         <nav class="navbar navbar-expand-sm navbar-light navbar-toggleable-sm bg-white border-bottom box-shadow mb-3">
             <div class="container">
-                <a class="navbar-brand" href="~/">PlanC.Client</a>
+                <a class="navbar-brand" href="~/"> Plans Cadres </a>
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-controls="navbarSupportedContent"
                         aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="navbar-collapse collapse d-sm-inline-flex flex-sm-row-reverse">
-                    <partial name="~/Shared/_LoginPartial.cshtml" />
+                    <ul class="navbar-nav ml-auto" style="margin-top: 0;">
+                        <partial name="~/Shared/_LoginPartial.cshtml" />
+                    </ul>
                 </div>
             </div>
         </nav>
