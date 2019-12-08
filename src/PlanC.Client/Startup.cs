@@ -42,7 +42,7 @@ namespace PlanC.Client
                 options.UseSqlServer("Data Source=database-1.cai5lbxs9ofy.us-east-1.rds.amazonaws.com,1433;User ID=dbo802668235;Password=Nemesis2123%*;Initial Catalog=PCU001;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False"));
 
             // ajout du identity store et provider
-                services.AddDefaultIdentity<Utilisateurs>(options => options.SignIn.RequireConfirmedAccount = true)
+                services.AddDefaultIdentity<Utilisateurs>(options => options.SignIn.RequireConfirmedAccount = false)
                     .AddEntityFrameworkStores<PCU001Context>().AddDefaultUI()
                 .AddDefaultTokenProviders();
 
@@ -53,8 +53,8 @@ namespace PlanC.Client
             services.ConfigureApplicationCookie(options =>
             {
                 options.LoginPath = $"/Compte/Login";
-                options.LogoutPath = $"/Identity/Account/Logout";
-                options.AccessDeniedPath = $"/Identity/Account/AccessDenied";
+                options.LogoutPath = $"/Compte/Logout";
+                options.AccessDeniedPath = $"/Compte/AccessDenied";
             });
 
             services.AddServerSideBlazor();
