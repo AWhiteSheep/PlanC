@@ -1,4 +1,11 @@
-﻿<!-- Sidebar -->
+﻿@using Microsoft.AspNetCore.Identity
+@using PlanC.EntityDataModel
+@inject SignInManager<Utilisateurs> SignInManager
+@inject UserManager<Utilisateurs> UserManager
+
+@if (SignInManager.IsSignedIn(User))
+{
+    <!-- Sidebar -->
     @*<ul class="navbar-nav sidebar sidebar-dark accordion toggled" id="accordionSidebar">*@
     <ul class="navbar-nav sidebar sidebar-dark accordion toggled" id="accordionSidebar">
 
@@ -27,6 +34,22 @@
         <!-- Heading -->
         <a class="sidebar-heading" href="/Admin"> Administration </a>
 
+        <!-- Nav Item - Section départements -->
+        <li class="nav-item">
+            <a class="nav-link" href="/departements">
+                <i class="far fa-file-alt"></i>
+                <span> Les départements </span>
+            </a>
+        </li>
+
+        <!-- Nav Item - Section départements -->
+        <li class="nav-item">
+            <a class="nav-link" href="/programmes">
+                <i class="far fa-file-alt"></i>
+                <span> Les programmes d'étude </span>
+            </a>
+        </li>
+
         <!-- Divider -->
         <hr class="sidebar-divider">
 
@@ -50,4 +73,5 @@
         </div>
 
     </ul>
-<!-- End of Sidebar -->
+    <!-- End of Sidebar -->
+}

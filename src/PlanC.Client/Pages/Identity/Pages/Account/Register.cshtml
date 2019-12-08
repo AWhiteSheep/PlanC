@@ -1,0 +1,65 @@
+﻿@page "/Compte/Nouveau"
+@model RegisterModel
+@inject PlanC.Client.Data.PCU001Context context
+@{
+    SelectList departments = new SelectList(context.Departements, "Id", "Titre");
+}
+    <form class="row" asp-route-returnUrl="@Model.ReturnUrl" method="post">        
+        <div class="col-12">
+            <h4>Création d'un nouveau compte.</h4>
+            <hr />
+            <div asp-validation-summary="All" class="text-danger"></div>
+        </div>
+        <div class="form-group col-sm-4">
+            <label asp-for="Input.UserName"></label>
+            <input asp-for="Input.UserName" class="form-control" />
+            <span asp-validation-for="Input.UserName" class="text-danger"></span>
+        </div>
+        <div class="form-group col-sm-4">
+            <label asp-for="Input.DepartementId"></label>
+            <select asp-for="Input.DepartementId" asp-items="departments" class="form-control"></select>
+            <span asp-validation-for="Input.DepartementId" class="text-danger"></span>
+        </div>
+        <div class="form-group col-sm-4">
+            <label asp-for="Input.PhoneNumber"></label>
+            <input asp-for="Input.PhoneNumber" class="form-control" />
+            <span asp-validation-for="Input.PhoneNumber" class="text-danger"></span>
+        </div>
+        <div class="form-group col-12">
+            <label asp-for="Input.Email"></label>
+            <input asp-for="Input.Email" class="form-control" />
+            <span asp-validation-for="Input.Email" class="text-danger"></span>
+        </div>
+        <div class="form-group col-sm-8">
+            <label asp-for="Input.GvnNm"></label>
+            <input asp-for="Input.GvnNm" class="form-control" />
+            <span asp-validation-for="Input.GvnNm" class="text-danger"></span>
+        </div>
+        <div class="form-group col-sm-4">
+            <label asp-for="Input.Snm"></label>
+            <input asp-for="Input.Snm" class="form-control" />
+            <span asp-validation-for="Input.Snm" class="text-danger"></span>
+        </div>
+        <div class="form-group col-12">
+            <label asp-for="Input.Password"></label>
+            <input asp-for="Input.Password" class="form-control" />
+            <span asp-validation-for="Input.Password" class="text-danger"></span>
+        </div>
+        <div class="form-group col-12">
+            <label asp-for="Input.ConfirmPassword"></label>
+            <input asp-for="Input.ConfirmPassword" class="form-control" />
+            <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
+        </div>
+        <div class="form-group col-md-4">
+            <label asp-for="Input.Clef"></label>
+            <input asp-for="Input.Clef" class="form-control" />
+            <span asp-validation-for="Input.Clef" class="text-danger"></span>
+        </div>
+        <div class="form-group col-12">
+            <button type="submit" class="btn btn-primary">S'enregistrer</button>
+        </div>
+    </form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

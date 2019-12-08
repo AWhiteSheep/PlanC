@@ -1,10 +1,10 @@
 ﻿@page "/competences"
 @page "/competences/{Filter}"
+@attribute [Authorize]
 @using Microsoft.EntityFrameworkCore
 @using Newtonsoft.Json
 @inject PCU001Context context
 @inject IJSRuntime JSRuntime
-@attribute [Authorize("AuthorizationNemesisGroupPolicy")]
 <!-- Section de navigation -->
 <div class="row mb-3">
     <div class="col">

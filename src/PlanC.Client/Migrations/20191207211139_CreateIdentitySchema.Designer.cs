@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PlanC.Client.Data;
 
 namespace PlanC.Client.Migrations
 {
     [DbContext(typeof(PCU001Context))]
-    partial class PCU001ContextModelSnapshot : ModelSnapshot
+    [Migration("20191207211139_CreateIdentitySchema")]
+    partial class CreateIdentitySchema
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -85,7 +87,7 @@ namespace PlanC.Client.Migrations
 
                     b.Property<string>("UserId")
                         .IsRequired()
-                        .HasColumnType("varchar(900)");
+                        .HasColumnType("nvarchar(7)");
 
                     b.HasKey("Id");
 
@@ -109,7 +111,7 @@ namespace PlanC.Client.Migrations
 
                     b.Property<string>("UserId")
                         .IsRequired()
-                        .HasColumnType("varchar(900)");
+                        .HasColumnType("nvarchar(7)");
 
                     b.HasKey("LoginProvider", "ProviderKey");
 
@@ -121,7 +123,7 @@ namespace PlanC.Client.Migrations
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<string>", b =>
                 {
                     b.Property<string>("UserId")
-                        .HasColumnType("varchar(900)");
+                        .HasColumnType("nvarchar(7)");
 
                     b.Property<string>("RoleId")
                         .HasColumnType("nvarchar(450)");
@@ -136,7 +138,7 @@ namespace PlanC.Client.Migrations
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
                 {
                     b.Property<string>("UserId")
-                        .HasColumnType("varchar(900)");
+                        .HasColumnType("nvarchar(7)");
 
                     b.Property<string>("LoginProvider")
                         .HasColumnType("nvarchar(128)")
@@ -1174,8 +1176,10 @@ namespace PlanC.Client.Migrations
 
             modelBuilder.Entity("PlanC.EntityDataModel.Utilisateurs", b =>
                 {
-                    b.Property<string>("Id")
-                        .HasColumnType("varchar(900)")
+                    b.Property<string>("UserName")
+                        .HasColumnName("UserName")
+                        .HasColumnType("nvarchar(7)")
+                        .HasMaxLength(7)
                         .IsUnicode(false);
 
                     b.Property<int>("AccessFailedCount")
@@ -1241,11 +1245,7 @@ namespace PlanC.Client.Migrations
                     b.Property<bool>("TwoFactorEnabled")
                         .HasColumnType("bit");
 
-                    b.Property<string>("UserName")
-                        .HasColumnType("nvarchar(256)")
-                        .HasMaxLength(256);
-
-                    b.HasKey("Id");
+                    b.HasKey("UserName");
 
                     b.HasIndex("DepartementId");
 

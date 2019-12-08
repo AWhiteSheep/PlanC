@@ -1,11 +1,10 @@
 ﻿@page "/plancadre/create"
 @page "/plancadre/{id}/create"
-
+@attribute [Authorize]
 @using PlanC.EntityDataModel
 @using Components;
 @inject NavigationManager NavigationManager
 @inject PCU001Context context
-@attribute [Authorize("AuthorizationNemesisGroupPolicy")]
 <!-- Section de navigation -->
 <div class="row mb-3">
     <div class="col">

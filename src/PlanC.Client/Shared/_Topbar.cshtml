@@ -1,7 +1,6 @@
 ﻿@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
 
 <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
-
     <!-- Sidebar Toggle (Topbar) -->
     <button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3">
         <i class="fa fa-bars"></i>
@@ -20,7 +19,7 @@
     </form>
 
     <!-- Topbar Navbar -->
-    <ul class="navbar-nav ml-auto">
+    <ul class="navbar-nav ml-auto" style="margin-top: 0;">
 
         <!-- Nav Item - Search Dropdown (Visible Only XS) -->
         <li class="nav-item dropdown no-arrow d-sm-none">
@@ -44,6 +43,6 @@
 
         <!-- Nav Item - Centre de notifications -->
         <!-- Nav Item - Profil de l'utilisateur -->
-        <partial name="../Shared/_LoginPartial.cshtml" />
+        <partial name="_LoginPartial.cshtml" />
     </ul>
 </nav>

@@ -12,11 +12,9 @@
             </AuthorizeRouteView>
         </Found>
         <NotFound>
-            <CascadingAuthenticationState>
-                <LayoutView Layout="@typeof(MainLayout)">
-                    <PlanC.Client.Pages.NotFound></PlanC.Client.Pages.NotFound>
-                </LayoutView>
-            </CascadingAuthenticationState>
+            <LayoutView Layout="@typeof(MainLayout)">
+                <p>Sorry, there's nothing at this address.</p>
+            </LayoutView>
         </NotFound>
     </Router>
 </CascadingAuthenticationState>

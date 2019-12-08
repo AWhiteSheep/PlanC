@@ -34,7 +34,7 @@
     <div class="col-md-6">
         <div class="form-group">
             <label class="control-label" for="Units"> Nombre d'unités: </label>
-            <input @bind="CTemplate.Unites" class="theme-mask" id="Units" />
+            <input Mask="00000" @bind="CTemplate.Unites" class="theme-mask" id="Units" />
         </div>
     </div>
     <!-- Ajout de la pondération -->
@@ -43,13 +43,13 @@
             <label class="control-label" for="Ponderation"> Pondération du cours: </label>
             <div class="row">
                 <div class="col-1">
-                    <input class="theme-mask" name="HeuresTotalesThéories" @bind="CTemplate.HeuresTotalesTheorie" />
+                    <input Mask="00" class="theme-mask" name="HeuresTotalesThéories" @bind="CTemplate.HeuresTotalesTheorie" />
                 </div>
                 <div class="col-1">
-                    <input class="theme-mask" name="HeuresTotalesPratiques" @bind="CTemplate.HeuresTotalesPratique" />
+                    <input Mask="00" class="theme-mask" name="HeuresTotalesPratiques" @bind="CTemplate.HeuresTotalesPratique" />
                 </div>
                 <div class="col-1">
-                    <input class="theme-mask" name="HeuresTotalesMaison" @bind="CTemplate.HeuresTotalesMaison" />
+                    <input Mask="00" class="theme-mask" name="HeuresTotalesMaison" @bind="CTemplate.HeuresTotalesMaison" />
                 </div>
             </div>
         </div>

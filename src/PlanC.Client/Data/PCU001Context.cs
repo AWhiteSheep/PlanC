@@ -1,12 +1,12 @@
 ﻿using System;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using PlanC.EntityDataModel;
+using Microsoft.AspNetCore.Identity;
 
 namespace PlanC.Client.Data
 {
-    public partial class PCU001Context : IdentityDbContext<IdentityUser>
+    public partial class PCU001Context : IdentityDbContext<Utilisateurs>
     {
         public PCU001Context()
         {
@@ -38,8 +38,6 @@ namespace PlanC.Client.Data
         public virtual DbSet<ProgrammeCompetences> ProgrammeCompetences { get; set; }
         public virtual DbSet<ProgrammeDepartementView> ProgrammeDepartementView { get; set; }
         public virtual DbSet<Programmes> Programmes { get; set; }
-        public virtual DbSet<Roles> PCURoles { get; set; }
-        public virtual DbSet<RolesUtilisateur> RolesUtilisateur { get; set; }
         public virtual DbSet<Sessions> Sessions { get; set; }
         public virtual DbSet<TypesFormationsProgrammes> TypesFormationsProgrammes { get; set; }
         public virtual DbSet<Utilisateurs> Utilisateurs { get; set; }
@@ -541,37 +539,6 @@ namespace PlanC.Client.Data
                     .HasConstraintName("FK_TPGM_TPMGFORMTYPE");
             });
 
-            modelBuilder.Entity<Roles>(entity =>
-            {
-                entity.Property(e => e.Id).ValueGeneratedNever();
-
-                entity.Property(e => e.RcdCdttm).HasDefaultValueSql("(getdate())");
-
-                entity.Property(e => e.Titre).IsUnicode(false);
-            });
-
-            modelBuilder.Entity<RolesUtilisateur>(entity =>
-            {
-                entity.HasKey(e => new { e.UtilisateurId, e.RoleId })
-                    .HasName("PK_TUSERROLE");
-
-                entity.Property(e => e.UtilisateurId).IsUnicode(false);
-
-                entity.Property(e => e.RcdCdttm).HasDefaultValueSql("(getdate())");
-
-                entity.HasOne(d => d.Role)
-                    .WithMany(p => p.RolesUtilisateur)
-                    .HasForeignKey(d => d.RoleId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_TUSERROLE_TROLE");
-
-                entity.HasOne(d => d.Utilisateur)
-                    .WithMany(p => p.RolesUtilisateur)
-                    .HasForeignKey(d => d.UtilisateurId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_TUSERROLE_TUSER");
-            });
-
             modelBuilder.Entity<Sessions>(entity =>
             {
                 entity.HasComment("Session");
@@ -594,7 +561,7 @@ namespace PlanC.Client.Data
 
             modelBuilder.Entity<Utilisateurs>(entity =>
             {
-                entity.Property(e => e.Id).IsUnicode(false);
+                entity.Property(e => e.UserName).IsUnicode(false);
 
                 entity.Property(e => e.RcdCdttm).HasDefaultValueSql("(getdate())");
 

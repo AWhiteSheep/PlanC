@@ -1,21 +1,6 @@
 ﻿/* Please see documentation at https://docs.microsoft.com/aspnet/core/client-side/bundling-and-minification
 for details on configuring this project to bundle and minify static web assets. */
 
-.banner-image {
-    position: absolute;
-    top: -25px;
-    width: 120%;
-    height: 100px;
-    overflow: hidden;
-}
-
-    .banner-image img {
-        float: left;
-        height: 100px;
-        width: 100px;
-        filter: grayscale(100%);
-    }
-
 .press {
     border-radius: 500px !important;
 }
@@ -10565,7 +10550,7 @@ a:focus {
 }
 
   #wrapper #content-wrapper {
-    background-color: #fff; /*#f8f9fc*/
+    background-color: #f8f9fc;
     width: 100%;
     overflow-x: hidden;
   }

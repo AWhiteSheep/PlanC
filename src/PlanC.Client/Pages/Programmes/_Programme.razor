@@ -1,9 +1,9 @@
 ﻿@page "/programmes"
 @*context de la base de donné et js runtime*@
+@attribute [Authorize]
 @inject PCU001Context _context
 @inject IJSRuntime JSRuntime
 @using Newtonsoft.Json
-@attribute [Authorize("AuthorizationNemesisGroupPolicy")]
 @* les cdn(s) doivent être ajoutés pour le bon fonctionnement du componant *@
 
 <!-- Section de navigation -->

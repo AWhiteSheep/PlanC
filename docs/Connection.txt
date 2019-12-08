@@ -9,19 +9,17 @@ Nemesis2123%*
 Équipe : nemesis
 Nom de domaine : nemesis.cicco.org
 Nom du dossier : nemesis
-FTP hostname : access799030595.webspace-data.io
-FTP user : 
+access799030595.webspace-data.io
 ftp98636912-2
-FTP password : 
 Nemesis@123%*
-(port : 990)
+         (port : 990)
 Base de données : db802668235
 BD Hostname : db802668235.hosting-data.io
 BD user :  dbo802668235
 BD password : Nemesis@123%*
 
-// live share
-https://prod.liveshare.vsengsaas.visualstudio.com/join?6653C634393BBB9A0B0D3867BE0242132A3A
+// DEBUG-LINK
+https://docs.microsoft.com/en-us/aspnet/core/test/troubleshoot-azure-iis?view=aspnetcore-3.1
 
 
 ConnectionString: ----
@@ -46,163 +44,3 @@ In csproject. ----
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
 </ItemGroup>
-
-
-
-
-
-
-
-
-
-
-
-
-*****************
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
-using Ganss.XSS;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.AzureAD.UI;
-using Microsoft.AspNetCore.Authentication.OpenIdConnect;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.FileProviders;
-using Microsoft.Extensions.Hosting;
-using PlanC.Client.Data;
-
-namespace PlanC.Client
-{
-    public class Startup
-    {
-        public Startup(IConfiguration configuration)
-        {
-            Configuration = configuration;
-        }
-
-        public IConfiguration Configuration { get; }
-
-        // This method gets called by the runtime. Use this method to add services to the container.
-        // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
-        public void ConfigureServices(IServiceCollection services)
-        {
-            // Ajout de la dbContext
-            services.AddDbContext<PCU001Context>(options => 
-                options.UseSqlServer(Configuration.GetConnectionString("RDS_PCU001")));
-
-            // configuration des cookie plicy 
-            services.Configure<CookiePolicyOptions>(options =>
-            {
-                // This lambda determines whether user consent for non-essential cookies is needed for a given request.
-                options.CheckConsentNeeded = context => false;
-                options.MinimumSameSitePolicy = SameSiteMode.None;
-            });
-
-            // bind authentication service
-            services.AddAuthentication(AzureADDefaults.AuthenticationScheme)
-                .AddAzureAD(options => { Configuration.Bind("AzureAd", options); });
-
-
-
-            // configuration des auth IDs
-            services.Configure<OpenIdConnectOptions>(AzureADDefaults.OpenIdScheme, options =>
-            {
-                options.Authority = options.Authority + "/v2.0/";
-                // Per the code below, this application signs in users in any Work and School
-                // accounts and any Microsoft Personal Accounts.
-                // If you want to direct Azure AD to restrict the users that can sign-in, change 
-                // the tenant value of the appsettings.json file in the following way:
-                // - only Work and School accounts => 'organizations'
-                // - only Microsoft Personal accounts => 'consumers'
-                // - Work and School and Personal accounts => 'common'
-
-                // If you want to restrict the users that can sign-in to only one tenant
-                // set the tenant value in the appsettings.json file to the tenant ID of this
-                // organization, and set ValidateIssuer below to true.
-
-                // If you want to restrict the users that can sign-in to several organizations
-                // Set the tenant value in the appsettings.json file to 'organizations', set
-                // ValidateIssuer, above to 'true', and add the issuers you want to accept to the
-                // options.TokenValidationParameters.ValidIssuers collection
-                options.TokenValidationParameters.ValidateIssuer = false;
-            });
-
-            services.AddAuthorization(options => {
-                options.AddPolicy("AuthorizationNemesisGroupPolicy", policyBuilder =>
-                policyBuilder.RequireClaim("groups",
-                Configuration.GetValue<string>("AzureADGroup:AuthorizeAuthorizationNemesisGroupId")));
-            });
-
-            services.AddRazorPages().AddRazorPagesOptions(options =>
-            {
-                options.Conventions.AllowAnonymousToFolder("/Pages/Public");
-            });
-            services.AddServerSideBlazor();
-
-
-            // Be Safe – Sanitize Your HTML 
-            services.AddScoped<IHtmlSanitizer, HtmlSanitizer>(x =>
-            {                
-                // https://blog.jonblankenship.com/2019/01/27/safely-rendering-markdown-in-blazor/
-                // Configure sanitizer rules as needed here.
-                // For now, just use default rules + allow class attributes
-                var sanitizer = new Ganss.XSS.HtmlSanitizer();
-                sanitizer.AllowedAttributes.ToList().AddRange(new List<string> { "b", "ul", "ol", "li", "p","i", "u", "em", "strong",
-                 "h1","h2","h3","h4","h5","h6","br","hr","blockquote","code", "del", "dl", "dd", "img", "pre", "s", "sup", "sub", "strike",
-                "div"});
-                return sanitizer;
-            });
-
-
-            services.AddControllersWithViews();
-            services.AddCors();
-        }
-
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
-        {
-            if (env.IsDevelopment())
-            {
-                app.UseDeveloperExceptionPage();
-            }
-            else
-            {
-                app.UseExceptionHandler("/Error");
-                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-                app.UseHsts();
-            }
-            app.UseCors(o => o.AllowAnyOrigin()
-                .AllowAnyHeader().AllowAnyMethod());
-
-            app.UseHttpsRedirection();
-
-            // ajoute le static files plus les default file et browser le directory
-            app.UseStaticFiles();
-
-            app.UseAuthorization();
-            // identity authentication
-            app.UseAuthentication();
-
-            app.UseRouting();
-
-            app.UseEndpoints(endpoints =>
-            {
-                endpoints.MapControllers();
-                endpoints.MapBlazorHub(option => {
-                    option.Transports = Microsoft.AspNetCore.Http.Connections.HttpTransportType.LongPolling;
-                });
-                endpoints.MapFallbackToPage("/_Host");
-            });
-        }
-    }
-}
