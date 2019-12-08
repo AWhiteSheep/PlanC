@@ -1,6 +1,6 @@
 ﻿@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
 
-<nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
+<nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 shadow">
     <!-- Sidebar Toggle (Topbar) -->
     <button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3">
         <i class="fa fa-bars"></i>
@@ -9,9 +9,9 @@
     <!-- Topbar Search -->
     <form class="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search">
         <div class="input-group">
-            <input name="searchbar" id="autocomplete" type="text" class="form-control bg-light border-0 small" aria-label="Search" aria-describedby="basic-addon2">
+            <input name="searchbar" id="autocomplete" type="text" class="form-control form-memory bg-light small" aria-label="Search" aria-describedby="basic-addon2">
             <div class="input-group-append">
-                <button class="btn btn-primary" type="button">
+                <button class="btn btn-memory" type="button">
                     <i class="fas fa-search fa-sm"></i>
                 </button>
             </div>
@@ -43,6 +43,6 @@
 
         <!-- Nav Item - Centre de notifications -->
         <!-- Nav Item - Profil de l'utilisateur -->
-        <partial name="_LoginPartial.cshtml" />
+        <partial name="../Pages/Shared/_LoginPartial.cshtml" />
     </ul>
 </nav>

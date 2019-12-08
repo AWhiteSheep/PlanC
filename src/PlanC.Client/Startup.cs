@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Ganss.XSS;
+using Ganss.XSS; // package pour la protection des attack xss
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Hosting;
@@ -15,6 +15,9 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using PlanC.Client.Data;
 using PlanC.EntityDataModel;
+using AspNetCore.RouteAnalyzer; // package pour analyser les routes
+using System.Diagnostics;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
 
 namespace PlanC.Client
 {
@@ -46,8 +49,6 @@ namespace PlanC.Client
                     .AddEntityFrameworkStores<PCU001Context>().AddDefaultUI()
                 .AddDefaultTokenProviders();
 
-            services.AddRazorPages();
-            services.AddMvc();
 
             services.ConfigureApplicationCookie(options =>
             {
@@ -57,7 +58,13 @@ namespace PlanC.Client
             });
 
             services.AddServerSideBlazor();
+            services.AddRazorPages();
             services.AddMvc();
+
+            // ajoute l'analyseur des routes
+            services.AddRouteAnalyzer(); 
+
+            services.AddCors();
 
             // Be Safe – Sanitize Your HTML 
             services.AddScoped<IHtmlSanitizer, HtmlSanitizer>(x =>
@@ -71,15 +78,16 @@ namespace PlanC.Client
                 "div"});
                 return sanitizer;
             });
-            services.AddCors();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env,
+            Microsoft.Extensions.Hosting.IHostApplicationLifetime applicationLifetime, IRouteAnalyzer routeAnalyzer)
         {
             if (env.IsDevelopment())
             {
-                app.UseDeveloperExceptionPage();
+                app.UseDeveloperExceptionPage(); 
+                app.UseBrowserLink();
             }
             else
             {
@@ -105,6 +113,19 @@ namespace PlanC.Client
                     option.Transports = Microsoft.AspNetCore.Http.Connections.HttpTransportType.LongPolling;
                 });
                 endpoints.MapFallbackToPage("/_Host");
+            });
+
+            
+            applicationLifetime.ApplicationStarted.Register(() =>
+            {
+                var infos = routeAnalyzer.GetType().GetField("m_actionDescriptorCollectionProvider",
+                    System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance).GetValue(routeAnalyzer);
+                foreach (var info in ((ActionDescriptorCollection)infos.GetType().GetProperty("ActionDescriptors").GetValue(infos)).Items)
+                {
+                    Debug.WriteLine(info);
+                }
+                Debug.WriteLine("");
+                Debug.WriteLine("");
             });
         }
     }

@@ -10,11 +10,14 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="Linker.xml" />
+    <Compile Remove="Pages\Identity\Pages\Manage\**" />
+    <Content Remove="Pages\Identity\Pages\Manage\**" />
+    <EmbeddedResource Remove="Pages\Identity\Pages\Manage\**" />
+    <None Remove="Pages\Identity\Pages\Manage\**" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Pages\Identity\Pages\Manage\" />
+    <None Remove="Linker.xml" />
   </ItemGroup>
   
   <ItemGroup>
@@ -38,6 +41,7 @@
     <Content Include="Linker.xml" />
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="AspNetCore.RouteAnalyzer" Version="0.5.3" />
     <PackageReference Include="HtmlSanitizer" Version="4.0.217" />
     <PackageReference Include="Markdig" Version="0.18.0" />
     <PackageReference Include="Microsoft.AspNetCore.Components" Version="3.0.0" />
@@ -54,6 +58,7 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="3.0.0" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.BrowserLink" Version="2.2.0" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="3.0.0" />
     <PackageReference Include="Syncfusion.EJ2.AspNet.Core" Version="17.3.0.31" />
     <PackageReference Include="Syncfusion.EJ2.Blazor" Version="17.3.0.18-beta" />

@@ -7,7 +7,14 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - Plans Cadres</title>
+    @if (!string.IsNullOrEmpty((string)ViewData["Title"]))
+    {
+        <title>Plans Cadres</title>
+    }
+    else
+    {
+        <title>Plans Cadres - @ViewData["Title"]</title>
+    }
 
     <environment include="Development">
         <link rel="stylesheet" href="~/Identity/lib/bootstrap/dist/css/bootstrap.css" />
@@ -30,7 +37,7 @@
                 </button>
                 <div class="navbar-collapse collapse d-sm-inline-flex flex-sm-row-reverse">
                     <ul class="navbar-nav ml-auto" style="margin-top: 0;">
-                        <partial name="~/Shared/_LoginPartial.cshtml" />
+                        <partial name="_LoginPartial.cshtml" />
                     </ul>
                 </div>
             </div>
@@ -43,11 +50,6 @@
             @RenderBody()
         </main>
     </div>
-    <footer class="footer border-top text-muted">
-        <div class="container">
-            &copy; 2019 - PlanC.Client - <a asp-area="" asp-page="Privacy">Privacy</a>
-        </div>
-    </footer>
 
     <environment include="Development">
         <script src="~/Identity/lib/jquery/dist/jquery.js"></script>

@@ -71,7 +71,7 @@ namespace PlanC.Client.Pages.Identity.Pages.Account
 
             [DataType(DataType.Password)]
             [Display(Name = "Confirmation du mot de passe")]
-            [Compare("Password", ErrorMessage = "Mot de passe non identique.")]
+            [Compare("Password", ErrorMessage = "Les mots de passe ne sont pas identiques.")]
             public string ConfirmPassword { get; set; }
 
             [Display(Name = "Département")]

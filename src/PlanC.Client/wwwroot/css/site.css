@@ -1,21 +1,6 @@
 ﻿/* Please see documentation at https://docs.microsoft.com/aspnet/core/client-side/bundling-and-minification
 for details on configuring this project to bundle and minify static web assets. */
 
-.banner-image {
-    position: absolute;
-    top: -25px;
-    width: 120%;
-    height: 100px;
-    overflow: hidden;
-}
-
-    .banner-image img {
-        float: left;
-        height: 100px;
-        width: 100px;
-        filter: grayscale(100%);
-    }
-
 .press {
     border-radius: 500px !important;
 }
@@ -2619,6 +2604,23 @@ fieldset:disabled a.btn {
   pointer-events: none;
 }
 
+.btn-memory {
+  color: #fff;
+  background-color: #00bcd4;
+  border-color: #00bcd4;
+}
+
+.btn-memory:hover {
+  color: #fff;
+  background-color: #00bcd4;
+  border-color: #00bcd4;
+}
+  .btn-memory:focus, .btn-memory.focus {
+    box-shadow: 0 0 0 0.2rem rgba(105, 136, 228, 0.5);
+  }
+
+  
+
 .btn-primary {
   color: #fff;
   background-color: #4e73df;
@@ -3605,6 +3607,20 @@ input[type="button"].btn-block {
   flex-wrap: wrap;
   align-items: stretch;
   width: 100%;
+}
+
+.form-memory:focus {
+  color: #FF5722;
+  background-color: #fff;
+  border-color: #00BCD4;
+  outline: 0;
+  box-shadow: 0 0 0 0.01rem #00BCD4;
+}
+.form-memory {
+  color: #FF5722;
+}
+.form-control {
+  caret-color: #00bcd4;
 }
 
   .input-group > .form-control,
@@ -12277,7 +12293,6 @@ svg,
 video {
   /* 1 */
   max-width: 100%;
-  height: auto;
   /* 2 */
   box-sizing: border-box;
 }
