@@ -46,8 +46,7 @@ namespace PlanC.Client.Migrations
                 name: "AspNetUsers",
                 columns: table => new
                 {
-                    ID = table.Column<string>(unicode: false, maxLength: 7, nullable: false),
-                    UserName = table.Column<string>(maxLength: 256, nullable: true),
+                    UserName = table.Column<string>(unicode: false, maxLength: 7, nullable: false),
                     NormalizedUserName = table.Column<string>(maxLength: 256, nullable: true),
                     Email = table.Column<string>(maxLength: 256, nullable: true),
                     NormalizedEmail = table.Column<string>(maxLength: 256, nullable: true),
@@ -68,7 +67,7 @@ namespace PlanC.Client.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_AspNetUsers", x => x.ID);
+                    table.PrimaryKey("PK_AspNetUsers", x => x.UserName);
                     table.ForeignKey(
                         name: "FK_TASPUSER_TDPTMNT",
                         column: x => x.DepartementID,
@@ -95,7 +94,7 @@ namespace PlanC.Client.Migrations
                         name: "FK_AspNetUserClaims_AspNetUsers_UserId",
                         column: x => x.UserId,
                         principalTable: "AspNetUsers",
-                        principalColumn: "ID",
+                        principalColumn: "UserName",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -115,7 +114,7 @@ namespace PlanC.Client.Migrations
                         name: "FK_AspNetUserLogins_AspNetUsers_UserId",
                         column: x => x.UserId,
                         principalTable: "AspNetUsers",
-                        principalColumn: "ID",
+                        principalColumn: "UserName",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -139,7 +138,7 @@ namespace PlanC.Client.Migrations
                         name: "FK_AspNetUserRoles_AspNetUsers_UserId",
                         column: x => x.UserId,
                         principalTable: "AspNetUsers",
-                        principalColumn: "ID",
+                        principalColumn: "UserName",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -159,7 +158,7 @@ namespace PlanC.Client.Migrations
                         name: "FK_AspNetUserTokens_AspNetUsers_UserId",
                         column: x => x.UserId,
                         principalTable: "AspNetUsers",
-                        principalColumn: "ID",
+                        principalColumn: "UserName",
                         onDelete: ReferentialAction.Cascade);
                 });
 

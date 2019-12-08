@@ -46,7 +46,11 @@ namespace PlanC.Client.Areas.Identity.Pages.Account
 
         public class InputModel : Utilisateurs
         {
-            [Required]
+            [Required(ErrorMessage = "{0} est obligatoire.")]
+            [Display(Name = "Numéro d'usagé")]
+            public new string UserName { get; set; }
+            [Required(ErrorMessage = "{0} est obligatoire.")]
+            [Display(Name = "Mot de passe")]
             [DataType(DataType.Password)]
             public string Password { get; set; }
 
@@ -79,7 +83,7 @@ namespace PlanC.Client.Areas.Identity.Pages.Account
             {
                 // This doesn't count login failures towards account lockout
                 // To enable password failures to trigger account lockout, set lockoutOnFailure: true
-                var result = await _signInManager.PasswordSignInAsync(Input.Id, Input.Password, Input.RememberMe, lockoutOnFailure: true);
+                var result = await _signInManager.PasswordSignInAsync(Input.UserName, Input.Password, Input.RememberMe, lockoutOnFailure: true);
                 if (result.Succeeded)
                 {
                     _logger.LogInformation("User logged in.");

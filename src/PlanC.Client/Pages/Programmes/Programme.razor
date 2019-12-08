@@ -1,6 +1,6 @@
 ﻿@*non sensible à la case peut obtenir la page en donnant en paramètre un id du programme*@
 @page "/programmes/{id}"
-
+@attribute [Authorize]
 @inject PCU001Context context
 @inject IJSRuntime JSRuntime
 <!-- Section de navigation -->

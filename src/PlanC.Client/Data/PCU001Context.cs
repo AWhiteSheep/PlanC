@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using PlanC.EntityDataModel;
+using Microsoft.AspNetCore.Identity;
 
 namespace PlanC.Client.Data
 {
@@ -560,7 +561,7 @@ namespace PlanC.Client.Data
 
             modelBuilder.Entity<Utilisateurs>(entity =>
             {
-                entity.Property(e => e.Id).IsUnicode(false);
+                entity.Property(e => e.UserName).IsUnicode(false);
 
                 entity.Property(e => e.RcdCdttm).HasDefaultValueSql("(getdate())");
 

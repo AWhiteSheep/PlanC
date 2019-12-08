@@ -20,10 +20,9 @@ namespace PlanC.EntityDataModel
         {
         }
 
-        [Key]
-        [Column("ID")]
-        [StringLength(7)]
+
         public override string Id { get; set; }
+
         [Column("DepartementID")]
         [PersonalData]
         public int? DepartementId { get; set; }

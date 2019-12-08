@@ -1,9 +1,13 @@
 ﻿@page
 @model RegisterModel
+@inject PlanC.Client.Data.PCU001Context context
 @{
     ViewData["Title"] = "Register";
-}
+    
+    SelectList departments = new SelectList(context.Departements, "Id", "Titre");
 
+
+}
 <h1>@ViewData["Title"]</h1>
 
 <div class="row">
@@ -13,14 +17,14 @@
             <hr />
             <div asp-validation-summary="All" class="text-danger"></div>
             <div class="form-group">
-                <label asp-for="Input.Id"></label>
-                <input asp-for="Input.Id" class="form-control" />
-                <span asp-validation-for="Input.Id" class="text-danger"></span>
+                <label asp-for="Input.UserName"></label>
+                <input asp-for="Input.UserName" class="form-control" />
+                <span asp-validation-for="Input.UserName" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="Input.DepartementId"></label>
-                <input asp-for="Input.Departement" class="form-control" />
-                <span asp-validation-for="Input.Departement" class="text-danger"></span>
+                <select asp-for="Input.DepartementId" asp-items="departments" class="form-control"></select>
+                <span asp-validation-for="Input.DepartementId" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="Input.PhoneNumber"></label>
@@ -31,6 +35,16 @@
                 <label asp-for="Input.Email"></label>
                 <input asp-for="Input.Email" class="form-control" />
                 <span asp-validation-for="Input.Email" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Input.GvnNm"></label>
+                <input asp-for="Input.GvnNm" class="form-control" />
+                <span asp-validation-for="Input.GvnNm" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Input.Snm"></label>
+                <input asp-for="Input.Snm" class="form-control" />
+                <span asp-validation-for="Input.Snm" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="Input.Password"></label>

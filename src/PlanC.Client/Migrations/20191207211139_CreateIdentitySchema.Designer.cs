@@ -87,7 +87,7 @@ namespace PlanC.Client.Migrations
 
                     b.Property<string>("UserId")
                         .IsRequired()
-                        .HasColumnType("varchar(7)");
+                        .HasColumnType("nvarchar(7)");
 
                     b.HasKey("Id");
 
@@ -111,7 +111,7 @@ namespace PlanC.Client.Migrations
 
                     b.Property<string>("UserId")
                         .IsRequired()
-                        .HasColumnType("varchar(7)");
+                        .HasColumnType("nvarchar(7)");
 
                     b.HasKey("LoginProvider", "ProviderKey");
 
@@ -123,7 +123,7 @@ namespace PlanC.Client.Migrations
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<string>", b =>
                 {
                     b.Property<string>("UserId")
-                        .HasColumnType("varchar(7)");
+                        .HasColumnType("nvarchar(7)");
 
                     b.Property<string>("RoleId")
                         .HasColumnType("nvarchar(450)");
@@ -138,7 +138,7 @@ namespace PlanC.Client.Migrations
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
                 {
                     b.Property<string>("UserId")
-                        .HasColumnType("varchar(7)");
+                        .HasColumnType("nvarchar(7)");
 
                     b.Property<string>("LoginProvider")
                         .HasColumnType("nvarchar(128)")
@@ -1176,9 +1176,9 @@ namespace PlanC.Client.Migrations
 
             modelBuilder.Entity("PlanC.EntityDataModel.Utilisateurs", b =>
                 {
-                    b.Property<string>("Id")
-                        .HasColumnName("ID")
-                        .HasColumnType("varchar(7)")
+                    b.Property<string>("UserName")
+                        .HasColumnName("UserName")
+                        .HasColumnType("nvarchar(7)")
                         .HasMaxLength(7)
                         .IsUnicode(false);
 
@@ -1245,11 +1245,7 @@ namespace PlanC.Client.Migrations
                     b.Property<bool>("TwoFactorEnabled")
                         .HasColumnType("bit");
 
-                    b.Property<string>("UserName")
-                        .HasColumnType("nvarchar(256)")
-                        .HasMaxLength(256);
-
-                    b.HasKey("Id");
+                    b.HasKey("UserName");
 
                     b.HasIndex("DepartementId");
 

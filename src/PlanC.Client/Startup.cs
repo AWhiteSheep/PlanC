@@ -32,7 +32,13 @@ namespace PlanC.Client
             services.AddDbContext<PCU001Context>(options => 
                 options.UseSqlServer(Configuration.GetConnectionString("RDS_PCU001")));
 
-            services.AddRazorPages();
+            services.AddRazorPages()
+                .AddRazorPagesOptions(options =>
+                {
+                    options.Conventions.AuthorizeFolder("/Pages");
+                    options.Conventions.AuthorizeFolder("/Components");
+                });
+
             services.AddServerSideBlazor();
             services.AddMvc();
 
@@ -74,6 +80,7 @@ namespace PlanC.Client
                 .AllowAnyHeader().AllowAnyMethod());
 
             app.UseAuthentication();
+            app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
             {
