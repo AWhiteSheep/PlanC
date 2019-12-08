@@ -5,7 +5,6 @@
 
 @inject Microsoft.AspNetCore.Antiforgery.IAntiforgery Xsrf
 @functions{
-
     public List<string> filesNames = new List<string>();
 
     public List<string> GetBanner() {     
@@ -91,9 +90,10 @@
                 <!-- Option du modal -->
                 <div class="modal-footer">
                     <button class="btn btn-secondary" type="button" data-dismiss="modal"> Canceler </button>
-                    <form id="logoutForm" class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Page("/", new { area = "" })">
-                        <button id="logout" type="submit" class="nav-link btn btn-link text-dark">Déconnexion</button>
+                    <form id="formlogout" method="post">
+                        @Html.AntiForgeryToken()
                     </form>
+                    <button onclick="deconnection()" id="logout" class="btn btn-danger">Déconnexion</button>
                 </div>
             </div>
         </div>
@@ -130,7 +130,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
 
-
+    <script src="https://ajax.aspnetcdn.com/ajax/jquery/jquery-1.9.0.js"></script>
     <!-- Scripts custome & Blazor framework for the client -->
     <script src="~/js/site.js" asp-append-version="true"></script>
     <script src="~/_framework/blazor.server.js" autostart="false"></script>

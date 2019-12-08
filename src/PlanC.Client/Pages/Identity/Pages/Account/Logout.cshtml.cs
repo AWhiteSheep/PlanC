@@ -23,8 +23,9 @@ namespace PlanC.Client.Pages.Identity.Pages.Account
             _logger = logger;
         }
 
-        public void OnGet()
+        public IActionResult OnGet()
         {
+            return Page();
         }
 
         public async Task<IActionResult> OnPost(string returnUrl = null)

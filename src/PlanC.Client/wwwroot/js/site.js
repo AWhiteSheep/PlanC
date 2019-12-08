@@ -151,3 +151,29 @@ $(document).on('click', '.panel-heading span.clickable', function (e) {
 
     }
 })
+
+
+function deconnection() {
+
+    var data = {
+        RequestVerificationToken: $("[name='__RequestVerificationToken']").val()
+    };
+
+    $.ajax({
+        type: "POST",
+        contentType: "application/json",
+        url: "/Compte/Logout",
+        headers: {
+            'RequestVerificationToken': data['RequestVerificationToken']
+        },
+        data: JSON.stringify(data),
+        success: function (data, textStatus) {
+            if (textStatus == "success") {
+                window.location = "/Compte/Logout"
+            }
+        },
+        error: function (data, status, error) {
+            alert(error);
+        }
+    });
+}

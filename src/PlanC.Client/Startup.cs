@@ -47,7 +47,6 @@ namespace PlanC.Client
                 .AddDefaultTokenProviders();
 
             services.AddRazorPages();
-
             services.AddMvc();
 
             services.ConfigureApplicationCookie(options =>
