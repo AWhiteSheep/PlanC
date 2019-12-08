@@ -36,5 +36,20 @@ namespace PlanC.EntityDataModel
         public virtual ICollection<ExamensElementsCompetences> ExamensElementsCompetences { get; set; }
         [InverseProperty("Examen")]
         public virtual ICollection<ExamensFinalsCertificatifs> ExamensFinalsCertificatifs { get; set; }
+
+        [NotMapped]
+        [Required(ErrorMessage = "Veuillez entrer la pondération de l'examen")]
+        [Range(minimum: 0d, maximum: 100d, ErrorMessage = "Format: 99.99; Minimum: 0; Maximum: 100")]
+        public decimal WeightAccessor
+        {
+            get
+            {
+                return PoidExamen.GetValueOrDefault();
+            }
+            set
+            {
+                PoidExamen = value;
+            }
+        }
     }
 }

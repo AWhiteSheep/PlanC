@@ -21,6 +21,9 @@
     </div>
 </div>
 
+
+
+
 <div class="container shadow p-5">
     @*Envoit le paramètre à tous les enfants*@
     <CascadingValue TValue="PCU001Context" Value="context">
@@ -38,19 +41,21 @@
                 <PlanC.Client.Components.FinalExamInput @bind-Template="Template" @ref="CurrentForm"></PlanC.Client.Components.FinalExamInput>
             }
         </CascadingValue>
-     </CascadingValue>
+    </CascadingValue>
+    <div class="container">
+        <div class="row">
 
-</div>
-
-<div class="row">
-
-    <div class="col-12 d-flex justify-content-between">
-        <!-- appelle fonction javascript permettant d'ajouter le .wasvalidated sur la division du formulaire -->
-        <!-- suite au poste validate nous envoyons l'utilisateur vers la deuxième partie celle de remplire les contextes et les éléments de compétence-->
-        <button @onclick="NavigatePrevious" disabled="@(CurrentNode.Previous == null)" class="btn btn-primary">Précédent</button>
-        <button @onclick="NavigateNext" disabled="@(CurrentNode.Next == null)" class="btn btn-primary">Suivant</button>
+            <div class="col-12 d-flex justify-content-around">
+                <!-- appelle fonction javascript permettant d'ajouter le .wasvalidated sur la division du formulaire -->
+                <!-- suite au poste validate nous envoyons l'utilisateur vers la deuxième partie celle de remplire les contextes et les éléments de compétence-->
+                <button @onclick="NavigatePrevious" disabled="@(CurrentNode.Previous == null)" class="btn btn-primary">Précédent</button>
+                <button @onclick="NavigateNext" disabled="@(CurrentNode.Next == null)" class="btn btn-primary">Suivant</button>
+            </div>
+        </div>
     </div>
 </div>
+
+
 
 
 @code{

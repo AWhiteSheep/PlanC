@@ -8,56 +8,61 @@
 @inject IJSRuntime JSRuntime
 @inherits CourseTemplateFormComponent
 
-<EjsComboBox @ref="SkillDropdown" TValue="@Competences" DataSource="AvailableSkills">
-    <ComboBoxEvents TValue="int" ValueChange="onValueChanged"></ComboBoxEvents>
-    <ComboBoxFieldSettings Value="IdentityKey" Text="Enonce"></ComboBoxFieldSettings>
-</EjsComboBox>
-<EjsButton CssClass="btn btn-info" @onclick="AddSkill">Ajouter</EjsButton>
 
+<h3 class="h3 bcTitle">Saisie des compétences</h3>
+<div class="row justify-content-between p-0 mt-3 mb-3">
+    <div class="col-lg-6">
+        <EjsComboBox Placeholder="Choisir une compétence..." @ref="SkillDropdown" TValue="@Competences" DataSource="AvailableSkills">
+            <ComboBoxEvents TValue="int" ValueChange="onValueChanged"></ComboBoxEvents>
+            <ComboBoxFieldSettings Value="IdentityKey" Text="Enonce"></ComboBoxFieldSettings>
+        </EjsComboBox>
+    </div>
+    <div class="col-lg-6">
+        <EjsButton CssClass="btn btn-info" @onclick="AddSkill">Ajouter</EjsButton>
+    </div>
+</div>
 
+<div class="container p-0">
 
 @foreach (Competences skill in SelectedSkills)
 {
-
-    <div class="row">
-
-    <div class="col-sm-10">
-        <a data-toggle="collapse" data-target="#collapse-@skill.IdentityKey">
-            @skill.ToString()
-        </a>
-    </div>
-        <div class="col-sm-2">
-            <button class="btn btn-danger" @onclick="() => RemoveSkill(skill)">-</button>
+    <hr class="bcSeparator"/>
+    <div class="row clickable justify-content-between mt-3 mb-3 p-0" style="width:100%">
+        <div class="col-sm-12 d-flex justify-content-around">
+            <a data-toggle="collapse" data-target="#collapse-@skill.IdentityKey">
+                <h5 class="h5 font-weight-bold m-0">@skill.ToString()</h5>
+            </a>
+            <button class="btn btn-danger" @onclick="() => RemoveSkill(skill)"><i class="fas fa-trash"></i></button>
         </div>
     </div>
-    <table id="collapse-@skill.IdentityKey" class="mt-3 table-light" style="width:100%; border: 2px solid deepskyblue;">
+    <table id="collapse-@skill.IdentityKey" class="mt-3 table table-borderless text-center p-0" style="width:100%">
         <thead>
-            <tr style="border-bottom: 1px solid deepskyblue;">
+            <tr>
                 <th>Élément de compétence</th>
-                <th>Partiel?</th>
-                <th>Précisions sur le contenu</th>
+                <th style="max-width:15%">Partiel?</th>
+                <th style="min-width:50%">Précisions sur le contenu</th>
             </tr>
         </thead>
         <tbody>
             @foreach (PlanCadreCompetenceElements elem in SelectedSkillElements.Where(tse => tse.ElementCompetence.IdentityKeyCompetencesNavigation == skill))
             {
-            <tr>
+                <tr>
+                    <td>
+                        <span class="label-info">@elem.ElementCompetence.Libele</span>
+                    </td>
+                    <td style="max-width:15%">
+                        <input class="input input-group" type="checkbox" @bind="elem.IsPartial" />
+                    </td>
+                    <td style="min-width:50%">
+                        <textarea style="width:100%" class="input m-0" @bind="elem.LongDescription" />
+                    </td>
 
-                    <td>
-                        @elem.ElementCompetence.Libele
-                    </td>
-                    <td>
-                        <input type="checkbox" @bind="elem.IsPartial" />
-                    </td>
-                    <td>
-                        <input type="text" @bind="elem.LongDescription" />
-                    </td>
-
-            </tr>
+                </tr>
             }
         </tbody>
     </table>
 }
+</div>
 
 
 
@@ -180,11 +185,7 @@
         try
         {
             int result = _context.SaveChanges();
-            if (result > 0)
-            {
-                return true;
-            }
-            else return false;
+            return true;
         }
         catch (Exception except)
         {
@@ -199,26 +200,4 @@
         CurrentSelection = target;
     }
 
-    //private class SkillElementInputViewModel
-    //{
-    //    public Competences Skill { get; private set; }
-    //    public List<PlanCadreCompetenceElements> TemplateSkillElements { get; private set; }
-    //    public List<SkillElementInputViewModel> Parent { get; private set; }
-
-    //    public SkillElementInputViewModel(Competences Skill, List<PlanCadreCompetenceElements> TemplateSkillElements, List<SkillElementInputViewModel> Parent)
-    //    {
-    //        if (TemplateSkillElements.Any(elem => elem.CompetenceId != Skill.CompetenceId))
-    //        {
-    //            throw new Exception($"Attempting to create a SkillElementInputViewModel with mismatched parameters");
-    //        }
-    //        this.Skill = Skill;
-    //        this.TemplateSkillElements = TemplateSkillElements;
-    //        this.Parent = Parent;
-    //    }
-
-    //    public void RemoveFromList()
-    //    {
-    //        Parent.Remove(this);
-    //    }
-    //}
 }

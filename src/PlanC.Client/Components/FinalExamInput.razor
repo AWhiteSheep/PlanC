@@ -1,87 +1,135 @@
 ﻿@using PlanC.EntityDataModel
-@using Syncfusion.EJ2.Blazor
-@using Syncfusion.EJ2.Blazor.DropDowns
-@using Syncfusion.EJ2.Blazor.Buttons
-@using Syncfusion.EJ2.Blazor.Lists
-@using Syncfusion.EJ2.Blazor.Grids
+@using Pages.Planscadres
 @inject PCU001Context _context
 @inject IJSRuntime JSRuntime
 @inherits CourseTemplateFormComponent
 
-<EjsGrid DataSource="@ExamInput">
-    <GridColumns>
-        <GridColumn Field="@nameof(Examens.Qualification)" HeaderText="Qualification/Titre"></GridColumn>
-        <GridColumn Field="@nameof(Examens.PoidExamen)" HeaderText="Pondération"></GridColumn>
-    </GridColumns>
-</EjsGrid>
 
+<button class="btn btn-success mb-4" @onclick="() => AddExam()">Ajouter un examen</button>
 
-@code {
-    [Parameter]
-    public PlansCadres Template { get; set; }
-
-    [Parameter]
-    public EventCallback<PlansCadres> TemplateChanged { get; set; }
-
-    [CascadingParameter]
-    public PCU001Context context { get; set; }
-
-    public List<Examens> ExamInput { get; private set; }
-
-    public List<ExamensFinalsCertificatifs> FinalExams { get; private set; }
-
-    public List<ExamensElementsCompetences> ExamSkillElemInput { get; private set; }
-
-    protected async Task<bool> NextStep()
-    {
-        foreach(Examens exam in ExamInput)
-        {
-            FinalExams.Add(new ExamensFinalsCertificatifs()
+<hr class="bcSeparator" />
+<table class="mt-3 table table-borderless text-center p-0" style="width:100%">
+    <thead>
+        <tr>
+            <th></th>
+            <th style="min-width:60%">Titre de l'examen</th>
+            <th>Pondération</th>
+        </tr>
+    </thead>
+    <tbody>
+        <EditForm EditContext="Edit">
+            
+            @foreach (Examens exam in ExamInput)
             {
-                CoursId = Template.CoursId,
-                VsnCdttm = Template.VsnCdttm,
-                Examen = exam,
-                PlansCadres = Template
+                <DataAnnotationsValidator></DataAnnotationsValidator>
+                <tr>
+                    <td>
+                        <button class="btn btn-danger" @onclick="() => DeleteExam(exam)"><i class="fas fa-trash"></i></button>
+                    </td>
+                    <td>
+                        <ValidationMessage For="() => exam.Qualification"></ValidationMessage>
+                        <InputText @bind-Value="exam.Qualification" class="input input-group m-0" />
+                    </td>
+                    <td>
+                        <ValidationMessage For="() => exam.WeightAccessor"></ValidationMessage>
+                        <InputNumber TValue="decimal" @bind-Value="exam.WeightAccessor"></InputNumber>
+                    </td>
+                </tr>
+
+            }
+        </EditForm>
+        </tbody>
+</table>
+
+
+    @code {
+        [Parameter]
+        public PlansCadres Template { get; set; }
+
+        [Parameter]
+        public EventCallback<PlansCadres> TemplateChanged { get; set; }
+
+        [CascadingParameter]
+        public PCU001Context context { get; set; }
+
+        [CascadingParameter]
+        public FormPlanCadre.FormMode CurrentMode {get ; set;}
+
+        public List<Examens> ExamInput { get; private set; }
+
+        public List<ExamensFinalsCertificatifs> FinalExams { get; private set; }
+
+        public List<ExamensElementsCompetences> ExamSkillElemInput { get; private set; }
+
+        public EditContext Edit { get; set; }
+
+        protected override void OnParametersSet()
+        {
+            switch (CurrentMode)
+            {
+                case FormPlanCadre.FormMode.CREATE:
+                    ExamInput = new List<Examens>();
+                    FinalExams = new List<ExamensFinalsCertificatifs>();
+                    ExamSkillElemInput = new List<ExamensElementsCompetences>();
+                    break;
+                case FormPlanCadre.FormMode.EDIT:
+                    context.Entry(Template)
+                            .Collection(t => t.ExamensFinalsCertificatifs)
+                            .Load();
+                    FinalExams = Template.ExamensFinalsCertificatifs.ToList();
+                    ExamInput = FinalExams.Select(fe => fe.Examen).ToList();
+                    break;
+            }
+
+            Edit = new EditContext(ExamInput);
+        }
+
+        public override bool SaveProgress()
+        {
+            FinalExams.Clear();
+            foreach(Examens exam in ExamInput)
+            {
+                FinalExams.Add(new ExamensFinalsCertificatifs()
+                {
+                    CoursId = Template.CoursId,
+                    VsnCdttm = Template.VsnCdttm,
+                    ExamenId = exam.Id,
+                    PlansCadres = Template,
+                    Examen = exam,
+                    TrkUid = "testenv"
+                });
+            }
+
+            Template.ExamensFinalsCertificatifs = FinalExams;
+
+            try
+            {
+                int result = _context.SaveChanges();
+                if (result > 0)
+                {
+                    return true;
+                }
+                else return false;
+            }
+            catch (Exception except)
+            {
+                Console.WriteLine($"Final exam data entry error: {except.Message}");
+                return false;
+            }
+        }
+
+        private void AddExam()
+        {
+            ExamInput.Add(new Examens()
+            {
+                TypeExamenCode = "01",
             });
+            StateHasChanged();
         }
 
-        try
+        private void DeleteExam(Examens exam)
         {
-            _context.Examens.AddRange(ExamInput);
-            _context.ExamensFinalsCertificatifs.AddRange(FinalExams);
-
-            int result = await _context.SaveChangesAsync();
-
-            if (result > 0)
-            {
-                return true;
-            }
-            else return false;
-        }
-        catch (Microsoft.EntityFrameworkCore.DbUpdateException except)
-        {
-            Console.WriteLine($"{except.Message} \n --> {except.InnerException.Message}");
-            return false;
+            ExamInput.Remove(exam);
+            StateHasChanged();
         }
     }
-
-    public override bool SaveProgress()
-    {
-        context.Examens.AddRange(ExamInput);
-
-        try
-        {
-            int result =  _context.SaveChanges();
-            if (result > 0)
-            {
-                return true;
-            }
-            else return false;
-        }
-        catch (Exception except)
-        {
-            Console.WriteLine($"Template Skill Elem input error: {except.Message} -- {except.InnerException.Message}");
-            return false;
-        }
-    }
-}
