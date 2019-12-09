@@ -112,13 +112,11 @@ namespace PlanC.Client
 
 
             app.UseRouting();   
-            app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseCookiePolicy();
+            app.UseHttpsRedirection();
             app.UseAuthentication();
             app.UseAuthorization();
-            app.UseCors(o => o.AllowAnyOrigin()
-                .AllowAnyHeader().AllowAnyMethod());
 
             app.UseEndpoints(endpoints =>
             {
