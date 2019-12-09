@@ -1,24 +1,140 @@
 ﻿@using PlanC.EntityDataModel
-@using Syncfusion.EJ2.Blazor
-@using Syncfusion.EJ2.Blazor.DropDowns
-@using Syncfusion.EJ2.Blazor.Buttons
-@using Syncfusion.EJ2.Blazor.Lists
-@using Syncfusion.EJ2.Blazor.Grids
+@using Pages.Planscadres
+@using System.Linq;
 @inject PCU001Context _context
 @inject IJSRuntime JSRuntime
+@inherits CourseTemplateFormComponent
 
 
+<button disabled="@(IsReadOnly)" hidden="@(IsReadOnly)" class="btn btn-success mb-4" @onclick="() => AddExam()">Ajouter un examen</button>
 
-@code {
-    [Parameter]
-    public PlansCadres Template { get; set; }
+<hr class="bcSeparator" />
+<table class="mt-3 table table-borderless text-center p-0" style="width:100%">
+    <thead>
+        <tr>
+            @if (!IsReadOnly)
+            {
+                <th></th>
+            }
+            <th style="min-width:60%">Titre de l'examen</th>
+            <th>Pondération</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (Examens exam in ExamInput)
+        {
+            <tr>
+                @if (!IsReadOnly)
+                {
+                    <td>
+                        <button class="btn btn-danger" @onclick="() => DeleteExam(exam)"><i class="fas fa-trash"></i></button>
+                    </td>
+                }
 
-    [Parameter]
-    public List<CoursElementsCompetences> SkillElements { get; set; }
+                <td>
+                    <input readonly="@(IsReadOnly)" @bind="exam.Qualification" />
+                </td>
+                <td>
+                    <input readonly="@(IsReadOnly)" @bind="exam.WeightAccessor" />
+                </td>
+            </tr>
 
-    public List<Examens> ExamInput { get; private set; }
+        }
+    </tbody>
+</table>
 
-    public List<ExamensFinalsCertificatifs> FinalExamInputS { get; private set; }
 
-    public List<ExamensElementsCompetences> ExamSkillElemInput { get; private set; }
-}
+    @code {
+        [Parameter]
+        public PlansCadres Template { get; set; }
+
+        [Parameter]
+        public EventCallback<PlansCadres> TemplateChanged { get; set; }
+
+        [Parameter]
+        public bool IsReadOnly { get; set; } = false;
+
+        [CascadingParameter]
+        public PCU001Context context { get; set; }
+
+        [CascadingParameter]
+        public FormPlanCadre.FormMode CurrentMode {get ; set;}
+
+        public List<Examens> ExamInput { get; private set; }
+
+        public List<ExamensFinalsCertificatifs> FinalExams { get; private set; }
+
+        public List<ExamensElementsCompetences> ExamSkillElemInput { get; private set; }
+
+        public EditContext Edit { get; set; }
+
+        protected override void OnParametersSet()
+        {
+            switch (CurrentMode)
+            {
+                case FormPlanCadre.FormMode.CREATE:
+                    ExamInput = new List<Examens>();
+                    FinalExams = new List<ExamensFinalsCertificatifs>();
+                    ExamSkillElemInput = new List<ExamensElementsCompetences>();
+                    break;
+                case FormPlanCadre.FormMode.EDIT:
+                    foreach (ExamensFinalsCertificatifs fe in Template.ExamensFinalsCertificatifs)
+                    {
+                        _context.Entry(fe)
+                                .Reference(fe => fe.Examen)
+                                .Load();
+                    }
+                    FinalExams = Template.ExamensFinalsCertificatifs.ToList();
+                    ExamInput = Template.ExamensFinalsCertificatifs.Select(fe => fe.Examen).ToList();
+                    break;
+            }
+
+            Edit = new EditContext(ExamInput);
+        }
+
+        public override bool SaveProgress()
+        {
+            FinalExams.Clear();
+            foreach(Examens exam in ExamInput)
+            {
+                FinalExams.Add(new ExamensFinalsCertificatifs()
+                {
+                    CoursId = Template.CoursId,
+                    VsnCdttm = Template.VsnCdttm,
+                    ExamenId = exam.Id,
+                    PlansCadres = Template,
+                    Examen = exam,
+                    TrkUid = "testenv"
+                });
+            }
+
+            Template.ExamensFinalsCertificatifs = FinalExams;
+
+            try
+            {
+                int result = _context.SaveChanges();
+                return true;
+
+            }
+            catch (Exception except)
+            {
+                Console.WriteLine($"Final exam data entry error: {except.Message}");
+                return false;
+            }
+        }
+
+        private void AddExam()
+        {
+            ExamInput.Add(new Examens()
+            {
+                TypeExamenCode = "01",
+            });
+            StateHasChanged();
+        }
+
+        private void DeleteExam(Examens exam)
+        {
+            ExamInput.Remove(exam);
+            StateHasChanged();
+        }
+    }

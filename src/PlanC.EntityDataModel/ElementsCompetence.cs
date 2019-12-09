@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace PlanC.EntityDataModel
 {
@@ -33,6 +34,7 @@ namespace PlanC.EntityDataModel
 
         [ForeignKey(nameof(IdentityKeyCompetences))]
         [InverseProperty(nameof(Competences.ElementsCompetence))]
+        [JsonIgnore]
         public virtual Competences IdentityKeyCompetencesNavigation { get; set; }
         [InverseProperty("ElementCompetence")]
         public virtual ICollection<CriteresElementCompetence> CriteresElementCompetence { get; set; }

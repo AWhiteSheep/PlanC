@@ -16,6 +16,7 @@ namespace PlanC.EntityDataModel
 
         [Key]
         [Column("CoursID")]
+        [Required]
         [StringLength(10)]
         public string CoursId { get; set; }
         [Key]
@@ -27,6 +28,7 @@ namespace PlanC.EntityDataModel
         [StringLength(50)]
         public string DenominationCours { get; set; }
         [Column(TypeName = "decimal(3, 2)")]
+        [Range(0, 9.99, ErrorMessage = "Format: 9.99")]
         public decimal? Unites { get; set; }
         [Column(TypeName = "ntext")]
         public string Description { get; set; }
@@ -55,5 +57,93 @@ namespace PlanC.EntityDataModel
         public virtual ICollection<ExamensFinalsCertificatifs> ExamensFinalsCertificatifs { get; set; }
         [InverseProperty("PlansCadres")]
         public virtual ICollection<PlanCadreCompetenceElements> PlanCadreCompetenceElements { get; set; }
+
+        [NotMapped]
+        [Range(0, 9.99, ErrorMessage = "Format: 9.99")]
+        public decimal UnitsAccessor
+        {
+            get
+            {
+                return Unites.GetValueOrDefault();
+            }
+            set
+            {
+                Unites = decimal.Round(value, 2);
+            }
+        }
+
+        [NotMapped]
+        public int TheoryHoursAccessor 
+        {
+            get 
+            {
+                return HeuresTotalesTheorie.GetValueOrDefault();
+            }
+            set
+            {
+                HeuresTotalesTheorie = value;
+            } 
+        }
+        [NotMapped]
+        public int PracticeHoursAccessor
+        {
+            get
+            {
+                return HeuresTotalesPratique.GetValueOrDefault();
+            }
+            set
+            {
+                HeuresTotalesPratique = value;
+            }
+        }
+        [NotMapped]
+        public int HomeHoursAccessor
+        {
+            get
+            {
+                return HeuresTotalesMaison.GetValueOrDefault();
+            }
+            set
+            {
+                HeuresTotalesMaison = value;
+            }
+        }
+
+        [NotMapped]
+        public DateTime DptDateAccessor
+        {
+            get
+            {
+                return DateApprobationDepartement.GetValueOrDefault();
+            }
+            set
+            {
+                DateApprobationDepartement = value;
+            }
+        }
+        [NotMapped]
+        public DateTime CmteDateAccessor
+        {
+            get
+            {
+                return DateApprobationCommite.HasValue ? DateApprobationCommite.Value : DateTime.Now;
+            }
+            set
+            {
+                DateApprobationCommite = value;
+            }
+        }
+        [NotMapped]
+        public DateTime DirectorDateAccessor
+        {
+            get
+            {
+                return DateApprobationCadre.GetValueOrDefault();
+            }
+            set
+            {
+                DateApprobationCadre = value;
+            }
+        }
     }
 }

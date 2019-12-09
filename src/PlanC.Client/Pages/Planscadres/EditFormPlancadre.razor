@@ -1,113 +1,228 @@
-﻿
+﻿@using PlanC.Client.Components
+@inherits CourseTemplateFormComponent
 <!-- Formulaire d'un nouveau plan-cadre -->
 <!-- Valeur pour le titre du plan-cadre -->
-<div class="row">
-    <div class="col-12">
-        <h3> Formulaire de plan-cadre: </h3>
-    </div>
-    <div class="col-12">
-        <div class="form-group">
-            <label class="control-label" for="CrsTitle"> Titre du du programme: </label>
-            <input readonly type="text" class="form-control" value="@Program.ToString()" />
-        </div>
-    </div>
-</div>
 
-<div class="row">
-    <!-- Valeur pour le titre du plan-cadre -->
-    <div class="col-lg-6">
-        <div class="form-group">
-            <label class="control-label" for="CrsTitle"> Titre du cours: </label>
-            <input type="text" class="form-control" value="@CTemplate.DenominationCours" />
+@if (!IsReadOnly)
+{ 
+    <PlanC.Client.Components.DropdownProgramSelection @ref="ProgramSelect"></PlanC.Client.Components.DropdownProgramSelection>
+}
+    <div class="row">
+        <div class="col-12">
+            <h3> Formulaire de plan-cadre: </h3>
         </div>
-    </div>
-    <!-- Valeur pour l'identification du cours -->
-    <div class="col-lg-6">
-        <div class="form-group">
-            <label class="control-label" for="CrsId"> Identifiant du cours: </label>
-            <input type="text" class="form-control" value="@CTemplate.CoursId" />
-        </div>
-    </div>
-</div>
-<div class="row">
-    <!-- Nombre d'unités pour le cours données -->
-    <div class="col-md-6">
-        <div class="form-group">
-            <label class="control-label" for="Units"> Nombre d'unités: </label>
-            <input Mask="00000" @bind="CTemplate.Unites" class="theme-mask" id="Units" />
-        </div>
-    </div>
-    <!-- Ajout de la pondération -->
-    <div class="col-md-6">
-        <div class="form-group">
-            <label class="control-label" for="Ponderation"> Pondération du cours: </label>
-            <div class="row">
-                <div class="col-1">
-                    <input Mask="00" class="theme-mask" name="HeuresTotalesThéories" @bind="CTemplate.HeuresTotalesTheorie" />
-                </div>
-                <div class="col-1">
-                    <input Mask="00" class="theme-mask" name="HeuresTotalesPratiques" @bind="CTemplate.HeuresTotalesPratique" />
-                </div>
-                <div class="col-1">
-                    <input Mask="00" class="theme-mask" name="HeuresTotalesMaison" @bind="CTemplate.HeuresTotalesMaison" />
-                </div>
+        <div class="col-12">
+            <div class="form-group">
+                <label class="control-label" for="CrsTitle"> Titre du du programme: </label>
+                <input readonly type="text" class="form-control" value="@Program.ToString()" />
             </div>
         </div>
     </div>
-    <!-- Séparateur -->
-    <hr />
-    <div class="col-12">
-        <!-- Descriptions du cours -->
-        <div class="form-group">
-            <label class="control-label col-12" for="CrsDesc">Description du cours: </label>
-            <textarea @bind="CTemplate.Description" rows="4" class="form-control" id="CrsIntent" name="CrsDesc" />
+ <EditForm EditContext="editContext">
+    <DataAnnotationsValidator />
+        <div class="row">
+            <!-- Valeur pour le titre du plan-cadre -->
+            <div class="col-lg-6">
+                <div class="form-group">
+                    <label class="control-label" for="CrsTitle"> Titre du cours: </label>
+                    <input type="text" @bind="Template.DenominationCours" class="form-control" />
+                </div>
+            </div>
+            <!-- Valeur pour l'identification du cours -->
+            <div class="col-lg-6">
+                <div class="form-group">
+                    <label class="control-label" for="CrsId"> Identifiant du cours: </label>
+                    <InputText type="text" @bind-Value="Template.CoursId" class="form-control" />
+                    <ValidationMessage For="(() => Template.CoursId)"></ValidationMessage>
+                </div>
+            </div>
         </div>
-    </div>
-    <div class="col-12">
-        <!-- les intentions du cours -->
-        <div class="form-group">
-            <label class="control-label" for="CrsIntent">Intention du cours: </label>
-            <textarea @bind="CTemplate.IntentionEducative" rows="4" class="form-control" id="CrsIntent" name="CrsIntent" />
+        <div class="row">
+            <!-- Nombre d'unités pour le cours donné -->
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label class="control-label" for="Units"> Nombre d'unités: </label>
+                    <ValidationMessage For="() => Template.UnitsAccessor"></ValidationMessage>
+                    <InputNumber TValue="decimal" @bind-Value="Template.UnitsAccessor" class="form-control theme-mask input" id="Units" />
+                </div>
+            </div>
+            <!-- Ajout de la pondération -->
+            <div class="col-md-6">
+                <div class="form-group text-center">
+                    <label class="control-label" for="Ponderation"> Pondération du cours: </label>
+                        <div class="row">
+                            <label class="col-md-10" for="@(Template.TheoryHoursAccessor)">Nombre d'heures de théorie: </label>
+                            <InputNumber class="col-md-2 theme-mask form-control" TValue="int" Mask="0" @bind-Value="Template.TheoryHoursAccessor" />
+                        </div>
+                        <div class="row">
+                            <label class="col-md-10" for="@(Template.PracticeHoursAccessor)">Nombre d'heures de pratique: </label>
+                            <InputNumber class="col-md-2 theme-mask form-control" TValue="int" Mask="0" @bind-Value="Template.PracticeHoursAccessor" />
+                        </div>
+                        <div class="row">
+                            <label class="col-md-10" for="@(Template.HomeHoursAccessor)">Nombre d'heures à la maison: </label>
+                            <InputNumber class="col-md-2 theme-mask form-control" TValue="int" Mask="0"  @bind-Value="Template.HomeHoursAccessor" />
+                        </div>
+                </div>
+            </div>
+            <!-- Séparateur -->
+            <hr />
+            <div class="col-12">
+                <!-- Descriptions du cours -->
+                <div class="form-group">
+                    <label class="control-label col-12" for="CrsDesc">Description du cours: </label>
+                    <textarea @bind="Template.Description" rows="4" class="form-control" id="CrsIntent" name="CrsDesc" />
+                </div>
+            </div>
+            <div class="col-12">
+                <!-- les intentions du cours -->
+                <div class="form-group">
+                    <label class="control-label" for="CrsIntent">Intentions éducatives: </label>
+                    <textarea @bind="Template.IntentionEducative" rows="4" class="form-control" id="CrsIntent" name="CrsIntent" />
+                </div>
+            </div>
+            <div class="col-12">
+                <!-- Entrés pour les intentions pédagogiques du cours -->
+                <div class="form-group">
+                    <label class="control-label" for="IntentionPedagogique">Intentions pédagogiques: </label>
+                    <textarea @bind="Template.IntentionPedagogique" rows="4" class="form-control" id="IntentionPedagogique" name="IntentionPedagogique" />
+                </div>
+            </div>
+            <div class="row" style="display:contents">
+                <div class="col-md-4">
+                    <label class="label-info">Date d'approbation en département</label>
+                    <input type="date"  @bind="Template.DateApprobationDepartement" class="form-control input"/>
+                </div>
+                <div class="col-md-4">
+                    <label class="label-info">Date d'approbation en comité</label>
+                    <input type="date" @bind="Template.DateApprobationCommite" class="form-control input"/>
+                </div>
+                <div class="col-md-4">
+                    <label class="label-info">Date d'approbation de la direction de études</label>
+                    <input type="date" @bind="Template.DateApprobationDepartement" class="form-control input"/>
+                </div>
+            </div>
         </div>
-    </div>
-    <div class="col-12">
-        <!-- Entrés pour les intentions pédagogiques du cours -->
-        <div class="form-group">
-            <label class="control-label" for="IntentionPedagogique">Intention du pédagogique: </label>
-            <textarea @bind="CTemplate.IntentionPedagogique" rows="4" class="form-control" id="IntentionPedagogique" name="IntentionPedagogique" />
-        </div>
-    </div>
-    <!--href="/planscadres/nouveau/ponderation"-->
-    <div class="col-12">
-        <!--href="/planscadres/nouveau/ponderation"-->
-        <button class="btn btn-dark" @onclick="HandleValidSubmit">Continuer</button>
-    </div>
+    </EditForm>
 
-</div>
+
 @code {
-    [Bindable]
-    [Parameter]
     public Programmes Program { get; set; }
 
-    [CascadingParameter] // donne a tous enfants le demandant le a valeur bindé
-    protected PCU001Context context { get; set; }
-    public string tid { get; set; }
-    private PlansCadres CTemplate = new PlansCadres();
+    //Passed by the parent form with two-way binding so that changes made in this component propagate upwards.
+    [Parameter]
+    public PlansCadres Template { get; set; }
 
-    protected override void OnInitialized()
+    //Required by blazor to handle two-way binding
+    [Parameter]
+    public EventCallback<PlansCadres> TemplateChanged { get; set; }
+
+    //Passed down by the parent form
+    [CascadingParameter]
+    protected PCU001Context context { get; set; }
+
+    //Passed down by the parent form. Determines data access behavior.
+    [CascadingParameter]
+    public FormPlanCadre.FormMode CurrentMode { get; set; }
+
+    //Dropdown list populated with database program data.
+    private DropdownProgramSelection ProgramSelect { get; set; }
+
+    //Blazor component which implements validation using EF model data annotations.
+    [Bindable]
+    [Parameter]
+    public EditContext editContext { get; set; }
+
+    [Parameter]
+    public bool IsReadOnly { get; set; } = false;
+
+    //Callback given to the program selection dropdown box. Updates program property.
+    private void UpdateProgram(object sender, Programmes arg)
     {
+        Program = arg;
+        StateHasChanged();
     }
 
-    // validation côté serveur
-    private void HandleValidSubmit()
+    //Initializes the validator with the EF model.
+    protected override void OnInitialized()
     {
-        try
+        editContext = new EditContext(Template);
+    }
+
+    //If in edit mode, fetches the 
+    protected override void OnParametersSet()
+    {
+        switch (CurrentMode)
         {
+            case FormPlanCadre.FormMode.CREATE:
+                Program = context.Programmes.FirstOrDefault();
+                break;
+            case FormPlanCadre.FormMode.EDIT:
+                Program = context.Programmes.SingleOrDefault(p => p.Id == Template.ProgrammeId);
+                break;
+            default:
+                throw new Exception($"Error in {this}: CurrentMode is {CurrentMode}");
+        }
+    }
+
+    protected override void OnAfterRender(bool firstRender)
+    {
+        if (firstRender)
+        {
+            ProgramSelect.ValueChanged += UpdateProgram;
+        }
+    }
+
+    public override bool SaveProgress()
+    {
+        if (editContext.Validate())
+        {
+            switch (CurrentMode)
+            {
+                case FormPlanCadre.FormMode.CREATE:
+                    try
+                    {
+                        Template.ProgrammeId = Program.Id;
+                        Template.VsnCdttm = DateTime.Now;
+
+                        context.PlansCadres.Add(Template);
+
+                        if (context.SaveChanges() > 0)
+                        {
+                            return true;
+                        }
+                        else return false;
+                    }
+                    catch (Exception except)
+                    {
+                        Console.WriteLine($"Template input error: {except.Message} /// {except.InnerException.Message}");
+                        return false;
+                    }
+                case FormPlanCadre.FormMode.EDIT:
+                    try
+                    {
+                        Template.ProgrammeId = Program.Id;
+
+                        context.PlansCadres.Update(Template);
+
+                        if (context.SaveChanges() > 0)
+                        {
+                            return true;
+                        }
+                        else return false;
+                    }
+                    catch (Exception except)
+                    {
+                        Console.WriteLine($"Template input error: {except.Message} /// {except.InnerException.Message}");
+                        return false;
+                    }
+                default:
+                    throw new Exception($"Error in {this}: CurrentMode is {CurrentMode}");
+            }
 
         }
-        catch
+        else
         {
-
+            return false;
         }
     }
 }

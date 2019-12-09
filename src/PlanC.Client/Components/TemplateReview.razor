@@ -1,0 +1,72 @@
+﻿@inject IJSRuntime JSRuntime
+@inherits CourseTemplateFormComponent
+
+
+<h3 class="h3 bcTitle mb-3">Sommaire du plan-cadre</h3>
+    <div class="accordion" id="formParent">
+        <div class="card">
+            <div class="card-header" id="descHeading">
+                <h2 class="mb-0">
+                    <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#descCollapse" aria-expanded="true" aria-controls="collapseOne">
+                        Éléments descriptifs du cours
+                    </button>
+                </h2>
+            </div>
+
+            <div id="descCollapse" class="collapse show" aria-labelledby="descHeading" data-parent="#formParent">
+                <div class="card-body">
+                    <PlanC.Client.Pages.Planscadres.EditFormPlancadre Template="Template"></PlanC.Client.Pages.Planscadres.EditFormPlancadre>
+                </div>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-header" id="skillElemHeading">
+                <h2 class="mb-0">
+                    <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#skillElemCollapse" aria-expanded="false" aria-controls="collapseTwo">
+                        Éléments de compétences associés au cours
+                    </button>
+                </h2>
+            </div>
+            <div id="skillElemCollapse" class="collapse" aria-labelledby="skillElemHeading" data-parent="#formParent">
+                <div class="card-body">
+                    <TemplateSkillElemInput Template="Template"></TemplateSkillElemInput>
+                </div>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-header" id="finalExamHeading">
+                <h2 class="mb-0">
+                    <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#finalExamCollapse" aria-expanded="false" aria-controls="collapseThree">
+                        Examens finaux
+                    </button>
+                </h2>
+            </div>
+            <div id="finalExamCollapse" class="collapse" aria-labelledby="finalExamHeading" data-parent="#formParent">
+                <div class="card-body">
+                    <FinalExamInput Template="Template" IsReadOnly="true"></FinalExamInput>
+                </div>
+            </div>
+        </div>
+    </div>
+
+@code {
+    [Parameter]
+    public PlansCadres Template { get; set; }
+
+    [Parameter]
+    public EventCallback<PlansCadres> TemplateChanged { get; set; }
+
+    [CascadingParameter]
+    public PCU001Context context { get; set; }
+
+    protected override void OnParametersSet()
+    {
+        context.Entry(Template)
+                .Collection(t => t.ExamensFinalsCertificatifs)
+                .Load();
+
+        context.Entry(Template)
+                .Collection(t => t.PlanCadreCompetenceElements)
+                .Load();
+    }
+}

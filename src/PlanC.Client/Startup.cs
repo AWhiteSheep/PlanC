@@ -125,6 +125,7 @@ namespace PlanC.Client
                     option.Transports = Microsoft.AspNetCore.Http.Connections.HttpTransportType.LongPolling;
                 });
                 endpoints.MapFallbackToPage("/_Host");
+                
             });
             
             applicationLifetime.ApplicationStarted.Register(() =>
