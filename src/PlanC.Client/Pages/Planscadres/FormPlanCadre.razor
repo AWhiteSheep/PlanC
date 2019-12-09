@@ -40,9 +40,13 @@
             {
                 <PlanC.Client.Components.FinalExamInput @bind-Template="Template" @ref="CurrentForm"></PlanC.Client.Components.FinalExamInput>
             }
+            else if (CurrentForm is TemplateReview)
+            {
+                <PlanC.Client.Components.TemplateReview Template="Template" @ref ="CurrentForm"></PlanC.Client.Components.TemplateReview>
+            }
         </CascadingValue>
     </CascadingValue>
-    <div class="container">
+    <div class="container mt-3">
         <div class="row">
 
             <div class="col-12 d-flex justify-content-around">
@@ -79,6 +83,7 @@
     {
         //Si la page reçoit un ID spécifique, ce processus le charge en mémoire. Sinon, il génère un nouvel objet.
         PlansCadres SpecifiedTemplate = context.PlansCadres .Include(tmp => tmp.PlanCadreCompetenceElements)
+                                                            .Include(tmp => tmp.ExamensFinalsCertificatifs)
                                                             .Where(cadre => cadre.CoursId.Trim() == this.Id)
                                                             .OrderByDescending(cadre => cadre.VsnCdttm)
                                                             .FirstOrDefault();
@@ -101,6 +106,7 @@
         Forms.AddLast(new EditFormPlancadre());
         Forms.AddLast(new TemplateSkillElemInput());
         Forms.AddLast(new FinalExamInput());
+        Forms.AddLast(new TemplateReview());
 
         CurrentNode = Forms.First;
         CurrentForm = CurrentNode.Value;

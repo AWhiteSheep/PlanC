@@ -71,5 +71,79 @@ namespace PlanC.EntityDataModel
                 Unites = decimal.Round(value, 2);
             }
         }
+
+        [NotMapped]
+        public int TheoryHoursAccessor 
+        {
+            get 
+            {
+                return HeuresTotalesTheorie.GetValueOrDefault();
+            }
+            set
+            {
+                HeuresTotalesTheorie = value;
+            } 
+        }
+        [NotMapped]
+        public int PracticeHoursAccessor
+        {
+            get
+            {
+                return HeuresTotalesPratique.GetValueOrDefault();
+            }
+            set
+            {
+                HeuresTotalesPratique = value;
+            }
+        }
+        [NotMapped]
+        public int HomeHoursAccessor
+        {
+            get
+            {
+                return HeuresTotalesMaison.GetValueOrDefault();
+            }
+            set
+            {
+                HeuresTotalesMaison = value;
+            }
+        }
+
+        [NotMapped]
+        public DateTime DptDateAccessor
+        {
+            get
+            {
+                return DateApprobationDepartement.GetValueOrDefault();
+            }
+            set
+            {
+                DateApprobationDepartement = value;
+            }
+        }
+        [NotMapped]
+        public DateTime CmteDateAccessor
+        {
+            get
+            {
+                return DateApprobationCommite.HasValue ? DateApprobationCommite.Value : DateTime.Now;
+            }
+            set
+            {
+                DateApprobationCommite = value;
+            }
+        }
+        [NotMapped]
+        public DateTime DirectorDateAccessor
+        {
+            get
+            {
+                return DateApprobationCadre.GetValueOrDefault();
+            }
+            set
+            {
+                DateApprobationCadre = value;
+            }
+        }
     }
 }

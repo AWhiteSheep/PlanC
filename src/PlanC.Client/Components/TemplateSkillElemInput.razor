@@ -95,7 +95,7 @@
 
     protected override void OnInitialized()
     {
-        Program = context.Programmes.SingleOrDefault(prog => Template.ProgrammeId == prog.Id);
+        Program = _context.Programmes.SingleOrDefault(prog => Template.ProgrammeId == prog.Id);
     }
 
     protected override void OnParametersSet()
@@ -110,7 +110,7 @@
             case FormPlanCadre.FormMode.EDIT:
 
                 SelectedSkillElements = Template.PlanCadreCompetenceElements.ToList();
-                SelectedSkills = context.PlanCadreCompetenceElements.Where(tse => SelectedSkillElements.Contains(tse))
+                SelectedSkills = _context.PlanCadreCompetenceElements.Where(tse => SelectedSkillElements.Contains(tse))
                                                                     .Select(tse => tse.ElementCompetence.IdentityKeyCompetencesNavigation)
                                                                     .AsEnumerable()
                                                                     .Distinct()
@@ -196,7 +196,7 @@
 
     private void onValueChanged(ChangeEventArgs<int> args)
     {
-        Competences target = context.Competences.SingleOrDefault(c => c.IdentityKey == args.Value);
+        Competences target = _context.Competences.SingleOrDefault(c => c.IdentityKey == args.Value);
         CurrentSelection = target;
     }
 
