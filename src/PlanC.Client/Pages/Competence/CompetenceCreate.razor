@@ -1,7 +1,6 @@
 ﻿@page "/competences/creation"
 @inject PCU001Context context
 @inject NavigationManager _NavigationManager
-@attribute [Authorize]
 
 <!-- Formulaire d'une nouvelle compétences -->
 <div class="container shadow p-5">
@@ -38,12 +37,10 @@
 
     private void Start()
     {
-        if (DepartSelect.CurrentSelection != null)
-        {
+        if (DepartSelect.CurrentSelection != null) {
             _NavigationManager.NavigateTo($"/departements/{DepartSelect.CurrentSelection.Id}/competences/creation");
         }
-        else
-        {
+        else {
             StatusMessage = "Veuillez choisir un département.";
         }
     }

@@ -4,7 +4,7 @@
 @implements IDisposable
 
 
-<div style="min-height: 100%;">
+<div id="editor">
     <div class="row">
         <div id="theme-portal-welcome" class="col-12">
             <div class="text-center">
@@ -15,7 +15,7 @@
     </div>
     <!-- Section de bienvenue pour les nouveau arrivants -->
     <div class="row justify-content-center mt-3">
-        <div class="col-md-6 card shadow">
+        <div class="col-10 card shadow">
             <div class="card-body" style="font-size: large">
                 <!-- Contrôleur pour les envoyés vers les initialisation prérequis -->
                 <ul class="nav nav-tabs" id="myTab" role="tablist">
@@ -41,7 +41,7 @@
                     <div class="tab-pane fade" id="profil"
                          role="tabpanel" aria-labelledby="profil-tab">
                         Pour la première visite, nous vous prions de bien vouloir vous rendre à
-                        la <a class="card-link" href="/profil/configuration"> configuration de votre profil </a>
+                        la <a class="card-link" href="/personnel"> configuration de votre profil </a>
                         afin de remplir l'information nécessaire afin de créer un gabarit,
                         lequel soutiendra vos plans.
                     </div>
@@ -51,18 +51,25 @@
     </div>
 </div>
 
+<div id="theme-portal-image" class="col-lg-6">
+    <img style="position:fixed;width:300px;bottom:0;right:0;opacity:.6;" src="/images/undraw_thinker.svg" />
+</div>
+
 @code {
+    bool wasRender = false;
     protected override async void OnAfterRender(bool firstRender)
     {
         // la vue peut se render plusieurs fois au initialise et
         // suite au changement de la composante
         if (firstRender)
         {
+            wasRender = true;
             // call avec le jsinterop afin de lier les composantes
             // que jquery et que les plugins ui ne peuvent s'accroché
             // car elles ont un cycle différent
             try
             {
+                await JSRuntime.InvokeAsync<string>("InitTrumbowyg", "#editor");
             }
             catch { 
             }
@@ -75,6 +82,7 @@
         {
             try
             {
+                await JSRuntime.InvokeAsync<string>("DisposeTrumbowyg", "#editor");
             }
             catch
             {

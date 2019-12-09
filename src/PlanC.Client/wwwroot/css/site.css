@@ -1,80 +1,6 @@
 ﻿/* Please see documentation at https://docs.microsoft.com/aspnet/core/client-side/bundling-and-minification
 for details on configuring this project to bundle and minify static web assets. */
 
-/**calendar*/
-#calendarMenu {
-}
-
-.calendarWheater {
-  position: absolute !important;
-  width: max-content;
-  padding: 25px;
-  right: 18px;
-  bottom: -7px;
-  background-color: white;
-  -moz-border-radius: 50%;
-  -webkit-border-radius: 50%;
-  border-radius: 50%;
-  cursor: pointer;
-  text-align: center;
-  z-index: 0;
-}
-
-.display-none {
-  display: none !important;
-}
-
-.bg-memory {
-  background-color: var(--memory);
-}
-.bg-memory-secondary {
-  background-color: #e83e8c;
-}
-
-/* Suggestion css*/
-.autocomplete-suggestions {
-  background-color: white;
-  opacity: 1;
-  border-right: 1px var(--memory) solid;
-  border-bottom: 1px var(--memory) solid;
-  border-left: 1px var(--memory) solid;
-  box-shadow: 0 0 0 0.01rem #00BCD4;
-  border-bottom-left-radius: 0.35rem;
-  border-bottom-right-radius: 0.35rem;
-  animation-duration: 4s;
-  -webkit-transition-property: width; /* Safari */
-  -webkit-transition-duration: 5s; /* Safari */
-  -webkit-transition-delay: 2s; /* Safari */
-  transition-property: display;
-  transition-duration: 5s;
-  transition-delay: 2s;
-}
-.autocomplete-suggestion {
-  cursor: pointer;
-  padding-top:4px;
-  padding-left: 8px;
-  padding-bottom: 4px;
-  color: #3d3d3b;
-}
-.autocomplete-suggestion:hover {
-  background-color: #eee;
-}
-  .autocomplete-suggestion strong {
-    color: #FF5722;
-  }
-#autocomplete {
-  font-size: 1rem;
-  font-weight: 400;
-  line-height: 1.5;
-}
-
-.autocomplete-open {
-  border-bottom-left-radius: 0 !important;
-  border-bottom: none !important;
-}
-
-/***/
-
 .press {
     border-radius: 500px !important;
 }
@@ -270,7 +196,6 @@ html {
  * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
  */
 :root {
-  --memory: #00bcd4;
   --blue: #4e73df;
   --indigo: #6610f2;
   --purple: #6f42c1;
@@ -2679,23 +2604,6 @@ fieldset:disabled a.btn {
   pointer-events: none;
 }
 
-.btn-memory {
-  color: #fff;
-  background-color: var(--memory);
-  border-color: var(--memory);
-}
-
-.btn-memory:hover {
-  color: #fff;
-  background-color:var(--memory);
-  border-color: var(--memory);
-}
-  .btn-memory:focus, .btn-memory.focus {
-    box-shadow: 0 0 0 0.2rem rgba(105, 136, 228, 0.5);
-  }
-
-  
-
 .btn-primary {
   color: #fff;
   background-color: #4e73df;
@@ -3682,20 +3590,6 @@ input[type="button"].btn-block {
   flex-wrap: wrap;
   align-items: stretch;
   width: 100%;
-}
-
-.form-memory:focus {
-  color: #FF5722;
-  background-color: #fff;
-  border-color: #00BCD4;
-  outline: 0;
-  box-shadow: 0 0 0 0.01rem #00BCD4;
-}
-.form-memory {
-  color: #FF5722;
-}
-.form-control {
-  caret-color: #00bcd4;
 }
 
   .input-group > .form-control,
@@ -10656,7 +10550,7 @@ a:focus {
 }
 
   #wrapper #content-wrapper {
-    background-color: #fff; /*#f8f9fc*/
+    background-color: #f8f9fc;
     width: 100%;
     overflow-x: hidden;
   }
@@ -12368,6 +12262,7 @@ svg,
 video {
   /* 1 */
   max-width: 100%;
+  height: auto;
   /* 2 */
   box-sizing: border-box;
 }

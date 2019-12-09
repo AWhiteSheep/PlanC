@@ -1,6 +1,5 @@
 ﻿@page "/programmes"
 @*context de la base de donné et js runtime*@
-@attribute [Authorize]
 @inject PCU001Context _context
 @inject IJSRuntime JSRuntime
 @using Newtonsoft.Json
@@ -73,8 +72,8 @@
                                                 <!-- Renvoit les programmes reliés au département-->
                                             </td>
                                             <td valign="top" class="flex-column">
-                                                <a class="btn btn-outline-success" href="/departements/@programme.DepartementId/planscadres/creation">Nouveau plan-cadre</a>
-                                                <a class="btn btn-success" href="/departements/@programme.DepartementId/competences/creation">Nouvelle compétence</a>
+                                                <a class="btn btn-outline-success" href="/Programme/@programme.Id/create">Nouveau plan-cadre</a>
+                                                <a class="btn btn-success" href="/Departement/@programme.DepartementId/Programme/@programme.Id/Competence/Create">Nouvelle compétence</a>
                                             </td>
                                         </tr>
                                     </tbody>

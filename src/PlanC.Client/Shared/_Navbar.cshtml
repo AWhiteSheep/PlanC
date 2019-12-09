@@ -1,16 +1,9 @@
-﻿@using Microsoft.AspNetCore.Identity
-@using PlanC.EntityDataModel
-@inject SignInManager<Utilisateurs> SignInManager
-@inject UserManager<Utilisateurs> UserManager
-
-@if (SignInManager.IsSignedIn(User))
-{
-    <!-- Sidebar -->
+﻿<!-- Sidebar -->
     @*<ul class="navbar-nav sidebar sidebar-dark accordion toggled" id="accordionSidebar">*@
-    <div><ul class="navbar-nav sidebar sidebar-dark accordion toggled" id="accordionSidebar">
+    <ul class="navbar-nav sidebar sidebar-light accordion toggled" id="accordionSidebar">
 
         <!-- Sidebar - Brand -->
-        <a class="sidebar-brand d-flex align-items-center justify-content-center" href="/profil/configuration">
+        <a class="sidebar-brand d-flex align-items-center justify-content-center" href="https://localhost:5001/Departement/111/Programme/A0%20%20%20%20/Competence/Create">
             <div class="sidebar-brand-icon rotate-n-15">
                 <i class="far fa-address-card"></i>
             </div>
@@ -32,7 +25,7 @@
         <hr class="sidebar-divider">
 
         <!-- Heading -->
-        <a class="sidebar-heading" href="/admin"> Administration </a>
+        <a class="sidebar-heading" href="/Admin"> Administration </a>
 
         <!-- Nav Item - Section départements -->
         <li class="nav-item">
@@ -56,7 +49,7 @@
         <!-- Heading -->
         <a class="sidebar-heading" href="/portail"> Personnel enseignant </a>
 
-        <!-- Nav Item - Afffiche tous les documents respectant les criltères -->
+        <!-- Nav Item - Afffiche tous les documents respectant les critères -->
         <li class="nav-item">
             <a class="nav-link" href="/documents">
                 <i class="far fa-file-alt"></i>
@@ -72,6 +65,5 @@
             <button class="rounded-circle border-0" id="sidebarToggle"></button>
         </div>
 
-    </ul></div>
-    <!-- End of Sidebar -->
-}
+    </ul>
+<!-- End of Sidebar -->

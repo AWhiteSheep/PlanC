@@ -1,4 +1,0 @@
-﻿chose que nous utilisons souvent
-
-** le blazor du client fera une call de la part du serveur au javascript
-@inject IJSRuntime JSRuntime

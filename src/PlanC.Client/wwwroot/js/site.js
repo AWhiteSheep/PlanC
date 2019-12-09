@@ -122,7 +122,6 @@ $(document).on('click', 'a.scroll-to-top', function (e) {
     e.preventDefault();
 });
 
-// autocomplete 
 var values = [
     { value: 'Admin', data: '/admin' },
     { value: 'Competence', data: '/personnel/competences' },
@@ -131,25 +130,13 @@ var values = [
     { value: 'Plans cadre', data: '/personnel/planscadres' },
 ];
 
-var autocompleter = $('#autocomplete');
-
 $('#autocomplete').autocomplete({
     lookup: values,
-    noCache: true,
     onSelect: function (suggestion) {
         location.replace(suggestion.value);
-    },
-    // ui est vide
-    onSearchStart: function (suggestions) {
-        console.log(suggestions);
-        $('#autocomplete').addClass("autocomplete-open");
-    },
-    onHide: function (container) {
-        $('#autocomplete').removeClass("autocomplete-open");
     }
 });
 
-// pour les clickables de la top bar
 $(document).on('click', '.panel-heading span.clickable', function (e) {
     var $this = $(this);
     if (!$this.hasClass('panel-collapsed')) {
@@ -164,29 +151,3 @@ $(document).on('click', '.panel-heading span.clickable', function (e) {
 
     }
 })
-
-
-function deconnection() {
-
-    var data = {
-        RequestVerificationToken: $("[name='__RequestVerificationToken']").val()
-    };
-
-    $.ajax({
-        type: "POST",
-        contentType: "application/json",
-        url: "/Logout",
-        headers: {
-            'RequestVerificationToken': data['RequestVerificationToken']
-        },
-        data: JSON.stringify(data),
-        success: function (data, textStatus) {
-            if (textStatus == "success") {
-                window.location = "/Compte/Logout"
-            }
-        },
-        error: function (data, status, error) {
-            alert(error);
-        }
-    });
-}

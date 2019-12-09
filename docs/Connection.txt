@@ -6,20 +6,8 @@ dbo802668235
 Password
 Nemesis2123%*
 
-Équipe : nemesis
-Nom de domaine : nemesis.cicco.org
-Nom du dossier : nemesis
-access799030595.webspace-data.io
-ftp98636912-2
-Nemesis@123%*
-         (port : 990)
-Base de données : db802668235
-BD Hostname : db802668235.hosting-data.io
-BD user :  dbo802668235
-BD password : Nemesis@123%*
-
-// DEBUG-LINK
-https://docs.microsoft.com/en-us/aspnet/core/test/troubleshoot-azure-iis?view=aspnetcore-3.1
+// live share
+https://prod.liveshare.vsengsaas.visualstudio.com/join?6653C634393BBB9A0B0D3867BE0242132A3A
 
 
 ConnectionString: ----
