@@ -175,7 +175,7 @@ function deconnection() {
     $.ajax({
         type: "POST",
         contentType: "application/json",
-        url: "/Compte/Logout",
+        url: "/Logout",
         headers: {
             'RequestVerificationToken': data['RequestVerificationToken']
         },
