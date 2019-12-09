@@ -1,10 +1,14 @@
-﻿@page "/plancadre/create"
-@page "/plancadre/{id}/create"
+﻿@page "/planscadres/create"
+@page "/planscadres/creation"
+@page "/plans-cadres/creation"
+@page "/planscadres/création"
+@page "/plans-cadres/création"
 
+@page "/planscadres/{id}/create"
+
+@attribute [Authorize]
 @using PlanC.EntityDataModel
-@using Components
-@using System.Collections.Generic;
-@using Microsoft.EntityFrameworkCore;
+@using Components;
 @inject NavigationManager NavigationManager
 @inject PCU001Context context
 <!-- Section de navigation -->
@@ -21,121 +25,41 @@
     </div>
 </div>
 
-
-
-
 <div class="container shadow p-5">
     @*Envoit le paramètre à tous les enfants*@
     <CascadingValue TValue="PCU001Context" Value="context">
-        <CascadingValue TValue="FormMode" Value="CurrentMode">
-            @if (CurrentForm is EditFormPlancadre)
-            {
-                <EditFormPlancadre @bind-Template="Template" @ref="CurrentForm"></EditFormPlancadre>
-            }
-            else if (CurrentForm is TemplateSkillElemInput)
-            {
-                <PlanC.Client.Components.TemplateSkillElemInput @bind-Template="Template" @ref="CurrentForm"></PlanC.Client.Components.TemplateSkillElemInput>
-            }
-            else if (CurrentForm is FinalExamInput)
-            {
-                <PlanC.Client.Components.FinalExamInput @bind-Template="Template" @ref="CurrentForm"></PlanC.Client.Components.FinalExamInput>
-            }
-            else if (CurrentForm is TemplateReview)
-            {
-                <PlanC.Client.Components.TemplateReview Template="Template" @ref ="CurrentForm"></PlanC.Client.Components.TemplateReview>
-            }
-        </CascadingValue>
+        <PlanC.Client.Components.DropdownProgramSelection @ref="ProgramSelect"></PlanC.Client.Components.DropdownProgramSelection>
+
+
+        @if (programme != null)
+        {
+            <EditFormPlancadre Program="programme"></EditFormPlancadre>
+        }
+
     </CascadingValue>
-    <div class="container mt-3">
-        <div class="row">
-
-            <div class="col-12 d-flex justify-content-around">
-                <!-- appelle fonction javascript permettant d'ajouter le .wasvalidated sur la division du formulaire -->
-                <!-- suite au poste validate nous envoyons l'utilisateur vers la deuxième partie celle de remplire les contextes et les éléments de compétence-->
-                <button @onclick="NavigatePrevious" disabled="@(CurrentNode.Previous == null)" class="btn btn-primary">Précédent</button>
-                <button @onclick="NavigateNext" disabled="@(CurrentNode.Next == null)" class="btn btn-primary">Suivant</button>
-            </div>
-        </div>
-    </div>
 </div>
-
-
 
 
 @code{
     [Parameter]
     public string Id { get; set; }
+    public string programmeId { get; set; }
+    public Programmes programme { get; set; }
+    private EditFormPlancadre TemplateForm { get; set; }
 
-    [CascadingParameter]
-    public FormMode CurrentMode { get; set; }
-
-    public CourseTemplateFormComponent CurrentForm { get; set; }
-
-    private LinkedListNode<CourseTemplateFormComponent> CurrentNode { get; set; }
-    private LinkedList<CourseTemplateFormComponent> Forms { get; set; }
-
-    [Parameter]
-    public PlansCadres Template { get; set; }
+    DropdownProgramSelection ProgramSelect;
 
     ChangeEventArgs<DropdownProgramSelection> programSelectChange;
 
-    protected override void OnInitialized()
+    protected override void OnAfterRender(bool first)
     {
-        //Si la page reçoit un ID spécifique, ce processus le charge en mémoire. Sinon, il génère un nouvel objet.
-        PlansCadres SpecifiedTemplate = context.PlansCadres .Include(tmp => tmp.PlanCadreCompetenceElements)
-                                                            .Include(tmp => tmp.ExamensFinalsCertificatifs)
-                                                            .Where(cadre => cadre.CoursId.Trim() == this.Id)
-                                                            .OrderByDescending(cadre => cadre.VsnCdttm)
-                                                            .FirstOrDefault();
+        if (first)
+            ProgramSelect.ValueChanged += UpdateProgram;
+    }
 
-        if (SpecifiedTemplate != null)
-        {
-            Template = SpecifiedTemplate;
-            CurrentMode = FormMode.EDIT;
-        }
-        else
-        {
-            Template = new PlansCadres();
-            CurrentMode = FormMode.CREATE;
-        }
-
-
-        //Création des composantes du wizard et ajout à la liste liée.
-        Forms = new LinkedList<CourseTemplateFormComponent>();
-
-        Forms.AddLast(new EditFormPlancadre());
-        Forms.AddLast(new TemplateSkillElemInput());
-        Forms.AddLast(new FinalExamInput());
-        Forms.AddLast(new TemplateReview());
-
-        CurrentNode = Forms.First;
-        CurrentForm = CurrentNode.Value;
+    private void UpdateProgram(object sender, Programmes arg)
+    {
+        programme = arg;
         StateHasChanged();
-    }
-
-    private void NavigateNext()
-    {
-        if (CurrentForm.SaveProgress())
-        {
-            CurrentNode = CurrentNode.Next;
-            CurrentForm = CurrentNode.Value;
-            StateHasChanged();
-        }
-        else
-        {
-            return;
-        }
-    }
-    private void NavigatePrevious()
-    {
-        CurrentNode = CurrentNode.Previous;
-        CurrentForm = CurrentNode.Value;
-        StateHasChanged();
-    }
-
-    public enum FormMode
-    {
-        CREATE = 1,
-        EDIT = 2
     }
 }

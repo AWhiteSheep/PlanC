@@ -1,1 +1,17 @@
-﻿
+﻿@page "/profil/configuration"
+@inject IJSRuntime JSRuntime
+@attribute [Authorize]
+
+<div class="row justify-content-center">
+    <div id="load_config">
+    </div>
+</div>
+
+@code {
+    private string internal_link => "/Account/Manage";
+    protected override async Task OnAfterRenderAsync(bool firstRender) {
+        if (firstRender) {
+            await JSRuntime.InvokeAsync<string>("load_config", internal_link);
+        }
+    }
+}

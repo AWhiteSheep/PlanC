@@ -1,7 +1,21 @@
 ﻿@*le mot clé définissant la page n'est pas sensible la case*@
 @page "/admin"
 @namespace PlanC.Client.Pages
-
+@attribute [Authorize]
+<!-- Section de navigation -->
+<div class="row mb-3">
+    <div class="col">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <!-- Donne accès au portail selon le role de l'utilisateur -->
+                <li class="breadcrumb-item"><a href="/"> Portail </a></li>
+                <li style="padding: 0 4px;"><i class="fas fa-home" style="font-size: 15px; color: #3f51b5;"></i></li>
+                <li class="breadcrumb-item"><i class="fas fa-circle" style="font-size: 5px; vertical-align: middle; padding-right: 2px;"></i></li>
+                <li class="breadcrumb-item active" aria-current="page"> Administration </li>
+            </ol>
+        </nav>
+    </div>
+</div>
 <div class="row m-3">
     <div class="col-sm-6">
         <a href="/programmes" class="card d-flex justify-content-center text-center" style="height: 50px;">
@@ -13,17 +27,17 @@
             Plans-cadres
         </a>
     </div>
-    <div class="col-sm-6">
+    <div class="col-sm-6 pt-3">
         <a href="/planscours" class="card d-flex justify-content-center text-center" style="height: 50px;">
             Plans de cours
         </a>
     </div>
-    <div class="col-sm-6">
+    <div class="col-sm-6 pt-3">
         <a href="/competences" class="card d-flex justify-content-center text-center" style="height: 50px;">
             Gestion des compétences
         </a>
     </div>
-    <div class="col-sm-6">
+    <div class="col-sm-6 pt-3">
         <a href="/Roles" class="card d-flex justify-content-center text-center" style="height: 50px;">
             Gestion des rôles
         </a>

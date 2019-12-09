@@ -1,5 +1,4 @@
 ﻿@page "/departements"
-
 @using Microsoft.AspNetCore.Components
 @inject PCU001Context context
 <!-- Section de navigation -->
@@ -7,7 +6,7 @@
     <div class="col">
         <nav aria-label="breadcrumb">
             <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="~/Admin"> Portail </a></li>
+                <li class="breadcrumb-item"><a href="/portail"> Portail </a></li>
                 <li style="padding: 0 4px;"><i class="fas fa-home" style="font-size: 15px; color: #3f51b5;"></i></li>
                 <li class="breadcrumb-item"><i class="fas fa-circle" style="font-size: 5px; vertical-align: middle; padding-right: 2px;"></i></li>
                 <li class="breadcrumb-item active" aria-current="page"> Départements </li>
@@ -53,7 +52,7 @@
                                     <!-- Renvoit les programmes reliés au département-->
                                 </td>
                                 <td valign="top" class="flex-column">
-                                    <a class="btn btn-success" href="/Departement/@department.Id">Consulter</a>
+                                    <a class="btn btn-success" href="/departements/@department.Id">Consulter</a>
                                 </td>
                             </tr>
                         </tbody>
