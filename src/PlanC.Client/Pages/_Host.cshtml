@@ -55,8 +55,8 @@
                     </app>
                 </div>
                 <div id="weatherOfDay" class="shadow position-absolute p-3" style="bottom: 25px; right: 25px; position: relative;">
-                    <div class="top-right-action-icon">
-                        Je suis un widget
+                    <div id="calendarMenu" class="top-right-action-icon bg-memory-secondary text-center">
+                        <i class="fas fa-calendar-day" style="vertical-align: bottom;"></i>
                     </div>
                 </div>
             </div>
@@ -95,42 +95,39 @@
     <!-- JQuery -->
     <script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.4.1.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-easing/1.4.1/jquery.easing.min.js" integrity="sha256-H3cjtrm/ztDeuhCN9I4yh4iN2Ybx/y1RM7rMmAesA0k=" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
 
-    <!-- librairie framework anime js -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/2.2.0/anime.min.js" integrity="sha256-BuxrUdr/4YoztQLxT6xmdO6hSQw2d6BtBUY1pteGds4=" crossorigin="anonymous"></script>
+    <!-- librairie framework anime js https://cdnjs.cloudflare.com/ajax/libs/animejs/2.2.0/anime.min.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/2.2.0/anime.min.js"></script>
+    <!-- librairie framework pour le richtext editor https://cdnjs.cloudflare.com/ajax/libs/Trumbowyg/2.19.1/trumbowyg.min.js -->
+    <!-- rc:localization en francais pour le richtext editor https://cdnjs.cloudflare.com/ajax/libs/Trumbowyg/2.19.1/langs/fr.min.js https://cdnjs.cloudflare.com/ajax/libs/Trumbowyg/2.19.1/plugins/cleanpaste/trumbowyg.cleanpaste.min.js https://cdnjs.cloudflare.com/ajax/libs/Trumbowyg/2.19.1/plugins/pasteimage/trumbowyg.pasteimage.min.js --
 
-    <!-- librairie framework pour le richtext editor -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/Trumbowyg/2.19.1/trumbowyg.min.js"></script>
 
-    <!-- rc:localization en francais pour le richtext editor -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/Trumbowyg/2.19.1/langs/fr.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/Trumbowyg/2.19.1/plugins/cleanpaste/trumbowyg.cleanpaste.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/Trumbowyg/2.19.1/plugins/pasteimage/trumbowyg.pasteimage.min.js"></script>
+    <!-- Ajax habituel de asp .net -->
+    <script src="https://ajax.aspnetcdn.com/ajax/jquery/jquery-1.9.0.js"></script>
 
     <!-- pour le framework de template suncfusion -->
     <script src="https://cdn.syncfusion.com/ej2/17.3.18/dist/ej2.min.js"></script>
     <script src="https://cdn.syncfusion.com/ej2/17.3.18/dist/ejs.interop.min.js"></script>
 
-    <!-- Auto complete master -->
-    <script src="~/js/jquery.autocomplete.min.js"></script>
 
     <!-- CDNs bootstrap -->
-    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
 
-    <!-- Ajax habituel de asp .net -->
-    <script src="https://ajax.aspnetcdn.com/ajax/jquery/jquery-1.9.0.js"></script>
 
-    <!-- Scripts custome & Blazor framework for the client -->
-    <script src="~/js/site.js" asp-append-version="true"></script>
-    <script src="~/_framework/blazor.server.js" autostart="false"></script>
-    <script src="~/js/applicationjs.js"></script>
+    <!-- Auto complete master -->
+    <script src="~/js/jquery.autocomplete.min.js"></script>
 
     <!-- cookie plugin et le weather api -->
     <script src="~/js/moment.js"></script>
     <script src="~/js/jquery.cookie.js"></script>
     <script src="~/js/weather-client.js"></script>
+
+    <!-- Scripts custome & Blazor framework for the client -->
+    <script src="~/_framework/blazor.server.js" autostart="false"></script>
+    <script src="~/js/site.js"></script>
+    <script src="~/js/applicationjs.js"></script>
 
     <script>
         function load_config(url) {

@@ -21,37 +21,34 @@
   position: absolute;
   top: -8px;
   right: -8px;
-  width: 20px;
-  height: 20px;
+  width: 25px;
+  height: 25px;
   color: #fff;
   font-size: 14px;
-  background: #222;
   border: none;
   outline: none;
   border-radius: 50%;
   cursor: pointer;
   vertical-align: middle;
   /*animation*/
-  -webkit-animation-duration: 1s;
-  animation-duration: 1s;
+  -webkit-animation-duration: 5s;
+  animation-duration: 5s;
   -webkit-animation-fill-mode: both;
   animation-fill-mode: both;
   -webkit-animation-timing-function: ease-in-out;
   animation-timing-function: ease-in-out;
   animation-iteration-count: infinite;
   -webkit-animation-iteration-count: infinite;
-  animation-delay: 4s;
 }
-.top-right-action-icon {
+.top-right-action-icon:hover {
 	animation-name: clickme; 
 }
 
 @keyframes clickme {
  0%   { transform: scale(1,1)      translateY(0); }
-        10%  { transform: scale(1.1,.9)   translateY(0); }
-        30%  { transform: scale(.9,1.1)   translateY(-5px); }
-        50%  { transform: scale(1.05,.95) translateY(-1px); }
-        57%  { transform: scale(1,1)      translateY(0); }
-        64%  { transform: scale(1,1)      translateY(0); }
+        4%  { transform: scale(1.1,.9)   translateY(0); }
+        7%  { transform: scale(.9,1.1)   translateY(-10px); }
+        15%  { transform: scale(1.05,.95) translateY(0); }
+        30%  { transform: scale(1,1)      translateY(-1px); }
         100% { transform: scale(1,1)      translateY(0); }
 }

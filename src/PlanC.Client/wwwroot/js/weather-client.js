@@ -87,3 +87,70 @@ function weatherControlUI() {
     var locationName = locationWeather.name;
     console.log(locationName);
 }
+
+// rend le temps d'attente accessible à tout les objets
+var timeOut;
+
+// the weather calendar control-center
+class Item {
+    constructor(content, backgroundColor, desiredClass) {
+        this.$element = $(document.createElement("h4"));
+        this.content = content;
+        this.$element.addClass(desiredClass);
+        this.$element.addClass("card");
+        this.$element.addClass("display-none");
+        this.$element.css("background-color", backgroundColor);
+        this.$element.append(content);
+        this.isMoving = false;
+    }
+}
+
+
+// class menu
+class Menu {
+    constructor(menu) {
+        this.$element = $(menu);
+        this.size = 0;
+        this.items = new Array();
+        this.isMoving = false;
+        this.hasMoved = false;
+        this.status = "closed";
+    }
+
+    add(item) {
+        var menu = this.items;
+        menu[this.size] = item;
+        this.size++;
+        this.$element.append(item.$element);
+    }
+    open() {
+        this.status = "open";
+        var menu = this.items;
+        menu.forEach(function (item, index, menu) {
+            menu[index].$element.removeClass("display-none");
+        });
+    }
+    close() {
+        this.status = "closed";
+        var menu = this.items;
+        menu.forEach(function (item, index, menu) {
+            menu[index].$element.addClass("display-none");
+        });
+    }
+}
+
+// nouveau menu opener
+var menu = new Menu("#calendarMenu");
+// set le langage et la date du client
+var dateMoment = moment().format('LLLL');
+// ajout au menu
+var calendar = new Item(dateMoment, "#fff", "calendarWheater");
+menu.add(calendar);
+
+menu.$element.on("click", function(){
+    if (menu.status == "open") {
+        menu.close();
+    } else {
+        menu.open();
+    }
+});
