@@ -13,20 +13,20 @@
         </a>
         <!-- Dropdown - Options pour l'utilisateur -->
         <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="userDropdown">
-            <a href="/Pofil/Configuration" title="Manage" class="dropdown-item">
+            <a href="/profil/configuration" title="Manage" class="dropdown-item">
                 <i class="fas fa-user fa-sm fa-fw mr-2"></i>
                 @UserManager.GetUserName(User)
             </a>
-            <a class="dropdown-item" href="#">
+            <a class="dropdown-item" href="/documents">
                 <i class="fas fa-file fa-sm fa-fw mr-2"></i>
                 Mes documents
             </a>
-            <a class="dropdown-item" href="#">
+            <a class="dropdown-item" href="/aide">
                 <i class="fas fa-info fa-sm fa-fw mr-2"></i>
                 Aide
             </a>
             <div class="dropdown-divider"></div>
-            <a class="dropdown-item" href="#">
+            <a class="dropdown-item" href="/commenter">
                 <i class="fas fa-comment fa-sm fa-fw mr-2"></i>
                 Commentaire
             </a>
@@ -44,12 +44,12 @@ else
 {
     <li class="nav-item">
         <span class="nav-link">
-            <a class="btn btn-primary" id="register" href="/Compte/Nouveau">S'enregistrer</a>
+            <a class="btn btn-primary" id="register" href="/compte/nouveau">S'enregistrer</a>
         </span>
     </li>
     <li class="nav-item">
         <span class="nav-link">
-            <a class="btn btn-outline-primary" id="login" href="/Login">Se connecter</a>
+            <a class="btn btn-outline-primary" id="login" href="/login">Se connecter</a>
         </span>
     </li>
 }
