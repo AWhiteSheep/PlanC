@@ -1,19 +1,70 @@
-﻿@page "/profil/configuration"
+﻿
+@page "/profil/configuration"
 @inject IJSRuntime JSRuntime
-@attribute [Authorize]
+@inherits Usager
 
+
+@if (!String.IsNullOrEmpty(StatusMessage))
+{
+    var statusMessageClass = StatusMessage.StartsWith("Erreur") ? "danger" : "success";
+    <div class="alert alert-@statusMessageClass alert-dismissible" role="alert">
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        @StatusMessage
+    </div>
+}
 <div class="row justify-content-center">
     <div class="col-12">
-        <div id="load_config">
+        <h4>Configuration du profil.</h4>
+        <hr />
+        <div class="row">
+            <div class="col-md-3">
+                <ul class="nav nav-pills flex-column">
+                    <li class="nav-item"><a class="nav-link" id="profile" onclick="load_config('/Account/Manage')">Profile</a></li>
+                    <li class="nav-item"><a class="nav-link" id="email" onclick="load_config('/Account/Email')">Email</a></li>
+                    <li class="nav-item"><a class="nav-link" id="change-password" onclick="load_config('/Account/Password')">Password</a></li>
+                    <li class="nav-item"><a class="nav-link" id="personal-data" onclick="load_config('/Account/Data')">Personal data</a></li>
+                </ul>
+            </div>
+            <div class="col-md-9">
+                <div class="row">
+                    <div class="col-md-6">
+                        <EditForm id="numero" OnValidSubmit="PostNumberAsync">
+                            <DataAnnotationsValidator></DataAnnotationsValidator>
+                            <div class="form-group">
+                                <label for="Username" class="control-label"> Numéro d'usagé: </label>
+                                <input value="@Username" class="form-control" disabled />
+                            </div>
+                            <div class="form-group">
+                                <label for="phonenumeber" class="control-label"> Numéro de la compétence: </label>
+                                <InputText @bind-Value="Input.PhoneNumber" class="form-control" />
+                                <ValidationMessage For="(() => Input.PhoneNumber)"></ValidationMessage>
+                            </div>
+                            <button id="update-profile-button" type="submit" class="btn btn-primary">Sauvegarder</button>
+                        </EditForm>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </div>
 
 @code {
     private string internal_link => "/Account/Manage";
-    protected override async Task OnAfterRenderAsync(bool firstRender) {
-        if (firstRender) {
-            await JSRuntime.InvokeAsync<string>("load_config", internal_link);
+
+    protected override void OnParamaterSets() {
+        Input = new InputModel();
+    }
+
+    protected override async void OnInitializedAsync()
+    {
+        // obtient l'utilisateur pour le render de la page et des configuration
+        user = (await authenticationStateTask).User;
+        Username = user.Identity.Name;
+        if (user == null)
+        {
+            StatusMessage = $"Impossible de trouver l'utlisateur ayant le ID '{user.Identity.Name}'.";
         }
+
+        LoadAsync(user);
     }
 }
