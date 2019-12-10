@@ -119,6 +119,7 @@
         {
             CurrentNode = CurrentNode.Next;
             CurrentForm = CurrentNode.Value;
+            CurrentMode = FormMode.EDIT;
             StateHasChanged();
         }
         else

@@ -14,7 +14,7 @@
         <tr>
             @if (!IsReadOnly)
             {
-                <th></th>
+                <th style="max-width: 10%"></th>
             }
             <th style="min-width:60%">Titre de l'examen</th>
             <th>Pondération</th>
@@ -39,6 +39,43 @@
                 </td>
             </tr>
 
+            <tr>
+                <td>
+                    <button class="btn btn-info" @onclick="() => AddExamCriteria(exam)"><i class="fas fa-plus"></i></button>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <table class="table table-borderless">
+                        <thead>
+                            <tr>
+                                <th style="max-width:10%">
+
+                                </th>
+                                <th>
+                                    Élément de compétence
+                                </th>
+                                <th>
+                                    Pondération
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach(ExamensElementsCompetences excrit in exam.ExamensElementsCompetences)
+                            {
+                                <tr>
+                                    <td>
+                                        <i class="fas fa-plus"></i>
+                                    </td>
+                                    <td>
+                                        <input class="form-control input"
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </td>
+            </tr>
         }
     </tbody>
 </table>
