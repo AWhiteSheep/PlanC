@@ -7,49 +7,90 @@
 
 @if (SignInManager.IsSignedIn(User))
 {
-    <li class="nav-item dropdown">
-        <a class="nav-link dropdown-toggle" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-            <img class="img-profile rounded-circle" src="~/images/avatars/girl-1.svg">
-        </a>
-        <!-- Dropdown - Options pour l'utilisateur -->
-        <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="userDropdown">
-            <a href="/profil/configuration" title="Manage" class="dropdown-item">
-                <i class="fas fa-user fa-sm fa-fw mr-2"></i>
-                @UserManager.GetUserName(User)
-            </a>
-            <a class="dropdown-item" href="/documents">
-                <i class="fas fa-file fa-sm fa-fw mr-2"></i>
-                Mes documents
-            </a>
-            <a class="dropdown-item" href="/aide">
-                <i class="fas fa-info fa-sm fa-fw mr-2"></i>
-                Aide
-            </a>
-            <div class="dropdown-divider"></div>
-            <a class="dropdown-item" href="/commenter">
-                <i class="fas fa-comment fa-sm fa-fw mr-2"></i>
-                Commentaire
-            </a>
-        </div>
-    </li>
 
-    <!-- Nav Item - Déconnexion de l'utilisateur -->
-    <li class="nav-item dropdown">
-        <a class="theme-link" data-toggle="modal" data-target="#logoutModal">
-            <i class="theme-circle-button theme-logout fas fa-power-off"></i>
-        </a>
-    </li>
+    <!-- Nav Item - Centre de notifications? -->
+    <!-- Nav Item - Profil de l'utilisateur -->
+    <!-- Topbar Search -->
+    <form class="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search">
+        <div class="input-group">
+            <input name="searchbar" id="autocomplete" type="text" class="form-control form-memory bg-light small" aria-label="Search" aria-describedby="basic-addon2">
+            <div class="input-group-append">
+                <button class="btn btn-memory" type="button">
+                    <i class="fas fa-search fa-sm"></i>
+                </button>
+            </div>
+        </div>
+    </form>
+    <!-- Topbar Navbar -->
+    <ul class="navbar-nav ml-auto" style="margin-top: 0;">
+        <!-- Nav Item - Search Dropdown (Visible Only XS) -->
+        <li class="nav-item dropdown no-arrow d-sm-none">
+            <a class="nav-link dropdown-toggle" href="#" id="searchDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <i class="fas fa-search fa-fw"></i>
+            </a>
+            <!-- Dropdown - Menu pour rechercher -->
+            <div class="dropdown-menu dropdown-menu-right p-3 shadow animated--grow-in" aria-labelledby="searchDropdown">
+                <form class="form-inline mr-auto w-100 navbar-search">
+                    <div class="input-group">
+                        <input type="text" class="form-control bg-light border-0 small" aria-label="Search" aria-describedby="basic-addon2">
+                        <div class="input-group-append">
+                            <button class="btn btn-primary" type="button">
+                                <i class="fas fa-search fa-sm"></i>
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </li>
+        <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <img class="img-profile rounded-circle" src="~/images/avatars/girl-1.svg">
+            </a>
+            <!-- Dropdown - Options pour l'utilisateur -->
+            <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="userDropdown">
+                <a href="/profil/configuration" title="Manage" class="dropdown-item">
+                    <i class="fas fa-user fa-sm fa-fw mr-2"></i>
+                    @UserManager.GetUserName(User)
+                </a>
+                <a class="dropdown-item" href="/documents">
+                    <i class="fas fa-file fa-sm fa-fw mr-2"></i>
+                    Mes documents
+                </a>
+                <a class="dropdown-item" href="/aide">
+                    <i class="fas fa-info fa-sm fa-fw mr-2"></i>
+                    Aide
+                </a>
+                <div class="dropdown-divider"></div>
+                <a class="dropdown-item" href="/commenter">
+                    <i class="fas fa-comment fa-sm fa-fw mr-2"></i>
+                    Commentaire
+                </a>
+            </div>
+        </li>
+
+        <!-- Nav Item - Déconnexion de l'utilisateur -->
+        <li class="nav-item dropdown">
+            <a class="theme-link" data-toggle="modal" data-target="#logoutModal">
+                <i class="theme-circle-button theme-logout fas fa-power-off"></i>
+            </a>
+        </li>
+    </ul>
 }
 else
 {
-    <li class="nav-item">
-        <span class="nav-link">
-            <a class="btn btn-primary" id="register" href="/compte/nouveau">S'enregistrer</a>
-        </span>
-    </li>
-    <li class="nav-item">
-        <span class="nav-link">
-            <a class="btn btn-outline-primary" id="login" href="/login">Se connecter</a>
-        </span>
-    </li>
+    <!-- Topbar Navbar -->
+    <ul class="navbar-nav ml-auto" style="margin-top: 0;">
+        <!-- Nav Item - Centre de notifications? -->
+        <!-- Nav Item - Profil de l'utilisateur -->
+        <li class="nav-item">
+            <span class="nav-link">
+                <a class="btn btn-primary" id="register" href="/compte/nouveau">S'enregistrer</a>
+            </span>
+        </li>
+        <li class="nav-item">
+            <span class="nav-link">
+                <a class="btn btn-outline-primary" id="login" href="/login">Se connecter</a>
+            </span>
+        </li>
+    </ul>
 }

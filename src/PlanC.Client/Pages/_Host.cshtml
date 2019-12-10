@@ -3,10 +3,14 @@
 @addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
 @inject Microsoft.AspNetCore.Antiforgery.IAntiforgery Xsrf
 @functions{
-
+    public string logoutparam;
     public string GetAntiXsrfRequestToken()
     {
         return Xsrf.GetAndStoreTokens(HttpContext).RequestToken;
+    }
+    public string logoutParam() {
+        return (logoutparam = Request.Query["logout"]);
+
     }
 }
 
@@ -54,6 +58,27 @@
                 <!-- Begin Page Content -->
                 <div class="container-fluid">
                     <app style="background-color: white">
+                        @if (!String.IsNullOrEmpty(logoutParam()))
+                        {
+                        <div id="message-logout" class="container-message-logout-animate">
+                            <div class="container-message">
+                                <div class="message-logout">
+                                    <i class="far fa-laugh-wink image-logout" aria-hidden="true"></i>
+                                    <div class="text-logout">
+                                        Vous êtes maintenant déconnecté.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <script>
+                            document.addEventListener("readystatechange", function () {                                
+                                new URLSearchParams().delete("logout");
+                                setTimeout(() => {
+                                    $("#message-logout").fadeOut();
+                                }, 10000);
+                            });
+                        </script>
+                        }
                         @(await Html.RenderComponentAsync<App>(RenderMode.ServerPrerendered))
                     </app>
                 </div>
@@ -61,12 +86,12 @@
                 <!-- affiche la température est la date -->
                 <div style="position: fixed; bottom: 0; right: 0;">
                     <div class="card" style="position: absolute; bottom: 0; right: 0;">
-                        <div class="card-header">
-                            <button class="btn btn-link press" type="button" data-toggle="collapse" data-target="#weather-container" aria-expanded="false">Afficher</button>
+                        <div class="text-center" style="width: 336px;">
+                            <a data-toggle="collapse" style="color: darkorange;" data-target="#weather-container" aria-expanded="false"><i id="weather-hint" class="fas fa-angle-double-up" style="vertical-align: middle;"></i></a>
                         </div>
                         <div class="collapse" id="weather-container">
                             <div class="card-body">
-                                <div id="weatherOfDay" class="shadow p-3" style="bottom: 25px; right: 25px; position: fixed; background-color: white;">
+                                <div id="weatherOfDay" class="shadow p-3" style="position: relative; margin-right: 25px; margin-left: 25px; background-color: white;">
                                     <div id="calendarMenu" class="top-right-action-icon bg-memory-secondary text-center">
                                         <i class="fas fa-calendar-day" style="vertical-align: bottom;"></i>
                                     </div>

@@ -183,14 +183,14 @@ function deconnection() {
     $.ajax({
         type: "POST",
         contentType: "application/json",
-        url: "/Logout",
+        url: "/logout",
         headers: {
             'RequestVerificationToken': data['RequestVerificationToken']
         },
         data: JSON.stringify(data),
         success: function (data, textStatus) {
             if (textStatus == "success") {
-                window.location = "/Compte/Logout"
+                window.location = "/?logout=success"
             }
         },
         error: function (data, status, error) {

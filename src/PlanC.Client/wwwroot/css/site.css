@@ -1,10 +1,83 @@
 ﻿/* Please see documentation at https://docs.microsoft.com/aspnet/core/client-side/bundling-and-minification
 for details on configuring this project to bundle and minify static web assets. */
 
+input[disabled] {
+  color: var(--blue);
+  backgroud-color: #fff;
+}
+
+/*container message */
+.container-message-logout-animate {
+  animation: MoveDown 250ms ease;
+  top: 60px
+}
+
+@keyframes MoveDown {
+  0% {
+    top: 0;
+    opacity: 0
+  }
+
+  100% {
+    top: 60px;
+    opacity: 1
+  }
+}
+
+.container-message {
+  line-height: 1.5;
+  font-weight: normal;
+  color: rgba(0,0,0,.87);
+  font-family: Roboto,Arial,Helvetica,sans-serif;
+  font-size: 17px;
+  box-sizing: inherit;
+  position: absolute;
+  animation: MoveDown 250ms ease;
+  top: 9%;
+  left: 5%;
+  z-index: 9;
+}
+.message-logout {
+  font-size: 17px;
+  box-sizing: inherit;
+  background-color: #fff;
+  box-shadow: 0 2px 5px 0 rgba(0,0,0,.16),0 2px 10px 0 rgba(0,0,0,.12);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 360px;
+  border-radius: 5px;
+  padding: 10px;
+}
+.image-logout {
+  font-size: 30px;
+  border-style: none;
+  flex: none;
+  color: #0776bf;
+}
+.text-logout {
+  flex: 1;
+  margin-left: 15px;
+}
+
+
+/** form validation */
+.input-validation-error {
+  border-color: #e74a3b !important;
+  padding-right: calc(1.5em + 0.75rem);
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='%23e74a3b' viewBox='-2 -2 7 7'%3e%3cpath stroke='%23e74a3b' d='M0 0l3 3m0-3L0 3'/%3e%3ccircle r='.5'/%3e%3ccircle cx='3' r='.5'/%3e%3ccircle cy='3' r='.5'/%3e%3ccircle cx='3' cy='3' r='.5'/%3e%3c/svg%3E");
+  background-repeat: no-repeat;
+  background-position: center right calc(0.375em + 0.1875rem);
+  background-size: calc(0.75em + 0.375rem) calc(0.75em + 0.375rem);
+}
+  .input-validation-error:focus {
+    border-color: #e74a3b !important;
+    box-shadow: 0 0 0 0.2rem rgba(231, 74, 59, 0.25);
+  }
 /* readonly field color patching */
 .form-control[readonly] {
   background-color: #ffffff !important;
-  color: #4e73df;
+  color: var(--blue);
 }
 /**calendar*/
 #calendarMenu {
@@ -2387,6 +2460,19 @@ textarea.form-control {
     border-color: #1cc88a;
     box-shadow: 0 0 0 0.2rem rgba(28, 200, 138, 0.25);
   }
+.valid:not(input[readonly]) {
+  border-color: #1cc88a;
+  padding-right: calc(1.5em + 0.75rem);
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8'%3e%3cpath fill='%231cc88a' d='M2.3 6.73L.6 4.53c-.4-1.04.46-1.4 1.1-.8l1.1 1.4 3.4-3.8c.6-.63 1.6-.27 1.2.7l-4 4.6c-.43.5-.8.4-1.1.1z'/%3e%3c/svg%3e");
+  background-repeat: no-repeat;
+  background-position: center right calc(0.375em + 0.1875rem);
+  background-size: calc(0.75em + 0.375rem) calc(0.75em + 0.375rem);
+}
+
+.valid:focus:not(input[readonly]) {
+    border-color: #1cc88a;
+    box-shadow: 0 0 0 0.2rem rgba(28, 200, 138, 0.25);
+  }
 
   .was-validated .valid-feedback,
   .was-validated .valid-tooltip, .form-control.valid ~ .valid-feedback,
@@ -2476,7 +2562,19 @@ textarea.form-control {
   background-color: rgba(231, 74, 59, 0.9);
   border-radius: 0.35rem;
 }
-
+.form-control.invalid {
+  color: red;
+  border-color: #e74a3b;
+  padding-right: calc(1.5em + 0.75rem);
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='%23e74a3b' viewBox='-2 -2 7 7'%3e%3cpath stroke='%23e74a3b' d='M0 0l3 3m0-3L0 3'/%3e%3ccircle r='.5'/%3e%3ccircle cx='3' r='.5'/%3e%3ccircle cy='3' r='.5'/%3e%3ccircle cx='3' cy='3' r='.5'/%3e%3c/svg%3E");
+  background-repeat: no-repeat;
+  background-position: center right calc(0.375em + 0.1875rem);
+  background-size: calc(0.75em + 0.375rem) calc(0.75em + 0.375rem);
+}
+.form-control.invalid:focus {
+  border-color: #e74a3b;
+  box-shadow: 0 0 0 0.2rem rgba(231, 74, 59, 0.25);
+}
 .was-validated .form-control.invalid {
   border-color: #e74a3b;
   padding-right: calc(1.5em + 0.75rem);

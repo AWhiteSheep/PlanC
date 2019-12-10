@@ -46,6 +46,7 @@ function weatherControlUI() {
     // top row
     var topRow = document.createElement("div");
     topRow.classList.add("d-flex");
+    topRow.style.width = "max-content";
     // température
     var current = weatherObject.current
     var usefulInfo = {};
@@ -159,3 +160,13 @@ menu.$element.on("click", function(){
         menu.open();
     }
 });
+
+// triggers pour les on show collapse et on collapsed
+$('#weather-container').on('shown.bs.collapse', function () {
+    $('#weather-hint').removeClass("fa-angle-double-up");
+    $('#weather-hint').addClass("fa-angle-double-down");
+})
+$('#weather-container').on('hidden.bs.collapse', function () {
+    $('#weather-hint').removeClass("fa-angle-double-down");
+    $('#weather-hint').addClass("fa-angle-double-up");
+})
