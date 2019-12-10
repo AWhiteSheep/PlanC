@@ -49,7 +49,22 @@
 /commenter
 /planscadres/{id}
 /departements/{DepartementId}/planscadres/creation
-
-
-@attribute [Authorize]
 /Roles
+
+
+# identifiant du cours -> (comptences)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
