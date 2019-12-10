@@ -36,14 +36,8 @@ namespace PlanC.Client.Pages.Profils
             [Phone]
             public string PhoneNumber { get; set; }
         }
-        public async void LoadAsync(ClaimsPrincipal __user)
-        {
-            user = (await _userManager.GetUserAsync(__user));
-            var userName = user.UserName;
-            var phoneNumber = user.PhoneNumber;
 
-            Username = userName;
-        }
+        // sauvegarde le numéro de téléphone
         public async Task PostNumberAsync()
         {
             if (Input.PhoneNumber != user.PhoneNumber)

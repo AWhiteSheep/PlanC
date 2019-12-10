@@ -1,6 +1,12 @@
 ﻿// Please see documentation at https://docs.microsoft.com/aspnet/core/client-side/bundling-and-minification
 // for details on configuring this project to bundle and minify static web assets.
 
+/**
+ *
+ * Yan Ha Routhier-Chevrier
+ * Page - blazor
+ *
+ * */
 
 // animate on in 
 window.initForm = () => {
@@ -165,13 +171,15 @@ $(document).on('click', '.panel-heading span.clickable', function (e) {
     }
 })
 
-
+// confirmation post de la deconnection
 function deconnection() {
 
     var data = {
+        // token caché dans la page afin de ne pas avoir le rediriger ver un pas de déconeccexion
         RequestVerificationToken: $("[name='__RequestVerificationToken']").val()
     };
 
+    // envoit de la demande en ajax avec le data demandé
     $.ajax({
         type: "POST",
         contentType: "application/json",
@@ -190,3 +198,10 @@ function deconnection() {
         }
     });
 }
+
+// tiles javascript
+$('.me-card').each(function (i, e) {
+    // https://github.com/material-components/material-components-web/blob/master/docs/getting-started.md
+    // attache à l'élément une joyeuse apparence 
+    mdc.ripple.MDCRipple.attachTo(e);
+});

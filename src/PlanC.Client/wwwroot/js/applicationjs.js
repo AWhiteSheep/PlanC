@@ -1,4 +1,10 @@
-﻿// main js for the blazor application
+﻿/**
+ *
+ * Yan Ha Routhier-Chevrier
+ * Page - blazor
+ *
+ * */
+// main js for the blazor application
 
 // god bless stackoverflow
 // https://stackoverflow.com/questions/57366355/how-do-i-use-blazor-server-side-inside-a-razor-component-library-using-areas

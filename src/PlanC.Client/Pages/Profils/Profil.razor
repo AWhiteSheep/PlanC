@@ -51,20 +51,21 @@
 @code {
     private string internal_link => "/Account/Manage";
 
-    protected override void OnParamaterSets() {
+    protected override void OnParametersSet()
+    {
         Input = new InputModel();
     }
 
-    protected override async void OnInitializedAsync()
+    protected override async Task OnInitializedAsync() 
     {
         // obtient l'utilisateur pour le render de la page et des configuration
-        user = (await authenticationStateTask).User;
-        Username = user.Identity.Name;
+        user = await _userManager.GetUserAsync((await authenticationStateTask).User);
+        Username = user.UserName;
         if (user == null)
         {
-            StatusMessage = $"Impossible de trouver l'utlisateur ayant le ID '{user.Identity.Name}'.";
+            StatusMessage = $"Impossible de trouver l'utlisateur ayant le ID '{Username}'.";
         }
-
-        LoadAsync(user);
+        
+        Input.PhoneNumber = user.PhoneNumber;
     }
 }

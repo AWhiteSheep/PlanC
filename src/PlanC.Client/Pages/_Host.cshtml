@@ -17,20 +17,23 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Plans Cadres</title>
     <base href="~/" />
-    <link href="css/site.css" rel="stylesheet" />
-    <link href="lib/controllers/action-button.css" rel="stylesheet" />
+    <link async href="css/site.css" rel="stylesheet" />
+    <link async href="lib/controllers/action-button.css" rel="stylesheet" />
+    <link async href="css/my-tiles.css" rel="stylesheet" />
 
     <!-- cdn pour le richtext editor pour les css https://cdnjs.com/libraries/Trumbowyg -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Trumbowyg/2.19.1/ui/trumbowyg.min.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Trumbowyg/2.19.1/ui/trumbowyg.min.css" />
 
     <!-- Fonts -->
-    <link href="https://fonts.googleapis.com/css?family=Nunito:200,600" rel="stylesheet">
+    <script src="https://kit.fontawesome.com/50510c8db2.js" crossorigin="anonymous"></script>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link href="https://unpkg.com/material-components-web@latest/dist/material-components-web.min.css" rel="stylesheet">
+
 
     <!-- CDNs fontawesome, bootstrap & css style sheet pour syncfusion table -->
-    <link rel="stylesheet" type="text/css" href="https://cdn.syncfusion.com/ej2/17.3.18/fabric.css" />
-    <link rel="stylesheet" type="text/css" href="https://cdn.syncfusion.com/ej2/17.3.19/ej2-buttons/styles/material.css" />
-    <script src="https://kit.fontawesome.com/50510c8db2.js" crossorigin="anonymous"></script>
-    <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" />
+    <link async rel="stylesheet" type="text/css" href="https://cdn.syncfusion.com/ej2/17.3.18/fabric.css" />
+    <link async rel="stylesheet" type="text/css" href="https://cdn.syncfusion.com/ej2/17.3.19/ej2-buttons/styles/material.css" />
+    <link async rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" />
 
 </head>
 <body id="page-top">
@@ -54,9 +57,22 @@
                         @(await Html.RenderComponentAsync<App>(RenderMode.ServerPrerendered))
                     </app>
                 </div>
-                <div id="weatherOfDay" class="shadow position-absolute p-3" style="bottom: 25px; right: 25px; position: relative;">
-                    <div id="calendarMenu" class="top-right-action-icon bg-memory-secondary text-center">
-                        <i class="fas fa-calendar-day" style="vertical-align: bottom;"></i>
+
+                <!-- affiche la température est la date -->
+                <div style="position: fixed; bottom: 0; right: 0;">
+                    <div class="card" style="position: absolute; bottom: 0; right: 0;">
+                        <div class="card-header">
+                            <button class="btn btn-link press" type="button" data-toggle="collapse" data-target="#weather-container" aria-expanded="false">Afficher</button>
+                        </div>
+                        <div class="collapse" id="weather-container">
+                            <div class="card-body">
+                                <div id="weatherOfDay" class="shadow p-3" style="bottom: 25px; right: 25px; position: fixed; background-color: white;">
+                                    <div id="calendarMenu" class="top-right-action-icon bg-memory-secondary text-center">
+                                        <i class="fas fa-calendar-day" style="vertical-align: bottom;"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -111,6 +127,8 @@
     <script src="https://cdn.syncfusion.com/ej2/17.3.18/dist/ej2.min.js"></script>
     <script src="https://cdn.syncfusion.com/ej2/17.3.18/dist/ejs.interop.min.js"></script>
 
+    <!-- Material components pour le web -->
+    <script src="https://unpkg.com/material-components-web@latest/dist/material-components-web.min.js"></script>
 
     <!-- CDNs bootstrap -->
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>

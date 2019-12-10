@@ -1,4 +1,9 @@
-﻿/*!
+﻿/**
+ *
+ * Yan Ha Routhier - Chevrier
+ * Page - blazor
+ *
+ * 
  * weather client
  * Uses
  * jQuery Cookie Plugin v1.4.1

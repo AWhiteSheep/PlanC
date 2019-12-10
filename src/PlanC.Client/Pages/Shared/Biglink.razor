@@ -1,0 +1,33 @@
+﻿
+<section>
+    <div class='me-card-shadow'>
+        <a href='@href' class='me-card mdc-elevation--z1 mdc-ripple-surface'>
+            <table>
+                <tr>
+                    <td width='40px'>
+                        <span class='material-icons md-24'>@info.icon</span>
+                    </td>
+                    <td>
+                        <div style='text-align:left;'>@info.text</div>
+                    </td>
+                </tr>
+            </table>
+        </a>
+    </div>
+</section>
+
+
+@code {
+    [Parameter]
+    public BiglinkContext info { get; set; }
+    [Parameter]
+    public string href { get; set; }
+
+    // class utilisé pour le taghelper
+    public class BiglinkContext
+    {
+        public string link { get; set; }
+        public string icon { get; set; }
+        public string text { get; set; }
+    }
+}

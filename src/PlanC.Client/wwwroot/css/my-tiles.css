@@ -1,0 +1,196 @@
+﻿/* Rules for sizing the icon. */
+.material-icons.md-18 {
+  font-size: 18px;
+}
+
+.material-icons.md-24 {
+  font-size: 24px;
+}
+
+.material-icons.md-36 {
+  font-size: 36px;
+}
+
+.material-icons.md-48 {
+  font-size: 48px;
+}
+
+.material-icons.md-66 {
+  font-size: 66px;
+}
+
+/* Rules for using icons as black on a light background. */
+.material-icons.md-dark {
+  color: rgba(0, 0, 0, 0.54);
+}
+
+  .material-icons.md-dark.md-inactive {
+    color: rgba(0, 0, 0, 0.26);
+  }
+
+/* Rules for using icons as white on a dark background. */
+.material-icons.md-light {
+  color: rgba(255, 255, 255, 1);
+}
+
+  .material-icons.md-light.md-inactive {
+    color: rgba(255, 255, 255, 0.3);
+  }
+
+.material-icons.clickable:hover {
+  color: blue #007bff;
+}
+
+/* Le shadow en dessous du me-card */
+.me-card-shadow {
+  display: block;
+  margin: 0;
+  position: relative;
+  width: 250px;
+  height: 75px;
+  margin: auto;
+  background-color: #FC913A;
+}
+
+.me-card {
+  position: absolute;
+  top: -8px;
+  right: -10px;
+  width: 250px;
+  height: 75px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px;
+  background-color: #173F5F;
+}
+
+.material-icons {
+  vertical-align: bottom;
+  display: block;
+  margin: 0;
+}
+
+.accueil-message > h6 {
+  margin: auto;
+  width: 360px;
+  padding: 75px 0 75px 0;
+  text-align: center;
+  font-size: 18px;
+  color: white;
+}
+
+.navbar {
+  height: 60px;
+  background-color: #173f5f;
+}
+
+footer {
+  text-align: right;
+  font-family: serif;
+  color: white;
+  font-size: smaller;
+}
+
+.table {
+  display: block;
+  margin: 0;
+}
+
+footer > hr {
+  border-top: .5px solid white;
+}
+
+.white-wrapper {
+  margin-top: 45pt;
+  margin-bottom: 45pt;
+  background-color: white;
+  border-radius: 5pt;
+}
+
+.list-page-widget {
+  position: absolute;
+  bottom: 15vh;
+  left: 15vh;
+  background-color: rgba(252,145,58,.62);
+  border-bottom: 1px solid rgb(252,145,58);
+}
+
+  .list-page-widget:hover {
+    background-color: rgba(252,145,58,.72);
+  }
+
+  .list-page-widget > a {
+    text-decoration: none;
+    color: black;
+  }
+/* Message first wrapper */
+.flex-wrapper {
+  display: flex;
+}
+/* Message second wrapper */
+.superior-wrapper {
+  position: relative;
+}
+
+  .superior-wrapper > h1 {
+    position: absolute;
+    display: flex;
+    right: 8pt;
+    font-size: 18px;
+    color: black;
+  }
+
+/* color section */
+.orange-72 {
+  background-color: rgba(252,145,58,.72);
+}
+
+.orange-62 {
+  background-color: rgba(252,145,58,.72);
+}
+
+.dark-blue-background {
+  background-color: #173f5f;
+}
+/* width height section */
+.w230-h10 {
+  width: 230pt;
+  height: 10pt;
+}
+/* padding section */
+.p-75-0 {
+  padding: 75pt 0;
+}
+
+.p-50-0 {
+  padding: 50pt 0;
+}
+/* geometric forme */
+.rect-md {
+  width: 636pt;
+  height: 327pt;
+}
+/* scrolling */
+.scroll {
+  padding: 10pt 0;
+  overflow: scroll;
+}
+
+.form-group > label {
+  color: white;
+}
+
+.form-group {
+  width: 300pt;
+  margin: auto;
+  padding: 10pt;
+}
+
+  .form-group > .form-check {
+    color: white;
+  }
+
+.error {
+  color: red !important;
+}
