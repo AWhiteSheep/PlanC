@@ -46,18 +46,17 @@
         <tbody>
             @foreach (PlanCadreCompetenceElements elem in SelectedSkillElements.Where(tse => tse.ElementCompetence.IdentityKeyCompetencesNavigation == skill))
             {
-                <tr>
-                    <td>
-                        <span class="label-info">@elem.ElementCompetence.Libele</span>
-                    </td>
-                    <td style="max-width:15%">
-                        <input class="input input-group" type="checkbox" @bind="elem.IsPartial" />
-                    </td>
-                    <td style="min-width:50%">
-                        <textarea style="width:100%" class="input m-0" @bind="elem.LongDescription" />
-                    </td>
-
-                </tr>
+            <tr>
+                <td>
+                    <span class="label-info">@elem.ElementCompetence.Libele</span>
+                </td>
+                <td style="max-width:15%">
+                    <input class="input input-group" type="checkbox" @bind="elem.IsPartial" />
+                </td>
+                <td style="min-width:50%">
+                    <textarea style="width:100%" class="input m-0" @bind="elem.LongDescription" />
+                </td>
+            </tr>
             }
         </tbody>
     </table>

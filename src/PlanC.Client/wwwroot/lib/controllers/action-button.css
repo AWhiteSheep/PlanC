@@ -40,8 +40,26 @@
   animation-iteration-count: infinite;
   -webkit-animation-iteration-count: infinite;
 }
+
 .top-right-action-icon:hover {
 	animation-name: clickme; 
+}
+
+.jumpy {
+  /*animation*/
+  cursor: pointer;
+  -webkit-animation-duration: 5s;
+  animation-duration: 5s;
+  -webkit-animation-fill-mode: both;
+  animation-fill-mode: both;
+  -webkit-animation-timing-function: ease-in-out;
+  animation-timing-function: ease-in-out;
+  animation-iteration-count: infinite;
+  -webkit-animation-iteration-count: infinite;
+}
+
+.jumpy:hover {
+  animation-name: clickme;
 }
 
 @keyframes clickme {

@@ -49,4 +49,7 @@
 /commenter
 /planscadres/{id}
 /departements/{DepartementId}/planscadres/creation
+
+
+@attribute [Authorize]
 /Roles

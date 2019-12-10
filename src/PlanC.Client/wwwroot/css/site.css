@@ -1,8 +1,16 @@
 ﻿/* Please see documentation at https://docs.microsoft.com/aspnet/core/client-side/bundling-and-minification
 for details on configuring this project to bundle and minify static web assets. */
 
+/* readonly field color patching */
+.form-control[readonly] {
+  background-color: #ffffff !important;
+  color: #4e73df;
+}
 /**calendar*/
 #calendarMenu {
+}
+
+.grid-item {
 }
 
 .calendarWheater {
@@ -271,6 +279,7 @@ html {
  */
 :root {
   --memory: #00bcd4;
+  --memory-secondary: #00bcd4;
   --blue: #4e73df;
   --indigo: #6610f2;
   --purple: #6f42c1;

@@ -87,7 +87,7 @@
                 break;
             case 4:
                 <div class="col-12 d-flex justify-content-end">
-                    <button @onclick="FinirAsync" class="btn btn-primary">Terminer</button>
+                    <button @onclick="Finir" class="btn btn-primary">Terminer</button>
                 </div>
                 break;
             default:
@@ -118,23 +118,28 @@
                     CurrentStep++;
                     isEditing = true;
                 }
+                else {
+                    // sur l'erreur pour la transition resetter le département
+                    competenceId = formCompetence.competenceId;
+                }
                 break;
             case 2:
-                if (formRealisation.HandleValidContext())
+                if (formRealisation.HandleValidContext(true))
                 {
                     CurrentStep++;
+                    StateHasChanged();
                 }
                 break;
             case 3:
-                if (formElement.SubmitElements())
+                if (formElement.SubmitElements(true))
                 {
                     CurrentStep++;
+                    StateHasChanged();
                 }
                 break;
             default:
                 break;
         }
-        StateHasChanged();
     }
 
     public void StepBackward()
@@ -159,8 +164,8 @@
         StateHasChanged();
     }
 
-    public async void FinirAsync()
+    public void Finir()
     {
-        await JSRuntime.InvokeAsync<string>("showModal", "#competenceCreated");
+        NavigationManager.NavigateTo("/competences/confirmation");
     }
 }

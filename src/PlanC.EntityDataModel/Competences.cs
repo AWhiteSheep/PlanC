@@ -27,7 +27,6 @@ namespace PlanC.EntityDataModel
         [Required(ErrorMessage = "Ce champ est obligatoire")]
         [StringLength(200)]
         public string Enonce { get; set; }
-        [Required(ErrorMessage = "Ce champ est obligatoire")]
         [Column(TypeName = "ntext")]
         public string AttitudeAttendu { get; set; }
         public int NombreParties { get; set; }

@@ -3,118 +3,104 @@
     <div class="col-sm-6">
         <div class="form-group">
             <label for="competenceId" class="control-label"> Numéro de la compétence: </label>
-            <input readonly id="competenceId" class="form-control" @bind="compentence.CompetenceId" />
+            <input readonly id="competenceId" class="form-control" @bind="competence.CompetenceId" />
         </div>
     </div>
     <!-- Valeur pour l'identification du cours -->
     <div class="col-sm-6">
         <div class="form-group">
-            <label class="control-label" for="CrsId"> Identifiant du cours: </label>
-            <select readonly @bind="@(compentence.DisciplineId)" class="form-control">
-                <option value="@compentence.Discipline.Id">@compentence.Discipline.Titre</option>
+            <label class="control-label" for="CrsId"> Département: </label>
+            <select readonly @bind="@(competence.DisciplineId)" class="form-control">
+                <option value="@competence.Discipline.Id">@competence.Discipline.Titre</option>
             </select>
         </div>
     </div>
-    <!-- Valeur pour l'énoncé de la compétence -->
-    <div class="col-sm-12">
-        <div class="form-group">
-            <label class="control-label"> Énoncé de la compétence: </label>
-            <input readonly class="form-control" @bind="compentence.Enonce" />
-        </div>
-    </div>
-    <!-- Attitude de la compétence attendu -->
-    <div class="col-sm-12">
-        <div class="form-group">
-            <label class="control-label"> Attitude attendue de la compétence: </label>
-            <input readonly row="5" class="form-control" @bind="compentence.AttitudeAttendu" />
-        </div>
-    </div>
-    <!-- Nombre de parties pour compléter la compétence -->
-    <div class="col-sm-6">
-        <div class="form-group">
-            <label class="control-label"> Nombre de parties: </label>
-            <input readonly class="form-control" @bind="compentence.NombreParties" />
-        </div>
-    </div>
-    <!-- Compétence étant complémentaire ou non -->
-    <div class="col-sm-6">
-        <label class="control-label"> Optionnelle: </label>
-        <div class="form-group">
-            <div class="custom-control custom-checkbox">
-                <input readonly id="CompetenceComplementaire" class="custom-control-input" @bind="compentence.CompetenceComplementaire" />
-                <label class="custom-control-label" for="CompetenceComplementaire">
-                    Cocher si la compétence est complémentaire
-                </label>
-            </div>
-        </div>
-    </div>
-</div>
-
-
-<table style="width:100%" class="pt-3">
-    <thead>
-        <tr class="font-italic text-center" style="color:deepskyblue; font-weight: bold">
-            <th>Objectif</th>
-            <th>Standard</th>
-        </tr>
-    </thead>
-</table>
-<table class="mt-3" style="width:100%; border: 2px solid deepskyblue;">
-    <thead>
-        <tr style="border-bottom: 1px solid deepskyblue;">
-            <th>Énoncé de la compétence</th>
-            <th>Contexte de réalisation</th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr>
-            <td valign="top">
-                <ul>
-                    <li>@compentence.Enonce</li>
-                </ul>
-            </td>
-            <td>
-                <ul>
-                    @foreach (var itemContext in compentence.CompetenceContextes)
-                    {
-                        <li>@itemContext.Text</li>
-                    }
-                </ul>
-            </td>
-        </tr>
-    </tbody>
-</table>
-<table class="mt-2" style="width:100%; border: 2px solid deepskyblue;">
-    <thead>
-        <tr style="border-bottom: 1px solid deepskyblue;">
-            <th>Éléments de la compétence</th>
-            <th>Critères de performance</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var itemContext in compentence.ElementsCompetence)
-        {
-            <tr>
-                <td valign="top">
-                    <ol start="@(compentence.ElementsCompetence.IndexOf(itemContext)+1)">
-                        <li>@itemContext.Libele</li>
-                    </ol>
-                </td>
-                <td>
-                    <ul>
-                        @foreach (var elementsCriteria in itemContext.CriteresElementCompetence)
-                        {
-                            <li>@elementsCriteria.DescriptionCritere</li>
+    <!-- tous les contextes de réalisation plus l'énoncé de la compétence -->
+    <div class="col-12">
+        <br />
+        <table style="width: 100%; text-align: center; font-weight: 400; color: var(--memory-secondary);">
+            <thead>
+                <tr>
+                    <!--  centre de compréhension -->
+                    <th scope="col">Objectif</th>
+                    <th scope="col">Standard</th>
+                </tr>
+            </thead>
+        </table>
+        <table class="table table-striped mt-3" style="width: 100%;">
+            <thead>
+                <tr>
+                    <th style="resize: none !important">Énoncé de la compétence</th>
+                    <th style="resize: none !important">Contexte de réalisation</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td width="50%">
+                        <input readonly type="text" class="form-control" @bind="@competence.Enonce" />
+                    </td>
+                    <td width="50%">
+                        @if (!competence.CompetenceContextes.Any())
+                        {                            
+                            <p>Il n'y a pas de contextes de réalisation pour cette compétence.</p>
                         }
-                    </ul>
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>
+                        else
+                        {
+                            <ul>
+                                @foreach (var itemContext in competence.CompetenceContextes)
+                                {
+                                    <li><input readonly type="text" class="form-control" value="@itemContext.Text" /></li>
+                                }
+                            </ul>
+                        }
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Tout les éléments de compétences -->
+    @if (!competence.ElementsCompetence.Any())
+    {
+        <div class="col-12 text-center">
+            <p>Il n'y a pas d'éléments de compétences pour cette compétence.</p>
+        </div>
+    }
+    else
+    {
+        <div class="col-12">
+            <table class="table table-striped" style="width: 100%;">
+                <thead>
+                    <tr>
+                        <th scope="col">Élément de la compétence</th>
+                        <th scope="col">Critères de performance</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var element in competence.ElementsCompetence)
+                    {
+                        <tr>
+                            <td width="50%">
+                                <input readonly type="text" class="form-control" @bind="element.Libele" />
+                            </td>
+                            <td width="50%">
+                                @foreach (var criteria in element.CriteresElementCompetence)
+                                {
+                                    <div class="input-group col-12 mb-3">
+                                        <input readonly type="text" class="form-control" @bind="criteria.DescriptionCritere" aria-label="Contexte de réalisation deux bouttons" aria-describedby="button-addon-criteria-@(element.CriteresElementCompetence.IndexOf(criteria)+1)" />
+                                    </div>
+                                }
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+</div>
 
 @code {
     [CascadingParameter]
     [Parameter]
-    public Competences compentence { get; set; }
+    public Competences competence { get; set; }
 }

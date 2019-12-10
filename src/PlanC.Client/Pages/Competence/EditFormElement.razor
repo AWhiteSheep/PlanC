@@ -85,11 +85,11 @@
                 }
             </tbody>
         </table>
-
     </div>
+
     <div class="col-sm-12">
         <hr />
-        <div class="form-group">
+        <div class="form-group mb-3">
             <label> Nouvel élément: </label>
             @if (!string.IsNullOrEmpty(newMessage))
             {
@@ -99,7 +99,7 @@
             }
             <input type="text" class="form-control" @bind="newLibele" />
         </div>
-        <button class="btn btn-success" @onclick="() => AddElement()">Ajouter un contexte <i class="fas fa-plus-circle ml-3" style="vertical-align: middle;"></i></button>
+        <button class="btn btn-success jumpy" @onclick="() => AddElement()">Nouvel élément<i class="fas fa-angle-double-up ml-2" style="vertical-align: middle;"></i></button>
     </div>
 </div>
 
@@ -132,11 +132,11 @@
         elementsCompetences = competence.ElementsCompetence.ToList();
     }
 
-    public bool SubmitElements()
+    public bool SubmitElements(bool saveNewIfExist = false)
     {
         if (competence.ElementsCompetence.Any(e => e.Libele == ""))
         {
-            elementsMessage = "Veuillez au minimum un élément de compétence.";
+            elementsMessage = "Veuillez ne pas laisser des champs vides.";
             return false;
         }
         else
@@ -144,7 +144,10 @@
             elementsMessage = "";
             try
             {
-                Console.WriteLine($"SQL return code: {context.SaveChanges()}");                
+                if (!string.IsNullOrEmpty(newLibele) && saveNewIfExist) { 
+                    competence.ElementsCompetence.Add(new ElementsCompetence() { Libele = newLibele });
+                }
+                Console.WriteLine($"SQL return code: {context.SaveChanges()}");
                 return true;
             }
             catch

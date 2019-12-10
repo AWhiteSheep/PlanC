@@ -1,6 +1,7 @@
 ﻿@page "/plancadre/create"
+@page "/planscadres/creation"
 @page "/plancadre/{id}/create"
-
+@attribute [Authorize]
 @using PlanC.EntityDataModel
 @using Components
 @using System.Collections.Generic;
@@ -42,7 +43,7 @@
             }
             else if (CurrentForm is TemplateReview)
             {
-                <PlanC.Client.Components.TemplateReview Template="Template" @ref ="CurrentForm"></PlanC.Client.Components.TemplateReview>
+                <PlanC.Client.Components.TemplateReview Template="Template" @ref="CurrentForm"></PlanC.Client.Components.TemplateReview>
             }
         </CascadingValue>
     </CascadingValue>
@@ -82,7 +83,7 @@
     protected override void OnInitialized()
     {
         //Si la page reçoit un ID spécifique, ce processus le charge en mémoire. Sinon, il génère un nouvel objet.
-        PlansCadres SpecifiedTemplate = context.PlansCadres .Include(tmp => tmp.PlanCadreCompetenceElements)
+        PlansCadres SpecifiedTemplate = context.PlansCadres.Include(tmp => tmp.PlanCadreCompetenceElements)
                                                             .Include(tmp => tmp.ExamensFinalsCertificatifs)
                                                             .Where(cadre => cadre.CoursId.Trim() == this.Id)
                                                             .OrderByDescending(cadre => cadre.VsnCdttm)

@@ -85,10 +85,14 @@
     }
 
 
-    public bool HandleValidContext()
+    public bool HandleValidContext(bool saveNewIfExist = false)
     {
         try
         {
+            // ajouter ce qui n'a pas été ajouté explicitement
+            if (!string.IsNullOrEmpty(newContextNotAssociated.Libele) && saveNewIfExist)
+                compentence.CompetenceContextes.Add(new CompetenceContextes() { Text = newContextNotAssociated.Libele });
+
             // validation si la liste n'est pas vide?. certaines compétences peuvent ne pas comporter de context
             contextRealisationsList.ForEach(e =>
             {

@@ -1,4 +1,5 @@
 ﻿@using Microsoft.EntityFrameworkCore
+@inject NavigationManager navigator
 <!-- STEP 1 -->
 
 <EditForm EditContext="@CompetenceForm" OnValidSubmit="_HandleValidCompetence" id="competenceForm" class="row">
@@ -8,7 +9,7 @@
         @if (!string.IsNullOrEmpty(StatusMessage))
         {
             <div class="alert alert-danger" style="width:100%; display: block !important">
-                @StatusMessage @if (isDuplicate) {<a onmouseup="location.href = '/departement/@skill.DisciplineId/competence/@competenceId/create';" href="/departement/@skill.DisciplineId/competence/@competenceId/create"> ici</a>}.
+                @StatusMessage @if (isDuplicate) {<a onmouseup="location.href = '/departements/@skill.DisciplineId/competences/@competenceId/create';" href="/departements/@skill.DisciplineId/competences/@competenceId/create"> ici</a>}.
             </div>
         }
     </div>
@@ -25,17 +26,14 @@
             }
             else
             {
-                <InputText readonly id="competenceId" class="form-control" @bind-Value="@(skill.CompetenceId)" />
-                <div class="invalid-feedback">
-                    <ValidationMessage For="@(() => skill.CompetenceId)" />
-                </div>
+                <input readonly id="competenceId" class="form-control" value="@(skill.CompetenceId)" />
             }
         </div>
     </div>
     <!-- Valeur pour l'identification du cours -->
     <div class="col-sm-6">
         <div class="form-group">
-            <label class="control-label" for="CrsId"> Identifiant du cours: </label>
+            <label class="control-label" for="CrsId"> Département: </label>
             <PlanC.Client.Components.Models.NumberSelectComponent @bind-Value="@(skill.DisciplineId)" class="form-control">
                 @foreach (Departements departement in departements)
                 {
@@ -56,39 +54,7 @@
                 <ValidationMessage For="@(() => skill.Enonce)" class="text-danger" />
             </div>
         </div>
-    </div>
-    <!-- Attitude de la compétence attendu -->
-    <div class="col-sm-12">
-        <div class="form-group">
-            <label class="control-label"> Attitude attendue de la compétence: </label>
-            <InputTextArea row="5" class="form-control" @bind-Value="@(skill.AttitudeAttendu)" />
-            <div class="invalid-feedback">
-                <ValidationMessage For="@(() => skill.AttitudeAttendu)" class="text-danger" />
-            </div>
-        </div>
-    </div>
-    <!-- Nombre de parties pour compléter la compétence -->
-    <div class="col-sm-6">
-        <div class="form-group">
-            <label class="control-label"> Nombre de parties: </label>
-            <InputNumber class="form-control" @bind-Value="@(skill.NombreParties)" />
-            <div class="invalid-feedback">
-                <ValidationMessage For="@(() => skill.NombreParties)" class="text-danger" />
-            </div>
-        </div>
-    </div>
-    <!-- Compétence étant complémentaire ou non -->
-    <div class="col-sm-6">
-        <label class="control-label"> Optionnelle: </label>
-        <div class="form-group">
-            <div class="custom-control custom-checkbox">
-                <InputCheckbox id="CompetenceComplementaire" class="custom-control-input" @bind-Value="competenceComplemetaire" />
-                <label class="custom-control-label" for="CompetenceComplementaire">
-                    Cocher si la compétence est complémentaire
-                </label>
-            </div>
-        </div>
-    </div>
+    </div>    
 </EditForm>
 @code {
     [Parameter]
@@ -132,10 +98,10 @@
                         && d.DisciplineId == skill.DisciplineId) != null)
             {
                 isDuplicate = true;
-                StatusMessage = string.Format("La compétence {0} existe déjà pour le département {1}, vous pouvez vous diriger vers pour continuer sa modification", competenceId, departementId);
                 competenceId = skill.CompetenceId;
-                skill.CompetenceId = "";
+                StatusMessage = string.Format("La compétence {0} existe déjà pour le département {1}, vous pouvez vous diriger vers pour continuer sa modification", competenceId, departementId);
                 // trigger la validation afin de pouvoir afficher l'erreur
+                skill.CompetenceId = "";
                 CompetenceForm.Validate();
                 StateHasChanged();
                 return false;
