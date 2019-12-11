@@ -46,10 +46,10 @@
                         }
                         else
                         {
-                            <ul>
+                            <ul style="list-style: none">
                                 @foreach (var itemContext in competence.CompetenceContextes)
                                 {
-                                    <li><input readonly type="text" class="form-control" value="@itemContext.Text" /></li>
+                                    <li class="mb-3"><input readonly type="text" class="form-control" value="@itemContext.Text" /></li>
                                 }
                             </ul>
                         }

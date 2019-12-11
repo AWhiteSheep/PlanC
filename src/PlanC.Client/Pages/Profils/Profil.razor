@@ -12,80 +12,76 @@
     </div>
 }
 <div class="row justify-content-center">
-    <div class="col-md-8" style="margin-bottom: 200px;">
+    <div class="col-md-12" style="margin-bottom: 200px;">
         <div class="row">
-            <div class="nav flex-column nav-pills col-md-1" id="v-pills-tab" role="tablist" aria-orientation="vertical">
+            <div class="nav flex-column nav-pills col-md-4" id="v-pills-tab" role="tablist" aria-orientation="vertical">
                 <span class="nav-link active" id="v-pills-profile-tab" data-toggle="pill" href="#v-pills-profile" role="tab" aria-controls="v-pills-profile" aria-selected="false">Profile</span>
                 <span class="nav-link" id="v-pills-disponibility-tab" data-toggle="pill" href="#v-pills-disponibility" role="tab" aria-controls="v-pills-disponibility" aria-selected="false">Disponibilités</span>
                 <span class="nav-link" id="v-pills-settings-tab" data-toggle="pill" href="#v-pills-settings" role="tab" aria-controls="v-pills-settings" aria-selected="false">Settings</span>
             </div>
-            <div class="tab-content col-md-11" id="v-pills-tabContent">
+            <div class="tab-content col-md-8" id="v-pills-tabContent">
                 <div class="tab-pane fade active show" id="v-pills-profile" role="tabpanel" aria-labelledby="v-pills-profile-tab">
                     <!-- configuration du profil utilisateur -->
-                    <div class="col-md-12">
-                        <h4 style="text-align: center;">
-                            Configuration du profil.
-                        </h4>
-                        <div class="row justify-content-center">
-                            <div class="col-md-6">
-                                <!-- formulaire pour le numéro de poste et de son email-->
-                                <EditForm Model="Input" id="numero" OnValidSubmit="PostPublicAsync">
-                                    <DataAnnotationsValidator />
-                                    <label for="Username" class="control-label"> Numéro d'usagé: </label>
-                                    <input placeholder="... .. ." value="@Username" class="form-control" disabled />
-                                    <label for="phonenumeber" class="control-label pt-3"> Numéro de poste: </label>
-                                    <InputText placeholder=".. ... ." @bind-Value="Input.PhoneNumber" class="form-control" />
-                                    <span class="text-danger">
-                                        <ValidationMessage For="(() => Input.PhoneNumber)"></ValidationMessage>
-                                    </span>
-                                    <label for="phonenumeber" class="control-label pt-3"> Email: </label>
-                                    <InputText placeholder=".. ... ." @bind-Value="Input.NewEmail" class="form-control" />
-                                    <span class="text-danger">
-                                        <ValidationMessage class="text-danger" For="(() => Input.NewEmail)"></ValidationMessage>
-                                    </span>
-                                    <button id="update-profile-button" type="submit" class="btn btn-primary mt-3">Sauvegarder</button>
-                                </EditForm>
-                            </div>
+                    <div class="row justify-content-start">
+                        <div class="col-md-6">
+                            <h4 style="text-align: center;">
+                                Configuration du profil.
+                            </h4>
+                            <!-- formulaire pour le numéro de poste et de son email-->
+                            <EditForm Model="Input" id="numero" OnValidSubmit="PostPublicAsync">
+                                <DataAnnotationsValidator />
+                                <label for="Username" class="control-label"> Numéro d'usagé: </label>
+                                <input placeholder="... .. ." value="@Username" class="form-control" disabled />
+                                <label for="phonenumeber" class="control-label pt-3"> Numéro de poste: </label>
+                                <InputText placeholder=".. ... ." @bind-Value="Input.PhoneNumber" class="form-control" />
+                                <span class="text-danger">
+                                    <ValidationMessage For="(() => Input.PhoneNumber)"></ValidationMessage>
+                                </span>
+                                <label for="phonenumeber" class="control-label pt-3"> Email: </label>
+                                <InputText placeholder=".. ... ." @bind-Value="Input.NewEmail" class="form-control" />
+                                <span class="text-danger">
+                                    <ValidationMessage class="text-danger" For="(() => Input.NewEmail)"></ValidationMessage>
+                                </span>
+                                <button id="update-profile-button" type="submit" class="btn btn-primary mt-3">Sauvegarder</button>
+                            </EditForm>
                         </div>
-                        <hr style="margin-top: 3rem;">
-                        <h4 style="text-align:center;">Sécurité</h4>
-                        <div class="row justify-content-center">
-                            <div class="col-md-6">
-                                <EditForm Model="InputPassword" id="password" OnValidSubmit="PostPasswordAsync">
-                                    <DataAnnotationsValidator />
-                                    <label for="Username" class="control-label"> Vieux mot de passe: </label>
-                                    <InputText @bind-Value="InputPassword.OldPassword" class="form-control" />
-                                    <span class="text-danger">
-                                        <ValidationMessage class="text-danger" For="(() => InputPassword.OldPassword)"></ValidationMessage>
-                                    </span>
-                                    <label for="phonenumeber" class="control-label pt-3"> Nouveau mot de passe: </label>
-                                    <InputText @bind-Value="InputPassword.NewPassword" class="form-control" />
-                                    <span class="text-danger">
-                                        <ValidationMessage class="text-danger" For="(() => InputPassword.NewPassword)"></ValidationMessage>
-                                    </span>
-                                    <label for="phonenumeber" class="control-label pt-3"> Confirmation mot de passe: </label>
-                                    <InputText @bind-Value="InputPassword.ConfirmPassword" class="form-control" />
-                                    <span class="text-danger">
-                                        <ValidationMessage class="text-danger" For="(() => InputPassword.ConfirmPassword)"></ValidationMessage>
-                                    </span>
-                                    <button id="update-password-button" type="submit" class="btn btn-primary mt-3">Sauvegarder</button>
-                                </EditForm>
-                            </div>
+                    </div>
+                    <div class="row justify-content-center">
+                        <div class="col-md-6">
+                            <hr style="margin-top: 3rem;">
+                            <h4 style="text-align:center;">Sécurité</h4>
+                            <EditForm Model="InputPassword" id="password" OnValidSubmit="PostPasswordAsync">
+                                <DataAnnotationsValidator />
+                                <label for="Username" class="control-label"> Vieux mot de passe: </label>
+                                <InputText @bind-Value="InputPassword.OldPassword" class="form-control" />
+                                <span class="text-danger">
+                                    <ValidationMessage class="text-danger" For="(() => InputPassword.OldPassword)"></ValidationMessage>
+                                </span>
+                                <label for="phonenumeber" class="control-label pt-3"> Nouveau mot de passe: </label>
+                                <InputText @bind-Value="InputPassword.NewPassword" class="form-control" />
+                                <span class="text-danger">
+                                    <ValidationMessage class="text-danger" For="(() => InputPassword.NewPassword)"></ValidationMessage>
+                                </span>
+                                <label for="phonenumeber" class="control-label pt-3"> Confirmation mot de passe: </label>
+                                <InputText @bind-Value="InputPassword.ConfirmPassword" class="form-control" />
+                                <span class="text-danger">
+                                    <ValidationMessage class="text-danger" For="(() => InputPassword.ConfirmPassword)"></ValidationMessage>
+                                </span>
+                                <button id="update-password-button" type="submit" class="btn btn-primary mt-3">Sauvegarder</button>
+                            </EditForm>
                         </div>
                     </div>
                 </div>
                 <div class="tab-pane fade" id="v-pills-disponibility" role="tabpanel" aria-labelledby="v-pills-disponibility-tab">                    
-                    <div class="col-md-12">
-                        <h4 style="text-align:center;">Horaire de l'utilisateur</h4>
-                            <div class="row justify-content-center">
-                            <div class="col-md-6">
-                                @if (user != null)
-                                {
-                                    <CascadingValue TValue="Utilisateurs" Value="user">
-                                        <Horaire></Horaire>
-                                    </CascadingValue>
-                                }
-                            </div>
+                    <div class="row justify-content-center">
+                        <div class="col-md-6">
+                            <h4 style="text-align:center;">Horaire de l'utilisateur</h4>
+                            @if (user != null)
+                            {
+                            <CascadingValue TValue="Utilisateurs" Value="user">
+                                <Horaire></Horaire>
+                            </CascadingValue>
+                            }
                         </div>
                     </div>
                 </div>

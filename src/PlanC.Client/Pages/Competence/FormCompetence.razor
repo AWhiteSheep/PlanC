@@ -28,7 +28,7 @@
 
 
 <!-- Formulaire d'un nouveau plan-cadre -->
-<div class="container shadow p-5">
+<div class="container shadow p-5" style="margin-bottom: 200px;">
     <div class="text-danger col-12" style="display:flex; flex-wrap: wrap;">
         @if (!string.IsNullOrEmpty(StatusMessage))
         {
@@ -76,7 +76,6 @@
             </CascadingValue>
         </CascadingValue>
     </CascadingValue>
-
     <div class="row">
         @switch (CurrentStep)
         {
@@ -166,6 +165,6 @@
 
     public void Finir()
     {
-        NavigationManager.NavigateTo("/competences/confirmation");
+        NavigationManager.NavigateTo("/competences/" +this.competenceId+ "/confirmation");
     }
 }
