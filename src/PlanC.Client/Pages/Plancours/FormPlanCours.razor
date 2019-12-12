@@ -25,7 +25,7 @@
 
 <div class="row">
     <div class="col-12 d-flex justify-content-center">
-        <PlanC.Client.Components.ProgressBar steps="@(new List<string> { "Déscription", "Compétences", "Examens finaux", "Révision" })"
+        <PlanC.Client.Components.ProgressBar steps="@(new List<string> { "Session, cadre, politiques", "Calendrier", "Examens", "Matériel", "Révision" })"
                                              Current="CurrentStep"></PlanC.Client.Components.ProgressBar>
     </div>
 </div>
@@ -82,20 +82,17 @@
     private LinkedList<CoursePlanInputFormComponent> Forms { get; set; }
 
     [Parameter]
-    public PlansCours CoursePlan { get; set; }
+    public PlansCours CoursePlan { get; set; } = new PlansCours();
 
     private int CurrentStep = 0;
 
-    protected async override Task OnInitializedAsync()
+    protected override void OnInitialized()
     {
         //Si la page reçoit un ID spécifique, ce processus le charge en mémoire. Sinon, il génère un nouvel objet.
-        PlansCours SpecifiedPlan = await context.PlansCours.Include(p => p.ExamensCertificatifsNonsFinals)
-                                                            .Include(p => p.CoursActivite)
-                                                                .ThenInclude(ca => ca.SelectMany(ca => ca.CoursCompetenceElements))
-                                                                    .ThenInclude(cse => cse.IdentityCritereElementCompetenceNavigation)
+        PlansCours SpecifiedPlan = context.PlansCours.Include(p => p.ExamensCertificatifsNonsFinals)
                                                             .Where(p=> p.CoursId.Trim() == this.id)
                                                             .OrderByDescending(p => p.PlnVsnCdttm)
-                                                            .FirstOrDefaultAsync();
+                                                            .FirstOrDefault();
 
         if (SpecifiedPlan != null)
         {
@@ -104,7 +101,11 @@
         }
         else
         {
-            CoursePlan = new PlansCours();
+            CoursePlan = new PlansCours() 
+            {
+                PlnVsnCdttm = DateTime.Now,
+                TchrUid = "testusr"
+            };
             CurrentMode = FormMode.CREATE;
         }
 

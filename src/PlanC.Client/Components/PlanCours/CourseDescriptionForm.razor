@@ -1,8 +1,53 @@
-﻿@inherits CoursePlanInputFormComponent
+﻿@using Syncfusion.EJ2.Blazor.DropDowns
+@inject PCU001Context _context
+@inherits CoursePlanInputFormComponent
+
+<label class="form-control label-info">Choix de plan-cadre</label>
+<EjsComboBox TValue="PlansCadres" DataSource="Templates" ValueChanged="@(val => SetTemplate(val))"></EjsComboBox>
+
+<label class="form-control label-info">Choix de session</label>
+<EjsComboBox TValue="Sessions" DataSource="Semesters" ValueChanged="@(val => SetSemester(val))"></EjsComboBox>
+
+<textarea class="input text form-control" @bind="CoursePlan.CoursePolicy" placeholder="Copiez-collez les politiques de votre département"></textarea>
 
 @code {
+    private List<PlansCadres> Templates { get; set; } = new List<PlansCadres>();
+
+    private List<Sessions> Semesters { get; set; } = new List<Sessions>();
+
+    protected override void OnInitialized()
+    {
+        Templates = _context.PlansCadres.ToList();
+        Semesters = _context.Sessions.ToList();
+    }
+
     public async override Task<bool> SaveProgress()
     {
-        return true;
+        try
+        {
+            await _context.SaveChangesAsync();
+            return true;
+        }
+        catch (Exception except)
+        {
+            Console.WriteLine($"Error saving plan template and policy -- {except.Message}");
+            return false;
+        }
     }
+
+    public override string ToString()
+    {
+        return "Choix de cadre et politiques";
+    }
+
+    private void SetTemplate(PlansCadres template)
+    {
+        CoursePlan.CoursId = template.CoursId;
+    }
+
+    private void SetSemester(Sessions semester)
+    {
+        CoursePlan.Session = semester;
+        CoursePlan.SessionId = semester.Id;
+;    }
 }

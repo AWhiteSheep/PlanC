@@ -1,8 +1,16 @@
-﻿@inherits CoursePlanInputFormComponent
+﻿@using Syncfusion.EJ2.Blazor.DropDowns;
+@inherits CoursePlanInputFormComponent
+
+
 
 @code {
     public async override Task<bool> SaveProgress()
     {
         return true;
+    }
+
+    public override string ToString()
+    {
+        return "Matériels de cours";
     }
 }

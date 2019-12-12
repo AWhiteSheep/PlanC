@@ -95,8 +95,7 @@
     {
         Template = await _context.PlansCadres.Where(t => t.CoursId == CoursePlan.CoursId)
         .OrderByDescending(t => t.VsnCdttm)
-        .Include(t => t.PlanCadreCompetenceElements)
-        .ThenInclude(tse => tse.Select(tse => tse.ElementCompetence))
+        .Include(t => t.PlanCadreCompetenceElements.Select(tse => tse.ElementCompetence))
         .ThenInclude(se => se.CriteresElementCompetence)
         .FirstAsync();
 
@@ -130,6 +129,11 @@
             Console.WriteLine($"{except.Message}");
             return false;
         }
+    }
+
+    public override string ToString()
+    {
+        return "Calendrier des activités";
     }
 }
 
