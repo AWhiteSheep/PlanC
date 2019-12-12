@@ -1,0 +1,204 @@
+﻿@using PlanC.EntityDataModel
+@using Pages.Planscadres
+@using Syncfusion.EJ2.Blazor
+@using Syncfusion.EJ2.Blazor.DropDowns
+@using Syncfusion.EJ2.Blazor.Buttons
+@using Microsoft.EntityFrameworkCore
+@inject PCU001Context _context
+@inject IJSRuntime JSRuntime
+@inherits CourseTemplateFormComponent
+
+
+<h3 class="h3 bcTitle">Saisie des compétences</h3>
+<div class="row justify-content-between p-0 mt-3 mb-3">
+    <div class="col-lg-6">
+        <EjsComboBox Placeholder="Choisir une compétence..." @ref="SkillDropdown" TValue="@Competences" DataSource="AvailableSkills">
+            <ComboBoxEvents TValue="int" ValueChange="onValueChanged"></ComboBoxEvents>
+            <ComboBoxFieldSettings Value="IdentityKey" Text="Enonce"></ComboBoxFieldSettings>
+        </EjsComboBox>
+    </div>
+    <!-- le coordonateur peut ajouter des remarques et précision local pour le plan cadre donné-->
+    <div class="col-lg-6">
+        <EjsButton CssClass="btn btn-info" @onclick="AddSkill">Ajouter</EjsButton>
+    </div>
+</div>
+
+<div class="container p-0">
+
+@foreach (Competences skill in SelectedSkills)
+{
+    <hr class="bcSeparator"/>
+    <div class="row clickable justify-content-between mt-3 mb-3 p-0" style="width:100%">
+        <div class="col-sm-12 d-flex justify-content-around">
+            <a data-toggle="collapse" data-target="#collapse-@skill.IdentityKey">
+                <h5 class="h5 font-weight-bold m-0">@skill.ToString()</h5>
+            </a>
+            <button class="btn btn-danger" @onclick="() => RemoveSkill(skill)"><i class="fas fa-trash"></i></button>
+        </div>
+    </div>
+    <table id="collapse-@skill.IdentityKey" class="mt-3 table table-borderless text-center p-0" style="width:100%">
+        <thead>
+            <tr>
+                <th>Élément de compétence</th>
+                <th style="max-width:15%">Partiel?</th>
+                <th style="min-width:50%">Précisions sur le contenu</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (PlanCadreCompetenceElements elem in SelectedSkillElements.Where(tse => tse.ElementCompetence.IdentityKeyCompetencesNavigation == skill))
+            {
+            <tr>
+                <td>
+                    <span class="label-info">@elem.ElementCompetence.Libele</span>
+                </td>
+                <td style="max-width:15%">
+                    <input class="input input-group" type="checkbox" @bind="elem.IsPartial" />
+                </td>
+                <td style="min-width:50%">
+                    <textarea style="width:100%" class="input m-0" @bind="elem.LongDescription" />
+                </td>
+            </tr>
+            }
+        </tbody>
+    </table>
+}
+</div>
+
+
+
+
+@code {
+    [Parameter]
+    public PlansCadres Template { get; set; }
+
+    [Parameter]
+    public EventCallback<PlansCadres> TemplateChanged { get; set; }
+
+    [CascadingParameter]
+    public PCU001Context context { get; set; }
+
+    [CascadingParameter]
+    public FormPlanCadre.FormMode CurrentMode { get; set; }
+
+    private Programmes Program;
+
+    Competences CurrentSelection { get; set; }
+
+    private List<Competences> AvailableSkills { get; set; }
+
+    private List<Competences> SelectedSkills { get; set; }
+
+    private EjsComboBox<Competences> SkillDropdown { get; set; }
+
+    public List<PlanCadreCompetenceElements> SelectedSkillElements { get; private set; }
+
+
+    protected override void OnInitialized()
+    {
+        Program = _context.Programmes.SingleOrDefault(prog => Template.ProgrammeId == prog.Id);
+    }
+
+    protected override void OnParametersSet()
+    {
+        switch (CurrentMode)
+        {
+            case FormPlanCadre.FormMode.CREATE:
+                SelectedSkills = new List<Competences>();
+                SelectedSkillElements = new List<PlanCadreCompetenceElements>();
+                RefreshSkills();
+                break;
+            case FormPlanCadre.FormMode.EDIT:
+
+                SelectedSkillElements = Template.PlanCadreCompetenceElements.ToList();
+                SelectedSkills = _context.PlanCadreCompetenceElements.Where(tse => SelectedSkillElements.Contains(tse))
+                                                                    .Select(tse => tse.ElementCompetence.IdentityKeyCompetencesNavigation)
+                                                                    .AsEnumerable()
+                                                                    .Distinct()
+                                                                    .ToList();
+                RefreshSkills();
+                break;
+            default:
+                throw new Exception($"Error in {this} -- CurrentMode is {CurrentMode}");
+
+        }
+
+    }
+
+
+    protected override void OnAfterRender(bool firstRender)
+    {
+        JSRuntime.Ejs().SetCulture("fr-CA");
+    }
+
+    protected void RefreshSkills()
+    {
+
+        AvailableSkills = _context.Competences.Where(c => c.DisciplineId == Program.DepartementId)
+                                                .ToList();
+
+        AvailableSkills.RemoveAll(available => SelectedSkills.Contains(available));
+
+        List<ElementsCompetence> AssociatedSkillElems = _context.ElementsCompetence.Where(ec => SelectedSkills.Contains(ec.IdentityKeyCompetencesNavigation)).ToList();
+
+        foreach (ElementsCompetence sklelem in AssociatedSkillElems)
+        {
+            if (SelectedSkillElements.Any(tse => tse.ElementCompetence == sklelem))
+            {
+                continue;
+            }
+            SelectedSkillElements.Add(new PlanCadreCompetenceElements
+            {
+                CoursId = Template.CoursId,
+                ElementCompetence = sklelem,
+                ElementCompetenceId = sklelem.Id,
+                IsPartial = false,
+                VsnCdttm = Template.VsnCdttm,
+                PlansCadres = Template,
+                TrkUid = "rtadmin"
+            });
+        }
+
+        StateHasChanged();
+    }
+
+    protected void AddSkill(MouseEventArgs args)
+    {
+        if (SelectedSkills.Contains(CurrentSelection))
+        {
+            return;
+        }
+        SelectedSkills.Add(CurrentSelection);
+
+        RefreshSkills();
+    }
+
+    protected void RemoveSkill(Competences skill)
+    {
+        SelectedSkills.Remove(skill);
+        SelectedSkillElements = SelectedSkillElements.Where(tse => tse.ElementCompetence.IdentityKeyCompetencesNavigation != skill).ToList();
+        RefreshSkills();
+    }
+
+    public override bool SaveProgress()
+    {
+        Template.PlanCadreCompetenceElements = SelectedSkillElements;
+
+        try
+        {
+            int result = _context.SaveChanges();
+            return true;
+        }
+        catch (Exception except)
+        {
+            Console.WriteLine($"Template Skill Elem input error: {except.Message}");
+            return false;
+        }
+    }
+
+    private void onValueChanged(ChangeEventArgs<int> args)
+    {
+        Competences target = _context.Competences.SingleOrDefault(c => c.IdentityKey == args.Value);
+        CurrentSelection = target;
+    }
+
+}

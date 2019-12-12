@@ -1,0 +1,146 @@
+﻿@page "/plancadre/create"
+@page "/planscadres/creation"
+@page "/plancadre/{id}/create"
+@attribute [Authorize]
+@using PlanC.EntityDataModel
+@using Components
+@using System.Collections.Generic;
+@using Microsoft.EntityFrameworkCore;
+@inject NavigationManager NavigationManager
+@inject PCU001Context context
+
+<!--section sécurité doit être seulement coordonateur du programme et la consultation par le professeur-->
+
+<!-- Section de navigation -->
+<div class="row mb-3">
+    <div class="col">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <!-- Donne accès au portail selon le role de l'utilisateur -->
+                <li class="breadcrumb-item"><a href="/"> Portail </a></li>
+                <li style="padding: 0 4px;"><i class="fas fa-home" style="font-size: 15px; color: #3f51b5;"></i></li>
+                <li class="breadcrumb-item active" aria-current="page"> Nouveau plan cadre </li>
+            </ol>
+        </nav>
+    </div>
+</div>
+
+
+
+
+<div class="container shadow p-5">
+    @*Envoit le paramètre à tous les enfants*@
+    <CascadingValue TValue="PCU001Context" Value="context">
+        <CascadingValue TValue="FormMode" Value="CurrentMode">
+            @if (CurrentForm is EditFormPlancadre)
+            {
+                <EditFormPlancadre @bind-Template="Template" @ref="CurrentForm"></EditFormPlancadre>
+            }
+            else if (CurrentForm is TemplateSkillElemInput)
+            {
+                <PlanC.Client.Components.TemplateSkillElemInput @bind-Template="Template" @ref="CurrentForm"></PlanC.Client.Components.TemplateSkillElemInput>
+            }
+            else if (CurrentForm is FinalExamInput)
+            {
+                <PlanC.Client.Components.FinalExamInput @bind-Template="Template" @ref="CurrentForm"></PlanC.Client.Components.FinalExamInput>
+            }
+            else if (CurrentForm is TemplateReview)
+            {
+                <PlanC.Client.Components.TemplateReview Template="Template" @ref="CurrentForm"></PlanC.Client.Components.TemplateReview>
+            }
+        </CascadingValue>
+    </CascadingValue>
+    <div class="container mt-3">
+        <div class="row">
+
+            <div class="col-12 d-flex justify-content-around">
+                <!-- appelle fonction javascript permettant d'ajouter le .wasvalidated sur la division du formulaire -->
+                <!-- suite au poste validate nous envoyons l'utilisateur vers la deuxième partie celle de remplire les contextes et les éléments de compétence-->
+                <button @onclick="NavigatePrevious" disabled="@(CurrentNode.Previous == null)" class="btn btn-primary">Précédent</button>
+                <button @onclick="NavigateNext" disabled="@(CurrentNode.Next == null)" class="btn btn-primary">Suivant</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+@code{
+    [Parameter]
+    public string Id { get; set; }
+
+    [CascadingParameter]
+    public FormMode CurrentMode { get; set; }
+
+    public CourseTemplateFormComponent CurrentForm { get; set; }
+
+    private LinkedListNode<CourseTemplateFormComponent> CurrentNode { get; set; }
+    private LinkedList<CourseTemplateFormComponent> Forms { get; set; }
+
+    [Parameter]
+    public PlansCadres Template { get; set; }
+
+    ChangeEventArgs<DropdownProgramSelection> programSelectChange;
+
+    protected override void OnInitialized()
+    {
+        //Si la page reçoit un ID spécifique, ce processus le charge en mémoire. Sinon, il génère un nouvel objet.
+        PlansCadres SpecifiedTemplate = context.PlansCadres.Include(tmp => tmp.PlanCadreCompetenceElements)
+                                                            .Include(tmp => tmp.ExamensFinalsCertificatifs)
+                                                            .Where(cadre => cadre.CoursId.Trim() == this.Id)
+                                                            .OrderByDescending(cadre => cadre.VsnCdttm)
+                                                            .FirstOrDefault();
+
+        if (SpecifiedTemplate != null)
+        {
+            Template = SpecifiedTemplate;
+            CurrentMode = FormMode.EDIT;
+        }
+        else
+        {
+            Template = new PlansCadres();
+            CurrentMode = FormMode.CREATE;
+        }
+
+
+        //Création des composantes du wizard et ajout à la liste liée.
+        Forms = new LinkedList<CourseTemplateFormComponent>();
+
+        Forms.AddLast(new EditFormPlancadre());
+        Forms.AddLast(new TemplateSkillElemInput());
+        Forms.AddLast(new FinalExamInput());
+        Forms.AddLast(new TemplateReview());
+
+        CurrentNode = Forms.First;
+        CurrentForm = CurrentNode.Value;
+        StateHasChanged();
+    }
+
+    private void NavigateNext()
+    {
+        if (CurrentForm.SaveProgress())
+        {
+            CurrentNode = CurrentNode.Next;
+            CurrentForm = CurrentNode.Value;
+            CurrentMode = FormMode.EDIT;
+            StateHasChanged();
+        }
+        else
+        {
+            return;
+        }
+    }
+    private void NavigatePrevious()
+    {
+        CurrentNode = CurrentNode.Previous;
+        CurrentForm = CurrentNode.Value;
+        StateHasChanged();
+    }
+
+    public enum FormMode
+    {
+        CREATE = 1,
+        EDIT = 2
+    }
+}

@@ -1,0 +1,165 @@
+﻿@page "/competences"
+@page "/competences/{Filter}"
+@attribute [Authorize]
+@using Microsoft.EntityFrameworkCore
+@using Newtonsoft.Json
+@inject PCU001Context context
+@inject IJSRuntime JSRuntime
+<!-- Section de navigation -->
+<div class="row mb-3">
+    <div class="col">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <!-- Donne accès au portail selon le role de l'utilisateur -->
+                <li class="breadcrumb-item"><a href="/"> Portail </a></li>
+                <li style="padding: 0 4px;"><i class="fas fa-home" style="font-size: 15px; color: #3f51b5;"></i></li>
+                <li class="breadcrumb-item"><i class="fas fa-circle" style="font-size: 5px; vertical-align: middle; padding-right: 2px;"></i></li>
+                <li class="breadcrumb-item active" aria-current="page"> Toutes les compétences </li>
+            </ol>
+        </nav>
+    </div>
+</div>
+
+<div class="container shadow p-5">
+    <div class="row">
+        <h3>Liste des compétences:</h3>
+        <div class="col-12">
+            <div class="input-group">
+                <input type="text" class="form-control" @bind="Filter"
+                       aria-describedby="input-recherche" />
+                <div class="input-group-append" id="input-recherche">
+                    <button class="btn btn-primary" @onclick="DoFilter" type="button"><i class="fas fa-search"></i></button>
+                </div>
+            </div>
+        </div>
+        <div class="col-12 pt-3 d-flex justify-content-between">
+            <div class="form-group">
+                <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                    <input class="btn btn-primary @(OptionFilter == "Numéro" ? "active" : "")" type="button"
+                           checked="@(OptionFilter == "Numéro")" @onclick="@(() => OptionFilter = "Numéro")" value="Numéro" />
+                    <input class="btn btn-primary @(OptionFilter == "Énoncé" ? "active" : "")" type="button"
+                           checked="@(OptionFilter == "Énoncé")" @onclick="@(() => OptionFilter = "Énoncé")" value="Énoncé" />
+                    <input class="btn btn-primary @(OptionFilter == "Département" ? "active" : "")" type="button"
+                           checked="@(OptionFilter == "Département")" @onclick="@(() => OptionFilter = "Département")" value="Département" />
+                </div>
+            </div>
+            <a href="/competences/creation">Formulaire d'une nouvelle compétence</a>
+        </div>
+        @if (competences != null)
+        {
+            @if (competences.Any())
+            {
+                @foreach (var competence in competences)
+                {
+                    <div id="container-@competence.IdentityKey" class="col-sm-12 col-lg-6 p-2">
+                        <div class="card">
+                            <div class="card-header d-flex justify-content-between">
+                                <p class="panel-title">@competence.Enonce</p>
+                                <div>
+                                    <button class="btn btn-link press" data-expend-button="@competence.IdentityKey"> Afficher @competence.CompetenceId </button>
+                                </div>
+                            </div>
+                            <div class="collapse" id="@competence.IdentityKey">
+                                <div class="card-body">
+                                    <CascadingValue TValue="Competences" Value="competence">
+                                        <PlanC.Client.Pages.Competence.FormCompetenceReview></PlanC.Client.Pages.Competence.FormCompetenceReview>
+                                    </CascadingValue>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+
+            }
+            else 
+            {
+                <p>Il n'y pas de compétences pouvant être chargé.</p>
+            }
+        }
+        else
+        {
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between">
+                        <p class="panel-title">Récupération de la compétence...</p>
+                    </div>
+                    <div>
+                        <div class="card-body">
+                            Chargement de la compétence...
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+@code{
+
+    [Parameter]
+    public string Filter
+    {
+        get { return _filter; }
+        set
+        {
+            _filter = value;
+            DoFilter();
+        }
+    }
+    public string OptionFilter
+    {
+        get { return _optionFilter; }
+        set
+        {
+            _optionFilter = value;
+            // update le filter
+            DoFilter();
+        }
+    }
+    private string _filter { get; set; }
+    private string _optionFilter = "Énoncé";
+    
+    public void DoFilter()
+    {
+        // update le filter
+        if (!string.IsNullOrWhiteSpace(_filter) && _competences != null)
+        {
+            // filter sous la propriété choisie
+            switch (_optionFilter)
+            {
+                case "Département":
+                    competences = _competences.Where(e => e.Discipline.Titre.Contains(_filter)).ToList();
+                    break;
+                case "Numéro":
+                    competences = _competences.Where(e => e.CompetenceId.Contains(_filter)).ToList();
+                    break;
+                case "Énoncé":
+                    competences = _competences.Where(e => e.Enonce.Contains(_filter)).ToList();
+                    break;
+                default:
+                    competences = _competences.Where(e => e.CompetenceId.Contains(_filter)).ToList();
+                    break;
+            }
+        }
+        else
+        {
+            
+            competences = _competences;
+        }
+    }
+
+    List<Competences> competences;
+    List<Competences> _competences;
+
+    protected override async Task OnInitializedAsync()
+    { 
+        competences = _competences = await context.Competences.Include(d => d.Discipline).ToListAsync();
+    }
+
+
+    protected override void OnAfterRender(bool firstRender)
+    {
+        // render le script pour les collapsible
+        JSRuntime.InvokeAsync<string>("LoadCollapse");
+    }
+}

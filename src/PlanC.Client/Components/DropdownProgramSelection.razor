@@ -1,0 +1,45 @@
+﻿@using PlanC.EntityDataModel
+@using Syncfusion.EJ2.Blazor
+@using Syncfusion.EJ2.Blazor.DropDowns
+@*context de la base de donné et js runtime*@
+@inject PCU001Context _context
+@inject IJSRuntime JSRuntime
+
+    <div class="row">
+        <div class="col-12">
+            <label> Sélection du programme: </label>
+        </div>
+        <div class="col-12">
+            <div class="form-group">
+                <EjsComboBox Placeholder="Choisir un programme..." CssClass="theme-dropdown" TValue="@Programmes" DataSource="programs">
+                    <ComboBoxEvents TValue="string" ValueChange="OnValueChanged"></ComboBoxEvents>
+                    <ComboBoxFieldSettings  Value="Designation" Text="Designation"></ComboBoxFieldSettings>
+                </EjsComboBox>
+            </div>
+        </div>
+    </div>
+
+
+
+@code {
+    private List<Programmes> programs;
+
+    [Parameter]
+    public Programmes CurrentSelection { get; set; }
+
+    protected override void OnInitialized()
+    {
+        programs = _context.Programmes.ToList();
+    }
+
+    public event EventHandler<Programmes> ValueChanged;
+
+    public void OnValueChanged(Syncfusion.EJ2.Blazor.DropDowns.ChangeEventArgs<string> val)
+    {
+        Programmes target = programs.SingleOrDefault(p => p.Designation == val.Value);
+
+        CurrentSelection = target;
+
+        ValueChanged?.Invoke(this, target);
+    }
+}

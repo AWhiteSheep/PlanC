@@ -1,0 +1,21 @@
+﻿@page "/competences/{id}/confirmation"
+@attribute [Authorize]
+
+<!-- Formulaire d'une nouvelle compétences -->
+<div class="container shadow p-5">
+    <div class="row">
+        <!-- Sélection d'un département pour la compétence -->
+        <div class="col-12 text-center">
+            <h4>Félicitation vous avez enregistré la compétence @id!</h4>
+            <img class="p-5" src="/images/confirmation.png" height="200" width="200" />
+            <p>
+                <a href="/">Retourner à l'accueil</a> | <a href="/competences/@id">Afficher la liste des compétences</a>
+            </p>
+        </div>
+    </div>
+</div>
+
+@code{
+    [Parameter]
+    public string id { get; set; }
+}

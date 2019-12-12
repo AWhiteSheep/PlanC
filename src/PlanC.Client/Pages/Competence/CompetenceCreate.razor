@@ -1,0 +1,50 @@
+﻿@page "/competences/creation"
+@inject PCU001Context context
+@inject NavigationManager _NavigationManager
+@attribute [Authorize]
+
+<!-- Formulaire d'une nouvelle compétences -->
+<div class="container shadow p-5">
+    <div class="row">
+        <div class="text-danger col-12" style="display:flex; flex-wrap: wrap;">
+            @if (!string.IsNullOrEmpty(StatusMessage))
+            {
+                <div class="alert alert-danger" style="width:100%; display: block !important">
+                    @StatusMessage
+                </div>
+            }
+        </div>
+        <!-- Sélection d'un département pour la compétence -->
+        <div class="col-12 text-center">
+            <h4>Création d'une nouvelle compétence</h4>
+        </div>
+    </div>
+    @*Envoit le paramètre à tous les enfants*@
+    <CascadingValue TValue="PCU001Context" Value="context">
+        <PlanC.Client.Components.DropdownDepartements @ref="DepartSelect"></PlanC.Client.Components.DropdownDepartements>
+    </CascadingValue>
+    <div class="row">
+        <div class="col-12 d-flex justify-content-end">
+            <button @onclick="Start" class="btn btn-primary">Commencer</button>
+        </div>
+    </div>
+</div>
+
+
+@code{
+    protected string StatusMessage;
+
+    PlanC.Client.Components.DropdownDepartements DepartSelect;
+
+    private void Start()
+    {
+        if (DepartSelect.CurrentSelection != null)
+        {
+            _NavigationManager.NavigateTo($"/departements/{DepartSelect.CurrentSelection.Id}/competences/creation");
+        }
+        else
+        {
+            StatusMessage = "Veuillez choisir un département.";
+        }
+    }
+}

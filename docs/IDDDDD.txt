@@ -1,0 +1,48 @@
+﻿/* Pour éviter les problèmes éventuels de perte de données, passez attentivement ce script en revue avant de l'exécuter en dehors du contexte du Concepteur de bases de données.*/
+BEGIN TRANSACTION
+SET QUOTED_IDENTIFIER ON
+SET ARITHABORT ON
+SET NUMERIC_ROUNDABORT OFF
+SET CONCAT_NULL_YIELDS_NULL ON
+SET ANSI_NULLS ON
+SET ANSI_PADDING ON
+SET ANSI_WARNINGS ON
+COMMIT
+BEGIN TRANSACTION
+GO
+ALTER TABLE dbo.ElementsCompetence
+	DROP CONSTRAINT FK_TSKLELEM_TSKL
+GO
+ALTER TABLE dbo.Competences SET (LOCK_ESCALATION = TABLE)
+GO
+COMMIT
+BEGIN TRANSACTION
+GO
+ALTER TABLE dbo.CriteresElementCompetence
+	DROP CONSTRAINT FK_TSKLELEMCRT_TSKLELEM
+GO
+ALTER TABLE dbo.ExamensElementsCompetences
+	DROP CONSTRAINT FK_TEXAMSKLELEM_TSKLELEM
+CONSTRAINT FK_TEXAMSKLELEM_TSKLELEM foreign key (CompetenceID, DiscpilineID, ElementsCompetenceSQNBR) references ElementsCompetence (CompetenceID, DiscpilineID, ElementsCompetenceSQNBR)
+GO---
+ALTER TABLE dbo.CoursElementsCompetences
+	DROP CONSTRAINT FK_TTMPLTSKLELEM_TCRSSKLLCOMPENTENCE
+GO
+ALTER TABLE dbo.ElementsCompetence SET (LOCK_ESCALATION = TABLE)
+GO
+COMMIT
+BEGIN TRANSACTION
+GO
+ALTER TABLE dbo.CoursElementsCompetences SET (LOCK_ESCALATION = TABLE)
+GO
+COMMIT
+BEGIN TRANSACTION
+GO
+ALTER TABLE dbo.ExamensElementsCompetences SET (LOCK_ESCALATION = TABLE)
+GO
+COMMIT
+BEGIN TRANSACTION
+GO
+ALTER TABLE dbo.CriteresElementCompetence SET (LOCK_ESCALATION = TABLE)
+GO
+COMMIT

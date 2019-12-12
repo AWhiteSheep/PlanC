@@ -1,0 +1,42 @@
+﻿@inherits HoraireBase
+@inject IJSRuntime JSRuntime
+
+<style>
+</style>
+<form>
+    <label for="Username" class="control-label"> Numéro d'usagé: </label>
+    <input placeholder="... .. ." value="@Utilisateur.UserName" class="form-control" disabled />
+    <table class="table">
+        <thead>
+            <tr>
+                <th id="day-0" data-day="0">Dimance</th>
+                <th id="day-1" data-day="1">Lundi</th>
+                <th id="day-2" data-day="2">Mardi</th>
+                <th id="day-3" data-day="3">Mercredi</th>
+                <th id="day-4" data-day="4">Jeudi</th>
+                <th id="day-5" data-day="5">Vendredi</th>
+                <th id="day-6" data-day="6">Samedi</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                @for (int i = 0; i < 7; i++)
+                {
+                <td>
+                    @if (ListDayTimeSpans[i] != null)
+                    {
+                        @ListDayTimeSpans[i].DayOfWeekInstanceDay.ToString()
+                        @foreach (InputTimeSpanModel timeSpanModel in ListDayTimeSpans[i].timeSpans)
+                        {
+                            <div>
+                                <span class="start-time">@timeSpanModel.StartSpan</span>
+                                <span class="finish-time">@timeSpanModel.SoptSpan</span>
+                            </div>
+                        }
+                    }
+                    </td>
+                }
+                </tr>
+        </tbody>
+    </table>
+</form>

@@ -1,0 +1,81 @@
+﻿@*non sensible à la case peut obtenir la page en donnant en paramètre un id du programme*@
+@page "/programmes/{id}"
+@attribute [Authorize]
+@inject PCU001Context context
+@inject IJSRuntime JSRuntime
+<!-- Section de navigation -->
+<div class="row mb-3">
+    <div class="col">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <!-- Donne accès au portail selon le role de l'utilisateur -->
+                <li class="breadcrumb-item"><a href="/"> Portail </a></li>
+                <li style="padding: 0 4px;"><i class="fas fa-home" style="font-size: 15px; color: #3f51b5;"></i></li>
+                <li class="breadcrumb-item"><i class="fas fa-circle" style="font-size: 5px; vertical-align: middle; padding-right: 2px;"></i></li>
+                <li class="breadcrumb-item"><a href="/programmes"> Programmes </a></li>
+                <li class="breadcrumb-item"><i class="fas fa-circle" style="font-size: 5px; vertical-align: middle; padding-right: 2px;"></i></li>
+                <li class="breadcrumb-item active" aria-current="page"> @programme.Designation </li>
+            </ol>
+        </nav>
+    </div>
+    <!-- Message distiné pour le groupe d'administration -->
+    <div class="col-12">
+        <div class="alert alert-light show shadow" role="alert">
+            <div class="alert-icon text-warning">
+                <i class="fas fa-exclamation-triangle"></i>
+            </div>
+            <div class="alert-text">
+                Veuillez vérifier que tous les plans cadres pour les programmes d'informatique soit à jour pour le 15 novembre.
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Container pour blazor component -->
+<div class="row justify-content-center">
+    <!-- Affiche tous les départements -->
+    <div class="col-12">
+        <div class="card shadow">
+            <div class="card-body">
+                @foreach (PlansCadres course in coursesTemplate)
+                {
+                    <!-- Affiche les informations d'un département -->
+                    <table style="position: relative">
+                        <tbody>
+                            <tr>
+                                <td valign="top">
+                                    <h4><a href="#">#@course.CoursId</a></h4>
+                                </td>
+                                <td>
+                                    <h4>@course.DenominationCours</h4>
+                                    <!-- Renvoit les programmes reliés au département-->
+                                </td>
+                                <td valign="top" class="flex-column">
+                                    <a class="btn btn-success" href="/planscadres/@course.CoursId">Consulter</a>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<a href="/departements/@programme.DepartementId/planscadres/creation"> Ajouter </a>
+
+@code {
+    [Parameter]
+    public string Id { get; set; }
+    public Programmes programme;
+    public List<PlansCadres> coursesTemplate;
+    private string tid { get; set; }
+
+    protected override void OnInitialized()
+    {
+        tid = Id.Replace('-', '.');
+        programme = context.Programmes.First(e => e.Id == tid);
+        coursesTemplate = context.PlansCadres.Where(e => e.ProgrammeId == tid).ToList();
+    }
+}

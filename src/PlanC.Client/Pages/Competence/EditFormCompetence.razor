@@ -1,0 +1,150 @@
+﻿@using Microsoft.EntityFrameworkCore
+@inject NavigationManager navigator
+<!-- STEP 1 -->
+
+<EditForm EditContext="@CompetenceForm" OnValidSubmit="_HandleValidCompetence" id="competenceForm" class="row">
+    <DataAnnotationsValidator />
+    <!-- Sommaire de la validation si des erreurs existent -->
+    <div class="text-danger col-12" style="display:flex; flex-wrap: wrap;">
+        @if (!string.IsNullOrEmpty(StatusMessage))
+        {
+            <div class="alert alert-danger" style="width:100%; display: block !important">
+                @StatusMessage @if (isDuplicate) {<a onmouseup="location.href = '/departements/@skill.DisciplineId/competences/@competenceId/create';" href="/departements/@skill.DisciplineId/competences/@competenceId/create"> ici</a>}.
+            </div>
+        }
+    </div>
+    <!-- Valeur pour le numéro de la compétence -->
+    <div class="col-sm-6">
+        <div class="form-group">
+            <label for="competenceId" class="control-label"> Numéro de la compétence: </label>
+            @if (!isEditing)
+            {
+                <InputText id="competenceId" class="form-control" @bind-Value="@(skill.CompetenceId)" />
+                <div class="invalid-feedback">
+                    <ValidationMessage For="@(() => skill.CompetenceId)" />
+                </div>
+            }
+            else
+            {
+                <input readonly id="competenceId" class="form-control" value="@(skill.CompetenceId)" />
+            }
+        </div>
+    </div>
+    <!-- Valeur pour l'identification du cours -->
+    <div class="col-sm-6">
+        <div class="form-group">
+            <label class="control-label" for="CrsId"> Département: </label>
+            <PlanC.Client.Components.Models.NumberSelectComponent @bind-Value="@(skill.DisciplineId)" class="form-control">
+                @foreach (Departements departement in departements)
+                {
+                    <option value="@departement.Id">@departement.Titre</option>
+                }
+            </PlanC.Client.Components.Models.NumberSelectComponent>
+            <div class="invalid-feedback">
+                <ValidationMessage TValue="int" For="@(() => skill.DisciplineId)" />
+            </div>
+        </div>
+    </div>
+    <!-- Valeur pour l'énoncé de la compétence -->
+    <div class="col-sm-12">
+        <div class="form-group">
+            <label class="control-label"> Énoncé de la compétence: </label>
+            <InputText class="form-control" @bind-Value="@(skill.Enonce)" />
+            <div class="invalid-feedback">
+                <ValidationMessage For="@(() => skill.Enonce)" class="text-danger" />
+            </div>
+        </div>
+    </div>    
+</EditForm>
+@code {
+    [Parameter]
+    public int departementId { get; set; } // paramètre du département pour lequel la compétence sera créé
+    [Parameter]
+    public string competenceId { get; set; } // id de la compétence créant une clée avec l'association du département
+    [CascadingParameter] // donne a tous enfants le demandant le a valeur bindé
+    protected PCU001Context context { get; set; }
+    [CascadingParameter]
+    protected Competences skill { get; set; }
+    public bool competenceComplemetaire;
+    [CascadingParameter]
+    protected List<Departements> departements { get; set; }
+    [CascadingParameter]
+    protected bool isEditing { get; set; } // valeur indiquant que la compétence existe et que tous les changements se font pour faire des updates
+
+    // context d'édition pour le formulaire
+    [Bindable]
+    [Parameter]
+    public EditContext CompetenceForm { get; set; }
+
+
+    private string StatusMessage; // update ui pour afficher des erreurs
+    private bool isDuplicate; // vérifie si c'est un duplicate pour le différent message
+
+    public bool HandleValidCompetence() // post validation
+    {
+        if (CompetenceForm.Validate()) {
+            //skElements.ForEach(e => { e.CompetenceId = skill.CompetenceId; e.ElementCompetenceSqnbr = (byte)(skElements.IndexOf(e) + 1); });
+            //skill.ElementsCompetence = skElements;
+            //cntxt.CompetenceId = skill.CompetenceId;
+            //skill.CompetenceContextes.Add(cntxt);
+            if (isEditing)
+            {
+                // ef doit être updaté.
+                SaveChanges();
+                return true;
+            }
+            else if (context.Competences
+                        .FirstOrDefault(d => d.CompetenceId == skill.CompetenceId
+                        && d.DisciplineId == skill.DisciplineId) != null)
+            {
+                isDuplicate = true;
+                competenceId = skill.CompetenceId;
+                StatusMessage = string.Format("La compétence {0} existe déjà pour le département {1}, vous pouvez vous diriger vers pour continuer sa modification", competenceId, departementId);
+                // trigger la validation afin de pouvoir afficher l'erreur
+                skill.CompetenceId = "";
+                CompetenceForm.Validate();
+                StateHasChanged();
+                return false;
+            }
+            else
+            {
+                try
+                {
+                    // ajoute la nouvelle compétence
+                    context.Competences.Add(skill);
+                    SaveChanges();
+                    return true;
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine($"Error: {e.Message} -- {e.InnerException}");
+                    return false;
+                }
+            }
+        }
+
+        return false;
+    }
+
+
+    private void _HandleValidCompetence() {
+        HandleValidCompetence();
+    }
+
+    void SaveChanges()
+    {
+        try
+        {
+            skill.CompetenceComplementaire = competenceComplemetaire;
+            Console.WriteLine($"SQL return code: {context.SaveChanges()}");
+        }
+        catch (Exception e)
+        {
+            isDuplicate = false;
+            Console.WriteLine($"Error: {e.Message} -- {e.InnerException}");
+            StatusMessage = "Une erreur est survenue, si cela persiste veuillez contacter votre administrateur.";
+            StateHasChanged();
+        }
+    }
+
+}

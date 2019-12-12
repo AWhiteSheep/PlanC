@@ -38,44 +38,16 @@ INSERT INTO TPGM
 	DPTMNT_ID,
 	PGM_TITLE,
 	PGM_DESC,
-	PGM_TY_CD, --Type de programme
+	PGM_TY_CD,
 	TRK_UID
 )
 VALUES
 (
-	'420.AA',
+	'420.B0',
 	1,
 	'Technique de l’informatique',
 	'Le programme d’études Techniques de l’informatique vise à former des techniciennes ou techniciens en informatique qui exerceront leur profession dans les domaines du développement d’applications et de l’administration des réseaux informatiques.',
-	'TA',
-	'11111'
-),
-(
-	'420.B0',
-	1,
-	'Programmation et sécurité',
-	'Le programme d’études Techniques de l’informatique vise à former des techniciennes ou techniciens en
-informatique dont la profession cible le développement d’applications ou l’administration des réseaux
-informatiques.
-Dans le domaine du développement d’applications, les techniciennes et les techniciens participent à la
-conception d’applications fonctionnant sur différentes plateformes et en effectuent le développement et la
-maintenance. Les applications développées contribuent à des domaines variés dans presque tous les
-secteurs d’activité où l’intégrité de ses données est la base de la conception.
-Dans le domaine de l’administration des réseaux informatiques, les techniciennes et les techniciens
-participent à la conception de réseaux, en effectuent l’installation, en fait sa gestion et la sécurisation de ses
-serveurs et ordinateurs. Leur tâche consiste aussi à assurer le fonctionnement des services Internet et
-intranet qui y sont liés, tels le partage de ressources, la communication, l’hébergement, la téléphonie, etc.
-Ces personnes offrent également du soutien aux utilisatrices et aux utilisateurs.
-Selon l’ampleur du projet, le travail est effectué individuellement ou en collaboration avec différents
-spécialistes : autres techniciennes et techniciens en informatique, analystes, conseillères ou conseillers en
-architecture de données ou de réseaux, chargées ou chargés de projets, personnel responsable de
-l’assurance qualité, fournisseurs, etc.
-L’environnement de travail est très diversifié. Il est souvent constitué de composants matériels et logiciels à
-la fine pointe des technologies, mais parfois de composants de générations antérieures. Le travail
-demande donc une capacité d’adaptation importante, un perfectionnement constant de ses connaissances,
-d’excellentes capacités de raisonnement, l’application d’une démarche structurée, de la polyvalence, ainsi
-que de l’ouverture d’esprit. ',
-	'TA',
+	'AA',
 	'11111'
 ),
 (
@@ -83,7 +55,7 @@ que de l’ouverture d’esprit. ',
 	2,
 	'Technique des soins infirmiers',
 	'Les personnes professionnelles de la santé doivent se préparer à assumer de nouveaux rôles et à relever des défis reliés aux changements scientifiques, technologiques, organisationnels et politiques. Le programme Soins infirmiers 180.A0 s’inscrit dans le cadre de ces changements et vise à former des personnes aptes à exercer la profession d’une façon autonome et responsable.',
-	'TS',
+	'BB',
 	'22222'
 ),
 (
@@ -91,7 +63,7 @@ que de l’ouverture d’esprit. ',
 	4,
 	'Formation générale/Français',
 	'Dans la vie, il est important de bien écrire. C’est pourquoi le programe de français existe.',
-	'PH',
+	'CC',
 	'33333'
 )
 GO
@@ -112,28 +84,28 @@ VALUES
 	'00Q1',
 	'420.B0',
 	'Effectuer l’installation et la gestion d’ordinateurs',
-	'Des attitudes',
+	'Des attitiudes',
 	'11111'
 ),
 ( --Au choix
 	'00SJ',
 	'420.B0',
 	'Effectuer le déploiement de serveurs intranet',
-	'Des attitudes',
+	'Des attitiudes',
 	'11111'
 ),
 ( --Général commun
 	'4EF1',
 	null,
 	'Expliquer les représentations du monde contenues dans des textes littéraires d’époques et de genres variés',
-	'Des attitudes',
+	'Des attitiudes',
 	'11111'
 ),
 ( --Général propre
 	'4SAP',
 	null,
 	'Communiquer en anglais de façon simple en utilisant des formes d’expression d’usage courant liées au champ d’études de l’élève',
-	'Des attitudes',
+	'Des attitiudes',
 	'11111'
 )
 GO
@@ -427,34 +399,5 @@ VALUES
 	0,
 	0,
 	'Reconnaissance du sens général et des idées essentielles du message.',
-	'11111'
-)
-
-INSERT INTO TCRSTMPLT
-(
-	CRS_ID,
-	VSN_CDTTM, --Numero de version
-	PGM_ID,
-	CRS_TITLE,
-	UNITS,
-	CRS_DESC,
-	CRS_INTENT,
-	DPTMNT_APPRV_DT,
-	CMTE_APPRV_DT,
-	BOARD_APPRV_DT,
-	TRK_UID
-)
-VALUES
-(
-	'420-1G1-HU',
-	GETDATE(),
-	'420.B0',
-	'Ordinateur et réseaux de PME',
-	3.33,
-	'Ce cours permet à l’étudiante ou l’étudiant d’apprendre le fonctionnement d’une station de travail du point de vue matériel et logiciel. Il apprend aussi les règles de base de la sécurité, l’utilisation de la virtualisation ainsi que l’interconnexion des équipements.',
-	'L’étudiant sait installer efficacement un ordinateur, tant du point de vue matériel que logiciel, en fonction de la demande d’un client et en suivant la procédure établie par l’entreprise.  Il se réfère à la documentation pertinente et recherche les dernières versions des pilotes. Il peut relier l’ordinateur au réseau de l’entreprise.  Il peut installer et configurer plusieurs systèmes d’exploitation et les applications pour plusieurs utilisateurs, pour l’archivage et la sauvegarde des données.  Il gère toutes ses interventions à l’aide des applications appropriées.',
-	'2019-02-01',
-	'2019-03-30',
-	'2019-04-05',
 	'11111'
 )

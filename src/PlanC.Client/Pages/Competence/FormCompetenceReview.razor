@@ -1,0 +1,106 @@
+﻿<div class="row">
+    <!-- Valeur pour le numéro de la compétence -->
+    <div class="col-sm-6">
+        <div class="form-group">
+            <label for="competenceId" class="control-label"> Numéro de la compétence: </label>
+            <input readonly id="competenceId" class="form-control" @bind="competence.CompetenceId" />
+        </div>
+    </div>
+    <!-- Valeur pour l'identification du cours -->
+    <div class="col-sm-6">
+        <div class="form-group">
+            <label class="control-label" for="CrsId"> Département: </label>
+            <select readonly @bind="@(competence.DisciplineId)" class="form-control">
+                <option value="@competence.Discipline.Id">@competence.Discipline.Titre</option>
+            </select>
+        </div>
+    </div>
+    <!-- tous les contextes de réalisation plus l'énoncé de la compétence -->
+    <div class="col-12">
+        <br />
+        <table style="width: 100%; text-align: center; font-weight: 400; color: var(--memory-secondary);">
+            <thead>
+                <tr>
+                    <!--  centre de compréhension -->
+                    <th scope="col">Objectif</th>
+                    <th scope="col">Standard</th>
+                </tr>
+            </thead>
+        </table>
+        <table class="table table-striped mt-3" style="width: 100%;">
+            <thead>
+                <tr>
+                    <th style="resize: none !important">Énoncé de la compétence</th>
+                    <th style="resize: none !important">Contexte de réalisation</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td width="50%">
+                        <input readonly type="text" class="form-control" @bind="@competence.Enonce" />
+                    </td>
+                    <td width="50%">
+                        @if (!competence.CompetenceContextes.Any())
+                        {                            
+                            <p>Il n'y a pas de contextes de réalisation pour cette compétence.</p>
+                        }
+                        else
+                        {
+                            <ul style="list-style: none">
+                                @foreach (var itemContext in competence.CompetenceContextes)
+                                {
+                                    <li class="mb-3"><input readonly type="text" class="form-control" value="@itemContext.Text" /></li>
+                                }
+                            </ul>
+                        }
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Tout les éléments de compétences -->
+    @if (!competence.ElementsCompetence.Any())
+    {
+        <div class="col-12 text-center">
+            <p>Il n'y a pas d'éléments de compétences pour cette compétence.</p>
+        </div>
+    }
+    else
+    {
+        <div class="col-12">
+            <table class="table table-striped" style="width: 100%;">
+                <thead>
+                    <tr>
+                        <th scope="col">Élément de la compétence</th>
+                        <th scope="col">Critères de performance</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var element in competence.ElementsCompetence)
+                    {
+                        <tr>
+                            <td width="50%">
+                                <input readonly type="text" class="form-control" @bind="element.Libele" />
+                            </td>
+                            <td width="50%">
+                                @foreach (var criteria in element.CriteresElementCompetence)
+                                {
+                                    <div class="input-group col-12 mb-3">
+                                        <input readonly type="text" class="form-control" @bind="criteria.DescriptionCritere" aria-label="Contexte de réalisation deux bouttons" aria-describedby="button-addon-criteria-@(element.CriteresElementCompetence.IndexOf(criteria)+1)" />
+                                    </div>
+                                }
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+</div>
+
+@code {
+    [CascadingParameter]
+    [Parameter]
+    public Competences competence { get; set; }
+}

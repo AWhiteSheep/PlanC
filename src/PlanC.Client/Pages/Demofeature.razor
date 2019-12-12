@@ -1,0 +1,120 @@
+﻿@page "/demo/{Id}"
+@using Newtonsoft.Json
+@using PlanC.EntityDataModel
+@*context de la base de donné et js runtime*@
+@inject PCU001Context _context
+@inject IJSRuntime JSRuntime
+
+<style>
+    .ui-state-highlight {
+        border: 2px dashed #17A2B8 !important;
+        background-color: #17a2b854 !important;
+    }
+</style>
+
+<h1>Demo compétences</h1>
+
+
+<!-- Formulaire pour dictant les demandes vers la database -->
+@*<div class="input-group mb-3">
+    <div class="input-group-prepend">
+        <label class="input-group-text" for="User">Choisir un programme pour lequel vous voulez créer un compétence</label>
+    </div>
+    <select class="custom-select" id="User" @bind="selectedProgramme">
+        <option value="">Faire une sélection...</option>
+        @foreach (User user in users)
+        {
+            <option value="@user.Id">@user.Name</option>
+        }
+    </select>
+    <button class="btn btn-primary" @onclick="UserSelected">Sélectionner</button>
+</div>*@
+
+<div class="form-group green-border-focus">
+    <label for="inputParser">Passé en utilisant la fonction copier/coller les éléments de la compétence, ainsi que ses critères. </label>
+    <textarea class="form-control" rows="6" id="inputParser">
+1. Analyser le projet de déploiement.  Analyse juste des documents de conception.
+ Analyse juste des caractéristiques techniques des
+dispositifs d’interconnexion à installer.
+ Détermination correcte des tâches à effectuer.
+2. Mettre en place les dispositifs d’interconnexion.  Positionnement et fixation des dispositifs
+d’interconnexion conformes aux plans.
+ Identification correcte des dispositifs
+d’interconnexion et du câblage.
+ Respect des procédures de raccordement du
+câblage structuré et de la réglementation
+applicable au domaine de l’électricité.
+ Respect des règles de santé et de sécurité au
+travail.
+
+3. Installer les dispositifs d’interconnexion.  Application correcte de la procédure d’installation
+
+ou de mise à jour des micrologiciels.
+ Configuration correcte des dispositifs.
+ Gestion judicieuse des accès.
+ Sauvegarde correcte des configurations.
+ Respect des mesures de sécurité.
+
+4. Participer à la mise en service des dispositifs
+d’interconnexion.
+
+ Application rigoureuse des plans de tests.
+ Pertinence des correctifs.
+ Fonctionnement optimal du réseau.
+
+5. Rédiger la documentation.  Détermination correcte de l’information à rédiger.
+
+ Notation claire du travail effectué.
+</textarea>
+
+    <button onclick="$('#inputParser').change()" class="btn btn-info">Transformer le contenu</button>
+</div>
+
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th scope="col">Élément de la compétence</th>
+            <th scope="col">Critères de performance</th>
+            <th scope="col"></th>
+        </tr>
+    </thead>
+    <tbody id="tableCompetence">
+    </tbody>
+</table>
+
+
+<button onclick="serialize()" class="btn btn-success">Sauvegarder</button>
+
+@code {
+    private List<EntityDataModel.Programmes> programmes;
+    private string selectedId = "";
+
+    [Parameter]
+    public string  Id { get; set; }
+
+    protected override void OnInitialized()
+    {
+        // part l'initialisateur chez le client
+        programmes = _context.Programmes.ToList();
+
+        //if (!string.IsNullOrEmpty(Id))
+        //{
+        //    if (programmes.Any(e => e.Id == Id)) {
+        //        selectedId = Id;
+        //    }
+        //}
+
+
+        // load le draggable pour la démo
+        JSRuntime.InvokeAsync<string>("requestScripts", JsonConvert.SerializeObject(new string[] { "https://code.jquery.com/ui/1.12.1/jquery-ui.js" }));
+    }
+
+    protected override void OnAfterRender(bool firstRender)
+    {
+        if (firstRender)
+        {        
+            JSRuntime.InvokeAsync<string>("requestScripts", JsonConvert.SerializeObject(new string[] { "/js/stringparser.js" }));
+        }
+    }
+}
