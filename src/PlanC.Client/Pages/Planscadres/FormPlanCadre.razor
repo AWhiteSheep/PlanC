@@ -8,9 +8,7 @@
 @using Microsoft.EntityFrameworkCore;
 @inject NavigationManager NavigationManager
 @inject PCU001Context context
-
 <!--section sécurité doit être seulement coordonateur du programme et la consultation par le professeur-->
-
 <!-- Section de navigation -->
 <div class="row mb-3">
     <div class="col">
@@ -27,8 +25,14 @@
 
 
 
+<div class="row">
+    <div class="col-12 d-flex justify-content-center">
+        <PlanC.Client.Components.ProgressBar steps="@(new List<string>{ "Description", "Réalisation", "Éléments", "Révision" })"
+                                             Current="CurrentStep"></PlanC.Client.Components.ProgressBar>
+    </div>
+</div>
 
-<div class="container shadow p-5">
+<div class="container shadow p-5" style="margin-bottom: 200px">
     @*Envoit le paramètre à tous les enfants*@
     <CascadingValue TValue="PCU001Context" Value="context">
         <CascadingValue TValue="FormMode" Value="CurrentMode">
@@ -82,6 +86,8 @@
     [Parameter]
     public PlansCadres Template { get; set; }
 
+    private int CurrentStep = 0;
+
     ChangeEventArgs<DropdownProgramSelection> programSelectChange;
 
     protected override void OnInitialized()
@@ -125,6 +131,7 @@
             CurrentNode = CurrentNode.Next;
             CurrentForm = CurrentNode.Value;
             CurrentMode = FormMode.EDIT;
+            CurrentStep++;
             StateHasChanged();
         }
         else
@@ -136,6 +143,7 @@
     {
         CurrentNode = CurrentNode.Previous;
         CurrentForm = CurrentNode.Value;
+        CurrentStep--;
         StateHasChanged();
     }
 
