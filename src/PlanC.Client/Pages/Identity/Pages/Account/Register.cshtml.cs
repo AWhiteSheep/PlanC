@@ -47,12 +47,12 @@ namespace PlanC.Client.Pages.Identity.Pages.Account
 
         public class InputModel : Utilisateurs
         {     
-            [Required(ErrorMessage = "{0} est obligatoire")]
+            [Required(ErrorMessage = "{0} est obligatoire.")]
             [EmailAddress]
             [Display(Name = "Addresse couriel")]
             public override string Email { get; set; }
 
-            [Required(ErrorMessage = "{0} est obligatoire")]
+            [Required(ErrorMessage = "{0} est obligatoire.")]
             [Phone]
             [Display(Name = "Numéro de votre poste")]
             public override string PhoneNumber { get; set; }
@@ -63,7 +63,7 @@ namespace PlanC.Client.Pages.Identity.Pages.Account
             [Display(Name = "Numéro d'utilisateur")]
             public override string UserName { get; set; }
 
-            [Required]
+            [Required(ErrorMessage = "{0} est obligatoire.")]
             [StringLength(100, ErrorMessage = "Le mot de passe doit être au moins {2} et au maximum {1} charactères de long.", MinimumLength = 6)]
             [DataType(DataType.Password)]
             [Display(Name = "Mot de passe")]
@@ -90,6 +90,7 @@ namespace PlanC.Client.Pages.Identity.Pages.Account
             public new string Snm { get; set; }
 
             [Display(Name = "Clé d'enregistrement")]
+            [DataType(DataType.Password)]
             [Required(ErrorMessage = "Vous devez saisir la clée d'enregistrement.")]
             public string Clef { get; set; }
         }

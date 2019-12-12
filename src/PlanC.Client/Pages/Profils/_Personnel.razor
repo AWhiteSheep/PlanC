@@ -4,6 +4,7 @@
 @attribute [Authorize]
 @namespace PlanC.Client.Pages
 @inject PCU001Context context
+
 <!-- Section de navigation -->
 <div class="row mb-3">
     <div class="col-lg-8">
@@ -38,7 +39,7 @@
         <!-- Séparateur -->
         <!-- Titre pour fragment pour les documents en production -->
         <h6 class="font-weight-bold"> Les plans-cadres en production... </h6>
-        <!-- Conteneur pour les documents en production -->
+        <!-- Conteneur pour les plans cadres en production -->
         <div class="row">
             @foreach (var plancadre in context.PlansCadres)
             {

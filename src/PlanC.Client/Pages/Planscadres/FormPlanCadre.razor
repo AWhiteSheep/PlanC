@@ -1,6 +1,7 @@
 ﻿@page "/plancadre/create"
 @page "/planscadres/creation"
 @page "/plancadre/{id}/create"
+@page "/planscadres/{id}/create"
 @attribute [Authorize]
 @using PlanC.EntityDataModel
 @using Components
@@ -27,8 +28,8 @@
 
 <div class="row">
     <div class="col-12 d-flex justify-content-center">
-        <PlanC.Client.Components.ProgressBar steps="@(new List<string>{ "Description", "Réalisation", "Éléments", "Révision" })"
-                                             Current="CurrentStep"></PlanC.Client.Components.ProgressBar>
+        <PlanC.Client.Components.ProgressBar steps="@(new List<string>{ "Déscription", "Compétences", "Examens finaux", "Révision" })"
+                        Current="CurrentStep"></PlanC.Client.Components.ProgressBar>
     </div>
 </div>
 
