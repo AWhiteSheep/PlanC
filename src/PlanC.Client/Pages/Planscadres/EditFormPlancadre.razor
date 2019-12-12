@@ -1,5 +1,8 @@
 ﻿@using PlanC.Client.Components
 @inherits CourseTemplateFormComponent
+
+
+
 <!-- Formulaire d'un nouveau plan-cadre -->
 <!-- Valeur pour le titre du plan-cadre -->
 
@@ -24,7 +27,7 @@
             <!-- Valeur pour le titre du plan-cadre -->
             <div class="col-lg-6">
                 <div class="form-group">
-                    <label class="control-label" for="CrsTitle"> Titre du cours: </label>
+                    <label class="control-label" for="CrsTitle"> Nom du cours associé: </label>
                     <input type="text" @bind="Template.DenominationCours" class="form-control" />
                 </div>
             </div>
@@ -69,7 +72,7 @@
             <div class="col-12">
                 <!-- Descriptions du cours -->
                 <div class="form-group">
-                    <label class="control-label col-12" for="CrsDesc">Description du cours: </label>
+                    <label class="control-label col-12" for="CrsDesc">Description complète du cours: </label>
                     <textarea @bind="Template.Description" rows="4" class="form-control" id="CrsIntent" name="CrsDesc" />
                 </div>
             </div>
@@ -82,11 +85,13 @@
             </div>
             <div class="col-12">
                 <!-- Entrés pour les intentions pédagogiques du cours -->
+                <!-- text editor formaté -->
                 <div class="form-group">
-                    <label class="control-label" for="IntentionPedagogique">Intentions pédagogiques: </label>
+                    <label class="control-label" for="IntentionPedagogique">Remarque: </label>
                     <textarea @bind="Template.IntentionPedagogique" rows="4" class="form-control" id="IntentionPedagogique" name="IntentionPedagogique" />
                 </div>
             </div>
+            <!-- Plus tard dans la section approbation-->
             <div class="row" style="display:contents">
                 <div class="col-md-4">
                     <label class="label-info">Date d'approbation en département</label>
