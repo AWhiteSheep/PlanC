@@ -57,10 +57,10 @@
                     <span class="label-info">@elem.ElementCompetence.Libele</span>
                 </td>
                 <td style="max-width:15%">
-                    <input readonly="@IsReadOnly" class="input input-group" type="checkbox" @bind="elem.IsPartial" />
+                    <input readonly="@IsReadOnly" class="input input-group form-control" type="checkbox" @bind="elem.IsPartial" />
                 </td>
                 <td style="min-width:50%">
-                    <textarea readonly="@IsReadOnly" style="width:100%" class="input m-0" @bind="elem.LongDescription" />
+                    <textarea readonly="@IsReadOnly" style="width:100%" class="input m-0 form-control" @bind="elem.LongDescription" />
                 </td>
             </tr>
             }
