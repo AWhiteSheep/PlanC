@@ -1,0 +1,116 @@
+﻿@using Microsoft.EntityFrameworkCore
+@using Syncfusion.EJ2.Blazor.DropDowns;
+
+@inject PCU001Context _context
+
+
+<button disabled="@(IsReadOnly)" hidden="@(IsReadOnly)" class="btn btn-success mb-4" @onclick="() => AddActivity()">Ajouter un examen</button>
+
+<table class="table table-danger">
+    <thead>
+        <tr>
+            <th>
+                Durée
+            </th>
+            <th>
+                Éléments de compétence
+            </th>
+            <th>
+                Contenu
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (CoursActivite timeblock in CurrentActivities)
+        {
+            <tr>
+                <td>
+                    <input class="input form-control" type="number" @bind="timeblock.ActvtLgnth" /> <span>semaines</span>
+                </td>
+                <td>
+                    <button class="btn btn-dark" @onclick="() => AddSkillElemCrit(timeblock)"><i class="fas fa-plus"></i></button>
+                    @foreach(CoursCompetenceElements cse in timeblock.CoursCompetenceElements)
+                    {
+                        <EjsComboBox TValue="CriteresElementCompetence" DataSource="AssociatedSkillElemCrits" 
+                        ValueChanged="@(e => SetCrit(e, cse))"></EjsComboBox>
+                    }
+                </td>
+                <td>
+                    <textarea @bind="timeblock.ActvtDesc" class="input form-control"></textarea>
+                </td>
+            </tr>                    
+        }
+    </tbody>
+</table>
+
+@code {
+    [Parameter]
+    public PlansCours CoursePlan { get; set; }
+
+    private PlansCadres Template { get; set; }
+
+    [Parameter]
+    public EventCallback<PlansCours> CoursePlanChanged { get; set; }
+
+    [Parameter]
+    public bool IsReadOnly { get; set; } = false;
+
+    public List<ElementsCompetence> AssociatedSkillElems { get; set; }
+
+    public List<CriteresElementCompetence> AssociatedSkillElemCrits { get; set; }
+
+    private LinkedList<CoursActivite> CurrentActivities;
+
+    protected override void OnInitialized()
+    {
+        CurrentActivities = new LinkedList<CoursActivite>();
+        AssociatedSkillElems = new List<ElementsCompetence>();
+        AssociatedSkillElemCrits = new List<CriteresElementCompetence>();
+    }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        await FetchData();
+    }
+
+    private void AddActivity()
+    {
+        CurrentActivities.AddLast(new CoursActivite()
+        {
+            CoursId = CoursePlan.CoursId,
+            PlnVsnCdttm = CoursePlan.PlnVsnCdttm,
+            SessionId = CoursePlan.SessionId,
+            TchrUid = CoursePlan.TchrUid,
+            PlansCours = CoursePlan
+        });
+
+        StateHasChanged();
+    }
+
+    private async Task FetchData()
+    {
+        Template = await  _context.PlansCadres.Where(t => t.CoursId == CoursePlan.CoursId)
+                                    .OrderByDescending(t => t.VsnCdttm)
+                                    .Include(t => t.PlanCadreCompetenceElements)
+                                        .ThenInclude(tse => tse.Select(tse => tse.ElementCompetence))
+                                            .ThenInclude(se => se.CriteresElementCompetence)
+                                    .FirstAsync();
+
+        AssociatedSkillElems = Template.PlanCadreCompetenceElements.Select(tse => tse.ElementCompetence).ToList();
+
+        AssociatedSkillElemCrits = AssociatedSkillElems.SelectMany(se => se.CriteresElementCompetence).ToList();
+    }
+
+    public void SetCrit(CriteresElementCompetence crt, CoursCompetenceElements cse)
+    {
+        cse.IdentityCritereElementCompetenceNavigation = crt;
+    }
+
+    public void AddSkillElemCrit(CoursActivite timeblock)
+    {
+        timeblock.CoursCompetenceElements.Add(new CoursCompetenceElements()
+        {
+            IdendityCoursActivityNavigation = timeblock
+        });
+    }
+}

@@ -4,7 +4,6 @@
 
 
 <!-- Formulaire d'un nouveau plan-cadre -->
-<!-- Valeur pour le titre du plan-cadre -->
 
 @if (!IsReadOnly)
 { 
@@ -22,6 +21,7 @@
         </div>
     </div>
  <EditForm EditContext="editContext">
+     @*The Data annotations validator uses annotations on the properties of the specified EF model to perform validations*@
     <DataAnnotationsValidator />
         <div class="row">
             <!-- Valeur pour le titre du plan-cadre -->
@@ -153,7 +153,7 @@
         editContext = new EditContext(Template);
     }
 
-    //If in edit mode, fetches the 
+    
     protected override void OnParametersSet()
     {
         switch (CurrentMode)
@@ -169,6 +169,10 @@
         }
     }
 
+    /// <summary>
+    /// Adds method UpdateProgram to the dropdown program selection component's ValueChanged event.
+    /// </summary>
+    /// <param name="firstRender">Denotes whether this is the first time the component is rendered.</param>
     protected override void OnAfterRender(bool firstRender)
     {
         if (firstRender && !IsReadOnly)
@@ -177,6 +181,10 @@
         }
     }
 
+    /// <summary>
+    /// Attempts to save current data into the database.
+    /// </summary>
+    /// <returns>True if changes were successfully saved to the database; false otherwise.</returns>
     public override bool SaveProgress()
     {
         if (editContext.Validate())
@@ -199,7 +207,7 @@
                     }
                     catch (Exception except)
                     {
-                        Console.WriteLine($"Template input error: {except.Message} /// {except.InnerException.Message}");
+                        Console.WriteLine($"Template input error: {except.Message}");
                         return false;
                     }
                 case FormPlanCadre.FormMode.EDIT:
@@ -217,7 +225,7 @@
                     }
                     catch (Exception except)
                     {
-                        Console.WriteLine($"Template input error: {except.Message} /// {except.InnerException.Message}");
+                        Console.WriteLine($"Template input error: {except.Message}");
                         return false;
                     }
                 default:

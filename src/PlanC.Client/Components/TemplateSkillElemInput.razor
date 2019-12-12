@@ -138,22 +138,30 @@
         JSRuntime.Ejs().SetCulture("fr-CA");
     }
 
+    /// <summary>
+    /// Refreshes the display and underlying properties of this component when actions are performed.
+    /// </summary>
     protected void RefreshSkills()
     {
-
+        //Only skills associated with the same program as the current template are available.
         AvailableSkills = _context.Competences.Where(c => c.DisciplineId == Program.DepartementId)
                                                 .ToList();
 
+        //Do not make already selected skills available.
         AvailableSkills.RemoveAll(available => SelectedSkills.Contains(available));
 
+        //Pulls skill elements associated with currently selected skills
         List<ElementsCompetence> AssociatedSkillElems = _context.ElementsCompetence.Where(ec => SelectedSkills.Contains(ec.IdentityKeyCompetencesNavigation)).ToList();
+
 
         foreach (ElementsCompetence sklelem in AssociatedSkillElems)
         {
+            //Skip already populated skill elements
             if (SelectedSkillElements.Any(tse => tse.ElementCompetence == sklelem))
             {
                 continue;
             }
+            //Create a new TemplateSkillElement object for each skill element associated with selected skills.
             SelectedSkillElements.Add(new PlanCadreCompetenceElements
             {
                 CoursId = Template.CoursId,
@@ -171,6 +179,7 @@
 
     protected void AddSkill(MouseEventArgs args)
     {
+        //Sanity check to prevent double adding the same skill
         if (SelectedSkills.Contains(CurrentSelection))
         {
             return;
