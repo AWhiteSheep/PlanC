@@ -2,6 +2,27 @@
 for details on configuring this project to bundle and minify static web assets. */
 
 
+/***HERO grid*/
+/*my cards */
+.card-form {
+    position: relative;
+    padding: 10px;
+    /* width: 135px; */
+    height: 220px;
+    margin: auto;
+    border-radius: 8px;
+}
+.card-form h4 {
+    margin: 18px 0 15px 0 !important;
+    font-size: 13px !important;
+    line-height: 0px !important;
+}
+.card-form a {
+    font-size: smaller;
+}
+
+/*inputs*/
+
 input[disabled] {
   color: var(--blue);
   backgroud-color: #fff;
@@ -8191,6 +8212,9 @@ button.bg-dark:focus {
 
 .shadow {
   box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15) !important;
+}
+.document-shadow {
+    box-shadow: .1rem .1rem .1rem .1rem rgba(58, 59, 69, 0.15) !important;
 }
 
 .shadow-lg {

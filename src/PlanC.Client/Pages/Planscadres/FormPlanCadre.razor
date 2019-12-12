@@ -1,18 +1,15 @@
 ﻿@page "/plancadre/create"
 @page "/planscadres/creation"
 @page "/plancadre/{id}/create"
+@page "/planscadres/{id}/create"
 @attribute [Authorize]
-@using Microsoft.AspNetCore.Identity
 @using PlanC.EntityDataModel
 @using Components
 @using System.Collections.Generic;
 @using Microsoft.EntityFrameworkCore;
-@inject UserManager<Utilisateurs> UserManager
 @inject NavigationManager NavigationManager
 @inject PCU001Context context
-
 <!--section sécurité doit être seulement coordonateur du programme et la consultation par le professeur-->
-
 <!-- Section de navigation -->
 <div class="row mb-3">
     <div class="col">
@@ -29,9 +26,15 @@
 
 
 
+<div class="row">
+    <div class="col-12 d-flex justify-content-center">
+        <PlanC.Client.Components.ProgressBar steps="@(new List<string>{ "Déscription", "Compétences", "Examens finaux", "Révision" })"
+                        Current="CurrentStep"></PlanC.Client.Components.ProgressBar>
+    </div>
+</div>
 
-<div class="container shadow p-5">
-    @*Génère le component approprié pour le formulaire courant.*@
+<div class="container shadow p-5" style="margin-bottom: 200px">
+    @*Envoit le paramètre à tous les enfants*@
     <CascadingValue TValue="PCU001Context" Value="context">
         <CascadingValue TValue="FormMode" Value="CurrentMode">
             @if (CurrentForm is EditFormPlancadre)
@@ -76,15 +79,17 @@
     [CascadingParameter]
     public FormMode CurrentMode { get; set; }
 
-    //Contrôle de la navigation
     public CourseTemplateFormComponent CurrentForm { get; set; }
+
     private LinkedListNode<CourseTemplateFormComponent> CurrentNode { get; set; }
     private LinkedList<CourseTemplateFormComponent> Forms { get; set; }
 
-    //L'entité plan cadre.
     [Parameter]
     public PlansCadres Template { get; set; }
 
+    private int CurrentStep = 0;
+
+    ChangeEventArgs<DropdownProgramSelection> programSelectChange;
 
     protected override void OnInitialized()
     {
@@ -120,9 +125,6 @@
         StateHasChanged();
     }
 
-    /// <summary>
-    /// Navigate to the next form in the wizard. SaveProgress must return true.
-    /// </summary>
     private void NavigateNext()
     {
         if (CurrentForm.SaveProgress())
@@ -130,6 +132,7 @@
             CurrentNode = CurrentNode.Next;
             CurrentForm = CurrentNode.Value;
             CurrentMode = FormMode.EDIT;
+            CurrentStep++;
             StateHasChanged();
         }
         else
@@ -137,19 +140,14 @@
             return;
         }
     }
-    /// <summary>
-    /// Navigate back to the previous form in the wizard.
-    /// </summary>
     private void NavigatePrevious()
     {
         CurrentNode = CurrentNode.Previous;
         CurrentForm = CurrentNode.Value;
+        CurrentStep--;
         StateHasChanged();
     }
 
-    /// <summary>
-    /// Probably not useful anymore.
-    /// </summary>
     public enum FormMode
     {
         CREATE = 1,

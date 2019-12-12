@@ -1,6 +1,9 @@
 ﻿@page "/portail"
+@using Microsoft.AspNetCore.Identity
+@inject UserManager<Utilisateurs> UserManager
 @attribute [Authorize]
 @namespace PlanC.Client.Pages
+@inject PCU001Context context
 
 <!-- Section de navigation -->
 <div class="row mb-3">
@@ -34,14 +37,21 @@
 <div class="in-card shadow mb-4">
     <div class="card-body">
         <!-- Séparateur -->
-        <p>
-            <!-- Titre pour fragment pour les documents en production -->
-            <h6 class="m-0 font-weight-bold"> Les documents en production... </h6>
-        </p>
-        <!-- Conteneur pour les documents en production -->
-        <div class="table-responsive">
-            Aucun document à afficher. <br />
-            Vos documents en cours se retrouverons ici.
+        <!-- Titre pour fragment pour les documents en production -->
+        <h6 class="font-weight-bold"> Les plans-cadres en production... </h6>
+        <!-- Conteneur pour les plans cadres en production -->
+        <div class="row">
+            @foreach (var plancadre in context.PlansCadres)
+            {
+                <!--pour tous les documents -->
+                <div class="col-1" style="margin-bottom: 20px;">
+                    <div class="card-form document-shadow" style="display: flex; flex-direction: column">
+                        <h4>@plancadre.CoursId</h4>
+                        <a class="text-success">@plancadre.DenominationCours</a>
+                        <a style="position:absolute; bottom: 10px;" href="/plancadre/@plancadre.CoursId/create">document</a>
+                    </div>
+                </div>
+            }
         </div>
     </div>
 </div>
