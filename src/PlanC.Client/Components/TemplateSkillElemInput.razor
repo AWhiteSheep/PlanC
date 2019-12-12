@@ -4,25 +4,27 @@
 @using Syncfusion.EJ2.Blazor.DropDowns
 @using Syncfusion.EJ2.Blazor.Buttons
 @using Microsoft.EntityFrameworkCore
+@using System.Linq;
 @inject PCU001Context _context
 @inject IJSRuntime JSRuntime
 @inherits CourseTemplateFormComponent
 
-
-<h3 class="h3 bcTitle">Saisie des compétences</h3>
-<div class="row justify-content-between p-0 mt-3 mb-3">
-    <div class="col-lg-6">
-        <EjsComboBox Placeholder="Choisir une compétence..." @ref="SkillDropdown" TValue="@Competences" DataSource="AvailableSkills">
-            <ComboBoxEvents TValue="int" ValueChange="onValueChanged"></ComboBoxEvents>
-            <ComboBoxFieldSettings Value="IdentityKey" Text="Enonce"></ComboBoxFieldSettings>
-        </EjsComboBox>
+@if (!IsReadOnly)
+{
+    <h3 class="h3 bcTitle">Saisie des compétences</h3>
+    <div class="row justify-content-between p-0 mt-3 mb-3">
+        <div class="col-lg-6">
+            <EjsComboBox Placeholder="Choisir une compétence..." @ref="SkillDropdown" TValue="@Competences" DataSource="AvailableSkills">
+                <ComboBoxEvents TValue="int" ValueChange="onValueChanged"></ComboBoxEvents>
+                <ComboBoxFieldSettings Value="IdentityKey" Text="Enonce"></ComboBoxFieldSettings>
+            </EjsComboBox>
+        </div>
+        <!-- le coordonateur peut ajouter des remarques et précision local pour le plan cadre donné-->
+        <div class="col-lg-6">
+            <EjsButton CssClass="btn btn-info" @onclick="AddSkill">Ajouter</EjsButton>
+        </div>
     </div>
-    <!-- le coordonateur peut ajouter des remarques et précision local pour le plan cadre donné-->
-    <div class="col-lg-6">
-        <EjsButton CssClass="btn btn-info" @onclick="AddSkill">Ajouter</EjsButton>
-    </div>
-</div>
-
+}
 <div class="container p-0">
 
 @foreach (Competences skill in SelectedSkills)
@@ -33,7 +35,10 @@
             <a data-toggle="collapse" data-target="#collapse-@skill.IdentityKey">
                 <h5 class="h5 font-weight-bold m-0">@skill.ToString()</h5>
             </a>
-            <button class="btn btn-danger" @onclick="() => RemoveSkill(skill)"><i class="fas fa-trash"></i></button>
+            @if (!IsReadOnly)
+            {
+                <button class="btn btn-danger" @onclick="() => RemoveSkill(skill)"><i class="fas fa-trash"></i></button>
+            }
         </div>
     </div>
     <table id="collapse-@skill.IdentityKey" class="mt-3 table table-borderless text-center p-0" style="width:100%">
@@ -52,10 +57,10 @@
                     <span class="label-info">@elem.ElementCompetence.Libele</span>
                 </td>
                 <td style="max-width:15%">
-                    <input class="input input-group" type="checkbox" @bind="elem.IsPartial" />
+                    <input readonly="@IsReadOnly" class="input input-group" type="checkbox" @bind="elem.IsPartial" />
                 </td>
                 <td style="min-width:50%">
-                    <textarea style="width:100%" class="input m-0" @bind="elem.LongDescription" />
+                    <textarea readonly="@IsReadOnly" style="width:100%" class="input m-0" @bind="elem.LongDescription" />
                 </td>
             </tr>
             }
@@ -73,6 +78,9 @@
 
     [Parameter]
     public EventCallback<PlansCadres> TemplateChanged { get; set; }
+
+    [Parameter]
+    public bool IsReadOnly { get; set; } = false;
 
     [CascadingParameter]
     public PCU001Context context { get; set; }
@@ -175,16 +183,17 @@
     protected void RemoveSkill(Competences skill)
     {
         SelectedSkills.Remove(skill);
+        _context.PlanCadreCompetenceElements.RemoveRange(SelectedSkillElements.Where(tse => tse.ElementCompetence.IdentityKeyCompetencesNavigation == skill));
         SelectedSkillElements = SelectedSkillElements.Where(tse => tse.ElementCompetence.IdentityKeyCompetencesNavigation != skill).ToList();
+        _context.SaveChanges();
         RefreshSkills();
     }
 
     public override bool SaveProgress()
     {
-        Template.PlanCadreCompetenceElements = SelectedSkillElements;
-
         try
         {
+            Template.PlanCadreCompetenceElements = SelectedSkillElements;
             int result = _context.SaveChanges();
             return true;
         }

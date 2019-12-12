@@ -28,14 +28,14 @@
             <div class="col-lg-6">
                 <div class="form-group">
                     <label class="control-label" for="CrsTitle"> Nom du cours associé: </label>
-                    <input type="text" @bind="Template.DenominationCours" class="form-control" />
+                    <input readonly="@IsReadOnly" type="text" @bind="Template.DenominationCours" class="form-control" />
                 </div>
             </div>
             <!-- Valeur pour l'identification du cours -->
             <div class="col-lg-6">
                 <div class="form-group">
                     <label class="control-label" for="CrsId"> Identifiant du cours: </label>
-                    <InputText type="text" @bind-Value="Template.CoursId" class="form-control" />
+                    <InputText readonly="@IsReadOnly" type="text" @bind-Value="Template.CoursId" class="form-control" />
                     <ValidationMessage For="(() => Template.CoursId)"></ValidationMessage>
                 </div>
             </div>
@@ -46,7 +46,7 @@
                 <div class="form-group">
                     <label class="control-label" for="Units"> Nombre d'unités: </label>
                     <ValidationMessage For="() => Template.UnitsAccessor"></ValidationMessage>
-                    <InputNumber TValue="decimal" @bind-Value="Template.UnitsAccessor" class="form-control theme-mask input" id="Units" />
+                    <InputNumber readonly="@IsReadOnly" TValue="decimal" @bind-Value="Template.UnitsAccessor" class="form-control theme-mask input" id="Units" />
                 </div>
             </div>
             <!-- Ajout de la pondération -->
@@ -55,15 +55,15 @@
                     <label class="control-label" for="Ponderation"> Pondération du cours: </label>
                         <div class="row">
                             <label class="col-md-10" for="@(Template.TheoryHoursAccessor)">Nombre d'heures de théorie: </label>
-                            <InputNumber class="col-md-2 theme-mask form-control" TValue="int" Mask="0" @bind-Value="Template.TheoryHoursAccessor" />
+                            <InputNumber readonly="@IsReadOnly" class="col-md-2 theme-mask form-control" TValue="int" Mask="0" @bind-Value="Template.TheoryHoursAccessor" />
                         </div>
                         <div class="row">
                             <label class="col-md-10" for="@(Template.PracticeHoursAccessor)">Nombre d'heures de pratique: </label>
-                            <InputNumber class="col-md-2 theme-mask form-control" TValue="int" Mask="0" @bind-Value="Template.PracticeHoursAccessor" />
+                            <InputNumber readonly="@IsReadOnly" class="col-md-2 theme-mask form-control" TValue="int" Mask="0" @bind-Value="Template.PracticeHoursAccessor" />
                         </div>
                         <div class="row">
                             <label class="col-md-10" for="@(Template.HomeHoursAccessor)">Nombre d'heures à la maison: </label>
-                            <InputNumber class="col-md-2 theme-mask form-control" TValue="int" Mask="0"  @bind-Value="Template.HomeHoursAccessor" />
+                            <InputNumber readonly="@IsReadOnly" class="col-md-2 theme-mask form-control" TValue="int" Mask="0"  @bind-Value="Template.HomeHoursAccessor" />
                         </div>
                 </div>
             </div>
@@ -73,14 +73,14 @@
                 <!-- Descriptions du cours -->
                 <div class="form-group">
                     <label class="control-label col-12" for="CrsDesc">Description complète du cours: </label>
-                    <textarea @bind="Template.Description" rows="4" class="form-control" id="CrsIntent" name="CrsDesc" />
+                    <textarea readonly="@IsReadOnly" @bind="Template.Description" rows="4" class="form-control" id="CrsIntent" name="CrsDesc" />
                 </div>
             </div>
             <div class="col-12">
                 <!-- les intentions du cours -->
                 <div class="form-group">
                     <label class="control-label" for="CrsIntent">Intentions éducatives: </label>
-                    <textarea @bind="Template.IntentionEducative" rows="4" class="form-control" id="CrsIntent" name="CrsIntent" />
+                    <textarea readonly="@IsReadOnly" @bind="Template.IntentionEducative" rows="4" class="form-control" id="CrsIntent" name="CrsIntent" />
                 </div>
             </div>
             <div class="col-12">
@@ -88,22 +88,22 @@
                 <!-- text editor formaté -->
                 <div class="form-group">
                     <label class="control-label" for="IntentionPedagogique">Remarque: </label>
-                    <textarea @bind="Template.IntentionPedagogique" rows="4" class="form-control" id="IntentionPedagogique" name="IntentionPedagogique" />
+                    <textarea readonly="@IsReadOnly" @bind="Template.IntentionPedagogique" rows="4" class="form-control" id="IntentionPedagogique" name="IntentionPedagogique" />
                 </div>
             </div>
             <!-- Plus tard dans la section approbation-->
             <div class="row" style="display:contents">
                 <div class="col-md-4">
                     <label class="label-info">Date d'approbation en département</label>
-                    <input type="date"  @bind="Template.DateApprobationDepartement" class="form-control input"/>
+                    <input readonly="@IsReadOnly" type="date"  @bind="Template.DateApprobationDepartement" class="form-control input"/>
                 </div>
                 <div class="col-md-4">
                     <label class="label-info">Date d'approbation en comité</label>
-                    <input type="date" @bind="Template.DateApprobationCommite" class="form-control input"/>
+                    <input readonly="@IsReadOnly" type="date" @bind="Template.DateApprobationCommite" class="form-control input"/>
                 </div>
                 <div class="col-md-4">
                     <label class="label-info">Date d'approbation de la direction de études</label>
-                    <input type="date" @bind="Template.DateApprobationDepartement" class="form-control input"/>
+                    <input readonly="@IsReadOnly" type="date" @bind="Template.DateApprobationDepartement" class="form-control input"/>
                 </div>
             </div>
         </div>
@@ -171,7 +171,7 @@
 
     protected override void OnAfterRender(bool firstRender)
     {
-        if (firstRender)
+        if (firstRender && !IsReadOnly)
         {
             ProgramSelect.ValueChanged += UpdateProgram;
         }

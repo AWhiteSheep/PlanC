@@ -57,7 +57,8 @@
                 <!-- appelle fonction javascript permettant d'ajouter le .wasvalidated sur la division du formulaire -->
                 <!-- suite au poste validate nous envoyons l'utilisateur vers la deuxième partie celle de remplire les contextes et les éléments de compétence-->
                 <button @onclick="NavigatePrevious" disabled="@(CurrentNode.Previous == null)" class="btn btn-primary">Précédent</button>
-                <button @onclick="NavigateNext" disabled="@(CurrentNode.Next == null)" class="btn btn-primary">Suivant</button>
+                <button @onclick="NavigateNext" hidden="@(CurrentNode.Next == null)" disabled="@(CurrentNode.Next == null)" class="btn btn-primary">Suivant</button>
+                <a href="~/" hidden="@(CurrentNode.Next != null)" disabled="@(CurrentNode.Next != null)" class="btn btn-primary">Terminer</a>
             </div>
         </div>
     </div>
