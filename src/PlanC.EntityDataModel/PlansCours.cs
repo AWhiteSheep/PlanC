@@ -35,6 +35,10 @@ namespace PlanC.EntityDataModel
         [StringLength(7)]
         public string TrkUid { get; set; }
 
+        [Column("CoursePolicy", TypeName = "ntext")]
+        public string CoursePolicy { get; set; }
+
+
         [ForeignKey(nameof(SessionId))]
         [InverseProperty(nameof(Sessions.PlansCours))]
         public virtual Sessions Session { get; set; }

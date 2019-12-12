@@ -1,5 +1,8 @@
 ﻿@using Microsoft.EntityFrameworkCore
 @using Syncfusion.EJ2.Blazor.DropDowns;
+@using PlanC.Client.Data;
+@using PlanC.EntityDataModel;
+@inherits CoursePlanInputFormComponent
 
 @inject PCU001Context _context
 
@@ -29,37 +32,38 @@
                 </td>
                 <td>
                     <button class="btn btn-dark" @onclick="() => AddSkillElemCrit(timeblock)"><i class="fas fa-plus"></i></button>
-                    @foreach(CoursCompetenceElements cse in timeblock.CoursCompetenceElements)
+                    @foreach (CoursCompetenceElements cse in timeblock.CoursCompetenceElements)
                     {
-                        <EjsComboBox TValue="CriteresElementCompetence" DataSource="AssociatedSkillElemCrits" 
-                        ValueChanged="@(e => SetCrit(e, cse))"></EjsComboBox>
+                        <EjsComboBox TValue="CriteresElementCompetence" DataSource="AssociatedSkillElemCrits"
+                                     ValueChanged="@(e => SetCrit(e, cse))"></EjsComboBox>
                     }
                 </td>
                 <td>
                     <textarea @bind="timeblock.ActvtDesc" class="input form-control"></textarea>
                 </td>
-            </tr>                    
+            </tr>
+
         }
     </tbody>
 </table>
 
 @code {
-    [Parameter]
-    public PlansCours CoursePlan { get; set; }
 
     private PlansCadres Template { get; set; }
 
     [Parameter]
-    public EventCallback<PlansCours> CoursePlanChanged { get; set; }
-
-    [Parameter]
     public bool IsReadOnly { get; set; } = false;
 
-    public List<ElementsCompetence> AssociatedSkillElems { get; set; }
+    public List<ElementsCompetence>
+        AssociatedSkillElems
+    { get; set; }
 
-    public List<CriteresElementCompetence> AssociatedSkillElemCrits { get; set; }
+    public List<CriteresElementCompetence>
+        AssociatedSkillElemCrits
+    { get; set; }
 
-    private LinkedList<CoursActivite> CurrentActivities;
+    private LinkedList<CoursActivite>
+        CurrentActivities;
 
     protected override void OnInitialized()
     {
@@ -89,12 +93,12 @@
 
     private async Task FetchData()
     {
-        Template = await  _context.PlansCadres.Where(t => t.CoursId == CoursePlan.CoursId)
-                                    .OrderByDescending(t => t.VsnCdttm)
-                                    .Include(t => t.PlanCadreCompetenceElements)
-                                        .ThenInclude(tse => tse.Select(tse => tse.ElementCompetence))
-                                            .ThenInclude(se => se.CriteresElementCompetence)
-                                    .FirstAsync();
+        Template = await _context.PlansCadres.Where(t => t.CoursId == CoursePlan.CoursId)
+        .OrderByDescending(t => t.VsnCdttm)
+        .Include(t => t.PlanCadreCompetenceElements)
+        .ThenInclude(tse => tse.Select(tse => tse.ElementCompetence))
+        .ThenInclude(se => se.CriteresElementCompetence)
+        .FirstAsync();
 
         AssociatedSkillElems = Template.PlanCadreCompetenceElements.Select(tse => tse.ElementCompetence).ToList();
 
@@ -113,4 +117,19 @@
             IdendityCoursActivityNavigation = timeblock
         });
     }
+
+    public override async Task<bool> SaveProgress()
+    {
+        try
+        {
+            await _context.SaveChangesAsync();
+            return true;
+        }
+        catch(Exception except)
+        {
+            Console.WriteLine($"{except.Message}");
+            return false;
+        }
+    }
 }
+

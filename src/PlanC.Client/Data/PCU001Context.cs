@@ -463,6 +463,8 @@ namespace PlanC.Client.Data
                     .IsUnicode(false)
                     .IsFixedLength();
 
+                entity.Property(e => e.CoursePolicy);
+
                 entity.Property(e => e.RcdCdttm).HasDefaultValueSql("(getdate())");
 
                 entity.Property(e => e.TrkUid).IsUnicode(false);

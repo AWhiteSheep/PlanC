@@ -1,14 +1,154 @@
 ﻿@page "/plancours/create"
+@page "/plancours/{id}/create"
 
 @using PlanC.EntityDataModel
-@using Components
+@using Components.PlanCours
 @using System.Collections.Generic;
 @using Microsoft.EntityFrameworkCore;
 @inject NavigationManager NavigationManager
 @inject PCU001Context context
 
+<div class="row mb-3">
+    <div class="col">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <!-- Donne accès au portail selon le role de l'utilisateur -->
+                <li class="breadcrumb-item"><a href="/"> Portail </a></li>
+                <li style="padding: 0 4px;"><i class="fas fa-home" style="font-size: 15px; color: #3f51b5;"></i></li>
+                <li class="breadcrumb-item active" aria-current="page"> Nouveau plan cadre </li>
+            </ol>
+        </nav>
+    </div>
+</div>
 
 
-@code {
 
+<div class="row">
+    <div class="col-12 d-flex justify-content-center">
+        <PlanC.Client.Components.ProgressBar steps="@(new List<string> { "Déscription", "Compétences", "Examens finaux", "Révision" })"
+                                             Current="CurrentStep"></PlanC.Client.Components.ProgressBar>
+    </div>
+</div>
+
+<div class="container shadow p-5" style="margin-bottom: 200px">
+    @*Envoit le paramètre à tous les enfants*@
+    <CascadingValue TValue="PCU001Context" Value="context">
+        <CascadingValue TValue="FormMode" Value="CurrentMode">
+            @if (CurrentForm is CourseDescriptionForm)
+            {
+                <PlanC.Client.Components.PlanCours.CourseDescriptionForm @bind-CoursePlan="CoursePlan" @ref="CurrentForm"></PlanC.Client.Components.PlanCours.CourseDescriptionForm>
+            }
+            else if (CurrentForm is CourseCalendarForm)
+            {
+                <PlanC.Client.Components.PlanCours.CourseCalendarForm @bind-CoursePlan="CoursePlan" @ref="CurrentForm"></PlanC.Client.Components.PlanCours.CourseCalendarForm>
+            }
+            else if (CurrentForm is CourseExamForm)
+            {
+                <PlanC.Client.Components.PlanCours.CourseExamForm @bind-CoursePlan="CoursePlan" @ref="CurrentForm"></PlanC.Client.Components.PlanCours.CourseExamForm>
+            }
+            else if (CurrentForm is CourseMaterialForm)
+            {
+                <PlanC.Client.Components.PlanCours.CourseMaterialForm @bind-CoursePlan="CoursePlan" @ref="CurrentForm"></PlanC.Client.Components.PlanCours.CourseMaterialForm>
+            }
+        </CascadingValue>
+    </CascadingValue>
+    <div class="container mt-3">
+        <div class="row">
+
+            <div class="col-12 d-flex justify-content-around">
+                <!-- appelle fonction javascript permettant d'ajouter le .wasvalidated sur la division du formulaire -->
+                <!-- suite au poste validate nous envoyons l'utilisateur vers la deuxième partie celle de remplire les contextes et les éléments de compétence-->
+                <button @onclick="NavigatePrevious" disabled="@(CurrentNode.Previous == null)" class="btn btn-primary">Précédent</button>
+                <button @onclick="NavigateNext" hidden="@(CurrentNode.Next == null)" disabled="@(CurrentNode.Next == null)" class="btn btn-primary">Suivant</button>
+                <a href="~/" hidden="@(CurrentNode.Next != null)" disabled="@(CurrentNode.Next != null)" class="btn btn-primary">Terminer</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+@code{
+    [Parameter]
+    public string id { get; set; }
+
+    [CascadingParameter]
+    public FormMode CurrentMode { get; set; }
+
+    public CoursePlanInputFormComponent CurrentForm { get; set; }
+
+    private LinkedListNode<CoursePlanInputFormComponent> CurrentNode { get; set; }
+    private LinkedList<CoursePlanInputFormComponent> Forms { get; set; }
+
+    [Parameter]
+    public PlansCours CoursePlan { get; set; }
+
+    private int CurrentStep = 0;
+
+    protected async override Task OnInitializedAsync()
+    {
+        //Si la page reçoit un ID spécifique, ce processus le charge en mémoire. Sinon, il génère un nouvel objet.
+        PlansCours SpecifiedPlan = await context.PlansCours.Include(p => p.ExamensCertificatifsNonsFinals)
+                                                            .Include(p => p.CoursActivite)
+                                                                .ThenInclude(ca => ca.SelectMany(ca => ca.CoursCompetenceElements))
+                                                                    .ThenInclude(cse => cse.IdentityCritereElementCompetenceNavigation)
+                                                            .Where(p=> p.CoursId.Trim() == this.id)
+                                                            .OrderByDescending(p => p.PlnVsnCdttm)
+                                                            .FirstOrDefaultAsync();
+
+        if (SpecifiedPlan != null)
+        {
+            CoursePlan = SpecifiedPlan;
+            CurrentMode = FormMode.EDIT;
+        }
+        else
+        {
+            CoursePlan = new PlansCours();
+            CurrentMode = FormMode.CREATE;
+        }
+
+
+        //Création des composantes du wizard et ajout à la liste liée.
+        Forms = new LinkedList<CoursePlanInputFormComponent>();
+
+        Forms.AddLast(new CourseDescriptionForm());
+        Forms.AddLast(new CourseCalendarForm());
+        Forms.AddLast(new CourseExamForm());
+        Forms.AddLast(new CourseMaterialForm());
+
+        CurrentNode = Forms.First;
+        CurrentForm = CurrentNode.Value;
+        StateHasChanged();
+    }
+
+    private async void NavigateNext()
+    {
+        if (await CurrentForm.SaveProgress())
+        {
+            CurrentNode = CurrentNode.Next;
+            CurrentForm = CurrentNode.Value;
+            CurrentMode = FormMode.EDIT;
+            CurrentStep++;
+            StateHasChanged();
+        }
+        else
+        {
+            //TODO error message
+            return;
+        }
+    }
+    private void NavigatePrevious()
+    {
+        CurrentNode = CurrentNode.Previous;
+        CurrentForm = CurrentNode.Value;
+        CurrentStep--;
+        StateHasChanged();
+    }
+
+    public enum FormMode
+    {
+        CREATE = 1,
+        EDIT = 2
+    }
 }
