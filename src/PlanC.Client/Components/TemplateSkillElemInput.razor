@@ -175,6 +175,7 @@
     protected void RemoveSkill(Competences skill)
     {
         SelectedSkills.Remove(skill);
+        SelectedSkillElements = SelectedSkillElements.Where(tse => tse.ElementCompetence.IdentityKeyCompetencesNavigation != skill).ToList();
         RefreshSkills();
     }
 
