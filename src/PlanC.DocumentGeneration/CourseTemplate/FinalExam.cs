@@ -8,10 +8,16 @@ namespace PlanC.DocumentGeneration.CourseTemplate
     [Serializable]
     public class FinalExam
     {
-        public string Title { get; set; }
+        private Collection<FinalExamCriteria>? _criterias = new Collection<FinalExamCriteria>();
 
-        public decimal Weight { get; set; }
+        public string? Title { get; set; }
 
-        public Collection<FinalExamCriteria> Criterias { get; set; }
+        public decimal? Weight { get; set; }
+
+        public Collection<FinalExamCriteria> Criterias
+        {
+            get => _criterias ?? (_criterias = new Collection<FinalExamCriteria>());
+            set => _criterias = value;
+        }
     }
 }

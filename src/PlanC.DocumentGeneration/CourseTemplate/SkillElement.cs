@@ -8,10 +8,20 @@ namespace PlanC.DocumentGeneration.CourseTemplate
     [Serializable]
     public class SkillElement
     {
-        public string Title { get; set; }
+        private Collection<string>? _criterias;
+        private Collection<string>? _contentPrecisions = new Collection<string>();
 
-        public Collection<string> Criterias { get; set; }
+        public string? Title { get; set; }
 
-        public Collection<string> ContentPrecisions { get; set; }
+        public Collection<string> Criterias
+        {
+            get => _criterias ?? (_criterias = new Collection<string>());
+            set => _criterias = value;
+        }
+        public Collection<string> ContentPrecisions
+        {
+            get => _contentPrecisions ?? (_contentPrecisions = new Collection<string>());
+            set => _contentPrecisions = value;
+        }
     }
 }

@@ -12,20 +12,26 @@ namespace PlanC.DocumentGeneration.CourseTemplate
     //[XmlRoot(Namespace = XmlConstants.CourseTemplateNamespace)]
     public class CourseTemplate
     {
-        public string CourseTitle { get; set; }
-        
-        public string CourseId { get; set; }
+        private Collection<Skill>? _skills = new Collection<Skill>();
 
-        public string CourseDescription { get; set; }
+        public string? CourseTitle { get; set; }
 
-        public TimeDistribution TimeDistribution { get; set; }
+        public string? CourseId { get; set; }
 
-        public decimal UnitsCount { get; set; }
+        public string? CourseDescription { get; set; }
 
-        public string PedagogicalIntent { get; set; }
+        public TimeDistribution? TimeDistribution { get; set; }
 
-        public string EducativeIntent { get; set; }
+        public decimal? UnitsCount { get; set; }
 
-        public Collection<Skill> Skills { get; set; }
+        public string? PedagogicalIntent { get; set; }
+
+        public string? EducativeIntent { get; set; }
+
+        public Collection<Skill> Skills
+        {
+            get => _skills ?? (_skills = new Collection<Skill>());
+            set => _skills = value;
+        }
     }
 }

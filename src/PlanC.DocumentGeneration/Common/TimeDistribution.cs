@@ -43,7 +43,7 @@ namespace PlanC.DocumentGeneration.Common
             info.AddValue(nameof(Homework), Homework);
         }
 
-        XmlSchema IXmlSerializable.GetSchema()
+        XmlSchema? IXmlSerializable.GetSchema()
         {
             return null;
         }
