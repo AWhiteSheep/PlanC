@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Runtime.Serialization;
+using System.Text.Json.Serialization;
 
 namespace PlanC.EntityDataModel
 {
@@ -59,6 +61,8 @@ namespace PlanC.EntityDataModel
         public virtual ICollection<PlanCadreCompetenceElements> PlanCadreCompetenceElements { get; set; }
 
         [NotMapped]
+        [JsonIgnore]
+        [IgnoreDataMember]
         [Range(0, 9.99, ErrorMessage = "Format: 9.99")]
         public decimal UnitsAccessor
         {
@@ -73,6 +77,8 @@ namespace PlanC.EntityDataModel
         }
 
         [NotMapped]
+        [JsonIgnore]
+        [IgnoreDataMember]
         public int TheoryHoursAccessor 
         {
             get 
@@ -85,6 +91,8 @@ namespace PlanC.EntityDataModel
             } 
         }
         [NotMapped]
+        [JsonIgnore]
+        [IgnoreDataMember]
         public int PracticeHoursAccessor
         {
             get
@@ -97,6 +105,8 @@ namespace PlanC.EntityDataModel
             }
         }
         [NotMapped]
+        [JsonIgnore]
+        [IgnoreDataMember]
         public int HomeHoursAccessor
         {
             get
@@ -110,6 +120,8 @@ namespace PlanC.EntityDataModel
         }
 
         [NotMapped]
+        [JsonIgnore]
+        [IgnoreDataMember]
         public DateTime DptDateAccessor
         {
             get
@@ -122,6 +134,8 @@ namespace PlanC.EntityDataModel
             }
         }
         [NotMapped]
+        [JsonIgnore]
+        [IgnoreDataMember]
         public DateTime CmteDateAccessor
         {
             get
@@ -134,6 +148,8 @@ namespace PlanC.EntityDataModel
             }
         }
         [NotMapped]
+        [JsonIgnore]
+        [IgnoreDataMember]
         public DateTime DirectorDateAccessor
         {
             get

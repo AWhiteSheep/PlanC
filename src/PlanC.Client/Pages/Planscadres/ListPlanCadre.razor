@@ -1,1 +1,92 @@
-﻿
+﻿@page "/planscadres"
+@inject PCU001Context context
+@using System.Linq
+@inject NavigationManager _NavigationManager
+@using Syncfusion.EJ2.Blazor.Navigations
+@using Syncfusion.EJ2.Blazor.Grids
+@using Syncfusion.EJ2.Blazor.Buttons
+
+
+<!--section sécurité doit être seulement coordonateur du programme et la consultation par le professeur-->
+<!-- Section de navigation -->
+<div class="row mb-3">
+    <div class="col">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <!-- Donne accès au portail selon le role de l'utilisateur -->
+                <li class="breadcrumb-item"><a href="/"> Portail </a></li>
+                <li style="padding: 0 4px;"><i class="fas fa-home" style="font-size: 15px; color: #3f51b5;"></i></li>
+                <li class="breadcrumb-item active" aria-current="page"> Visualisation des plans cadres </li>
+            </ol>
+        </nav>
+    </div>
+</div>
+
+<div class="container shadow p-5">
+    <div class="row">
+        <div class="col-12">
+            <h3>Liste des plans cadres:</h3>
+        </div>
+        <div class="col-12">
+            <EjsButton @onclick="Supprimer" Disabled="(Selected == null)"> Supprimer la sélection </EjsButton>
+            <br />
+            <EjsGrid DataSource="@TemplateCours" AllowSorting="true" AllowPaging="true"
+                     ContextMenuItems="@(new List<ContextMenuItemModel>() { new ContextMenuItemModel { Text = "Ouvrir plan cours", Target = ".e-content", Id = "open" } })">
+                <GridEditSettings AllowAdding="true" AllowDeleting="true"></GridEditSettings>
+                <GridPageSettings PageSize="8"></GridPageSettings>
+                <!-- Les événements se passant sur la table et les paramètre -->
+                <GridEvents ContextMenuItemClicked="OnContextMenuClick" RowSelected="RowSelectHandler" RowDeselected="() => Selected = null" TValue="PlansCadres"></GridEvents>
+                <GridColumns>
+                    <GridColumn IsPrimaryKey="true" Field=@nameof(PlansCadres.CoursId) HeaderText="Identifiant du cours"></GridColumn>
+                    <GridColumn Field=@nameof(PlansCadres.ProgrammeId) HeaderText="Identifiant du programme"></GridColumn>
+                    <GridColumn Field=@nameof(PlansCadres.DenominationCours) HeaderText="Nom du cours"></GridColumn>
+                    <GridColumn Field=@nameof(PlansCadres.RcdCdttm) HeaderText="Date du dernier enregistrement" Format="yMd" Type=ColumnType.Date></GridColumn>
+                </GridColumns>
+            </EjsGrid>
+        </div>
+    </div>
+</div>
+
+@code{
+    public List<PlansCadres> TemplateCours { get; set; }
+    public PlansCadres Selected { get; set; }
+
+    protected override void OnInitialized()
+    {
+        TemplateCours = context.PlansCadres.ToList<PlansCadres>();
+    }
+
+    protected void Supprimer()
+    {
+        TemplateCours.Remove(Selected);
+        context.PlansCadres.Remove(Selected);
+        SaveProgress();
+    }
+
+    public void SaveProgress()
+    {
+        try
+        {
+            context.SaveChanges();
+            TemplateCours = context.PlansCadres.ToList<PlansCadres>();
+            StateHasChanged();
+        }
+        catch (Exception except)
+        {
+            Console.WriteLine($"Plan cadre liste error: {except.Message}");
+        }
+    }
+
+    public void RowSelectHandler(RowSelectEventArgs<PlansCadres> args)
+    {
+        Selected = TemplateCours.FirstOrDefault(e => e.CoursId == args.Data.CoursId);
+    }
+
+    public void OnContextMenuClick(MenuEventArgs args)
+    {
+        if (args.Item.Id == "open")
+        {
+            _NavigationManager.NavigateTo($"/plancadre/{Selected.CoursId}/create");
+        }
+    }
+}

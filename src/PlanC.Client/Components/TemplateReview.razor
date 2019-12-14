@@ -1,53 +1,70 @@
 ﻿@inject IJSRuntime JSRuntime
 @inherits CourseTemplateFormComponent
+@using Syncfusion.EJ2.Blazor
+@using Syncfusion.EJ2.Blazor.RichTextEditor
 
 
 <h3 class="h3 bcTitle mb-3">Sommaire du plan-cadre</h3>
-    <div class="accordion" id="formParent">
-        <div class="card">
-            <div class="card-header" id="descHeading">
-                <h2 class="mb-0">
-                    <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#descCollapse" aria-expanded="true" aria-controls="collapseOne">
-                        Éléments descriptifs du cours
-                    </button>
-                </h2>
-            </div>
+<div class="accordion" id="formParent">
+    <div class="card">
+        <div class="card-header" id="descHeading">
+            <h2 class="mb-0">
+                <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#descCollapse" aria-expanded="true" aria-controls="collapseOne">
+                    Éléments descriptifs du cours
+                </button>
+            </h2>
+        </div>
 
-            <div id="descCollapse" class="collapse show" aria-labelledby="descHeading" data-parent="#formParent">
-                <div class="card-body">
-                    <PlanC.Client.Pages.Planscadres.EditFormPlancadre Template="Template" IsReadOnly="true"></PlanC.Client.Pages.Planscadres.EditFormPlancadre>
-                </div>
-            </div>
-        </div>
-        <div class="card">
-            <div class="card-header" id="skillElemHeading">
-                <h2 class="mb-0">
-                    <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#skillElemCollapse" aria-expanded="false" aria-controls="collapseTwo">
-                        Éléments de compétences associés au cours
-                    </button>
-                </h2>
-            </div>
-            <div id="skillElemCollapse" class="collapse" aria-labelledby="skillElemHeading" data-parent="#formParent">
-                <div class="card-body">
-                    <TemplateSkillElemInput Template="Template" IsReadOnly="true"></TemplateSkillElemInput>
-                </div>
-            </div>
-        </div>
-        <div class="card">
-            <div class="card-header" id="finalExamHeading">
-                <h2 class="mb-0">
-                    <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#finalExamCollapse" aria-expanded="false" aria-controls="collapseThree">
-                        Examens finaux
-                    </button>
-                </h2>
-            </div>
-            <div id="finalExamCollapse" class="collapse" aria-labelledby="finalExamHeading" data-parent="#formParent">
-                <div class="card-body">
-                    <FinalExamInput Template="Template" IsReadOnly="true"></FinalExamInput>
-                </div>
+        <div id="descCollapse" class="collapse show" aria-labelledby="descHeading" data-parent="#formParent">
+            <div class="card-body">
+                <PlanC.Client.Pages.Planscadres.EditFormPlancadre Template="Template" IsReadOnly="true"></PlanC.Client.Pages.Planscadres.EditFormPlancadre>
             </div>
         </div>
     </div>
+    <div class="card">
+        <div class="card-header" id="skillElemHeading">
+            <h2 class="mb-0">
+                <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#skillElemCollapse" aria-expanded="false" aria-controls="collapseTwo">
+                    Éléments de compétences associés au cours
+                </button>
+            </h2>
+        </div>
+        <div id="skillElemCollapse" class="collapse" aria-labelledby="skillElemHeading" data-parent="#formParent">
+            <div class="card-body">
+                <TemplateSkillElemInput Template="Template" IsReadOnly="true"></TemplateSkillElemInput>
+            </div>
+        </div>
+    </div>
+    <div class="card">
+        <div class="card-header" id="finalExamHeading">
+            <h2 class="mb-0">
+                <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#finalExamCollapse" aria-expanded="false" aria-controls="collapseThree">
+                    Examens finaux
+                </button>
+            </h2>
+        </div>
+        <div id="finalExamCollapse" class="collapse" aria-labelledby="finalExamHeading" data-parent="#formParent">
+            <div class="card-body">
+                <FinalExamInput Template="Template" IsReadOnly="true"></FinalExamInput>
+            </div>
+        </div>
+    </div>
+    <div class="card">
+        <div class="card-header" id="templateRemarque">
+            <h2 class="mb-0">
+                <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#templateRemarque" aria-expanded="false" aria-controls="collapseThree">
+                    Remarque
+                </button>
+            </h2>
+        </div>
+        <div id="templateRemarqueCollapse" class="collapse" aria-labelledby="templateRemarque" data-parent="#formParent">
+            <div class="card-body">
+                <EjsRichTextEditor @ref="RichTextEditor">
+                </EjsRichTextEditor>
+            </div>
+        </div>
+    </div>
+</div>
 
 @code {
     [Parameter]
@@ -59,6 +76,8 @@
     [CascadingParameter]
     public PCU001Context context { get; set; }
 
+    EjsRichTextEditor RichTextEditor;
+
     protected override void OnParametersSet()
     {
         context.Entry(Template)
@@ -69,4 +88,19 @@
                 .Collection(t => t.PlanCadreCompetenceElements)
                 .Load();
     }
+
+    
+    public object[] Tools = new object[] {
+        "Bold", "Italic", "Underline", "|",
+        "Formats", "Alignments", "|", "CreateLink", "Image", "|","SourceCode", "|", "Undo", "Redo"
+    };
+
+    public object[] Image = new object[] {
+        "Replace", "Align", "Caption", "Remove", "InsertLink", "OpenImageLink", "-",
+        "EditImageLink", "RemoveImageLink", "Display", "AltText", "Dimension"
+    };
+
+    public object[] Link = new object[] {
+        "Open", "Edit", "UnLink"
+    };
 }

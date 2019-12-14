@@ -63,8 +63,8 @@ else
                                 <td class="text-center">@programme.NombreCompetencesOptionnelles</td>
                                 <td class="text-center">@programme.NombreCompetencesComplementaires</td>
                                 <td class="d-flex">
-                                    <button type="button" class="btn btn-primary mr-2" @onclick="@(() => Edit(@programme.Id, @programme.DepartementId))" data-toggle="modal" data-target="#exampleModalCenter">modifier</button>
-                                    <button class="btn btn-danger">Supprimer</button>
+                                    <button type="button" class="btn btn-link mr-2" @onclick="@(() => Edit(@programme.Id, @programme.DepartementId))" data-toggle="modal" data-target="#exampleModalCenter">modifier</button>
+                                    <button class="btn btn-link">Supprimer</button>
                                 </td>
                             </tr>
                         }
