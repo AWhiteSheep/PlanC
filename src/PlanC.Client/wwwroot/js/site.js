@@ -79,10 +79,9 @@ window.toggle = (element) => {
 }
 
 // Toggle the side navigation
-$("#sidebarToggle, #sidebarToggleTop").on('click', function (e) {
-    $("body").toggleClass("sidebar-toggled");
-    $(".sidebar").toggleClass("toggled");
-});
+function toggleSidebarToggleSide () {
+    $("#sidebarToggleSide").toggle();
+};
 
 
 window.modelInitializing = () => {

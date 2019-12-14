@@ -1,9 +1,9 @@
 ﻿@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
 
 <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 shadow">
-    <!-- Sidebar Toggle (Topbar) -->
-    <button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3">
-        <i class="fa fa-bars"></i>
-    </button>
+    <!-- Sidebar Toggle (Topbar) -->    
+    <span id="sidebarToggleSide" style="display:none" data-toggle="collapse" data-target="#accordionSidebar" onclick="toggleSidebarToggleSide()">
+        <i class="fa fa-angle-double-right motion-press" aria-hidden="true"></i>
+    </span>
     <partial name="../Pages/Shared/_LoginPartial.cshtml" />
 </nav>

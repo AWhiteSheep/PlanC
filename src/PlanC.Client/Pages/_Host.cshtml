@@ -44,7 +44,7 @@
     <!-- Page Wrapper -->
     <div id="wrapper">
         <!-- Sidebar -->
-        <partial name="../Shared/_Navbar.cshtml" />
+        @(await Html.RenderComponentAsync<PlanC.Client.Shared.NavMenu>(RenderMode.ServerPrerendered))
         <!-- End of Sidebar -->
         <!-- Content Wrapper -->
         <div id="content-wrapper" class="d-flex flex-column">
@@ -60,24 +60,24 @@
                     <app style="background-color: white">
                         @if (!String.IsNullOrEmpty(logoutParam()))
                         {
-                        <div id="message-logout" class="container-message-logout-animate">
-                            <div class="container-message">
-                                <div class="message-logout">
-                                    <i class="far fa-laugh-wink image-logout" aria-hidden="true"></i>
-                                    <div class="text-logout">
-                                        Vous êtes maintenant déconnecté.
+                            <div id="message-logout" class="container-message-logout-animate">
+                                <div class="container-message">
+                                    <div class="message-logout">
+                                        <i class="far fa-laugh-wink image-logout" aria-hidden="true"></i>
+                                        <div class="text-logout">
+                                            Vous êtes maintenant déconnecté.
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                        <script>
-                            document.addEventListener("readystatechange", function () {                                
-                                new URLSearchParams().delete("logout");
-                                setTimeout(() => {
-                                    $("#message-logout").fadeOut();
-                                }, 10000);
-                            });
-                        </script>
+                            <script>
+                                document.addEventListener("readystatechange", function () {
+                                    new URLSearchParams().delete("logout");
+                                    setTimeout(() => {
+                                        $("#message-logout").fadeOut();
+                                    }, 10000);
+                                });
+                            </script>
                         }
                         @(await Html.RenderComponentAsync<App>(RenderMode.ServerPrerendered))
                     </app>
