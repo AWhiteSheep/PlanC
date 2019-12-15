@@ -19,32 +19,29 @@ namespace PlanC.Client.Pages.Profils
         public PCU001Context _context { get; set; }
         [Inject]
         public NavigationManager NavigationManager { get; set; }
-        public EjsSchedule<InputDayModel> schedule { get; set; }
-        public List<DisponibilitesUtilisateur> UserDisponibilities;
+        public EjsSchedule<RecurrenceData> schedule { get; set; }
         // jour de la semaine contenant les heures de disponibilités
-        public List<InputDayModel> ListDayTimeSpans = new List<InputDayModel>();
+        public List<RecurrenceData> ListDayTimeSpans { get; set; }
         // model pour la journée
-        public class InputDayModel : RecurrenceData
-        {                        
-            public int UserAvlSqnbr { get; set; }
-            // validation pour un téléphone
+        public class RecurrenceData : DisponibilitesUtilisateur
+        {
             [Required]
-            public int DayOfWeekInstanceDay { get; set; }
-
-            public string DayOfWeekString 
+            public string DayOfWeekString
             {
-                get {
-                    return DayOfWeekInstanceDay.ToString();
+                get
+                {
+                    return WeekdayNbr.ToString();
                 }
-                set {
-                    DayOfWeekInstanceDay = int.Parse(value);
+                set
+                {
+                    WeekdayNbr = int.Parse(value);
                 }
             }
             public string DayOfWeekHumanLangageFR
             {
                 get
                 {
-                    switch (DayOfWeekInstanceDay)
+                    switch (WeekdayNbr)
                     {
                         case 0:
                             return "Dimanche";
@@ -64,7 +61,7 @@ namespace PlanC.Client.Pages.Profils
                 }
             }
 
-            public static string GetRecurenceRule(int DayNumber) 
+            public static string GetRecurenceRule(int DayNumber)
             {
                 var recurenceRules = "FREQ=WEEKLY;INTERVAL=1;BYDAY=";
                 switch (DayNumber)
@@ -85,20 +82,30 @@ namespace PlanC.Client.Pages.Profils
                         return recurenceRules += "SA";
                 }
             }
-        }
-        public class RecurrenceData
-        {
+
+            public DateTime? StartTime 
+            {
+                get {
+                    return RcdCdttm.GetValueOrDefault(DateTime.Now.Date).Add(AvlStm);
+                }
+                set {
+                    AvlStm = value.Value.TimeOfDay;
+                }
+            }
+            public DateTime? EndTime
+            {
+                get {
+                    return RcdCdttm.GetValueOrDefault(DateTime.Now.Date).Add(AvlNtm);
+                }
+                set {
+                    AvlNtm = value.Value.TimeOfDay;
+                }
+            }
+            // des valeurs de plus si jamais
             public string Subject { get; set; } = "Disponible";
-            [Required]
-            public DateTime? StartTime { get; set; }
-            [Required]
-            public DateTime? EndTime { get; set; }
-            [Required]
-            public DateTime? DateOfValidaty { get; set; }
             public Nullable<bool> IsAllDay { get; set; }
             public string Location { get; set; }
             public string Description { get; set; }
-            public string RecurrenceRule { get; set; } = "FREQ=WEEKLY;INTERVAL=1;BYDAY=MO";
             public string CategoryColor { get; set; }
             public Nullable<int> RecurrenceID { get; set; }
             public string RecurrenceException { get; set; }
@@ -128,26 +135,15 @@ namespace PlanC.Client.Pages.Profils
         {
             var usName = Utilisateur.UserName;
             // get the user and the reference to its list of disponibilities
-            Utilisateur = _context.AspNetUsers.Include(e => e.DisponibilitesUtilisateur).First(u => u.UserName == usName);
-            UserDisponibilities = Utilisateur.DisponibilitesUtilisateur.ToList();
-            ListDayTimeSpans = new List<InputDayModel>(); // reset the list to initial state
-            foreach (var disponibility in UserDisponibilities)
+            Utilisateur = _context.AspNetUsers
+                .Include(e => e.DisponibilitesUtilisateur).First(u => u.UserName == usName);
+            ListDayTimeSpans = new List<RecurrenceData>();
+            // reset the list to initial state
+            foreach (var disponibility in Utilisateur.DisponibilitesUtilisateur) 
             {
-                var userDayOfWeek = disponibility.RcdCdttm.GetValueOrDefault(DateTime.Today);
-                if (!(userDayOfWeek.DayOfWeek == (DayOfWeek)disponibility.WeekdayNbr))
-                {
-                    var weekDay = (int)userDayOfWeek.DayOfWeek;
-                    weekDay -= disponibility.WeekdayNbr;
-                    userDayOfWeek.AddDays(Math.Abs(weekDay));
-                }
-                ListDayTimeSpans.Add(new InputDayModel()
-                {
-                    RecurrenceRule = disponibility.RecurrenceRule,
-                    UserAvlSqnbr = disponibility.UserAvlSqnbr,
-                    DayOfWeekInstanceDay = disponibility.WeekdayNbr,
-                    StartTime = userDayOfWeek.Add(disponibility.AvlStm),
-                    EndTime = userDayOfWeek.Add(disponibility.AvlNtm),
-                });
+                // ajoute à la liste la nouvelle disponibilité en ajoutant les valeurs manquante pour faire l'affichage
+                ListDayTimeSpans.Add(disponibility as RecurrenceData);
+                ListDayTimeSpans.Last().RecurrenceRule = RecurrenceData.GetRecurenceRule(disponibility.WeekdayNbr);
             }
         }
     }

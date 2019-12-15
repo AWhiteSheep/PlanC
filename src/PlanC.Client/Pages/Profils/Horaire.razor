@@ -14,7 +14,7 @@
         <Syncfusion.EJ2.Blazor.Buttons.EjsButton @onclick="() => Annuler()">Annuler</Syncfusion.EJ2.Blazor.Buttons.EjsButton>
     </div>
     <div class="d-flex flex-row">
-        <EjsSchedule TValue="InputDayModel" @ref="schedule" Height="580px" Width="@(IsMofying ? "60%" : "100%")">
+        <EjsSchedule TValue="RecurrenceData" @ref="schedule" Height="580px" Width="@(IsMofying ? "60%" : "100%")">
             <ScheduleTimeScale SlotCount="1"></ScheduleTimeScale>
             <ScheduleViews>
                 <ScheduleView Option="View.WorkWeek"></ScheduleView>
@@ -38,11 +38,11 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach (var dayInSchedule in ListDayTimeSpans.OrderBy(e => e.DayOfWeekInstanceDay))
+                        @foreach (var dayInSchedule in ListDayTimeSpans.OrderBy(e => e.WeekdayNbr))
                         {
                             <tr>
                                 <td>
-                                    <select @bind="dayInSchedule.DayOfWeekInstanceDay" class="form-control">
+                                    <select @bind="dayInSchedule.WeekdayNbr" class="form-control">
                                         <option value="1">Lundi</option>
                                         <option value="2">Mardi</option>
                                         <option value="3">Mercredi</option>
@@ -59,7 +59,7 @@
                                 </td>
                                 <td>
                                     <div style="border: 1px solid #b2b2b2">
-                                        <EjsTimePicker Format="HH:mm" @bind-Value="dayInSchedule.StartTime" />
+                                        <EjsTimePicker Format="HH:mm" @bind-Value="dayInSchedule.EndTime" />
                                     </div>
                                 </td>
                                 <td>
@@ -79,7 +79,7 @@
     <EditForm Model="dayModel" OnValidSubmit="AddDayModel"  class="col-sm-12 col-md-10 col-lg-6">
         <DataAnnotationsValidator />
         <label for="dateOfValidity" class="control-label pt-3"> Date en mise en vigueur: </label>
-        <EjsDatePicker @bind-Value="dayModel.DateOfValidaty"></EjsDatePicker>
+        <EjsDatePicker @bind-Value="dayModel.RcdCdttm"></EjsDatePicker>
         <label for="Username" class="control-label"> Jour de la semaine: </label>
         <InputSelect @bind-Value="dayModel.DayOfWeekString" class="form-control">
             <option value="1">Lundi</option>
@@ -91,7 +91,7 @@
             <option value="0">Dimanche</option>
         </InputSelect>
         <span class="text-danger">
-            <ValidationMessage class="text-danger" For="(() => dayModel.DayOfWeekInstanceDay)"></ValidationMessage>
+            <ValidationMessage class="text-danger" For="(() => dayModel.DayOfWeekString)"></ValidationMessage>
         </span>
         <table class="table-light mt-3" style="margin: auto">
             <thead>
@@ -123,57 +123,38 @@
 
 @code{
     public bool IsMofying;
-    public InputDayModel dayModel { get; set; } = new InputDayModel();
+    public RecurrenceData dayModel { get; set; } = new RecurrenceData();
     public int[] WorkingDays { get; set; } = { 1, 2, 3, 4, 5 };
     public void AddDayModel()
     {
-        var recurrenceRule = InputDayModel.GetRecurenceRule(dayModel.DayOfWeekInstanceDay);
-        DisponibilitesUtilisateur disponibility = new DisponibilitesUtilisateur()
-        {
-            RecurrenceRule = recurrenceRule,
-            RcdCdttm = dayModel.DateOfValidaty,
-            WeekdayNbr = dayModel.DayOfWeekInstanceDay,
-            AvlStm = dayModel.StartTime.Value.TimeOfDay,
-            AvlNtm = dayModel.EndTime.Value.TimeOfDay
-        };
-        dayModel = new InputDayModel();
+        var recurrenceRule = RecurrenceData.GetRecurenceRule(dayModel.WeekdayNbr);
         // transfert poid sur le context et puis sauvegarde et refresh
-        Utilisateur.DisponibilitesUtilisateur.Add(disponibility);
+        Utilisateur.DisponibilitesUtilisateur.Add(dayModel);
+        dayModel = new RecurrenceData();
         SaveProgress();
         RefreshDisponibilities();
         StateHasChanged();
     }
 
-    public void RemoveFromHoraire(InputDayModel dayModel)
+    public void RemoveFromHoraire(RecurrenceData dayModel)
     {
-        // transfert poid sur le context et puis supprime
-        var modelFound = Utilisateur.DisponibilitesUtilisateur.First(e => e.UserAvlSqnbr == dayModel.UserAvlSqnbr);
-        if (modelFound == null)
-            return;
-
-        this.UserDisponibilities = new List<DisponibilitesUtilisateur>();
-        Utilisateur.DisponibilitesUtilisateur.Remove(modelFound);
+        Utilisateur.DisponibilitesUtilisateur.Remove(dayModel);
         SaveProgress();
         RefreshDisponibilities();
         StateHasChanged();
     }
 
-    public void Sync(InputDayModel dayModel)
+    public void Sync(RecurrenceData dayModel)
     {
         // transfert poid sur le context et puis supprime
-        var modelFound = Utilisateur.DisponibilitesUtilisateur.First(e => e.UserAvlSqnbr == dayModel.UserAvlSqnbr);
-        if (modelFound == null)
-            return;
-
-        modelFound.
-        Utilisateur.DisponibilitesUtilisateur.Remove(modelFound);
+        dayModel.RecurrenceRule = RecurrenceData.GetRecurenceRule(dayModel.WeekdayNbr);
         SaveProgress();
         RefreshDisponibilities();
         StateHasChanged();
     }
 
     public void Annuler()
-    {       
+    {
         IsMofying = false;
     }
 
