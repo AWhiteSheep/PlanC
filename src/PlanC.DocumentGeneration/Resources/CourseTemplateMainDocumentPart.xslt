@@ -17,49 +17,6 @@
 
   <xsl:decimal-format decimal-separator=","
                       grouping-separator=" "/>
-  
-  <!--Modèle pour une liste de préalables avec un entête indiquant le type de préalable.-->
-  <xsl:template name="prerequisite-paragraph"
-                match="Prerequisite">
-    <xsl:param name="header-text"/>
-    <xsl:param name="prerequisite-type"/>
-    <w:p>
-      <w:pPr>
-        <w:pStyle w:val="Heading2"/>
-      </w:pPr>
-      <w:r>
-        <w:t>
-          <xsl:value-of select="$header-text"/>
-        </w:t>
-      </w:r>
-    </w:p>
-    <xsl:choose>
-      <xsl:when test="/CourseTemplate/Prerequisites/Prerequisite[PrerequisiteType=$prerequisite-type]">
-        <xsl:for-each select="/CourseTemplate/Prerequisites/Prerequisite[PrerequisiteType=$prerequisite-type]">
-          <w:p>
-            <w:pPr>
-              <w:pStyle w:val="NoSpacing2"/>
-            </w:pPr>
-            <w:r>
-              <w:t>
-                <xsl:value-of select="./CourseTitle"/> (<xsl:value-of select="./CourseId"/>)
-              </w:t>
-            </w:r>
-          </w:p>
-        </xsl:for-each>
-      </xsl:when>
-      <xsl:otherwise>
-        <w:p>
-          <w:pPr>
-            <w:pStyle w:val="NoSpacing2"/>
-          </w:pPr>
-          <w:r>
-            <w:t>Aucun</w:t>
-          </w:r>
-        </w:p>
-      </xsl:otherwise>
-    </xsl:choose>
-  </xsl:template>
 
   <!--Modèle pour une 'date clée' dans le plan-cadre (p. ex., la date de recommendation d'adoption du département)-->
   <xsl:template name="key-date-paragraph">
@@ -432,7 +389,7 @@
                   <w:tcW w:w="3117"
                          w:type="dxa"/>
                 </w:tcPr>
-                <xsl:call-template name="list-section">
+                <xsl:call-template name="list-paragraph">
                   <xsl:with-param name="data-list-node" select="./AchievementContexts"/>
                   <xsl:with-param name="items-level">0</xsl:with-param>
                   <xsl:with-param name="list-id">1</xsl:with-param>
@@ -444,7 +401,7 @@
                   <w:tcW w:w="3117"
                          w:type="dxa"/>
                 </w:tcPr>
-                <xsl:call-template name="list-section">
+                <xsl:call-template name="list-paragraph">
                   <xsl:with-param name="data-list-node" select="./ContentPrecisions"/>
                   <xsl:with-param name="items-level">0</xsl:with-param>
                   <!--TODO: This should actually be a separate list-->

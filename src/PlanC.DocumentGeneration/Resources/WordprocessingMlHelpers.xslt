@@ -17,6 +17,49 @@
     <xsl:value-of select="Homework"/>
   </xsl:template>
 
+  <!--Modèle pour une liste de préalables avec un entête indiquant le type de préalable.-->
+  <xsl:template name="prerequisite-paragraph"
+                match="Prerequisite">
+    <xsl:param name="header-text"/>
+    <xsl:param name="prerequisite-type"/>
+    <w:p>
+      <w:pPr>
+        <w:pStyle w:val="Heading2"/>
+      </w:pPr>
+      <w:r>
+        <w:t>
+          <xsl:value-of select="$header-text"/>
+        </w:t>
+      </w:r>
+    </w:p>
+    <xsl:choose>
+      <xsl:when test="/CourseTemplate/Prerequisites/Prerequisite[PrerequisiteType=$prerequisite-type]">
+        <xsl:for-each select="/CourseTemplate/Prerequisites/Prerequisite[PrerequisiteType=$prerequisite-type]">
+          <w:p>
+            <w:pPr>
+              <w:pStyle w:val="NoSpacing2"/>
+            </w:pPr>
+            <w:r>
+              <w:t>
+                <xsl:value-of select="./CourseTitle"/> (<xsl:value-of select="./CourseId"/>)
+              </w:t>
+            </w:r>
+          </w:p>
+        </xsl:for-each>
+      </xsl:when>
+      <xsl:otherwise>
+        <w:p>
+          <w:pPr>
+            <w:pStyle w:val="NoSpacing2"/>
+          </w:pPr>
+          <w:r>
+            <w:t>Aucun</w:t>
+          </w:r>
+        </w:p>
+      </xsl:otherwise>
+    </xsl:choose>
+  </xsl:template>
+
   <!--Modèle pour un simple paragraphe sans texte-->
   <xsl:template name="empty-paragraph">
     <w:p>
@@ -41,7 +84,7 @@
   -->
 
   <!--Modèle pour une liste d'éléments. S'il n'y a aucun item, affiche le texte "Aucun item"-->
-  <xsl:template name="list-section">
+  <xsl:template name="list-paragraph">
     <xsl:param name="data-list-node"/>
     <xsl:param name="items-level"/>
     <xsl:param name="list-id"/>

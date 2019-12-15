@@ -3,16 +3,12 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Text;
 
-namespace PlanC.DocumentGeneration.CourseTemplate
+namespace PlanC.DocumentGeneration.Common
 {
     [Serializable]
-    public class FinalExam
+    public class FinalExam : Exam
     {
         private Collection<FinalExamCriteria>? _criterias;
-
-        public string? Title { get; set; }
-
-        public decimal? Weight { get; set; }
 
         public Collection<FinalExamCriteria> Criterias
         {
