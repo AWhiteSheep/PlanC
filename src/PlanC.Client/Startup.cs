@@ -47,7 +47,7 @@ namespace PlanC.Client
 
 
             // ajout du identity store et provider
-            services.AddDefaultIdentity<Utilisateurs>(options => { 
+            services.AddDefaultIdentity<AspNetUsers>(options => { 
                     options.SignIn.RequireConfirmedAccount = false;
 
                     // Lockout settings.
@@ -70,8 +70,12 @@ namespace PlanC.Client
             });
 
 
-            services.AddServerSideBlazor();
             services.AddRazorPages();
+            services.AddServerSideBlazor().AddCircuitOptions(options => { options.DetailedErrors = true; });
+            services.AddServerSideBlazor().AddHubOptions(o =>
+            {
+                o.MaximumReceiveMessageSize = 102400000;
+            });
             services.AddMvc();
 
             // ajoute l'analyseur des routes

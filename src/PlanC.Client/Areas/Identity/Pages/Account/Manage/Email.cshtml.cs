@@ -16,13 +16,13 @@ namespace PlanC.Client.Areas.Identity.Pages.Account.Manage
 {
     public partial class EmailModel : PageModel
     {
-        private readonly UserManager<Utilisateurs> _userManager;
-        private readonly SignInManager<Utilisateurs> _signInManager;
+        private readonly UserManager<AspNetUsers> _userManager;
+        private readonly SignInManager<AspNetUsers> _signInManager;
         private readonly IEmailSender _emailSender;
 
         public EmailModel(
-            UserManager<Utilisateurs> userManager,
-            SignInManager<Utilisateurs> signInManager,
+            UserManager<AspNetUsers> userManager,
+            SignInManager<AspNetUsers> signInManager,
             IEmailSender emailSender)
         {
             _userManager = userManager;
@@ -50,7 +50,7 @@ namespace PlanC.Client.Areas.Identity.Pages.Account.Manage
             public string NewEmail { get; set; }
         }
 
-        private async Task LoadAsync(Utilisateurs user)
+        private async Task LoadAsync(AspNetUsers user)
         {
             var email = await _userManager.GetEmailAsync(user);
             Email = email;

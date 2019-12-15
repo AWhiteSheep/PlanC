@@ -18,14 +18,14 @@ namespace PlanC.Client.Pages.Identity.Pages.Account
     [AllowAnonymous]
     public class LoginModel : PageModel
     {
-        private readonly UserManager<Utilisateurs> _userManager;
-        private readonly SignInManager<Utilisateurs> _signInManager;
+        private readonly UserManager<AspNetUsers> _userManager;
+        private readonly SignInManager<AspNetUsers> _signInManager;
         private readonly ILogger<LoginModel> _logger;
         private readonly IEmailSender _emailSender;
 
-        public LoginModel(SignInManager<Utilisateurs> signInManager, 
+        public LoginModel(SignInManager<AspNetUsers> signInManager, 
             ILogger<LoginModel> logger,
-            UserManager<Utilisateurs> userManager,
+            UserManager<AspNetUsers> userManager,
             IEmailSender emailSender)
         {
             _userManager = userManager;
@@ -44,7 +44,7 @@ namespace PlanC.Client.Pages.Identity.Pages.Account
         [TempData]
         public string ErrorMessage { get; set; }
 
-        public class InputModel : Utilisateurs
+        public class InputModel : AspNetUsers
         {
             [Required(ErrorMessage = "{0} est obligatoire.")]
             [Display(Name = "Numéro d'usagé")]

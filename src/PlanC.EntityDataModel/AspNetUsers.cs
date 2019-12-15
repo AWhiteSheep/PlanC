@@ -9,20 +9,20 @@ using System.Text.Json.Serialization;
 
 namespace PlanC.EntityDataModel
 {
-    public partial class Utilisateurs : IdentityUser
+    public partial class AspNetUsers : IdentityUser
     {
-        public Utilisateurs() : base()
+        public AspNetUsers() : base()
         {
             DisponibilitesUtilisateur = new HashSet<DisponibilitesUtilisateur>();
         }
 
-        public Utilisateurs(string userName) : base(userName)
+        public AspNetUsers(string userName) : base(userName)
         {
         }
 
-
-        public override string Id { get; set; }
-
+        [Key]
+        [StringLength(7)]
+        public override string UserName { get; set; }
         [Column("DepartementID")]
         [PersonalData]
         public int? DepartementId { get; set; }
@@ -38,11 +38,15 @@ namespace PlanC.EntityDataModel
         public DateTime? RcdCdttm { get; set; }
 
         [ForeignKey(nameof(DepartementId))]
-        [InverseProperty(nameof(Departements.Utilisateurs))]
+        [InverseProperty(nameof(Departements.AspNetUsers))]
         [JsonIgnore]
         [IgnoreDataMember]
         public virtual Departements Departement { get; set; }
         [InverseProperty("U")]
         public virtual ICollection<DisponibilitesUtilisateur> DisponibilitesUtilisateur { get; set; }
+
+        // à ne pas se référer n'est pas la clé primaire mais bien un clef de récupration
+        [IgnoreDataMember]
+        public override string Id { get; set; } // FALLBACK KEY
     }
 }

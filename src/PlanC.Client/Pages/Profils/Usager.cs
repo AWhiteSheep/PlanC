@@ -17,13 +17,15 @@ namespace PlanC.Client.Pages.Profils
     public class Usager : ComponentBase
     {
         [Inject]
-        public UserManager<Utilisateurs> _userManager { get; set; }
+        public UserManager<AspNetUsers> _userManager { get; set; }
         [Inject]
-        public SignInManager<Utilisateurs> _signInManager { get; set; }
+        public SignInManager<AspNetUsers> _signInManager { get; set; }
         [CascadingParameter]
         public Task<AuthenticationState> authenticationStateTask { get; set; }
+        [Inject]
+        public NavigationManager NavigationManager { get; set; }
         // utilisateur pour qui les formulaire sont
-        public Utilisateurs user;
+        public AspNetUsers user;
 
         public string Username { get; set; }
         // message destiné a l'usagé

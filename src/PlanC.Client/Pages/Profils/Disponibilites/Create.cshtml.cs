@@ -20,13 +20,13 @@ namespace PlanC.Client.Pages.Profils
         [CascadingParameter]
         public Task<AuthenticationState> authenticationStateTask { get; set; }
 
-        private readonly UserManager<Utilisateurs> _userManager;
-        private readonly SignInManager<Utilisateurs> _signInManager;
+        private readonly UserManager<AspNetUsers> _userManager;
+        private readonly SignInManager<AspNetUsers> _signInManager;
         private readonly PlanC.Client.Data.PCU001Context _context;
 
-        private Utilisateurs utilisateur;
+        private AspNetUsers utilisateur;
 
-        public CreateModel(PlanC.Client.Data.PCU001Context context, UserManager<Utilisateurs> userManager, SignInManager<Utilisateurs> signInManager)
+        public CreateModel(PlanC.Client.Data.PCU001Context context, UserManager<AspNetUsers> userManager, SignInManager<AspNetUsers> signInManager)
         {
             _context = context;
             _userManager = userManager;

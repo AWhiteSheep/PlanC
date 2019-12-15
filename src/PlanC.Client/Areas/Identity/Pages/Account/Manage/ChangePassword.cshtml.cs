@@ -12,13 +12,13 @@ namespace PlanC.Client.Areas.Identity.Pages.Account.Manage
 {
     public class ChangePasswordModel : PageModel
     {
-        private readonly UserManager<Utilisateurs> _userManager;
-        private readonly SignInManager<Utilisateurs> _signInManager;
+        private readonly UserManager<AspNetUsers> _userManager;
+        private readonly SignInManager<AspNetUsers> _signInManager;
         private readonly ILogger<ChangePasswordModel> _logger;
 
         public ChangePasswordModel(
-            UserManager<Utilisateurs> userManager,
-            SignInManager<Utilisateurs> signInManager,
+            UserManager<AspNetUsers> userManager,
+            SignInManager<AspNetUsers> signInManager,
             ILogger<ChangePasswordModel> logger)
         {
             _userManager = userManager;

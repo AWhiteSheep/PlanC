@@ -37,7 +37,7 @@ namespace PlanC.Client.Pages.Profils
             {
                 return NotFound();
             }
-           ViewData["Uid"] = new SelectList(_context.Utilisateurs, "Id", "Id");
+           ViewData["Uid"] = new SelectList(_context.AspNetUsers, "Id", "Id");
             return Page();
         }
 
