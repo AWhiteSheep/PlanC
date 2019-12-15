@@ -1174,7 +1174,7 @@ namespace PlanC.Client.Migrations
                     b.ToTable("TypesFormationsProgrammes");
                 });
 
-            modelBuilder.Entity("PlanC.EntityDataModel.Utilisateurs", b =>
+            modelBuilder.Entity("PlanC.EntityDataModel.AspNetUsers", b =>
                 {
                     b.Property<string>("Id")
                         .HasColumnType("varchar(900)")
@@ -1273,7 +1273,7 @@ namespace PlanC.Client.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
                 {
-                    b.HasOne("PlanC.EntityDataModel.Utilisateurs", null)
+                    b.HasOne("PlanC.EntityDataModel.AspNetUsers", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -1282,7 +1282,7 @@ namespace PlanC.Client.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
                 {
-                    b.HasOne("PlanC.EntityDataModel.Utilisateurs", null)
+                    b.HasOne("PlanC.EntityDataModel.AspNetUsers", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -1297,7 +1297,7 @@ namespace PlanC.Client.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("PlanC.EntityDataModel.Utilisateurs", null)
+                    b.HasOne("PlanC.EntityDataModel.AspNetUsers", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -1306,7 +1306,7 @@ namespace PlanC.Client.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
                 {
-                    b.HasOne("PlanC.EntityDataModel.Utilisateurs", null)
+                    b.HasOne("PlanC.EntityDataModel.AspNetUsers", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -1376,7 +1376,7 @@ namespace PlanC.Client.Migrations
 
             modelBuilder.Entity("PlanC.EntityDataModel.DisponibilitesUtilisateur", b =>
                 {
-                    b.HasOne("PlanC.EntityDataModel.Utilisateurs", "U")
+                    b.HasOne("PlanC.EntityDataModel.AspNetUsers", "U")
                         .WithMany("DisponibilitesUtilisateur")
                         .HasForeignKey("Uid")
                         .HasConstraintName("FK_TUSERAVL_TUSER")
@@ -1497,10 +1497,10 @@ namespace PlanC.Client.Migrations
                         .HasConstraintName("FK_TPGM_TPMGFORMTYPE");
                 });
 
-            modelBuilder.Entity("PlanC.EntityDataModel.Utilisateurs", b =>
+            modelBuilder.Entity("PlanC.EntityDataModel.AspNetUsers", b =>
                 {
                     b.HasOne("PlanC.EntityDataModel.Departements", "Departement")
-                        .WithMany("Utilisateurs")
+                        .WithMany("AspNetUsers")
                         .HasForeignKey("DepartementId")
                         .HasConstraintName("FK_TUSER_TDPTMNT");
                 });

@@ -15,9 +15,9 @@ namespace PlanC.Client.Areas.Identity.Pages.Account
     [AllowAnonymous]
     public class ConfirmEmailModel : PageModel
     {
-        private readonly UserManager<Utilisateurs> _userManager;
+        private readonly UserManager<AspNetUsers> _userManager;
 
-        public ConfirmEmailModel(UserManager<Utilisateurs> userManager)
+        public ConfirmEmailModel(UserManager<AspNetUsers> userManager)
         {
             _userManager = userManager;
         }

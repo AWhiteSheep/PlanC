@@ -1,20 +1,189 @@
 ﻿@using Syncfusion.EJ2.Blazor.Schedule
+@using Syncfusion.EJ2.Blazor.Calendars
+@using Syncfusion.EJ2.Blazor.Buttons
+
 @inherits HoraireBase
 @inject IJSRuntime JSRuntime
 
-<form>
+<div>
     <label for="Username" class="control-label"> Numéro d'usagé: </label>
-    <input placeholder="... .. ." value="@Utilisateur.UserName" class="form-control" disabled />
-    <EjsSchedule TValue="InputTimeSpanModel" Height="680px" RowAutoHeight="true" >
-        <ScheduleWorkHours Highlight="true" Start="07:00" End="18:00"></ScheduleWorkHours>
-        <ScheduleViews>
-            <ScheduleView Option="View.Week"></ScheduleView>
-            <ScheduleView Option="View.WorkWeek"></ScheduleView>
-            <ScheduleView Option="View.TimelineWeek"></ScheduleView>
-        </ScheduleViews>
-    </EjsSchedule>
-</form>
+    <input placeholder="... .. ." value="@Utilisateur.UserName" class="form-control mb-3" disabled />
+    <div class="d-flex flex-row">
+        <Syncfusion.EJ2.Blazor.Buttons.EjsButton @onclick="() => Refresh()">Rafraîchir</Syncfusion.EJ2.Blazor.Buttons.EjsButton>
+        <Syncfusion.EJ2.Blazor.Buttons.EjsButton @onclick="() => Modifier()">Modifier votre horaire</Syncfusion.EJ2.Blazor.Buttons.EjsButton>
+        <Syncfusion.EJ2.Blazor.Buttons.EjsButton @onclick="() => Annuler()">Annuler</Syncfusion.EJ2.Blazor.Buttons.EjsButton>
+    </div>
+    <div class="d-flex flex-row">
+        <EjsSchedule TValue="InputDayModel" @ref="schedule" Height="580px" Width="@(IsMofying ? "60%" : "100%")">
+            <ScheduleTimeScale SlotCount="1"></ScheduleTimeScale>
+            <ScheduleViews>
+                <ScheduleView Option="View.WorkWeek"></ScheduleView>
+                <ScheduleView Option="View.Week"></ScheduleView>
+                <ScheduleView Option="View.Month"></ScheduleView>
+                <ScheduleView Option="View.Agenda"></ScheduleView>
+            </ScheduleViews>
+            <ScheduleEventSettings DataSource="@ListDayTimeSpans">
+            </ScheduleEventSettings>
+        </EjsSchedule>
+        @if (IsMofying)
+        {
+            <div style="width:40%" class="ml-5">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Jour de la semaine</th>
+                            <th>Début</th>
+                            <th>Fin</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var dayInSchedule in ListDayTimeSpans.OrderBy(e => e.DayOfWeekInstanceDay))
+                        {
+                            <tr>
+                                <td>
+                                    <select @bind="dayInSchedule.DayOfWeekInstanceDay" class="form-control">
+                                        <option value="1">Lundi</option>
+                                        <option value="2">Mardi</option>
+                                        <option value="3">Mercredi</option>
+                                        <option value="4">Jeudi</option>
+                                        <option value="5">Vendredi</option>
+                                        <option value="6">Samedi</option>
+                                        <option value="0">Dimanche</option>
+                                    </select>
+                                </td>
+                                <td>
+                                    <div style="border: 1px solid #b2b2b2">
+                                        <EjsTimePicker Format="HH:mm" @bind-Value="dayInSchedule.StartTime" />
+                                    </div>
+                                </td>
+                                <td>
+                                    <div style="border: 1px solid #b2b2b2">
+                                        <EjsTimePicker Format="HH:mm" @bind-Value="dayInSchedule.StartTime" />
+                                    </div>
+                                </td>
+                                <td>
+                                    <button class="btn text-danger" @onclick="() => RemoveFromHoraire(dayInSchedule)" type="button"><i class="fas fa-trash"></i></button>
+                                    <button class="btn text-danger" @onclick="() => Sync(dayInSchedule)" type="button"><i class="fas fa-sync-alt"></i></button>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+    </div>
+</div>
+<hr />
+<div class="row justify-content-center">
+    <EditForm Model="dayModel" OnValidSubmit="AddDayModel"  class="col-sm-12 col-md-10 col-lg-6">
+        <DataAnnotationsValidator />
+        <label for="dateOfValidity" class="control-label pt-3"> Date en mise en vigueur: </label>
+        <EjsDatePicker @bind-Value="dayModel.DateOfValidaty"></EjsDatePicker>
+        <label for="Username" class="control-label"> Jour de la semaine: </label>
+        <InputSelect @bind-Value="dayModel.DayOfWeekString" class="form-control">
+            <option value="1">Lundi</option>
+            <option value="2">Mardi</option>
+            <option value="3">Mercredi</option>
+            <option value="4">Jeudi</option>
+            <option value="5">Vendredi</option>
+            <option value="6">Samedi</option>
+            <option value="0">Dimanche</option>
+        </InputSelect>
+        <span class="text-danger">
+            <ValidationMessage class="text-danger" For="(() => dayModel.DayOfWeekInstanceDay)"></ValidationMessage>
+        </span>
+        <table class="table-light mt-3" style="margin: auto">
+            <thead>
+                <tr>
+                    <th>Heure de début:</th>
+                    <th>Heure de fin:</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>
+                        <div style="border: 1px solid #b2b2b2">
+                            <EjsTimePicker Format="HH:mm" @bind-Value="dayModel.StartTime" />
+                        </div>
+                    </td>
+                    <td>
+                        <div style="border: 1px solid #b2b2b2">
+                            <EjsTimePicker Format="HH:mm" @bind-Value="dayModel.EndTime" />
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <div class="col-12 text-right">
+            <EjsButton CssClass="mt-3 text-right">Ajouter une nouvelle disponibilité</EjsButton>
+        </div>
+    </EditForm>
+</div>
 
 @code{
-    public int[] WorkingDays { get; set; } = { 1,2,3,4,5 };
+    public bool IsMofying;
+    public InputDayModel dayModel { get; set; } = new InputDayModel();
+    public int[] WorkingDays { get; set; } = { 1, 2, 3, 4, 5 };
+    public void AddDayModel()
+    {
+        var recurrenceRule = InputDayModel.GetRecurenceRule(dayModel.DayOfWeekInstanceDay);
+        DisponibilitesUtilisateur disponibility = new DisponibilitesUtilisateur()
+        {
+            RecurrenceRule = recurrenceRule,
+            RcdCdttm = dayModel.DateOfValidaty,
+            WeekdayNbr = dayModel.DayOfWeekInstanceDay,
+            AvlStm = dayModel.StartTime.Value.TimeOfDay,
+            AvlNtm = dayModel.EndTime.Value.TimeOfDay
+        };
+        dayModel = new InputDayModel();
+        // transfert poid sur le context et puis sauvegarde et refresh
+        Utilisateur.DisponibilitesUtilisateur.Add(disponibility);
+        SaveProgress();
+        RefreshDisponibilities();
+        StateHasChanged();
+    }
+
+    public void RemoveFromHoraire(InputDayModel dayModel)
+    {
+        // transfert poid sur le context et puis supprime
+        var modelFound = Utilisateur.DisponibilitesUtilisateur.First(e => e.UserAvlSqnbr == dayModel.UserAvlSqnbr);
+        if (modelFound == null)
+            return;
+
+        this.UserDisponibilities = new List<DisponibilitesUtilisateur>();
+        Utilisateur.DisponibilitesUtilisateur.Remove(modelFound);
+        SaveProgress();
+        RefreshDisponibilities();
+        StateHasChanged();
+    }
+
+    public void Sync(InputDayModel dayModel)
+    {
+        // transfert poid sur le context et puis supprime
+        var modelFound = Utilisateur.DisponibilitesUtilisateur.First(e => e.UserAvlSqnbr == dayModel.UserAvlSqnbr);
+        if (modelFound == null)
+            return;
+
+        modelFound.
+        Utilisateur.DisponibilitesUtilisateur.Remove(modelFound);
+        SaveProgress();
+        RefreshDisponibilities();
+        StateHasChanged();
+    }
+
+    public void Annuler()
+    {       
+        IsMofying = false;
+    }
+
+    public void Modifier()
+    {
+        IsMofying = true;
+    }
+
+    public void Refresh()
+    {
+        schedule.Refresh();
+    }
 }

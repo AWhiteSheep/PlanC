@@ -15,10 +15,10 @@ namespace PlanC.Client.Areas.Identity.Pages.Account
     [AllowAnonymous]
     public class ConfirmEmailChangeModel : PageModel
     {
-        private readonly UserManager<Utilisateurs> _userManager;
-        private readonly SignInManager<Utilisateurs> _signInManager;
+        private readonly UserManager<AspNetUsers> _userManager;
+        private readonly SignInManager<AspNetUsers> _signInManager;
 
-        public ConfirmEmailChangeModel(UserManager<Utilisateurs> userManager, SignInManager<Utilisateurs> signInManager)
+        public ConfirmEmailChangeModel(UserManager<AspNetUsers> userManager, SignInManager<AspNetUsers> signInManager)
         {
             _userManager = userManager;
             _signInManager = signInManager;

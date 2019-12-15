@@ -9,7 +9,7 @@ namespace PlanC.EntityDataModel
     {
         [Key]
         [Column("UID")]
-        [StringLength(7)]
+        [StringLength(7)]        
         public string Uid { get; set; } // id utilisateur
         [Key]
         [Column("USER_AVL_SQNBR")]
@@ -22,9 +22,11 @@ namespace PlanC.EntityDataModel
         public TimeSpan AvlNtm { get; set; }
         [Column("RCD_CDTTM", TypeName = "datetime")]
         public DateTime? RcdCdttm { get; set; } // date mis en charge
+        [StringLength(50)]
+        public string RecurrenceRule { get; set; }
 
         [ForeignKey(nameof(Uid))]
-        [InverseProperty(nameof(Utilisateurs.DisponibilitesUtilisateur))]
-        public virtual Utilisateurs U { get; set; }
+        [InverseProperty(nameof(AspNetUsers.DisponibilitesUtilisateur))]
+        public virtual AspNetUsers U { get; set; }
     }
 }

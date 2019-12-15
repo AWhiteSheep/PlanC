@@ -13,7 +13,7 @@ namespace PlanC.EntityDataModel
         {
             Competences = new HashSet<Competences>();
             Programmes = new HashSet<Programmes>();
-            Utilisateurs = new HashSet<Utilisateurs>();
+            AspNetUsers = new HashSet<AspNetUsers>();
         }
 
         [Key]
@@ -36,6 +36,6 @@ namespace PlanC.EntityDataModel
         [InverseProperty("Departement")]
         public virtual ICollection<Programmes> Programmes { get; set; }
         [InverseProperty("Departement")]
-        public virtual ICollection<Utilisateurs> Utilisateurs { get; set; }
+        public virtual ICollection<AspNetUsers> AspNetUsers { get; set; }
     }
 }

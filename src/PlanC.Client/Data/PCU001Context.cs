@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Identity;
 
 namespace PlanC.Client.Data
 {
-    public partial class PCU001Context : IdentityDbContext<Utilisateurs>
+    public partial class PCU001Context : IdentityDbContext<AspNetUsers>
     {
         public PCU001Context()
         {
@@ -16,7 +16,7 @@ namespace PlanC.Client.Data
             : base(options)
         {
         }
-
+        public virtual DbSet<AspNetUsers> AspNetUsers { get; set; }
         public virtual DbSet<CategoriesProgrammes> CategoriesProgrammes { get; set; }
         public virtual DbSet<CompetenceContextes> CompetenceContextes { get; set; }
         public virtual DbSet<Competences> Competences { get; set; }
@@ -40,7 +40,6 @@ namespace PlanC.Client.Data
         public virtual DbSet<Programmes> Programmes { get; set; }
         public virtual DbSet<Sessions> Sessions { get; set; }
         public virtual DbSet<TypesFormationsProgrammes> TypesFormationsProgrammes { get; set; }
-        public virtual DbSet<Utilisateurs> Utilisateurs { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -53,6 +52,31 @@ namespace PlanC.Client.Data
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
+
+            modelBuilder.Entity<AspNetUsers>(entity =>
+            {
+                entity.HasKey(e => e.UserName)
+                    .HasName("PK_AspNetUsers");
+
+                entity.HasIndex(e => e.DepartementId);
+
+                entity.HasIndex(e => e.NormalizedEmail)
+                    .HasName("EmailIndex");
+
+                entity.HasIndex(e => e.NormalizedUserName)
+                    .HasName("UserNameIndex")
+                    .IsUnique()
+                    .HasFilter("([NormalizedUserName] IS NOT NULL)");
+
+                entity.Property(e => e.Id).HasDefaultValueSql("(newid())");
+
+                entity.Property(e => e.RcdCdttm).HasDefaultValueSql("(getdate())");
+
+                entity.HasOne(d => d.Departement)
+                    .WithMany(p => p.AspNetUsers)
+                    .HasForeignKey(d => d.DepartementId)
+                    .HasConstraintName("FK_TASPUSER_TDPTMNT");
+            });
             modelBuilder.Entity<CategoriesProgrammes>(entity =>
             {
                 entity.HasKey(e => e.CategorieId)
@@ -228,8 +252,6 @@ namespace PlanC.Client.Data
                 entity.HasKey(e => new { e.Uid, e.UserAvlSqnbr })
                     .HasName("PK_TUSERAVL");
 
-                entity.Property(e => e.Uid).IsUnicode(false);
-
                 entity.Property(e => e.UserAvlSqnbr).ValueGeneratedOnAdd();
 
                 entity.Property(e => e.RcdCdttm).HasDefaultValueSql("(getdate())");
@@ -238,7 +260,7 @@ namespace PlanC.Client.Data
                     .WithMany(p => p.DisponibilitesUtilisateur)
                     .HasForeignKey(d => d.Uid)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_TUSERAVL_TUSER");
+                    .HasConstraintName("FK_TUSERAVL_TUSER_TASPNET");
             });
 
             modelBuilder.Entity<ElementsCompetence>(entity =>
@@ -561,18 +583,6 @@ namespace PlanC.Client.Data
                 entity.Property(e => e.Id)
                     .IsUnicode(false)
                     .IsFixedLength();
-            });
-
-            modelBuilder.Entity<Utilisateurs>(entity =>
-            {
-                entity.Property(e => e.UserName).IsUnicode(false);
-
-                entity.Property(e => e.RcdCdttm).HasDefaultValueSql("(getdate())");
-
-                entity.HasOne(d => d.Departement)
-                    .WithMany(p => p.Utilisateurs)
-                    .HasForeignKey(d => d.DepartementId)
-                    .HasConstraintName("FK_TUSER_TDPTMNT");
             });
 
             OnModelCreatingPartial(modelBuilder);

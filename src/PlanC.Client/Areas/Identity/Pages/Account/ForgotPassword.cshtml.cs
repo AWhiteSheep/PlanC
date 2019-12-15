@@ -17,10 +17,10 @@ namespace PlanC.Client.Areas.Identity.Pages.Account
     [AllowAnonymous]
     public class ForgotPasswordModel : PageModel
     {
-        private readonly UserManager<Utilisateurs> _userManager;
+        private readonly UserManager<AspNetUsers> _userManager;
         private readonly IEmailSender _emailSender;
 
-        public ForgotPasswordModel(UserManager<Utilisateurs> userManager, IEmailSender emailSender)
+        public ForgotPasswordModel(UserManager<AspNetUsers> userManager, IEmailSender emailSender)
         {
             _userManager = userManager;
             _emailSender = emailSender;

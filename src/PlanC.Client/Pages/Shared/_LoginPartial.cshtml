@@ -2,8 +2,8 @@
 @using PlanC.EntityDataModel
 @addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
 
-@inject SignInManager<Utilisateurs> SignInManager
-@inject UserManager<Utilisateurs> UserManager
+@inject SignInManager<AspNetUsers> SignInManager
+@inject UserManager<AspNetUsers> UserManager
 
 @if (SignInManager.IsSignedIn(User))
 {

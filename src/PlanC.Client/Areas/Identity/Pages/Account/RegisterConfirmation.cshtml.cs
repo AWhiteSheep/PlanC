@@ -13,10 +13,10 @@ namespace PlanC.Client.Areas.Identity.Pages.Account
     [AllowAnonymous]
     public class RegisterConfirmationModel : PageModel
     {
-        private readonly UserManager<Utilisateurs> _userManager;
+        private readonly UserManager<AspNetUsers> _userManager;
         private readonly IEmailSender _sender;
 
-        public RegisterConfirmationModel(UserManager<Utilisateurs> userManager, IEmailSender sender)
+        public RegisterConfirmationModel(UserManager<AspNetUsers> userManager, IEmailSender sender)
         {
             _userManager = userManager;
             _sender = sender;

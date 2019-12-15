@@ -1,6 +1,9 @@
 ﻿@page "/profil/configuration"
+@using Microsoft.EntityFrameworkCore;
 @inject IJSRuntime JSRuntime
+@inject PCU001Context context
 @inherits Usager
+@using PlanC.Client.Pages.Profils
 
 
 @if (!String.IsNullOrEmpty(StatusMessage))
@@ -14,72 +17,75 @@
 <div class="row justify-content-center">
     <div class="col-md-12" style="margin-bottom: 200px;">
         <div class="row">
-            <div class="nav flex-column nav-pills col-md-4" id="v-pills-tab" role="tablist" aria-orientation="vertical">
-                <span class="nav-link active" id="v-pills-profile-tab" data-toggle="pill" href="#v-pills-profile" role="tab" aria-controls="v-pills-profile" aria-selected="false">Profile</span>
-                <span class="nav-link" id="v-pills-disponibility-tab" data-toggle="pill" href="#v-pills-disponibility" role="tab" aria-controls="v-pills-disponibility" aria-selected="false">Disponibilités</span>
-                <span class="nav-link" id="v-pills-settings-tab" data-toggle="pill" href="#v-pills-settings" role="tab" aria-controls="v-pills-settings" aria-selected="false">Settings</span>
+            <div class="nav flex-row nav-pills col-md-4" id="v-pills-tab" role="tablist" aria-orientation="horizontal">
+                <span @onclick="() => currentControl = 1" class="nav-link active" id="v-pills-profile-tab" data-toggle="pill" href="#v-pills-profile" role="tab" aria-controls="v-pills-profile" aria-selected="false">Profile</span>
+                <span @onclick="() => currentControl = 2" class="nav-link" id="v-pills-disponibility-tab" data-toggle="pill" href="#v-pills-disponibility" role="tab" aria-controls="v-pills-disponibility" aria-selected="false">Disponibilités</span>
+                <span @onclick="() => currentControl = 3" class="nav-link" id="v-pills-settings-tab" data-toggle="pill" href="#v-pills-settings" role="tab" aria-controls="v-pills-settings" aria-selected="false">Settings</span>
             </div>
-            <div class="tab-content col-md-8" id="v-pills-tabContent">
+            <div class="tab-content col-md-12" id="v-pills-tabContent">
                 <div class="tab-pane fade active show" id="v-pills-profile" role="tabpanel" aria-labelledby="v-pills-profile-tab">
-                    <!-- configuration du profil utilisateur -->
-                    <div class="row justify-content-start">
-                        <div class="col-md-6">
-                            <h4 style="text-align: center;">
-                                Configuration du profil.
-                            </h4>
-                            <!-- formulaire pour le numéro de poste et de son email-->
-                            <EditForm Model="Input" id="numero" OnValidSubmit="PostPublicAsync">
-                                <DataAnnotationsValidator />
-                                <label for="Username" class="control-label"> Numéro d'usagé: </label>
-                                <input placeholder="... .. ." value="@Username" class="form-control" disabled />
-                                <label for="phonenumeber" class="control-label pt-3"> Numéro de poste: </label>
-                                <InputText placeholder=".. ... ." @bind-Value="Input.PhoneNumber" class="form-control" />
-                                <span class="text-danger">
-                                    <ValidationMessage For="(() => Input.PhoneNumber)"></ValidationMessage>
-                                </span>
-                                <label for="phonenumeber" class="control-label pt-3"> Email: </label>
-                                <InputText placeholder=".. ... ." @bind-Value="Input.NewEmail" class="form-control" />
-                                <span class="text-danger">
-                                    <ValidationMessage class="text-danger" For="(() => Input.NewEmail)"></ValidationMessage>
-                                </span>
-                                <button id="update-profile-button" type="submit" class="btn btn-primary mt-3">Sauvegarder</button>
-                            </EditForm>
+                    @if (user != null && currentControl == 1)
+                    {
+                        <!-- configuration du profil utilisateur -->
+                        <div class="row justify-content-center">
+                            <div class="col-md-6">
+                                <h4 style="text-align: center;">
+                                    Configuration du profil.
+                                </h4>
+                                <!-- formulaire pour le numéro de poste et de son email-->
+                                <EditForm Model="Input" id="numero" OnValidSubmit="PostPublicAsync">
+                                    <DataAnnotationsValidator />
+                                    <label for="Username" class="control-label"> Numéro d'usagé: </label>
+                                    <input placeholder="... .. ." value="@Username" class="form-control" disabled />
+                                    <label for="phonenumeber" class="control-label pt-3"> Numéro de poste: </label>
+                                    <InputText placeholder=".. ... ." @bind-Value="Input.PhoneNumber" class="form-control" />
+                                    <span class="text-danger">
+                                        <ValidationMessage For="(() => Input.PhoneNumber)"></ValidationMessage>
+                                    </span>
+                                    <label for="phonenumeber" class="control-label pt-3"> Email: </label>
+                                    <InputText placeholder=".. ... ." @bind-Value="Input.NewEmail" class="form-control" />
+                                    <span class="text-danger">
+                                        <ValidationMessage class="text-danger" For="(() => Input.NewEmail)"></ValidationMessage>
+                                    </span>
+                                    <button id="update-profile-button" type="submit" class="btn btn-primary mt-3">Sauvegarder</button>
+                                </EditForm>
+                            </div>
                         </div>
-                    </div>
-                    <!-- configuration de la sécurité -->
-                    <div class="row justify-content-start">
-                        <div class="col-md-6">
-                            <hr style="margin-top: 3rem;">
-                            <h4 style="text-align:center;">Sécurité</h4>
-                            <EditForm Model="InputPassword" id="password" OnValidSubmit="PostPasswordAsync">
-                                <DataAnnotationsValidator />
-                                <label for="Username" class="control-label"> Vieux mot de passe: </label>
-                                <InputText @bind-Value="InputPassword.OldPassword" class="form-control" />
-                                <span class="text-danger">
-                                    <ValidationMessage class="text-danger" For="(() => InputPassword.OldPassword)"></ValidationMessage>
-                                </span>
-                                <label for="phonenumeber" class="control-label pt-3"> Nouveau mot de passe: </label>
-                                <InputText @bind-Value="InputPassword.NewPassword" class="form-control" />
-                                <span class="text-danger">
-                                    <ValidationMessage class="text-danger" For="(() => InputPassword.NewPassword)"></ValidationMessage>
-                                </span>
-                                <label for="phonenumeber" class="control-label pt-3"> Confirmation mot de passe: </label>
-                                <InputText @bind-Value="InputPassword.ConfirmPassword" class="form-control" />
-                                <span class="text-danger">
-                                    <ValidationMessage class="text-danger" For="(() => InputPassword.ConfirmPassword)"></ValidationMessage>
-                                </span>
-                                <button id="update-password-button" type="submit" class="btn btn-primary mt-3">Sauvegarder</button>
-                            </EditForm>
+                        <!-- configuration de la sécurité -->
+                        <div class="row justify-content-center">
+                            <div class="col-md-6">
+                                <hr style="margin-top: 3rem;">
+                                <h4 style="text-align:center;">Sécurité</h4>
+                                <EditForm Model="InputPassword" id="password" OnValidSubmit="PostPasswordAsync">
+                                    <DataAnnotationsValidator />
+                                    <label for="Username" class="control-label"> Vieux mot de passe: </label>
+                                    <InputText @bind-Value="InputPassword.OldPassword" class="form-control" />
+                                    <span class="text-danger">
+                                        <ValidationMessage class="text-danger" For="(() => InputPassword.OldPassword)"></ValidationMessage>
+                                    </span>
+                                    <label for="phonenumeber" class="control-label pt-3"> Nouveau mot de passe: </label>
+                                    <InputText @bind-Value="InputPassword.NewPassword" class="form-control" />
+                                    <span class="text-danger">
+                                        <ValidationMessage class="text-danger" For="(() => InputPassword.NewPassword)"></ValidationMessage>
+                                    </span>
+                                    <label for="phonenumeber" class="control-label pt-3"> Confirmation mot de passe: </label>
+                                    <InputText @bind-Value="InputPassword.ConfirmPassword" class="form-control" />
+                                    <span class="text-danger">
+                                        <ValidationMessage class="text-danger" For="(() => InputPassword.ConfirmPassword)"></ValidationMessage>
+                                    </span>
+                                    <button id="update-password-button" type="submit" class="btn btn-primary mt-3">Sauvegarder</button>
+                                </EditForm>
+                            </div>
                         </div>
-                    </div>
+                    }
                 </div>
                 <div class="tab-pane fade" id="v-pills-disponibility" role="tabpanel" aria-labelledby="v-pills-disponibility-tab">
-                    <div class="row justify-content-start">
-                        <div class="col-md-6">
+                    <div class="row justify-content-center">
+                        <div class="col-md-12">
                             <h4 style="text-align:center;">Horaire de l'utilisateur</h4>
-                            @if (user != null)
+                            @if (user != null && currentControl == 2)
                             {
-                                <CascadingValue TValue="Utilisateurs" Value="user">
+                                <CascadingValue TValue="AspNetUsers" Value="user">
                                     <Horaire></Horaire>
                                 </CascadingValue>
                             }
@@ -99,9 +105,13 @@
 
 @code {
     private string internal_link => "/Account/Manage";
+    public int currentControl;
 
     protected override void OnInitialized()
     {
+        // initialize la liste, indiquant la séquence ou se trouve la personne
+        currentControl = 1;
+
         Input = new InputModel();
         InputPassword = new InputPasswordModel();
     }
@@ -111,12 +121,20 @@
         if (firstRender)
         {
             // obtient l'utilisateur pour le render de la page et des configuration
-            user = await _userManager.GetUserAsync((await authenticationStateTask).User);
-            Username = user.UserName;
+            var _user = _userManager.GetUserName((await authenticationStateTask).User);
+
+            if (string.IsNullOrEmpty(_user))
+                NavigationManager.NavigateTo("/error");
+
+            user = context.AspNetUsers
+                .First(e => e.UserName == _user);
+
             if (user == null)
             {
                 StatusMessage = $"Impossible de trouver l'utlisateur ayant le ID '{Username}'.";
             }
+
+            Username = user.UserName;
 
             Input.NewEmail = user.Email;
             Input.PhoneNumber = user.PhoneNumber;

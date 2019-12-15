@@ -5,9 +5,9 @@
 @page "/planscadres/{id}/edition/{VsnCdttm}/modifier"
 @attribute [Authorize]
 @using PlanC.EntityDataModel
-@using Components
-@using System.Collections.Generic;
-@using Microsoft.EntityFrameworkCore;
+@using PlanC.Client.Components
+@using System.Collections.Generic
+@using Microsoft.EntityFrameworkCore
 @inject NavigationManager NavigationManager
 @inject PCU001Context context
 @using Syncfusion.EJ2.Blazor.RichTextEditor
@@ -30,8 +30,7 @@
 
 <div class="row">
     <div class="col-12 d-flex justify-content-center">
-        <PlanC.Client.Components.ProgressBar steps="@(new List<string>{ "Déscription", "Compétences", "Examens finaux", "Révision" })"
-                                             Current="CurrentStep"></PlanC.Client.Components.ProgressBar>
+        <PlanC.Client.Components.ProgressBar steps="@(new List<string>{ "Déscription", "Compétences", "Examens finaux", "Révision" })" Current="CurrentStep"></PlanC.Client.Components.ProgressBar>
     </div>
 </div>
 
@@ -104,7 +103,7 @@
 
     private int CurrentStep = 0;
 
-    ChangeEventArgs<DropdownProgramSelection> programSelectChange;
+    ChangeEventArgs<PlanC.Client.Components.DropdownProgramSelection> programSelectChange;
 
     protected override void OnInitialized()
     {

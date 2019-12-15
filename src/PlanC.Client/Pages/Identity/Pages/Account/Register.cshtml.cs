@@ -23,14 +23,14 @@ namespace PlanC.Client.Pages.Identity.Pages.Account
     [AllowAnonymous]
     public class RegisterModel : PageModel
     {
-        private readonly SignInManager<Utilisateurs> _signInManager;
-        private readonly UserManager<Utilisateurs> _userManager;
+        private readonly SignInManager<AspNetUsers> _signInManager;
+        private readonly UserManager<AspNetUsers> _userManager;
         private readonly ILogger<RegisterModel> _logger;
         private readonly IEmailSender _emailSender;
 
         public RegisterModel(
-            UserManager<Utilisateurs> userManager,
-            SignInManager<Utilisateurs> signInManager,
+            UserManager<AspNetUsers> userManager,
+            SignInManager<AspNetUsers> signInManager,
             ILogger<RegisterModel> logger,
             IEmailSender emailSender)
         {
@@ -45,7 +45,7 @@ namespace PlanC.Client.Pages.Identity.Pages.Account
 
         public string ReturnUrl { get; set; }
 
-        public class InputModel : Utilisateurs
+        public class InputModel : AspNetUsers
         {     
             [Required(ErrorMessage = "{0} est obligatoire.")]
             [EmailAddress]
@@ -111,7 +111,7 @@ namespace PlanC.Client.Pages.Identity.Pages.Account
 
             if (ModelState.IsValid)
             {
-                var user = new Utilisateurs { UserName = Input.UserName, DepartementId = Input.DepartementId,
+                var user = new AspNetUsers { UserName = Input.UserName, DepartementId = Input.DepartementId,
                     PhoneNumber = Input.PhoneNumber, Email = Input.Email, GvnNm = Input.GvnNm, Snm = Input.Snm };
 
                 var result = await _userManager.CreateAsync(user, Input.Password);
