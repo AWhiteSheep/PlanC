@@ -116,7 +116,6 @@
                 RefreshSkills();
                 break;
             case FormPlanCadre.FormMode.EDIT:
-
                 SelectedSkillElements = Template.PlanCadreCompetenceElements.ToList();
                 SelectedSkills = _context.PlanCadreCompetenceElements.Where(tse => SelectedSkillElements.Contains(tse))
                                                                     .Select(tse => tse.ElementCompetence.IdentityKeyCompetencesNavigation)
@@ -151,7 +150,7 @@
         AvailableSkills.RemoveAll(available => SelectedSkills.Contains(available));
 
         //Pulls skill elements associated with currently selected skills
-        List<ElementsCompetence> AssociatedSkillElems = _context.ElementsCompetence.Where(ec => SelectedSkills.Contains(ec.IdentityKeyCompetencesNavigation)).ToList();
+        List<ElementsCompetence> AssociatedSkillElems = _context.ElementsCompetence.Where(ec => SelectedSkills.Contains(ec.IdentityKeyCompetencesNavigation))?.ToList();
 
 
         foreach (ElementsCompetence sklelem in AssociatedSkillElems)
@@ -179,8 +178,8 @@
 
     protected void AddSkill(MouseEventArgs args)
     {
-        //Sanity check to prevent double adding the same skill
-        if (SelectedSkills.Contains(CurrentSelection))
+        //Sanity check to prevent double adding the same skill ou s'il n'y a pas de sélection
+        if (SelectedSkills.Contains(CurrentSelection) || CurrentSelection == null)
         {
             return;
         }

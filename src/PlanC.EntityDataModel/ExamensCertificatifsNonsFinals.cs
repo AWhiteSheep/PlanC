@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace PlanC.EntityDataModel
 {
@@ -31,11 +32,13 @@ namespace PlanC.EntityDataModel
         [StringLength(7)]
         public string TrkUid { get; set; }
 
+        [JsonIgnore]
         [ForeignKey(nameof(ExamenId))]
         [InverseProperty(nameof(Examens.ExamensCertificatifsNonsFinals))]
         public virtual Examens Examen { get; set; }
         [ForeignKey("CoursId,TchrUid,PlnVsnCdttm,SessionId")]
         [InverseProperty("ExamensCertificatifsNonsFinals")]
+        [JsonIgnore]
         public virtual PlansCours PlansCours { get; set; }
     }
 }

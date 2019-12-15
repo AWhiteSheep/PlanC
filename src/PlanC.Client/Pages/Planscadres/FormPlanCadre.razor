@@ -2,6 +2,7 @@
 @page "/planscadres/creation"
 @page "/plancadre/{id}/create"
 @page "/planscadres/{id}/create"
+@page "/planscadres/{id}/edition/{VsnCdttm}/modifier"
 @attribute [Authorize]
 @using PlanC.EntityDataModel
 @using Components
@@ -9,6 +10,7 @@
 @using Microsoft.EntityFrameworkCore;
 @inject NavigationManager NavigationManager
 @inject PCU001Context context
+@using Syncfusion.EJ2.Blazor.RichTextEditor
 <!--section sécurité doit être seulement coordonateur du programme et la consultation par le professeur-->
 <!-- Section de navigation -->
 <div class="row mb-3">
@@ -29,11 +31,11 @@
 <div class="row">
     <div class="col-12 d-flex justify-content-center">
         <PlanC.Client.Components.ProgressBar steps="@(new List<string>{ "Déscription", "Compétences", "Examens finaux", "Révision" })"
-                        Current="CurrentStep"></PlanC.Client.Components.ProgressBar>
+                                             Current="CurrentStep"></PlanC.Client.Components.ProgressBar>
     </div>
 </div>
 
-<div class="container shadow p-5" style="margin-bottom: 200px">
+<div class="container shadow p-5" style="margin-bottom: 200px; margin-top: 50px">
     @*Envoit le paramètre à tous les enfants*@
     <CascadingValue TValue="PCU001Context" Value="context">
         <CascadingValue TValue="FormMode" Value="CurrentMode">
@@ -63,18 +65,28 @@
                 <!-- suite au poste validate nous envoyons l'utilisateur vers la deuxième partie celle de remplire les contextes et les éléments de compétence-->
                 <button @onclick="NavigatePrevious" disabled="@(CurrentNode.Previous == null)" class="btn btn-primary">Précédent</button>
                 <button @onclick="NavigateNext" hidden="@(CurrentNode.Next == null)" disabled="@(CurrentNode.Next == null)" class="btn btn-primary">Suivant</button>
-                <a href="/planscadres/@Template?.CoursId/confirmation" hidden="@(CurrentNode.Next != null)" disabled="@(CurrentNode.Next != null)" class="btn btn-primary">Terminer</a>
+                <a @onclick="Finish" hidden="@(CurrentNode.Next != null)" disabled="@(CurrentNode.Next != null)" class="btn btn-primary text-white">Terminer</a>
             </div>
         </div>
     </div>
+    <div class="col-12 text-center mt-3">
+        @if (string.IsNullOrEmpty(Id))
+        {
+            <span class="smallerFontSize">La page ne répond pas? <a href="/planscadres/creation" onclick="window.location.reload()" class="reload">Rafraîchir la page.</a></span>
+        }
+        else
+        {
+            <span class="smallerFontSize">La page ne répond pas? <a href="/planscadres/@Id/create" onclick="window.location.reload()" class="reload">Rafraîchir la page.</a></span>
+        }
+    </div>
 </div>
-
-
-
 
 @code{
     [Parameter]
     public string Id { get; set; }
+    // date pour la recherche du plan-cadre
+    [Parameter]
+    public DateTime VsnCdttm { get; set; }
 
     [CascadingParameter]
     public FormMode CurrentMode { get; set; }
@@ -83,6 +95,9 @@
 
     private LinkedListNode<CourseTemplateFormComponent> CurrentNode { get; set; }
     private LinkedList<CourseTemplateFormComponent> Forms { get; set; }
+
+    // sauvegarde des remarque laissé dans le formulaire template review
+    public EjsRichTextEditor Remarque { get; set; }
 
     [Parameter]
     public PlansCadres Template { get; set; }
@@ -99,6 +114,7 @@
                                                             .Where(cadre => cadre.CoursId.Trim() == this.Id)
                                                             .OrderByDescending(cadre => cadre.VsnCdttm)
                                                             .FirstOrDefault();
+
 
         if (SpecifiedTemplate != null)
         {
@@ -153,4 +169,14 @@
         CREATE = 1,
         EDIT = 2
     }
+
+
+    public void Finish()
+    {
+        //sauvegarde de la remarque laissé par le coordinateur
+        Template.IntentionPedagogique = (CurrentForm as TemplateReview).Remarque.Value;
+        context.SaveChanges();
+        NavigationManager.NavigateTo($"/planscadres/{Template.CoursId}/confirmation");
+    }
+
 }

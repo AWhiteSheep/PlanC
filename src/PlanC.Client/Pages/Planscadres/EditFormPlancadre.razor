@@ -1,5 +1,6 @@
 ﻿@using PlanC.Client.Components
 @inherits CourseTemplateFormComponent
+@implements IDisposable
 @using Syncfusion.EJ2.Blazor.RichTextEditor
 
 
@@ -42,29 +43,41 @@
         </div>
     </div>
     <div class="row">
-        <!-- Nombre d'unités pour le cours donné -->
-        <div class="col-md-6">
-            <div class="form-group">
-                <label class="control-label" for="Units"> Nombre d'unités: </label>
-                <ValidationMessage For="() => Template.UnitsAccessor"></ValidationMessage>
-                <InputNumber readonly="@IsReadOnly" TValue="decimal" @bind-Value="Template.UnitsAccessor" class="form-control theme-mask input" id="Units" />
-            </div>
-        </div>
         <!-- Ajout de la pondération -->
-        <div class="col-md-6">
-            <div class="form-group text-center">
-                <label class="control-label" for="Ponderation"> Pondération du cours: </label>
+        <div class="col-md-12">
+            <div class="form-group">
                 <div class="row">
-                    <label class="col-md-10" for="@(Template.TheoryHoursAccessor)">Nombre d'heures de théorie: </label>
-                    <InputNumber readonly="@IsReadOnly" class="col-md-2 theme-mask form-control" TValue="int" Mask="0" @bind-Value="Template.TheoryHoursAccessor" />
-                </div>
-                <div class="row">
-                    <label class="col-md-10" for="@(Template.PracticeHoursAccessor)">Nombre d'heures de pratique: </label>
-                    <InputNumber readonly="@IsReadOnly" class="col-md-2 theme-mask form-control" TValue="int" Mask="0" @bind-Value="Template.PracticeHoursAccessor" />
-                </div>
-                <div class="row">
-                    <label class="col-md-10" for="@(Template.HomeHoursAccessor)">Nombre d'heures à la maison: </label>
-                    <InputNumber readonly="@IsReadOnly" class="col-md-2 theme-mask form-control" TValue="int" Mask="0" @bind-Value="Template.HomeHoursAccessor" />
+                    <div class="form-group col-12">
+                        <table>
+                            <thead>
+                                <tr><td></td><td class="p-0">Pondération du cours:</td></tr>
+                                <tr>
+                                    <td width="50%" class="p-0">Nombre d'unités:</td>
+                                    <th>Théorie</th>
+                                    <th>Pratique</th>
+                                    <th>Chez soi</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td class="no-left-padding">
+                                        <ValidationMessage For="() => Template.UnitsAccessor"></ValidationMessage>
+                                        <InputNumber readonly="@IsReadOnly" TValue="decimal" @bind-Value="Template.UnitsAccessor" class="form-control theme-mask input" id="Units" />
+                                    </td>
+                                    <!-- Nombre d'unités pour le cours donné -->
+                                    <td class="no-left-padding">
+                                        <InputNumber readonly="@IsReadOnly" class="theme-mask form-control" TValue="int" Mask="0" @bind-Value="Template.TheoryHoursAccessor" />
+                                    </td>
+                                    <td class="no-left-padding">
+                                        <InputNumber readonly="@IsReadOnly" class="theme-mask form-control" TValue="int" Mask="0" @bind-Value="Template.PracticeHoursAccessor" />
+                                    </td>
+                                    <td class="no-left-padding pr-0">
+                                        <InputNumber readonly="@IsReadOnly" class="theme-mask form-control" TValue="int" Mask="0" @bind-Value="Template.HomeHoursAccessor" />
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>
@@ -73,15 +86,15 @@
         <div class="col-12">
             <!-- Descriptions du cours -->
             <div class="form-group">
-                <label class="control-label col-12" for="CrsDesc">Brève description du cours: </label>
-                <EjsRichTextEditor EnablePersistence="true" Readonly="@IsReadOnly" ShowCharCount="true" MaxLength="150" @bind-Value="@Template.Description" />
+                <label class="control-label" for="CrsDesc">Brève description du cours: </label>
+                <EjsRichTextEditor @ref="Description" Readonly="@IsReadOnly" ShowCharCount="true" MaxLength="450" Value="@(Template.Description)" />
             </div>
         </div>
         <div class="col-12">
             <!-- les intentions du cours -->
             <div class="form-group">
                 <label class="control-label" for="CrsIntent">Intentions éducatives: </label>
-                <EjsRichTextEditor EnablePersistence="true" Readonly="@IsReadOnly" ShowCharCount="true" MaxLength="150" @bind-Value="@Template.IntentionEducative" />
+                <EjsRichTextEditor  @ref="Intention" Readonly="@IsReadOnly" ShowCharCount="true" MaxLength="450" Value="@(Template.IntentionEducative)" />
             </div>
         </div>
         <!-- Plus tard dans la section approbation-->
@@ -108,6 +121,7 @@
 
     //Passed by the parent form with two-way binding so that changes made in this component propagate upwards.
     [Parameter]
+    [Bindable]
     public PlansCadres Template { get; set; }
 
     //Required by blazor to handle two-way binding
@@ -134,11 +148,15 @@
     public bool IsReadOnly { get; set; } = false;
 
     //affiche un rich textinput pour les intentions éducatives
-    EjsRichTextEditor RichTextEditorIntention;
+    [Bindable]
+    [Parameter]
+    public EjsRichTextEditor Intention { get; set; }
     //affiche un rich textinput pour la brève description du cours
-    EjsRichTextEditor RichTextEditorDescription;
+    [Bindable]
+    [Parameter]
+    public EjsRichTextEditor Description { get; set; }
 
-    //les options pour les richtext 
+    //les options pour les richtext
     public object[] Tools = new object[]{
         "Bold", "Italic", "Underline", "SubScript", "SuperScript", "StrikeThrough",
         "FontName", "FontSize", "FontColor", "BackgroundColor",
@@ -186,9 +204,22 @@
     {
         if (firstRender && !IsReadOnly)
         {
-            ProgramSelect.ValueChanged += UpdateProgram;
+            ProgramSelect.ValueChanged += UpdateProgram;   
         }
     }
+
+    public void Dispose()
+    {
+        try
+        {
+            context.SaveChanges();
+        }
+        catch (Exception except)
+        {
+            Console.WriteLine($"Template input error: {except.Message}");
+        }
+    }
+
 
     /// <summary>
     /// Attempts to save current data into the database.
@@ -205,6 +236,8 @@
                     {
                         Template.ProgrammeId = Program.Id;
                         Template.VsnCdttm = DateTime.Now;
+                        Template.IntentionEducative = Intention.Value;
+                        Template.Description = Description.Value;
                         context.PlansCadres.Add(Template);
 
                         if (context.SaveChanges() > 0)
@@ -220,12 +253,14 @@
                     }
                 case FormPlanCadre.FormMode.EDIT:
                     try
-                    {
-                        Template.ProgrammeId = Program.Id;                       
+                    {                    
+                        Template.ProgrammeId = Program.Id;
+                        Template.IntentionEducative = Intention.Value;
+                        Template.Description = Description.Value;
                         context.PlansCadres.Update(Template);
-
                         if (context.SaveChanges() > 0)
                         {
+                            StateHasChanged();
                             return true;
                         }
                         else return false;
@@ -236,6 +271,7 @@
                         return false;
                     }
                 default:
+                    context.SaveChanges();
                     throw new Exception($"Error in {this}: CurrentMode is {CurrentMode}");
             }
 

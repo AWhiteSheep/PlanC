@@ -73,15 +73,15 @@
                         </div>
                     </div>
                 </div>
-                <div class="tab-pane fade" id="v-pills-disponibility" role="tabpanel" aria-labelledby="v-pills-disponibility-tab">                    
+                <div class="tab-pane fade" id="v-pills-disponibility" role="tabpanel" aria-labelledby="v-pills-disponibility-tab">
                     <div class="row justify-content-start">
                         <div class="col-md-6">
                             <h4 style="text-align:center;">Horaire de l'utilisateur</h4>
                             @if (user != null)
                             {
-                            <CascadingValue TValue="Utilisateurs" Value="user">
-                                <Horaire></Horaire>
-                            </CascadingValue>
+                                <CascadingValue TValue="Utilisateurs" Value="user">
+                                    <Horaire></Horaire>
+                                </CascadingValue>
                             }
                         </div>
                     </div>
@@ -92,6 +92,11 @@
     </div>
 </div>
 
+<div class="col-12 text-center">
+    <span class="smallerFontSize">La page ne répond pas? <a href="/profil/configuration" onclick="window.location.reload()" class="reload">Rafraîchir la page.</a></span>
+</div>
+
+
 @code {
     private string internal_link => "/Account/Manage";
 
@@ -101,7 +106,8 @@
         InputPassword = new InputPasswordModel();
     }
 
-    protected override async Task OnAfterRenderAsync(bool firstRender) {
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
         if (firstRender)
         {
             // obtient l'utilisateur pour le render de la page et des configuration

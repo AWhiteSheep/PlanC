@@ -6,7 +6,6 @@
 @using Syncfusion.EJ2.Blazor.Grids
 @using Syncfusion.EJ2.Blazor.Buttons
 
-
 <!--section sécurité doit être seulement coordonateur du programme et la consultation par le professeur-->
 <!-- Section de navigation -->
 <div class="row mb-3">
@@ -29,31 +28,56 @@
         </div>
         <div class="col-12">
             <EjsButton @onclick="Supprimer" Disabled="(Selected == null)"> Supprimer la sélection </EjsButton>
+            <a href="/planscadres/creation">Nouveau plancadre</a>
             <br />
-            <EjsGrid DataSource="@TemplateCours" AllowSorting="true" AllowPaging="true"
-                     ContextMenuItems="@(new List<ContextMenuItemModel>() { new ContextMenuItemModel { Text = "Ouvrir plan cours", Target = ".e-content", Id = "open" } })">
-                <GridEditSettings AllowAdding="true" AllowDeleting="true"></GridEditSettings>
-                <GridPageSettings PageSize="8"></GridPageSettings>
-                <!-- Les événements se passant sur la table et les paramètre -->
-                <GridEvents ContextMenuItemClicked="OnContextMenuClick" RowSelected="RowSelectHandler" RowDeselected="() => Selected = null" TValue="PlansCadres"></GridEvents>
-                <GridColumns>
-                    <GridColumn IsPrimaryKey="true" Field=@nameof(PlansCadres.CoursId) HeaderText="Identifiant du cours"></GridColumn>
-                    <GridColumn Field=@nameof(PlansCadres.ProgrammeId) HeaderText="Identifiant du programme"></GridColumn>
-                    <GridColumn Field=@nameof(PlansCadres.DenominationCours) HeaderText="Nom du cours"></GridColumn>
-                    <GridColumn Field=@nameof(PlansCadres.RcdCdttm) HeaderText="Date du dernier enregistrement" Format="yMd" Type=ColumnType.Date></GridColumn>
-                </GridColumns>
-            </EjsGrid>
+            @if (TemplateCours != null)
+            {
+                <EjsGrid DataSource="@TemplateCours" AllowSorting="true" AllowPaging="true"
+                         ContextMenuItems="@(new List<ContextMenuItemModel>() { new ContextMenuItemModel { Text = "Ouvrir plan cours", Target = ".e-content", Id = "open" } })">
+                    <GridEditSettings AllowAdding="true" AllowDeleting="true"></GridEditSettings>
+                    <GridPageSettings PageSize="8"></GridPageSettings>
+                    <!-- Les événements se passant sur la table et les paramètre -->
+                    <GridEvents ContextMenuItemClicked="OnContextMenuClick" RowSelected="RowSelectHandler" RowDeselected="() => Selected = null" TValue="PlansCadres"></GridEvents>
+                    <GridColumns>
+                        <GridColumn IsPrimaryKey="true" Field=@nameof(PlansCadres.CoursId) HeaderText="Identifiant du cours"></GridColumn>
+                        <GridColumn Field=@nameof(PlansCadres.ProgrammeId) HeaderText="Identifiant du programme"></GridColumn>
+                        <GridColumn Field=@nameof(PlansCadres.DenominationCours) HeaderText="Nom du cours"></GridColumn>
+                        <GridColumn Field=@nameof(PlansCadres.RcdCdttm) HeaderText="Date du dernier enregistrement" Format="yMd" Type=ColumnType.Date></GridColumn>
+                    </GridColumns>
+                </EjsGrid>
+            }
+            else if (loadFailed)
+            {
+                <a href="" class="reload">Recharger la page</a>
+            }
+            else
+            {
+                <h1>En chargement...</h1>
+            }
         </div>
     </div>
 </div>
-
+<div class="col-12 text-center">
+    <span class="smallerFontSize">La page ne répond pas? <a href="/planscadres" onclick="window.location.reload()" class="reload">Rafraîchir la page.</a></span>
+</div>
 @code{
     public List<PlansCadres> TemplateCours { get; set; }
     public PlansCadres Selected { get; set; }
+    private bool loadFailed; //safe check si la list à eu une erreur pour demander à l'usager de reload
 
     protected override void OnInitialized()
     {
-        TemplateCours = context.PlansCadres.ToList<PlansCadres>();
+        // initialisation de la liste
+        try
+        {
+            loadFailed = false;
+            TemplateCours = context.PlansCadres.ToList();
+        }
+        catch (Exception ex)
+        {
+            loadFailed = true;
+            Console.WriteLine("Failed to load {context}, {ex}", context, ex);
+        }
     }
 
     protected void Supprimer()
@@ -68,7 +92,7 @@
         try
         {
             context.SaveChanges();
-            TemplateCours = context.PlansCadres.ToList<PlansCadres>();
+            TemplateCours = context.PlansCadres.ToList();
             StateHasChanged();
         }
         catch (Exception except)

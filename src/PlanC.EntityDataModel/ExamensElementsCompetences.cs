@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace PlanC.EntityDataModel
 {
@@ -19,8 +20,10 @@ namespace PlanC.EntityDataModel
         public decimal? PoidElement { get; set; }
 
         [ForeignKey(nameof(ElementCompetenceId))]
+        [JsonIgnore]
         [InverseProperty(nameof(ElementsCompetence.ExamensElementsCompetences))]
         public virtual ElementsCompetence ElementCompetence { get; set; }
+        [JsonIgnore]
         [ForeignKey(nameof(ExamenId))]
         [InverseProperty(nameof(Examens.ExamensElementsCompetences))]
         public virtual Examens Examen { get; set; }

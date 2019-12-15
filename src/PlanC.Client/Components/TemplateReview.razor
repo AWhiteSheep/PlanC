@@ -49,22 +49,16 @@
             </div>
         </div>
     </div>
-    <div class="card">
-        <div class="card-header" id="templateRemarque">
-            <h2 class="mb-0">
-                <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#templateRemarque" aria-expanded="false" aria-controls="collapseThree">
-                    Remarque
-                </button>
-            </h2>
-        </div>
-        <div id="templateRemarqueCollapse" class="collapse" aria-labelledby="templateRemarque" data-parent="#formParent">
-            <div class="card-body">
-                <EjsRichTextEditor @ref="RichTextEditor">
-                </EjsRichTextEditor>
-            </div>
+</div>
+<form>
+    <div class="col-12 mt-3">
+        <!-- les intentions du cours -->
+        <div class="form-group">
+            <label class="control-label" for="CrsIntent">Remarque: </label>
+            <EjsRichTextEditor @ref="Remarque" ShowCharCount="true" MaxLength="450" Value="@(Template.IntentionPedagogique)" />
         </div>
     </div>
-</div>
+</form>
 
 @code {
     [Parameter]
@@ -76,7 +70,18 @@
     [CascadingParameter]
     public PCU001Context context { get; set; }
 
-    EjsRichTextEditor RichTextEditor;
+    public EjsRichTextEditor Remarque { get; set; }
+
+    //les options pour les richtext
+    public object[] Tools = new object[]{
+        "Bold", "Italic", "Underline", "SubScript", "SuperScript", "StrikeThrough",
+        "FontName", "FontSize", "FontColor", "BackgroundColor",
+        "LowerCase", "UpperCase", "|",
+        "Formats", "Alignments", "OrderedList", "UnorderedList",
+        "Outdent", "Indent", "|", "CreateTable",
+        "CreateLink", "Image", "|", "ClearFormat", "Print",
+        "SourceCode", "FullScreen", "|", "Undo", "Redo"
+    };
 
     protected override void OnParametersSet()
     {
@@ -88,19 +93,4 @@
                 .Collection(t => t.PlanCadreCompetenceElements)
                 .Load();
     }
-
-    
-    public object[] Tools = new object[] {
-        "Bold", "Italic", "Underline", "|",
-        "Formats", "Alignments", "|", "CreateLink", "Image", "|","SourceCode", "|", "Undo", "Redo"
-    };
-
-    public object[] Image = new object[] {
-        "Replace", "Align", "Caption", "Remove", "InsertLink", "OpenImageLink", "-",
-        "EditImageLink", "RemoveImageLink", "Display", "AltText", "Dimension"
-    };
-
-    public object[] Link = new object[] {
-        "Open", "Edit", "UnLink"
-    };
 }

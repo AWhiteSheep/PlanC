@@ -58,19 +58,19 @@
                     }
                     else
                     {
-                    <div class="grid">
-                        @foreach (Programmes programme in programmes)
-                        {
-                            <!-- Affiche les informations d'un département -->
-                            <div class="grid-item @programme.DepartementId">
-                                <h4><a href="#">#@programme.Id</a></h4>
-                                <h4>@programme.Designation</h4>
-                                <!-- Renvoit les programmes reliés au département-->
-                                <a class="btn btn-outline-success" href="/departements/@programme.DepartementId/planscadres/creation">Nouveau plan-cadre</a>
-                                <a class="btn btn-success" href="/departements/@programme.DepartementId/competences/creation">Nouvelle compétence</a>
-                            </div>
-                        }
-                    </div>
+                        <div class="grid">
+                            @foreach (Programmes programme in programmes)
+                            {
+                                <!-- Affiche les informations d'un département -->
+                                <div class="grid-item @programme.DepartementId">
+                                    <h4><a href="#">#@programme.Id</a></h4>
+                                    <h4>@programme.Designation</h4>
+                                    <!-- Renvoit les programmes reliés au département-->
+                                    <a class="btn btn-outline-success" href="/departements/@programme.DepartementId/planscadres/creation">Nouveau plan-cadre</a>
+                                    <a class="btn btn-success" href="/departements/@programme.DepartementId/competences/creation">Nouvelle compétence</a>
+                                </div>
+                            }
+                        </div>
                     }
                 </div>
             </div>
@@ -121,6 +121,10 @@
             <button class="btn btn-success" @onclick="SaveAsync"> Sauvegarder </button>
         </form>
     </div>
+</div>
+
+<div class="col-12 text-center">
+    <span class="smallerFontSize">La page ne répond pas? <a href="/programmes" onclick="window.location.reload()" class="reload">Rafraîchir la page.</a></span>
 </div>
 
 @code {

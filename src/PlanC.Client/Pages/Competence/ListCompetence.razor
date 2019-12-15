@@ -71,7 +71,7 @@
                 }
 
             }
-            else 
+            else
             {
                 <p>Il n'y pas de compétences pouvant être chargé.</p>
             }
@@ -92,6 +92,10 @@
             </div>
         }
     </div>
+</div>
+
+<div class="col-12 text-center">
+    <span class="smallerFontSize">La page ne répond pas? <a href="/competences" onclick="window.location.reload()" class="reload">Rafraîchir la page.</a></span>
 </div>
 
 @code{
@@ -118,7 +122,7 @@
     }
     private string _filter { get; set; }
     private string _optionFilter = "Énoncé";
-    
+
     public void DoFilter()
     {
         // update le filter
@@ -143,7 +147,7 @@
         }
         else
         {
-            
+
             competences = _competences;
         }
     }
@@ -152,7 +156,7 @@
     List<Competences> _competences;
 
     protected override async Task OnInitializedAsync()
-    { 
+    {
         competences = _competences = await context.Competences.Include(d => d.Discipline).ToListAsync();
     }
 
