@@ -8,7 +8,7 @@ namespace PlanC.DocumentGeneration.CourseTemplate
     [Serializable]
     public class FinalExam
     {
-        private Collection<FinalExamCriteria>? _criterias = new Collection<FinalExamCriteria>();
+        private Collection<FinalExamCriteria>? _criterias;
 
         public string? Title { get; set; }
 

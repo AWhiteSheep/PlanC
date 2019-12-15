@@ -9,8 +9,8 @@ namespace PlanC.DocumentGeneration.CourseTemplate
     [Serializable]
     public class Skill
     {
-        private Collection<string>? _contentPrecisions = new Collection<string>();
-        private Collection<SkillElement>? _skillElements = new Collection<SkillElement>();
+        private Collection<string>? _contentPrecisions;
+        private Collection<SkillElement>? _skillElements;
 
         public string? Title { get; set; }
 

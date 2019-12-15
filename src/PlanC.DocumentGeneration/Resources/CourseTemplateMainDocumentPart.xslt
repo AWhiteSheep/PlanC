@@ -1,5 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <xsl:stylesheet version="1.0"
+                xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                 xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
                 xmlns:msxsl="urn:schemas-microsoft-com:xslt"
                 xmlns:v="urn:schemas-microsoft-com:vml"
@@ -16,6 +17,93 @@
 
   <xsl:decimal-format decimal-separator=","
                       grouping-separator=" "/>
+  
+  <!--Modèle pour une liste de préalables avec un entête indiquant le type de préalable.-->
+  <xsl:template name="prerequisite-paragraph"
+                match="Prerequisite">
+    <xsl:param name="header-text"/>
+    <xsl:param name="prerequisite-type"/>
+    <w:p>
+      <w:pPr>
+        <w:pStyle w:val="Heading2"/>
+      </w:pPr>
+      <w:r>
+        <w:t>
+          <xsl:value-of select="$header-text"/>
+        </w:t>
+      </w:r>
+    </w:p>
+    <xsl:choose>
+      <xsl:when test="/CourseTemplate/Prerequisites/Prerequisite[PrerequisiteType=$prerequisite-type]">
+        <xsl:for-each select="/CourseTemplate/Prerequisites/Prerequisite[PrerequisiteType=$prerequisite-type]">
+          <w:p>
+            <w:pPr>
+              <w:pStyle w:val="NoSpacing2"/>
+            </w:pPr>
+            <w:r>
+              <w:t>
+                <xsl:value-of select="./CourseTitle"/> (<xsl:value-of select="./CourseId"/>)
+              </w:t>
+            </w:r>
+          </w:p>
+        </xsl:for-each>
+      </xsl:when>
+      <xsl:otherwise>
+        <w:p>
+          <w:pPr>
+            <w:pStyle w:val="NoSpacing2"/>
+          </w:pPr>
+          <w:r>
+            <w:t>Aucun</w:t>
+          </w:r>
+        </w:p>
+      </xsl:otherwise>
+    </xsl:choose>
+  </xsl:template>
+
+  <!--Modèle pour une 'date clée' dans le plan-cadre (p. ex., la date de recommendation d'adoption du département)-->
+  <xsl:template name="key-date-paragraph">
+    <xsl:param name="header-text"/>
+    <xsl:param name="date-element"/>
+
+    <w:p>
+      <w:pPr>
+        <w:tabs>
+          <!--La tabulation pour l'icone-->
+          <w:tab w:val="center" w:pos="1701"/>
+        </w:tabs>
+      </w:pPr>
+      <w:r>
+        <w:rPr>
+          <w:rStyle w:val="InlineLabel"/>
+        </w:rPr>
+        <w:t>
+          <xsl:value-of select="$header-text"/>
+        </w:t>
+      </w:r>
+      <w:r>
+        <w:br/>
+      </w:r>
+      <xsl:choose>
+        <xsl:when test="$date-element[@xsi:nil='true']">
+          <w:r>
+            <w:t>À déterminer</w:t>
+            <w:tab/>
+          </w:r>
+          <xsl:call-template name="red-x-run"/>
+        </xsl:when>
+        <xsl:otherwise>
+          <w:r>
+            <w:t>
+              <xsl:value-of select="$date-element"/>
+            </w:t>
+            <w:tab/>
+          </w:r>
+          <xsl:call-template name="green-checkmark-run"/>
+        </xsl:otherwise>
+      </xsl:choose>
+    </w:p>
+  </xsl:template>
 
   <!--Modèle pour l'ensemble du document-->
   <xsl:template match="/">
@@ -43,7 +131,7 @@
             </w:rPr>
             <w:t xml:space="preserve">Titre du cours : </w:t>
           </w:r>
-          <w:r w:rsidRPr="0059122C">
+          <w:r>
             <w:t>
               <xsl:value-of select="/CourseTemplate/CourseTitle"/>
             </w:t>
@@ -51,7 +139,7 @@
           <w:r>
             <w:tab/>
           </w:r>
-          <w:r w:rsidRPr="0059122C">
+          <w:r>
             <w:rPr>
               <w:rStyle w:val="InlineLabel"/>
             </w:rPr>
@@ -126,7 +214,9 @@
         </w:p>
         <w:p>
           <w:r>
-            <w:t>###</w:t>
+            <w:t>
+              <xsl:value-of select="/CourseTemplate/PedagogicalIntent"/>
+            </w:t>
           </w:r>
         </w:p>
         <!--Intentions éducatives-->
@@ -157,6 +247,31 @@
             <w:t>###</w:t>
           </w:r>
         </w:p>
+        <!--Préalables...-->
+        <w:p>
+          <w:pPr>
+            <w:pStyle w:val="Heading1"/>
+          </w:pPr>
+          <w:r>
+            <w:t>Préalables</w:t>
+          </w:r>
+        </w:p>
+        <!--...Corequis-->
+        <xsl:call-template name="prerequisite-paragraph">
+          <xsl:with-param name="header-text">Corequis</xsl:with-param>
+          <xsl:with-param name="prerequisite-type">CoRequisite</xsl:with-param>
+        </xsl:call-template>
+        <!--...Relatifs-->
+        <xsl:call-template name="prerequisite-paragraph">
+          <xsl:with-param name="header-text">Relatifs</xsl:with-param>
+          <xsl:with-param name="prerequisite-type">Relative</xsl:with-param>
+        </xsl:call-template>
+        <!--...Absolus-->
+        <xsl:call-template name="prerequisite-paragraph">
+          <xsl:with-param name="header-text">Absolus</xsl:with-param>
+          <xsl:with-param name="prerequisite-type">Absolute</xsl:with-param>
+        </xsl:call-template>
+        
         <!--Compétences-->
         <w:p>
           <w:pPr>
@@ -288,12 +403,7 @@
                   <w:tcW w:w="3117"
                          w:type="dxa"/>
                 </w:tcPr>
-                <w:p w14:paraId="20545E13"
-                     w14:textId="77777777"
-                     w:rsidR="0094293C"
-                     w:rsidRPr="0094293C"
-                     w:rsidRDefault="0094293C"
-                     w:rsidP="00D77543">
+                <w:p>
                   <w:pPr>
                     <w:pStyle w:val="SkillTableHeader2"/>
                   </w:pPr>
@@ -532,8 +642,151 @@
           <!--Paragraphe vide après chaque tableau-->
           <w:p/>
         </xsl:for-each>
-        <!--Fin des tableaux-->
-        <w:p/>
+        <!--Évaluation finale-->
+        <w:p>
+          <w:pPr>
+            <w:pStyle w:val="Heading1"/>
+          </w:pPr>
+          <w:r>
+            <w:t>Évaluation finale</w:t>
+          </w:r>
+        </w:p>
+        <!--Tableau des pondérations-->
+        <w:tbl>
+          <w:tblPr>
+            <w:tblStyle w:val="TableGrid"/>
+            <w:tblW w:w="0"
+                    w:type="auto"/>
+            <w:tblLook w:val="0620"
+                       w:firstRow="1"
+                       w:lastRow="0"
+                       w:firstColumn="0"
+                       w:lastColumn="0"
+                       w:noHBand="1"
+                       w:noVBand="1"/>
+          </w:tblPr>
+          <w:tblGrid>
+            <w:gridCol w:w="4315"/>
+            <w:gridCol w:w="4315"/>
+          </w:tblGrid>
+          <!--Ligne 1-->
+          <w:tr>
+            <!--Cellule 1-->
+            <w:tc>
+              <w:tcPr>
+                <w:tcW w:w="4315"
+                       w:type="dxa"/>
+              </w:tcPr>
+              <w:p>
+                <w:r>
+                  <w:t>Critère</w:t>
+                </w:r>
+              </w:p>
+            </w:tc>
+            <!--Cellule 2-->
+            <w:tc>
+              <w:tcPr>
+                <w:tcW w:w="4315"
+                       w:type="dxa"/>
+              </w:tcPr>
+              <w:p>
+                <w:r>
+                  <w:t>Pondération</w:t>
+                </w:r>
+              </w:p>
+            </w:tc>
+          </w:tr>
+          <!--Ligne 2 à totalLignes-1 pour les critères-->
+          <xsl:for-each select="/CourseTemplate/FinalExam/Criterias/FinalExamCriteria">
+            <w:tr>
+              <!--Cellule 1-->
+              <w:tc>
+                <w:tcPr>
+                  <w:tcW w:w="4315"
+                         w:type="dxa"/>
+                </w:tcPr>
+                <w:p>
+                  <w:r>
+                    <w:t>
+                      <xsl:value-of select="./Description"/>
+                    </w:t>
+                  </w:r>
+                </w:p>
+              </w:tc>
+              <!--Cellule 2-->
+              <w:tc>
+                <w:tcPr>
+                  <w:tcW w:w="4315"
+                         w:type="dxa"/>
+                </w:tcPr>
+                <w:p>
+                  <w:r>
+                    <w:t>
+                      <xsl:value-of select="./Weight"/> %
+                    </w:t>
+                  </w:r>
+                </w:p>
+              </w:tc>
+            </w:tr>
+          </xsl:for-each>
+          <!--Ligne 3-->
+          <w:tr>
+            <w:tc>
+              <w:tcPr>
+                <w:tcW w:w="8630"
+                       w:type="dxa"/>
+                <w:gridSpan w:val="2"/>
+                <w:shd w:val="clear"
+                       w:color="auto"
+                       w:fill="E7E6E6"
+                       w:themeFill="background2"/>
+              </w:tcPr>
+              <w:p>
+                <w:r>
+                  <w:rPr>
+                    <w:rStyle w:val="InlineLabel"/>
+                  </w:rPr>
+                  <w:t xml:space="preserve">Pondération de l’évaluation : </w:t>
+                </w:r>
+                <w:r>
+                  <w:t>
+                    <xsl:value-of select="/CourseTemplate/FinalExam/Weight"/> %
+                  </w:t>
+                </w:r>
+              </w:p>
+            </w:tc>
+          </w:tr>
+        </w:tbl>
+        <!--Les dates clés de recommendation/d'approbation-->
+        <w:p>
+          <w:pPr>
+            <w:pStyle w:val="Heading1"/>
+          </w:pPr>
+          <w:r>
+            <w:t>Dates clés</w:t>
+          </w:r>
+        </w:p>
+        <xsl:call-template name="key-date-paragraph">
+          <xsl:with-param name="header-text">
+            Recommandation d’adoption du département
+          </xsl:with-param>
+          <xsl:with-param name="date-element"
+                          select="/CourseTemplate/DepartmentRecommendationDate"/>
+        </xsl:call-template>
+        <xsl:call-template name="key-date-paragraph">
+          <xsl:with-param name="header-text">
+            Recommandation du Comité de programme
+          </xsl:with-param>
+          <xsl:with-param name="date-element"
+                          select="/CourseTemplate/CommitteeRecommendationDate"/>
+        </xsl:call-template>
+        <xsl:call-template name="key-date-paragraph">
+          <xsl:with-param name="header-text">
+            Approbation par la Direction des études
+          </xsl:with-param>
+          <xsl:with-param name="date-element"
+                          select="/CourseTemplate/BoardApprovalDate"/>
+        </xsl:call-template>
         <w:sectPr>
           <w:pgSz w:w="12240"
                   w:h="15840"/>

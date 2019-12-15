@@ -9,7 +9,7 @@ namespace PlanC.DocumentGeneration.CourseTemplate
     public class SkillElement
     {
         private Collection<string>? _criterias;
-        private Collection<string>? _contentPrecisions = new Collection<string>();
+        private Collection<string>? _contentPrecisions;
 
         public string? Title { get; set; }
 

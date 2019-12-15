@@ -139,7 +139,7 @@ namespace PlanC.DocumentGeneration
                 
                 //Prepare the data source stream to be read.
                 dataSourceStream.Flush();
-                dataSourceStream.Position = 0;
+                dataSourceStream.Position = 0L;
 
                 var documentXml = (string?)null;
                 using (var documentStream = new MemoryStream())
@@ -152,7 +152,7 @@ namespace PlanC.DocumentGeneration
 
                     //Prepare the document stream to be read.
                     documentStream.Flush();
-                    documentStream.Position = 0;
+                    documentStream.Position = 0L;
 
                     //Get the transformed document as a string
                     using (var documentReader = new StreamReader(documentStream))
@@ -168,7 +168,7 @@ namespace PlanC.DocumentGeneration
                 var mainDocPart = Document.GetOrAddMainDocumentPart();
 
                 //Prepare the data source stream to be read. Again.
-                dataSourceStream.Position = 0;
+                dataSourceStream.Position = 0L;
 
                 //Set the document model part
                 using (var modelCustomPartStream = mainDocPart.GetOrAddCustomXmlPart(ModelCustomPartId).GetStream()) //TODO

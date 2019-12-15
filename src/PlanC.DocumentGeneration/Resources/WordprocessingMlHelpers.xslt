@@ -26,6 +26,20 @@
     </w:p>
   </xsl:template>
 
+  <!--
+  <xsl:template name="lines-to-paragraphs">
+    <xsl:for-each select="tokenize(., '&#10;&#10;')">
+      <w:p>
+        <w:r>
+          <w:t>
+            <xsl:value-of select="."/>
+          </w:t>
+        </w:r>
+      </w:p>
+    </xsl:for-each>
+  </xsl:template>
+  -->
+
   <!--Modèle pour une liste d'éléments. S'il n'y a aucun item, affiche le texte "Aucun item"-->
   <xsl:template name="list-section">
     <xsl:param name="data-list-node"/>
@@ -61,5 +75,27 @@
         </xsl:for-each>
       </xsl:otherwise>
     </xsl:choose>
+  </xsl:template>
+
+  <!--Modèle pour un Run avec un crochet vert-->
+  <xsl:template name="green-checkmark-run">
+    <w:r>
+      <w:rPr>
+        <w:rFonts w:ascii="Segoe UI Symbol" w:hAnsi="Segoe UI Symbol"/>
+        <w:color w:val="70AD47"/>
+      </w:rPr>
+      <w:t>✔</w:t>
+    </w:r>
+  </xsl:template>
+
+  <!--Modèle pour un Run avec un X rouge-->
+  <xsl:template name="red-x-run">
+    <w:r>
+      <w:rPr>
+        <w:rFonts w:ascii="Segoe UI Symbol" w:hAnsi="Segoe UI Symbol"/>
+        <w:color w:val="C45911"/>
+      </w:rPr>
+      <w:t>❌</w:t>
+    </w:r>
   </xsl:template>
 </xsl:stylesheet>
