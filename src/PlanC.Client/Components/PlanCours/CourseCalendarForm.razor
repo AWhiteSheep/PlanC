@@ -6,47 +6,75 @@
 
 @inject PCU001Context _context
 
+    <div class="container-fluid">
+        <button disabled="@(IsReadOnly)" hidden="@(IsReadOnly)" class="btn btn-outline-dark mb-4" @onclick="() => AddActivity()">Ajouter une activité</button>
 
-<button disabled="@(IsReadOnly)" hidden="@(IsReadOnly)" class="btn btn-success mb-4" @onclick="() => AddActivity()">Ajouter un examen</button>
+        <table class="table table-borderless text-md-center text-dark" style="width:100%">
+            <thead>
+                <tr>
+                    <th style="width:5%">
 
-<table class="table table-danger">
-    <thead>
-        <tr>
-            <th>
-                Durée
-            </th>
-            <th>
-                Éléments de compétence
-            </th>
-            <th>
-                Contenu
-            </th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (CoursActivite timeblock in CurrentActivities)
-        {
-            <tr>
-                <td>
-                    <input class="input form-control" type="number" @bind="timeblock.ActvtLgnth" /> <span>semaines</span>
-                </td>
-                <td>
-                    <button class="btn btn-dark" @onclick="() => AddSkillElemCrit(timeblock)"><i class="fas fa-plus"></i></button>
-                    @foreach (CoursCompetenceElements cse in timeblock.CoursCompetenceElements)
-                    {
-                        <EjsComboBox TValue="CriteresElementCompetence" DataSource="AssociatedSkillElemCrits"
-                                     ValueChanged="@(e => SetCrit(e, cse))"></EjsComboBox>
-                    }
-                </td>
-                <td>
-                    <textarea @bind="timeblock.ActvtDesc" class="input form-control"></textarea>
-                </td>
-            </tr>
+                    </th>
+                    <th style="width:10%">
+                        Durée
+                    </th>
+                    <th style="width:40%">
+                        Éléments de compétence
+                    </th>
+                    <th style="width:40%">
+                        Contenu
+                    </th>
+                    <th>
 
-        }
-    </tbody>
-</table>
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (CoursActivite timeblock in CurrentActivities)
+                {
+                    <tr class="border-dark">
+                        <td>
+                            <p><i class="fas fa-arrow-up btn btn-circle clickable uk-icon-hover" @onclick="() => MoveUp(timeblock)"></i></p>
+                            <p><i class="fas fa-arrow-down btn btn-circle clickable uk-icon-hover" @onclick="() => MoveDown(timeblock)"></i></p>
+                        </td>
+                        <td>
+                            <input class="input form-control" type="number" min="1" max="15" @bind="timeblock.ActvtLgnth" /> <span>semaines</span>
+                        </td>
+                        <td>
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <button class="btn btn-circle" @onclick="() => AddSkillElemCrit(timeblock)"><i class="fas fa-plus"></i></button>
+                                </div>
+                                <div class="col-md-9">
+                                    @foreach (CoursCompetenceElements cse in timeblock.CoursCompetenceElements)
+                                    {
+                                    <div class="row">
+                                        <div class="col-md-9">
+                                            <EjsComboBox TValue="CriteresElementCompetence" DataSource="GetUnselectedSkillElementCriteria(timeblock)">
+                                                <ComboBoxEvents TValue="int" ValueChange="@(e => SetCrit(e, cse))"></ComboBoxEvents>
+                                                <ComboBoxFieldSettings Value="IdentityKey" Text="DescriptionCritere"></ComboBoxFieldSettings>
+                                            </EjsComboBox>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <button class="btn btn-circle" @onclick="() => timeblock.CoursCompetenceElements.Remove(cse)"><i class="fas fa-trash"></i></button>
+                                        </div>
+                                    </div>
+                                    }
+                                </div>
+                            </div>
+                        </td>
+                        <td>
+                            <textarea @bind="timeblock.ActvtDesc" class="input form-control"></textarea>
+                        </td>
+                        <td>
+                            <button class="btn btn-circle" @onclick="() => CurrentActivities.Remove(timeblock)"><i class="fas fa-trash"></i></button>
+                        </td>
+                    </tr>
 
+                }
+            </tbody>
+        </table>
+    </div>
 @code {
 
     private PlansCadres Template { get; set; }
@@ -54,16 +82,11 @@
     [Parameter]
     public bool IsReadOnly { get; set; } = false;
 
-    public List<ElementsCompetence>
-        AssociatedSkillElems
-    { get; set; }
+    public List<ElementsCompetence> AssociatedSkillElems{ get; set; }
 
-    public List<CriteresElementCompetence>
-        AssociatedSkillElemCrits
-    { get; set; }
+    public List<CriteresElementCompetence> AssociatedSkillElemCrits{ get; set; }
 
-    private LinkedList<CoursActivite>
-        CurrentActivities;
+    private LinkedList<CoursActivite> CurrentActivities;
 
     protected override void OnInitialized()
     {
@@ -74,7 +97,7 @@
 
     protected override async Task OnParametersSetAsync()
     {
-        await FetchData();
+        FetchData();
     }
 
     private void AddActivity()
@@ -91,22 +114,34 @@
         StateHasChanged();
     }
 
-    private async Task FetchData()
+    private void FetchData()
     {
-        Template = await _context.PlansCadres.Where(t => t.CoursId == CoursePlan.CoursId)
+        Template = _context.PlansCadres.Where(t => t.CoursId == CoursePlan.CoursId)
         .OrderByDescending(t => t.VsnCdttm)
-        .Include(t => t.PlanCadreCompetenceElements.Select(tse => tse.ElementCompetence))
-        .ThenInclude(se => se.CriteresElementCompetence)
-        .FirstAsync();
+        .Include(t => t.PlanCadreCompetenceElements)
+        .First();
+
+        foreach (PlanCadreCompetenceElements tse in Template.PlanCadreCompetenceElements)
+        {
+            _context.Entry(tse)
+                    .Reference(tse => tse.ElementCompetence)
+                    .Load();
+
+            _context.Entry(tse.ElementCompetence)
+                    .Collection(se => se.CriteresElementCompetence)
+                    .Load();
+        }
 
         AssociatedSkillElems = Template.PlanCadreCompetenceElements.Select(tse => tse.ElementCompetence).ToList();
 
         AssociatedSkillElemCrits = AssociatedSkillElems.SelectMany(se => se.CriteresElementCompetence).ToList();
     }
 
-    public void SetCrit(CriteresElementCompetence crt, CoursCompetenceElements cse)
+    public void SetCrit(ChangeEventArgs<int> crt, CoursCompetenceElements cse)
     {
-        cse.IdentityCritereElementCompetenceNavigation = crt;
+        cse.IdentityCritereElementCompetence = crt.Value;
+        cse.IdentityCritereElementCompetenceNavigation = _context.CriteresElementCompetence.Where(c => c.IdentityKey == crt.Value).SingleOrDefault();
+        StateHasChanged();
     }
 
     public void AddSkillElemCrit(CoursActivite timeblock)
@@ -115,25 +150,67 @@
         {
             IdendityCoursActivityNavigation = timeblock
         });
+        StateHasChanged();
     }
 
     public override async Task<bool> SaveProgress()
     {
-        try
+        using (PCU001Context __context = new PCU001Context())
         {
-            await _context.SaveChangesAsync();
-            return true;
-        }
-        catch(Exception except)
-        {
-            Console.WriteLine($"{except.Message}");
-            return false;
+            try
+            {
+
+                foreach (CoursActivite block in CoursePlan.CoursActivite)
+                {
+                    _context.CoursCompetenceElements.RemoveRange(block.CoursCompetenceElements.ToArray());
+                    _context.Remove(block);
+                }
+                await _context.SaveChangesAsync();
+                foreach (CoursActivite block in CurrentActivities)
+                {
+                    _context.CoursActivite.Add(block);
+                }
+                await _context.SaveChangesAsync();
+                return true;
+            }
+            catch (Exception except)
+            {
+                Console.WriteLine($"{except.Message}");
+                return false;
+            }
         }
     }
 
     public override string ToString()
     {
         return "Calendrier des activités";
+    }
+
+    List<CriteresElementCompetence> GetUnselectedSkillElementCriteria(CoursActivite timeblock)
+    {
+        var select = timeblock.CoursCompetenceElements.Select(cce => cce.IdentityCritereElementCompetenceNavigation).ToList();
+        var returnVal = AssociatedSkillElemCrits.Except(select).ToList();
+        return returnVal;
+    }
+
+    private void MoveUp(CoursActivite block)
+    {
+        LinkedListNode<CoursActivite> node = CurrentActivities.Find(block);
+        if (node == CurrentActivities.First) { return; }
+        CoursActivite temp = node.Previous.Value;
+        node.Previous.Value = block;
+        node.Value = temp;
+        StateHasChanged();
+    }
+
+    private void MoveDown(CoursActivite block)
+    {
+        LinkedListNode<CoursActivite> node = CurrentActivities.Find(block);
+        if (node == CurrentActivities.Last) { return; }
+        CoursActivite temp = node.Next.Value;
+        node.Next.Value = block;
+        node.Value = temp;
+        StateHasChanged();
     }
 }
 
