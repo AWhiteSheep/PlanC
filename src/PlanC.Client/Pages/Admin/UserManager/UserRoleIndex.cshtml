@@ -5,46 +5,59 @@
     ViewData["Title"] = "Index";
 }
 
-<h1>Utilisateurs et leurs rôles</h1>
 
-<p>
-    <a href="/admin/roles/user/assigner">Assigner un utilisateur un role</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                Utilisateur
-            </th>
-            <th>
-                Rôles
-            </th>
-            <th>
-            </th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model.AspNetUserRoles) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Key)
-            </td>
-            <td>
-                @foreach (string role in item.Value) 
+<div class="col-12 row justify-content-center">
+    <div class="col-12 text-center">
+        <h1>Utilisateurs et leurs rôles</h1>
+        <p>
+            <a href="/admin/roles/user/assigner">Assigner un utilisateur un role</a>
+        </p>
+    </div>
+    <div class="col-4">
+        <table class="table w-100">
+            <thead>
+                <tr>
+                    <th>
+                        Utilisateur
+                    </th>
+                    <th>
+                        Rôles
+                    </th>
+                    <th>
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.AspNetUserRoles)
                 {
-                    <table>
+                    if (item.Value.Any())
+                    {
                         <tr>
-                            <td>@role</td>
+                            <td class="p-0 m-0" valign="top">
+                                @Html.DisplayFor(modelItem => item.Key.NormalizedUserName)
+                            </td>
+                            <td class="p-0 m-0" valign="top">
+                                @foreach (string role in item.Value)
+                                {
+                                    <table width="100%">
+                                        <tr>
+                                            <td class="p-0 m-0" valign="top" width="50%">@role</td>
+                                            <td class="m-0 p-0" valign="top" width="50%">
+                                                <form method="post">
+                                                    <input name="deleteId" value="@role" hidden />
+                                                    <input name="userIdRelated" value="@item.Key.UserName" hidden />
+                                                    <button type="submit" class="btn btn-link">Supprimer</button>
+                                                </form>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                }
+                            </td>
                         </tr>
-                    </table>
+                    }
                 }
-            </td>
-            <td>
-                @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |
-                @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |
-                @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })
-            </td>
-        </tr>
-}
-    </tbody>
-</table>
+            </tbody>
+        </table>
+
+    </div>
+</div>

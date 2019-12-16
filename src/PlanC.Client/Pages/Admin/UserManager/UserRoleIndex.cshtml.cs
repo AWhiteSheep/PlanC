@@ -36,5 +36,22 @@ namespace PlanC.Client
                 AspNetUserRoles.Add(user, roles);
             }
         }
+
+        // To protect from overposting attacks, please enable the specific properties you want to bind to, for
+        // more details see https://aka.ms/RazorPagesCRUD.
+        public async Task<IActionResult> OnPostAsync()
+        {
+            if (!ModelState.IsValid)
+            {
+                return Page();
+            }
+            // trouve l'utilisateur trouvé
+            var user = await userManager.FindByIdAsync(Request.Form["userIdRelated"]);
+            // trouve le role et le relie dans la base de donné
+            var role = await roleManager.FindByNameAsync(Request.Form["deleteId"]);
+            if(user != null && role != null)
+                await userManager.RemoveFromRoleAsync(user, role.Name);
+            return Redirect("/admin/roles/authorise");
+        }
     }
 }
