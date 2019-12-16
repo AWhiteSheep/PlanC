@@ -2,6 +2,7 @@
 @using PlanC.EntityDataModel
 @inject SignInManager<AspNetUsers> SignInManager
 @inject UserManager<AspNetUsers> UserManager
+@inject RoleManager<AspNetUsers> RoleManager
 
 @if (SignInManager.IsSignedIn(User))
 {
@@ -31,6 +32,7 @@
         <!-- Divider -->
         <hr class="sidebar-divider">
 
+        
         <!-- Heading -->
         <a class="sidebar-heading" href="/admin"> Administration </a>
 

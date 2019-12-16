@@ -10,7 +10,14 @@
 @using Microsoft.EntityFrameworkCore
 @inject NavigationManager NavigationManager
 @inject PCU001Context context
+@inject IJSRuntime JS
 @using Syncfusion.EJ2.Blazor.RichTextEditor
+@using System.IO
+@using PlanC.Client.Data
+@using Syncfusion.EJ2.Blazor.Buttons
+@using Syncfusion.EJ2.Blazor.DocumentEditor
+@using Syncfusion.EJ2.DocumentEditor.Blazor
+@using WDocument = Syncfusion.EJ2.DocumentEditor;
 <!--section sécurité doit être seulement coordonateur du programme et la consultation par le professeur-->
 <!-- Section de navigation -->
 <div class="row mb-3">
@@ -29,12 +36,12 @@
 
 
 <div class="row">
-    <div class="col-12 d-flex justify-content-center">
+    <div class="col-12">
         <PlanC.Client.Components.ProgressBar steps="@(new List<string>{ "Déscription", "Compétences", "Examens finaux", "Révision" })" Current="CurrentStep"></PlanC.Client.Components.ProgressBar>
     </div>
 </div>
 
-<div class="container shadow p-5" style="margin-bottom: 200px; margin-top: 50px">
+<div hidden="@(EditorOpen)" class="container shadow p-5" style="margin-bottom: 200px; margin-top: 50px">
     @*Envoit le paramètre à tous les enfants*@
     <CascadingValue TValue="PCU001Context" Value="context">
         <CascadingValue TValue="FormMode" Value="CurrentMode">
@@ -58,7 +65,6 @@
     </CascadingValue>
     <div class="container mt-3">
         <div class="row">
-
             <div class="col-12 d-flex justify-content-around">
                 <!-- appelle fonction javascript permettant d'ajouter le .wasvalidated sur la division du formulaire -->
                 <!-- suite au poste validate nous envoyons l'utilisateur vers la deuxième partie celle de remplire les contextes et les éléments de compétence-->
@@ -80,7 +86,53 @@
     </div>
 </div>
 
+
+<div hidden="@(!EditorOpen)" class="container shadow p-5" style="margin-bottom: 200px; margin-top: 50px">
+    <EjsButton @onclick="() => EditorOpen = false">Fermer</EjsButton>
+    <EjsButton @onclick="OnDownload">Télécharger</EjsButton>
+    <EjsDocumentEditorContainer @ref="container">
+    </EjsDocumentEditorContainer>
+</div>
+
+<div class="col-12 d-flex justify-content-center m-3">
+    <!-- Click pour faire -->
+    <a @onclick="Export" class="btn btn-outline-primary">Gérérer le plan-cadre</a>
+</div>
+
 @code{
+    // document editor ref point
+    EjsDocumentEditorContainer container;
+    bool EditorOpen;
+
+    public void Export()
+    {
+        // génère le document
+        EditorOpen = true;
+        Download();
+    }
+
+    public void Download()
+    {
+        //JS.SaveAs("Bonjour.docx", fileStream.ToArray());
+        string filePath = "Data/Bonjour.docx";
+        // ouvre le document stream
+        using (FileStream fileStream = new FileStream(filePath, System.IO.FileMode.Open, System.IO.FileAccess.Read))
+        {
+            WDocument.WordDocument document = WDocument.WordDocument.Load(fileStream, WDocument.FormatType.Docx);
+            string json = Newtonsoft.Json.JsonConvert.SerializeObject(document);
+            document.Dispose();
+            DocumentEditorModule editor = container.GetDocumentEditor();
+            editor.Open(json);
+        }
+    }
+
+    public void OnDownload()
+    {
+        //envoit un document à la sauvegarde
+        DocumentEditorModule editor = container.GetDocumentEditor();
+        editor.Save("sample", FormatType.Docx);
+    }
+
     [Parameter]
     public string Id { get; set; }
     // date pour la recherche du plan-cadre
