@@ -3,15 +3,16 @@
 @page "/plancadre/{id}/create"
 @page "/planscadres/{id}/create"
 @page "/planscadres/{id}/edition/{VsnCdttm}/modifier"
-@attribute [Authorize]
 @using PlanC.EntityDataModel
 @using PlanC.Client.Components
 @using System.Collections.Generic
 @using Microsoft.EntityFrameworkCore
 @inject NavigationManager NavigationManager
 @inject PCU001Context context
+@inject IAuthorizationService AuthorizationService
 @using Syncfusion.EJ2.Blazor.RichTextEditor
 <!--section sécurité doit être seulement coordonateur du programme et la consultation par le professeur-->
+@attribute [Authorize("AuthorizationNemesisGroupPolicy")]
 <!-- Section de navigation -->
 <div class="row mb-3">
     <div class="col">
