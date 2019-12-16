@@ -1,0 +1,48 @@
+﻿@page "/admin/roles"
+@model PlanC.Client.IndexModel
+
+@{
+    ViewData["Title"] = "Rôles";
+}
+
+<h4>Les rôles</h4>
+
+<p>
+    <a asp-page="Create">Ajouter un nouveau rôle</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.IdentityRolesList[0].Name)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.IdentityRolesList[0].NormalizedName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.IdentityRolesList[0].ConcurrencyStamp)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model.IdentityRolesList) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.NormalizedName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ConcurrencyStamp)
+            </td>
+            <td>
+                <a href="/admin/roles/modifier/@item.Id">Modifier</a> |
+                <a href="/admin/roles/info/@item.Id">Détails</a> |
+                <a href="/admin/roles/supprimer/@item.Id">Supprimer</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

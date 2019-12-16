@@ -47,7 +47,7 @@ namespace PlanC.Client
 
 
             // ajout du identity store et provider
-            services.AddDefaultIdentity<AspNetUsers>(options => { 
+            services.AddIdentity<AspNetUsers, IdentityRole>(options => { 
                     options.SignIn.RequireConfirmedAccount = false;
 
                     // Lockout settings.
