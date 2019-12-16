@@ -27,6 +27,7 @@ namespace PlanC.Client.Pages.Profils
         {
             base.OnInitialized();
             RefreshDisponibilities();
+            StateHasChanged();
         }
 
         public void SaveProgress()

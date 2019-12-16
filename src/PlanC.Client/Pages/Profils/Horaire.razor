@@ -14,7 +14,7 @@
         <Syncfusion.EJ2.Blazor.Buttons.EjsButton @onclick="() => Annuler()">Annuler</Syncfusion.EJ2.Blazor.Buttons.EjsButton>
     </div>
     <div class="d-flex flex-row">
-        <EjsSchedule TValue="RecurrenceData" @ref="schedule" Height="580px" Width="@(IsMofying ? "60%" : "100%")">
+        <EjsSchedule TValue="DisponibilitesUtilisateur" @ref="schedule" Height="580px" Width="@(IsMofying ? "60%" : "100%")">
             <ScheduleTimeScale SlotCount="1"></ScheduleTimeScale>
             <ScheduleViews>
                 <ScheduleView Option="View.WorkWeek"></ScheduleView>
@@ -123,20 +123,20 @@
 
 @code{
     public bool IsMofying;
-    public RecurrenceData dayModel { get; set; } = new RecurrenceData();
+    public DisponibilitesUtilisateur dayModel { get; set; } = new DisponibilitesUtilisateur();
     public int[] WorkingDays { get; set; } = { 1, 2, 3, 4, 5 };
     public void AddDayModel()
     {
-        var recurrenceRule = RecurrenceData.GetRecurenceRule(dayModel.WeekdayNbr);
+        var recurrenceRule = DisponibilitesUtilisateur.GetRecurenceRule(dayModel.WeekdayNbr);
         // transfert poid sur le context et puis sauvegarde et refresh
         Utilisateur.DisponibilitesUtilisateur.Add(dayModel);
-        dayModel = new RecurrenceData();
+        dayModel = new DisponibilitesUtilisateur();
         SaveProgress();
         RefreshDisponibilities();
         StateHasChanged();
     }
 
-    public void RemoveFromHoraire(RecurrenceData dayModel)
+    public void RemoveFromHoraire(DisponibilitesUtilisateur dayModel)
     {
         Utilisateur.DisponibilitesUtilisateur.Remove(dayModel);
         SaveProgress();
@@ -144,10 +144,10 @@
         StateHasChanged();
     }
 
-    public void Sync(RecurrenceData dayModel)
+    public void Sync(DisponibilitesUtilisateur dayModel)
     {
         // transfert poid sur le context et puis supprime
-        dayModel.RecurrenceRule = RecurrenceData.GetRecurenceRule(dayModel.WeekdayNbr);
+        dayModel.RecurrenceRule = DisponibilitesUtilisateur.GetRecurenceRule(dayModel.WeekdayNbr);
         SaveProgress();
         RefreshDisponibilities();
         StateHasChanged();

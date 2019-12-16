@@ -2,12 +2,36 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Runtime.Serialization;
+using System.Text.Json.Serialization;
 
 namespace PlanC.EntityDataModel
 {
     public partial class DisponibilitesUtilisateur : RecurrenceData
     {
 
+        [Key]
+        [Column("UID")]
+        [StringLength(7)]        
+        public string Uid { get; set; } // id utilisateur
+        [Key]
+        [Column("USER_AVL_SQNBR")]
+        public int UserAvlSqnbr { get; set; } // sqnbre de la disponibilité
+        [Column("WEEKDAY_NBR")]
+        public int WeekdayNbr { get; set; } //  week day specifier
+        [Column("AVL_STM")]
+        public TimeSpan AvlStm { get; set; } // time spam ? du start?
+        [Column("AVL_NTM")]
+        public TimeSpan AvlNtm { get; set; }
+        [Column("RCD_CDTTM", TypeName = "datetime")]
+        public DateTime? RcdCdttm { get; set; } // date mis en charge
+        [StringLength(50)]
+        public string RecurrenceRule { get; set; }
+
+        [IgnoreDataMember]
+        [ForeignKey(nameof(Uid))]
+        [InverseProperty(nameof(AspNetUsers.DisponibilitesUtilisateur))]
+        public virtual AspNetUsers U { get; set; }
 
         public DateTime? StartTime
         {
@@ -17,9 +41,11 @@ namespace PlanC.EntityDataModel
             }
             set
             {
-                AvlStm = value.Value.TimeOfDay;
+                if (value != null)
+                    AvlStm = value.Value.TimeOfDay;
             }
         }
+
         public DateTime? EndTime
         {
             get
@@ -28,11 +54,12 @@ namespace PlanC.EntityDataModel
             }
             set
             {
-                AvlNtm = value.Value.TimeOfDay;
+                if(value != null)
+                    AvlNtm = value.Value.TimeOfDay;
             }
         }
 
-        [Required]
+        [NotMapped]
         public string DayOfWeekString
         {
             get
@@ -44,6 +71,8 @@ namespace PlanC.EntityDataModel
                 WeekdayNbr = int.Parse(value);
             }
         }
+
+        [NotMapped]
         public string DayOfWeekHumanLangageFR
         {
             get
@@ -67,28 +96,6 @@ namespace PlanC.EntityDataModel
                 }
             }
         }
-
-        [Key]
-        [Column("UID")]
-        [StringLength(7)]        
-        public string Uid { get; set; } // id utilisateur
-        [Key]
-        [Column("USER_AVL_SQNBR")]
-        public int UserAvlSqnbr { get; set; } // sqnbre de la disponibilité
-        [Column("WEEKDAY_NBR")]
-        public int WeekdayNbr { get; set; } //  week day specifier
-        [Column("AVL_STM")]
-        public TimeSpan AvlStm { get; set; } // time spam ? du start?
-        [Column("AVL_NTM")]
-        public TimeSpan AvlNtm { get; set; }
-        [Column("RCD_CDTTM", TypeName = "datetime")]
-        public DateTime? RcdCdttm { get; set; } // date mis en charge
-        [StringLength(50)]
-        public string RecurrenceRule { get; set; }
-
-        [ForeignKey(nameof(Uid))]
-        [InverseProperty(nameof(AspNetUsers.DisponibilitesUtilisateur))]
-        public virtual AspNetUsers U { get; set; }
     }
     public class RecurrenceData
     {
@@ -116,14 +123,8 @@ namespace PlanC.EntityDataModel
 
         // des valeurs de plus si jamais
         public string Subject { get; set; } = "Disponible";
-        public Nullable<bool> IsAllDay { get; set; }
         public string Location { get; set; }
         public string Description { get; set; }
-        public string CategoryColor { get; set; }
-        public Nullable<int> RecurrenceID { get; set; }
-        public string RecurrenceException { get; set; }
-        public string StartTimezone { get; set; }
-        public string EndTimezone { get; set; }
     }
 
 }
