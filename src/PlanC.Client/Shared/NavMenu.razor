@@ -35,3 +35,79 @@
         collapseNavMenu = !collapseNavMenu;
     }
 }
+﻿<!-- Sidebar -->
+@*<ul class="navbar-nav sidebar sidebar-dark accordion toggled" id="accordionSidebar">*@
+<div>
+    <ul class="navbar-nav sidebar sidebar-dark accordion toggled collapse show" id="accordionSidebar">
+
+        <!-- Sidebar - Brand -->
+        <a class="sidebar-brand d-flex align-items-center justify-content-center" href="/profil/configuration">
+            <div class="sidebar-brand-icon rotate-n-15">
+                <i class="far fa-address-card"></i>
+            </div>
+            <div class="sidebar-brand-text mx-3"> Profil </div>
+        </a>
+
+        <!-- Divider -->
+        <hr class="sidebar-divider my-0">
+
+        <!-- Nav Item - Dashboard -->
+        <li class="nav-item">
+            <NavLink class="nav-link" Match="NavLinkMatch.All" href="/">
+                <i class="fas fa-apple-alt"></i>
+                <span> Accueil </span>
+            </NavLink>
+        </li>
+        <CascadingAuthenticationState>
+            <!-- Nav Item - Dashboard -->
+            <AuthorizeView Roles="SecretRole">
+                <li class="nav-item">
+                    <NavLink class="nav-link" Match="NavLinkMatch.Prefix" href="/admin">
+                        <i class="fas fa-archway"></i>
+                        <span> Administration </span>
+                    </NavLink>
+                </li>
+            </AuthorizeView>
+            </CascadingAuthenticationState>
+            <!-- Divider -->
+            <hr class="sidebar-divider my-0">
+
+            <!-- Nav Item - Section départements -->
+            <li class="nav-item">
+                <NavLink class="nav-link" Match="NavLinkMatch.Prefix" href="/departements">
+                    <i class="far fa-file-alt"></i>
+                    <span> Les départements </span>
+                </NavLink>
+            </li>
+
+            <!-- Nav Item - Section départements -->
+            <li class="nav-item">
+                <NavLink class="nav-link" Match="NavLinkMatch.Prefix" href="/programmes">
+                    <i class="far fa-file-alt"></i>
+                    <span> Les programmes d'étude </span>
+                </NavLink>
+            </li>
+
+            <!-- Divider -->
+            <hr class="sidebar-divider">
+               
+            <!-- Heading -->
+            <NavLink Match="NavLinkMatch.Prefix" class="sidebar-heading" href="/portail"> Personnel enseignant </NavLink>
+
+            <!-- Nav Item - Afffiche tous les documents respectant les criltères -->
+            <li class="nav-item">
+                <NavLink Match="NavLinkMatch.Prefix" class="nav-link" href="/documents">
+                    <i class="far fa-file-alt"></i>
+                    <span> Tout les documents </span>
+                </NavLink>
+            </li>
+
+            <!-- Divider -->
+            <hr class="sidebar-divider d-none d-md-block">
+
+            <!-- Sidebar Toggler (Sidebar) -->
+            <div class="text-center d-none d-md-inline">
+                <button data-toggle="collapse" data-target="#accordionSidebar" class="rounded-circle border-0" id="sidebarToggle" onclick="toggleSidebarToggleSide()"></button>
+            </div>
+    </ul>
+</div>

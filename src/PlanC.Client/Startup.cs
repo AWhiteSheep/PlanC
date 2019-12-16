@@ -16,6 +16,12 @@ using PlanC.Client.Data;
 using Microsoft.EntityFrameworkCore;
 using Ganss.XSS;
 using Microsoft.Extensions.Hosting;
+using PlanC.EntityDataModel;
+using AspNetCore.RouteAnalyzer; // package pour analyser les routes
+using System.Diagnostics;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
+using PlanC.Client.Authorization;
+using Microsoft.AspNetCore.Authorization;
 
 namespace PlanC.Client
 {
@@ -35,7 +41,6 @@ namespace PlanC.Client
             // Ajout de la dbContext
             services.AddDbContext<PCU001Context>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("RDS_PCU001")));
-
             services.AddAuthentication(sharedOptions =>
             {
                 sharedOptions.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
@@ -48,33 +53,7 @@ namespace PlanC.Client
                 options.AddPolicy("AuthorizationNemesisGroupPolicy", policyBuilder =>
                 policyBuilder.RequireClaim("groups",
                 Configuration.GetValue<string>("AzureADGroup:AuthorizeAuthorizationNemesisGroupId")));
-            });
-
-            services.AddMvc(options =>
-            {
-                var policy = new AuthorizationPolicyBuilder()
-                    .RequireAuthenticatedUser()
-                    .Build();
-                options.Filters.Add(new AuthorizeFilter(policy));
-            })
-            .AddRazorPagesOptions(options =>
-            {
-                options.Conventions.AllowAnonymousToFolder("/Account");
-            });
-
-
-            services.AddRazorPages().AddRazorPagesOptions(options =>
-            {
-                options.Conventions.AllowAnonymousToFolder("/Pages/Public");
-            });
-            services.AddServerSideBlazor();
-
-            services.AddAuthorization(options => {
-                options.AddPolicy("AuthorizationNemesisGroupPolicy", policyBuilder =>
-                policyBuilder.RequireClaim("groups",
-                Configuration.GetValue<string>("AzureADGroup:AuthorizeAuthorizationNemesisGroupId")));
-            });
-
+            });     
 
             // Be Safe – Sanitize Your HTML 
             services.AddScoped<IHtmlSanitizer, HtmlSanitizer>(x =>
@@ -122,9 +101,10 @@ namespace PlanC.Client
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
-                endpoints.MapBlazorHub(option => {
-                    option.Transports = Microsoft.AspNetCore.Http.Connections.HttpTransportType.LongPolling;
-                });
+                endpoints.MapBlazorHub();
+                //endpoints.MapBlazorHub(option => {
+                //    option.Transports = Microsoft.AspNetCore.Http.Connections.HttpTransportType.LongPolling;
+                //});
                 endpoints.MapFallbackToPage("/_Host");
             });
         }

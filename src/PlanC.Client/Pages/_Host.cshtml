@@ -50,6 +50,8 @@
     <div id="wrapper">
         <!-- Sidebar -->
         <partial name="../Shared/_Navbar.cshtml" />
+        <!-- Sidebar -->        
+        @(await Html.RenderComponentAsync<PlanC.Client.Shared.NavMenu>(RenderMode.ServerPrerendered))
         <!-- End of Sidebar -->
         <!-- Content Wrapper -->
         <div id="content-wrapper" class="d-flex flex-column">

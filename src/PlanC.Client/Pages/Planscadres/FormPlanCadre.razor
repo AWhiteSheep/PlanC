@@ -1,11 +1,15 @@
 ﻿@page "/plancadre/create"
 @page "/plancadre/{id}/create"
-
 @using PlanC.EntityDataModel
 @using Components;
+@using PlanC.Client.Components
+@using System.Collections.Generic
+@using Microsoft.EntityFrameworkCore
+@inject IAuthorizationService AuthorizationService
 @inject NavigationManager NavigationManager
 @inject PCU001Context context
 @attribute [Authorize("AuthorizationNemesisGroupPolicy")]
+
 <!-- Section de navigation -->
 <div class="row mb-3">
     <div class="col">
@@ -24,35 +28,90 @@
     @*Envoit le paramètre à tous les enfants*@
     <CascadingValue TValue="PCU001Context" Value="context">
         <PlanC.Client.Components.DropdownProgramSelection @ref="ProgramSelect"></PlanC.Client.Components.DropdownProgramSelection>
-
-
-        @if (programme != null)
-        {
-            <EditFormPlancadre Program="programme"></EditFormPlancadre>
-        }
-
+        <CascadingValue TValue="FormMode" Value="CurrentMode">
+            @if (CurrentForm is EditFormPlancadre)
+            {
+                <EditFormPlancadre IsReadOnly="IsReadOnly" @bind-Template="Template" @ref="CurrentForm"></EditFormPlancadre>
+            }
+            else if (CurrentForm is TemplateSkillElemInput)
+            {
+                <PlanC.Client.Components.TemplateSkillElemInput IsReadOnly="IsReadOnly" @bind-Template="Template" @ref="CurrentForm"></PlanC.Client.Components.TemplateSkillElemInput>
+            }
+            else if (CurrentForm is FinalExamInput)
+            {
+                <PlanC.Client.Components.FinalExamInput IsReadOnly="IsReadOnly" @bind-Template="Template" @ref="CurrentForm"></PlanC.Client.Components.FinalExamInput>
+            }
+            else if (CurrentForm is TemplateReview)
+            {
+                <PlanC.Client.Components.TemplateReview Template="Template" @ref="CurrentForm"></PlanC.Client.Components.TemplateReview>
+            }
+        </CascadingValue>
+            <div class="container mt-3">
+                <div class="row">
+                    @if (programme != null)
+                    {
+                        <EditFormPlancadre Program="programme"></EditFormPlancadre>
+                    }
+                </div>
+            </div>
     </CascadingValue>
 </div>
 
 
 @code{
+    [CascadingParameter]
+    public Task<AuthenticationState> AuthStateTask { get; set; }
     [Parameter]
     public string Id { get; set; }
     public string programmeId { get; set; }
     public Programmes programme { get; set; }
     private EditFormPlancadre TemplateForm { get; set; }
+    // date pour la recherche du plan-cadre
+    [Parameter]
+    public DateTime VsnCdttm { get; set; }
+
+    [CascadingParameter]
+    public FormMode CurrentMode { get; set; }
+
+    // set si c'est read only avec les bonne permissions
+    public bool IsReadOnly { get; set; }
+    public CourseTemplateFormComponent CurrentForm { get; set; }
 
     DropdownProgramSelection ProgramSelect;
 
     ChangeEventArgs<DropdownProgramSelection> programSelectChange;
 
     protected override void OnAfterRender(bool first)
+    [Parameter]
+    public PlansCadres Template { get; set; }
+    // identification du step
+    private int CurrentStep = 0;
+
+    ChangeEventArgs<PlanC.Client.Components.DropdownProgramSelection> programSelectChange;
+
+    protected override void OnInitialized()
     {
         if (first)
             ProgramSelect.ValueChanged += UpdateProgram;
     }
 
     private void UpdateProgram(object sender, Programmes arg)
+    protected async override Task OnAfterRenderAsync(bool firstRender)
+    {
+        base.OnAfterRender(firstRender);
+        if (firstRender)
+        {
+            var state = await AuthStateTask;
+            var user = state.User;
+            var authorized = await AuthorizationService.AuthorizeAsync(user, "IsTeacher");
+            if (!authorized.Succeeded)
+            {
+                IsReadOnly = true;
+            }
+        }
+    }
+
+    private void NavigateNext()
     {
         programme = arg;
         StateHasChanged();
