@@ -6,15 +6,15 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using PlanC.Client.Areas.Identity.Models;
+using PlanC.Client.Data;
 using PlanC.EntityDataModel;
 
 namespace PlanC.Client
 {
     public class UserRoleCreateModel : PageModel
     {
-        readonly RoleManager<IdentityRole> roleManager;
-        UserManager<AspNetUsers> userManager;
+        public readonly RoleManager<IdentityRole> roleManager;
+        public UserManager<AspNetUsers> userManager;
         public UserRoleCreateModel(RoleManager<IdentityRole> roleManager, UserManager<AspNetUsers> userManager, PCU001Context context)
         {
             this.roleManager = roleManager;
@@ -24,13 +24,16 @@ namespace PlanC.Client
 
         public IActionResult OnGet()
         {
-            ViewData["RoleId"] = new SelectList(roleManager.Roles.ToList(), "Id", "Name");
-            ViewData["UserId"] = new SelectList(userManager.Users.ToList(), "Username", "Identitfiant");
+            AspNetUserRoles  = new IdentityUserRole<string>();
             return Page();
         }
 
         [BindProperty]
-        public AspNetUserRoles AspNetUserRoles { get; set; }
+        public IdentityUserRole<string> AspNetUserRoles { get; set; }
+        [BindProperty]
+        public List<IdentityRole> AspNetRoles { get; set; }
+        [BindProperty]
+        public List<AspNetUsers> AspNetUsers { get; set; }
         public UserManager<AspNetUsers> UserManager { get; }
         public PCU001Context Context { get; }
 
@@ -42,10 +45,12 @@ namespace PlanC.Client
             {
                 return Page();
             }
-            var user = Context.AspNetUsers.Find(AspNetUserRoles.UserId);
-            var role = await roleManager.FindByNameAsync(AspNetUserRoles.RoleId);
-            userManager.AddToRoleAsync(user, role.Name);
-            return RedirectToPage("./Index");
+            // trouve l'utilisateur trouvé
+            var user = await userManager.FindByIdAsync(AspNetUserRoles.UserId);
+            // trouve le role et le relie dans la base de donné
+            var role = await roleManager.FindByIdAsync(AspNetUserRoles.RoleId);
+            await userManager.AddToRoleAsync(user, role.Name);
+            return Redirect("/admin/roles/authorise");
         }
     }
 }

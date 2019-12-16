@@ -1,29 +1,43 @@
-﻿@page
+﻿@page "/admin/roles/authorise"
 @model PlanC.Client.UserRoleIndexModel
 
 @{
     ViewData["Title"] = "Index";
 }
 
-<h1>Index</h1>
+<h1>Utilisateurs et leurs rôles</h1>
 
 <p>
-    <a asp-page="Create">Create New</a>
+    <a href="/admin/roles/user/assigner">Assigner un utilisateur un role</a>
 </p>
 <table class="table">
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.AspNetUserRoles[0].Role)
+                Utilisateur
             </th>
-            <th></th>
+            <th>
+                Rôles
+            </th>
+            <th>
+            </th>
         </tr>
     </thead>
     <tbody>
 @foreach (var item in Model.AspNetUserRoles) {
         <tr>
             <td>
-                @Html.DisplayFor(modelItem => item.Role.Id)
+                @Html.DisplayFor(modelItem => item.Key)
+            </td>
+            <td>
+                @foreach (string role in item.Value) 
+                {
+                    <table>
+                        <tr>
+                            <td>@role</td>
+                        </tr>
+                    </table>
+                }
             </td>
             <td>
                 @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |
