@@ -82,21 +82,6 @@ namespace PlanC.Client
             services.AddRouteAnalyzer(); 
 
             services.AddCors();
-=======
-            services.AddAuthentication(sharedOptions =>
-            {
-                sharedOptions.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-                sharedOptions.DefaultChallengeScheme = OpenIdConnectDefaults.AuthenticationScheme;
-            })
-            .AddAzureAd(options => Configuration.Bind("AzureAd", options))
-            .AddCookie();
-
-            services.AddAuthorization(options => {
-                options.AddPolicy("AuthorizationNemesisGroupPolicy", policyBuilder =>
-                policyBuilder.RequireClaim("groups",
-                Configuration.GetValue<string>("AzureADGroup:AuthorizeAuthorizationNemesisGroupId")));
-            });     
->>>>>>> origin/Identity
 
             // Be Safe – Sanitize Your HTML 
             services.AddScoped<IHtmlSanitizer, HtmlSanitizer>(x =>
@@ -140,10 +125,9 @@ namespace PlanC.Client
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
-                endpoints.MapBlazorHub();
-                //endpoints.MapBlazorHub(option => {
-                //    option.Transports = Microsoft.AspNetCore.Http.Connections.HttpTransportType.LongPolling;
-                //});
+                endpoints.MapBlazorHub(option => {
+                    option.Transports = Microsoft.AspNetCore.Http.Connections.HttpTransportType.LongPolling;
+                });
                 endpoints.MapFallbackToPage("/_Host");
                 
             });
