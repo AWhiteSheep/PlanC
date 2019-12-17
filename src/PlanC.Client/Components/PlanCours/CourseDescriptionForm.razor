@@ -33,6 +33,10 @@
     {
         try
         {
+            if (!_context.PlansCours.Local.Contains(CoursePlan))
+            {
+                _context.PlansCours.Add(CoursePlan);
+            }
             await _context.SaveChangesAsync();
             return true;
         }

@@ -62,7 +62,7 @@
                 <!-- suite au poste validate nous envoyons l'utilisateur vers la deuxième partie celle de remplire les contextes et les éléments de compétence-->
                 <button @onclick="NavigatePrevious" disabled="@(CurrentNode.Previous == null)" class="btn btn-primary">Précédent</button>
                 <button @onclick="NavigateNext" hidden="@(CurrentNode.Next == null)" disabled="@(CurrentNode.Next == null)" class="btn btn-primary">Suivant</button>
-                <a href="~/" hidden="@(CurrentNode.Next != null)" disabled="@(CurrentNode.Next != null)" class="btn btn-primary">Terminer</a>
+                <a href="" @onclick="FinishForm" hidden="@(CurrentNode.Next != null)" disabled="@(CurrentNode.Next != null)" class="btn btn-primary">Terminer</a>
             </div>
         </div>
     </div>
@@ -160,6 +160,11 @@
         CurrentForm = CurrentNode.Value;
         CurrentStep--;
         StateHasChanged();
+    }
+
+    private void FinishForm()
+    {
+        CurrentForm.SaveProgress();
     }
 
     public enum FormMode

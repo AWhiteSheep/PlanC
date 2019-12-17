@@ -19,17 +19,17 @@
     <tbody>
         @foreach (Examens exam in CurrentExams)
         {
-        <tr>
-            <td>
-                <input class="input form-control" @bind="exam.Qualification" />
-            </td>
-            <td>
-                <input class="input form-control" @bind="exam.WeightAccessor" />
-            </td>
-            <td>
-                <button class="btn btn-circle" @onclick="() => DeleteExam(exam)"><i class="fas fa-trash"></i></button>
-            </td>
-        </tr>
+            <tr>
+                <td>
+                    <input class="input form-control" @bind="exam.Qualification" />
+                </td>
+                <td>
+                    <input class="input form-control" @bind="exam.WeightAccessor" />
+                </td>
+                <td>
+                    <button class="btn btn-circle" @onclick="() => DeleteExam(exam)"><i class="fas fa-trash"></i></button>
+                </td>
+            </tr>
         }
     </tbody>
 </table>
@@ -39,46 +39,48 @@
 
     protected override async Task OnParametersSetAsync()
     {
-        await FetchData();
+        FetchData();
     }
 
-    protected async Task FetchData()
+    protected void FetchData()
     {
-        using (PCU001Context __context = new PCU001Context())
+        _context.Entry(CoursePlan)
+                .Collection(p => p.ExamensCertificatifsNonsFinals)
+                .Load();
+        foreach (ExamensCertificatifsNonsFinals ex in CoursePlan.ExamensCertificatifsNonsFinals)
         {
-            await __context.Entry(CoursePlan)
-                            .Collection(p => p.ExamensCertificatifsNonsFinals)
-                            .LoadAsync();
-
-            foreach (ExamensCertificatifsNonsFinals ex in CoursePlan.ExamensCertificatifsNonsFinals)
-            {
-                await __context.Entry(ex)
-                                .Reference(ex => ex.Examen)
-                                .LoadAsync();
-            }
-
-            CurrentExams = CoursePlan.ExamensCertificatifsNonsFinals.Select(ex => ex.Examen).ToList();
+            _context.Entry(ex)
+                   .Reference(ex => ex.Examen)
+                   .Load();
         }
+
+        CurrentExams = CoursePlan.ExamensCertificatifsNonsFinals.Select(ex => ex.Examen).ToList();
     }
 
     public async override Task<bool> SaveProgress()
     {
         try
         {
-            _context.Examens.RemoveRange(CoursePlan.ExamensCertificatifsNonsFinals.Select(ex => ex.Examen).ToArray());
-            _context.ExamensCertificatifsNonsFinals.RemoveRange(CoursePlan.ExamensCertificatifsNonsFinals.ToArray());
-            await _context.SaveChangesAsync();
-            foreach(Examens exam in CurrentExams)
+            foreach (Examens exam in CurrentExams)
             {
-                CoursePlan.ExamensCertificatifsNonsFinals.Add(new ExamensCertificatifsNonsFinals()
+                Examens existingItem = _context.Examens.Find(exam.Id);
+
+                if (existingItem != null)
                 {
-                    TrkUid = "testusr",
-                    PlansCours = CoursePlan,
-                    Examen = exam
-                });
+                    _context.Entry(existingItem).CurrentValues.SetValues(exam);
+                }
+                else
+                {
+                    CoursePlan.ExamensCertificatifsNonsFinals.Add(new ExamensCertificatifsNonsFinals()
+                    {
+                        TrkUid = "testusr",
+                        PlansCours = CoursePlan,
+                        Examen = exam
+                    });
+                }
             }
 
-            await _context.SaveChangesAsync();
+            _context.SaveChanges();
             return true;
         }
         catch (Exception ex)

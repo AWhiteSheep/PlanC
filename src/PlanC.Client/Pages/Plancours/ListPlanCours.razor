@@ -1,16 +1,17 @@
-﻿@page "/planscadres"
+﻿@page "/plancours"
+@using PlanC.Client.Data
 @inject PCU001Context context
 @using System.Linq
 @inject NavigationManager _NavigationManager
 @inject IJSRuntime Js
+@using Syncfusion.EJ2.Blazor.Grids
+@using Microsoft.AspNetCore.Components
+@using Microsoft.JSInterop
+@using PlanC.Client
+@using PlanC.EntityDataModel
 @using Syncfusion.EJ2.Blazor.Navigations
 @using Syncfusion.EJ2.Blazor.Grids
 @using Syncfusion.EJ2.Blazor.Buttons
-@using WDocument = Syncfusion.EJ2.DocumentEditor;
-@using PlanC.DocumentGeneration.CourseTemplate
-@using PlanC.DocumentGeneration.Common
-@using System.Collections.ObjectModel;
-@using System.IO
 
 <!--section sécurité doit être seulement coordonateur du programme et la consultation par le professeur-->
 <!-- Section de navigation -->
@@ -33,25 +34,23 @@
             <h3>Liste des plans cadres:</h3>
         </div>
         <div class="col-12">
-            <EjsButton @onclick="Supprimer" Disabled="(Selected == null)"> Supprimer la sélection </EjsButton>
-            <a href="/planscadres/creation">Nouveau plancadre</a>
+            <a href="/plancours/create">Nouveau plancadre</a>
             <br />
-            @if (TemplateCours != null)
+            @if (PlansCours != null)
             {
-                <EjsGrid DataSource="@TemplateCours" AllowSorting="true" AllowPaging="true"
+                <EjsGrid DataSource="@PlansCours" AllowSorting="true" AllowPaging="true"
                          ContextMenuItems="@(new List<ContextMenuItemModel>() {
-                                                 new ContextMenuItemModel { Text = "Ouvrir plan de cadre", Target = ".e-content", Id = "open" },
+                                                 new ContextMenuItemModel { Text = "Ouvrir plan cours", Target = ".e-content", Id = "open" },
                                                  new ContextMenuItemModel { Text = "Sauvegarder en tant que word", Target = ".e-content", Id = "word" }
                                              })">
                     <GridEditSettings AllowAdding="true" AllowDeleting="true"></GridEditSettings>
                     <GridPageSettings PageSize="8"></GridPageSettings>
                     <!-- Les événements se passant sur la table et les paramètre -->
-                    <GridEvents ContextMenuItemClicked="OnContextMenuClick" RowSelected="RowSelectHandler" RowDeselected="() => Selected = null" TValue="PlansCadres"></GridEvents>
+                    <GridEvents ContextMenuItemClicked="OnContextMenuClick" RowSelected="RowSelectHandler" RowDeselected="() => Selected = null" TValue="PlansCours"></GridEvents>
                     <GridColumns>
-                        <GridColumn IsPrimaryKey="true" Field=@nameof(PlansCadres.CoursId) HeaderText="Identifiant du cours"></GridColumn>
-                        <GridColumn Field=@nameof(PlansCadres.ProgrammeId) HeaderText="Identifiant du programme"></GridColumn>
-                        <GridColumn Field=@nameof(PlansCadres.DenominationCours) HeaderText="Nom du cours"></GridColumn>
-                        <GridColumn Field=@nameof(PlansCadres.RcdCdttm) HeaderText="Date du dernier enregistrement" Format="yMd" Type=ColumnType.Date></GridColumn>
+                        <GridColumn IsPrimaryKey="true" Field=@nameof(Selected.CoursId) HeaderText="Identifiant du cours"></GridColumn>
+                        <GridColumn Field=@nameof(Selected.CoursePolicy) HeaderText="Identifiant du programme"></GridColumn>
+                        <GridColumn Field=@nameof(Selected.RcdCdttm) HeaderText="Date du dernier enregistrement" Format="yMd" Type=ColumnType.Date></GridColumn>
                     </GridColumns>
                 </EjsGrid>
             }
@@ -69,9 +68,11 @@
 <div class="col-12 text-center">
     <span class="smallerFontSize">La page ne répond pas? <a href="/planscadres" onclick="window.location.reload()" class="reload">Rafraîchir la page.</a></span>
 </div>
-@code{
-    public List<PlansCadres> TemplateCours { get; set; }
-    public PlansCadres Selected { get; set; }
+
+@code {
+    public List<PlanC.EntityDataModel.PlansCours>
+    PlansCours { get; set; }
+    public PlansCours Selected { get; set; }
     private bool loadFailed; //safe check si la list à eu une erreur pour demander à l'usager de reload
 
     protected override void OnInitialized()
@@ -80,51 +81,27 @@
         try
         {
             loadFailed = false;
-            TemplateCours = context.PlansCadres.ToList();
+            PlansCours = context.PlansCours.ToList();
         }
         catch (Exception ex)
         {
             loadFailed = true;
             Console.WriteLine("Failed to load {context}, {ex}", context, ex);
         }
-    }
+    } 
 
-    protected void Supprimer()
+    public void RowSelectHandler(RowSelectEventArgs<PlansCours> args)
     {
-        TemplateCours.Remove(Selected);
-        context.PlansCadres.Remove(Selected);
-        SaveProgress();
-    }
-
-    public void SaveProgress()
-    {
-        try
-        {
-            context.SaveChanges();
-            TemplateCours = context.PlansCadres.ToList();
-            StateHasChanged();
-        }
-        catch (Exception except)
-        {
-            Console.WriteLine($"Plan cadre liste error: {except.Message}");
-        }
-    }
-
-    public void RowSelectHandler(RowSelectEventArgs<PlansCadres> args)
-    {
-        Selected = TemplateCours.FirstOrDefault(e => e.CoursId == args.Data.CoursId);
+        Selected = PlansCours.FirstOrDefault(e => e.CoursId == args.Data.CoursId);
     }
 
     public void OnContextMenuClick(MenuEventArgs args)
     {
         if (args.Item.Id == "open")
         {
-            _NavigationManager.NavigateTo($"/plancadre/{Selected.CoursId}/create");
-        }
-        else if (args.Item.Id == "word")
-        {
-            byte[] dataInByte = FileUtil.FromTemplate(Selected, context);
-            Js.SaveAs("Planscadre" + DateTime.Now.ToString() + ".docx", dataInByte);
+            _NavigationManager.NavigateTo($"/plancours/{Selected.CoursId}/create");
         }
     }
 }
+
+
