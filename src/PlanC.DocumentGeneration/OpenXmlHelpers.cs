@@ -55,15 +55,15 @@ namespace PlanC.DocumentGeneration
             }
         }
 
-        public static WordprocessingDocument CreateFromTemplate(string templateFilePath,
+        public static WordprocessingDocument CreateFromTemplate(Stream templateStream,
                                                                 Stream documentStream,
                                                                 string? author = null)
         {
-            Contract.Requires(templateFilePath != null);
+            Contract.Requires(templateStream != null);
             Contract.Requires(documentStream != null);
 
             WordprocessingDocument? document = null;
-            using (var template = WordprocessingDocument.Open(templateFilePath, false))
+            using (var template = WordprocessingDocument.Open(templateStream, false))
             {
                 //Creates a copy of the template
                 document = (WordprocessingDocument)template.Clone(documentStream, true);

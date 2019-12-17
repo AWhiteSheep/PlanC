@@ -22,8 +22,10 @@ namespace PlanC.DocumentGeneration.CourseTemplate
         /// </returns>
         public static WordprocessingDocument Create(Stream documentStream, string? author = null)
         {
-            return OpenXmlHelpers.CreateFromTemplate(
-                @"H:\À conserver\Session A2019\Projet\PlanC\src\PlanC.DocumentGeneration\Resources\CourseTemplatePackage.dotx", documentStream, author);
+            using (var templateStream = new MemoryStream(Templates.CourseTemplate.GetPackage()))
+            {
+                return OpenXmlHelpers.CreateFromTemplate(templateStream, documentStream, author);
+            }
         }
     }
 }

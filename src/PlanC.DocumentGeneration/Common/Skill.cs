@@ -4,17 +4,22 @@ using System.Collections.ObjectModel;
 using System.Runtime.Serialization;
 using System.Text;
 
-namespace PlanC.DocumentGeneration.CourseTemplate
+namespace PlanC.DocumentGeneration.Common
 {
     [Serializable]
     public class Skill
     {
-        private Collection<string>? _contentPrecisions = new Collection<string>();
-        private Collection<SkillElement>? _skillElements = new Collection<SkillElement>();
+        private Collection<string>? _achievementContexts;
+        private Collection<string>? _contentPrecisions;
+        private Collection<SkillElement>? _skillElements;
 
         public string? Title { get; set; }
 
-        public Collection<string> AchievementContexts { get; set; } = new Collection<string>();
+        public Collection<string> AchievementContexts
+        {
+            get => _achievementContexts ?? (_achievementContexts = new Collection<string>());
+            set => _achievementContexts = value;
+        }
 
         public Collection<string> ContentPrecisions
         {
