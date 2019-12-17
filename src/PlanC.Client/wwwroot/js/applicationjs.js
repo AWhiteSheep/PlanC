@@ -25,7 +25,7 @@ function saveAsFile(filename, bytesBase64) {
         for (var i = 0; i < data.length; i++) {
             bytes[i] = data.charCodeAt(i);
         }
-        var blob = new Blob([bytes.buffer], { type: "application/octet-stream" });
+        var blob = new Blob([bytes.buffer], { type: "application/vnd.openxmlformats-officedocument.wordprocessingml.document" });
         navigator.msSaveBlob(blob, filename);
     }
     else {

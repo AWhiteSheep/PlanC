@@ -123,10 +123,8 @@
         }
         else if (args.Item.Id == "word")
         {
-            WDocument.WordDocument document = WDocument.WordDocument.Load(FileUtil.FromTemplate(Selected, context), WDocument.FormatType.Docx);
-            string json = Newtonsoft.Json.JsonConvert.SerializeObject(document);
-            document.Dispose();
-            FileUtil.SaveAs(Js, "Planscadre" + DateTime.Now.ToString(), System.Text.Encoding.UTF8.GetBytes(json));
+            byte[] dataInByte = FileUtil.FromTemplate(Selected, context);
+            Js.SaveAs("Planscadre" + DateTime.Now.ToString() + ".docx", dataInByte);
         }
     }
 }

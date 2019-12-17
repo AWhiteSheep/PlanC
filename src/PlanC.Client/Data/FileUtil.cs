@@ -49,7 +49,7 @@ namespace PlanC.Client.Data
             return document;
         }
 
-        public static Stream FromTemplate(PlanC.EntityDataModel.PlansCadres plansCadre, PCU001Context context) 
+        public static byte[] FromTemplate(PlanC.EntityDataModel.PlansCadres plansCadre, PCU001Context context) 
         {
             List<PlanCadreCompetenceElements> tempTemplateElements = null;
             if (plansCadre != null)
@@ -124,7 +124,7 @@ namespace PlanC.Client.Data
                     editor.ApplyChanges();
                 }
                 // stream ready envoit un nouveau document
-                return stream;
+                return stream.ToArray();
             }
         }
     }
