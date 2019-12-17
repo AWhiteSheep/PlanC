@@ -7,11 +7,13 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using PlanC.Client.Data;
+using PlanC.EntityDataModel;
 
 namespace PlanC.Client
 {
@@ -31,7 +33,6 @@ namespace PlanC.Client
             // Ajout de la dbContext
             services.AddDbContext<PCU001Context>(options => 
                 options.UseSqlServer(Configuration.GetConnectionString("RDS_PCU001")));
-<<<<<<< HEAD
             //options.UseSqlServer("Data Source=database-1.cai5lbxs9ofy.us-east-1.rds.amazonaws.com,1433;User ID=dbo802668235;Password=Nemesis2123%*;Initial Catalog=PCU001;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False"));
 
 
@@ -67,13 +68,8 @@ namespace PlanC.Client
             });
             services.AddMvc();
 
-            // ajoute l'analyseur des routes
-            services.AddRouteAnalyzer(); 
-=======
-
             services.AddRazorPages();
             services.AddServerSideBlazor();
->>>>>>> e6351150fbe926ea9dd68824e6c58e0603ec91b9
 
 
             // Be Safe – Sanitize Your HTML 

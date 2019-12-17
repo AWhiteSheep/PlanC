@@ -1,14 +1,9 @@
 ﻿@page "/"
 @namespace PlanC.Client.Pages
 @addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
-
-
 @inject Microsoft.AspNetCore.Antiforgery.IAntiforgery Xsrf
 @functions{
-<<<<<<< HEAD
     public string logoutparam;
-=======
->>>>>>> e6351150fbe926ea9dd68824e6c58e0603ec91b9
     public string GetAntiXsrfRequestToken()
     {
         return Xsrf.GetAndStoreTokens(HttpContext).RequestToken;
@@ -33,7 +28,6 @@
     <!-- cdn pour le richtext editor pour les css https://cdnjs.com/libraries/Trumbowyg -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Trumbowyg/2.19.1/ui/trumbowyg.min.css" />
 
-<<<<<<< HEAD
     <!-- Fonts -->
     <script src="https://kit.fontawesome.com/50510c8db2.js" crossorigin="anonymous"></script>
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
@@ -45,13 +39,11 @@
     <link async rel="stylesheet" type="text/css" href="https://cdn.syncfusion.com/ej2/17.3.19/ej2-buttons/styles/material.css" />
     <link async rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" />
 
-=======
     <!-- CDNs fontawesome, bootstrap & css style sheet pour syncfusion table -->
     <link rel="stylesheet" type="text/css" href="https://cdn.syncfusion.com/ej2/17.3.18/fabric.css" />
     <link rel="stylesheet" type="text/css" href="https://cdn.syncfusion.com/ej2/17.3.19/ej2-buttons/styles/material.css" />
     <script src="https://kit.fontawesome.com/50510c8db2.js" crossorigin="anonymous"></script>
     <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" />
->>>>>>> e6351150fbe926ea9dd68824e6c58e0603ec91b9
 </head>
 <body id="page-top">
     <!-- Page Wrapper -->
@@ -67,7 +59,6 @@
                 <partial name="../Shared/_Topbar.cshtml" />
                 <!-- End of Topbar -->
                 <!-- Begin Page Content -->
-<<<<<<< HEAD
                 <div class="container-fluid">
                     <app style="background-color: white">
                         @if (!String.IsNullOrEmpty(logoutParam()))
@@ -112,13 +103,11 @@
                         </div>
                     </div>
                 </div>
-=======
                 <div class="container-fluid" style="position:relative">
                     <app>
                         @(await Html.RenderComponentAsync<App>(RenderMode.ServerPrerendered))
                     </app>
                 </div>
->>>>>>> e6351150fbe926ea9dd68824e6c58e0603ec91b9
             </div>
         </div>
     </div>
@@ -151,7 +140,6 @@
 
     <!-- JQuery -->
     <script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.4.1.min.js"></script>
-<<<<<<< HEAD
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-easing/1.4.1/jquery.easing.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
@@ -167,7 +155,6 @@
     
     <!-- Ajax habituel de asp .net -->
     <script src="https://ajax.aspnetcdn.com/ajax/jquery/jquery-1.9.0.js"></script>
-=======
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-easing/1.4.1/jquery.easing.min.js" integrity="sha256-H3cjtrm/ztDeuhCN9I4yh4iN2Ybx/y1RM7rMmAesA0k=" crossorigin="anonymous"></script>
 
     <!-- librairie framework anime js -->
@@ -179,19 +166,15 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Trumbowyg/2.19.1/langs/fr.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Trumbowyg/2.19.1/plugins/cleanpaste/trumbowyg.cleanpaste.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Trumbowyg/2.19.1/plugins/pasteimage/trumbowyg.pasteimage.min.js"></script>
->>>>>>> e6351150fbe926ea9dd68824e6c58e0603ec91b9
-
     <!-- pour le framework de template suncfusion -->
     <script src="https://cdn.syncfusion.com/ej2/17.3.18/dist/ej2.min.js"></script>
     <script src="https://cdn.syncfusion.com/ej2/17.3.18/dist/ejs.interop.min.js"></script>
 
-<<<<<<< HEAD
     <!-- Material components pour le web -->
     <script src="https://unpkg.com/material-components-web@latest/dist/material-components-web.min.js"></script>
 
     <!-- CDNs bootstrap -->
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
-=======
     <!-- Auto complete master -->
     <script src="~/js/jquery.autocomplete.min.js"></script>
 
@@ -199,14 +182,12 @@
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
->>>>>>> e6351150fbe926ea9dd68824e6c58e0603ec91b9
 
 
     <!-- Scripts custome & Blazor framework for the client -->
     <script src="~/js/site.js" asp-append-version="true"></script>
     <script src="~/_framework/blazor.server.js" autostart="false"></script>
     <script src="~/js/applicationjs.js"></script>
-<<<<<<< HEAD
 
     <script>
         function load_config(url) {
@@ -225,7 +206,5 @@
             });
         }
     </script>
-=======
->>>>>>> e6351150fbe926ea9dd68824e6c58e0603ec91b9
 </body>
 </html>

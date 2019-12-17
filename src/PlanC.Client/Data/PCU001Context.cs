@@ -1,15 +1,12 @@
 ﻿using System;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using PlanC.EntityDataModel;
 
 namespace PlanC.Client.Data
 {
-<<<<<<< HEAD
-    public partial class PCU001Context : IdentityDbContext<AspNetUsers>
-=======
-    public partial class PCU001Context : DbContext
->>>>>>> e6351150fbe926ea9dd68824e6c58e0603ec91b9
-    {
+    public partial class PCU001Context : IdentityDbContext<AspNetUsers> 
+    { 
         public PCU001Context()
         {
         }
@@ -19,10 +16,7 @@ namespace PlanC.Client.Data
         {
         }
 
-        // DEBUT Roles et authentification
         public virtual DbSet<AspNetUsers> AspNetUsers { get; set; }
-        public virtual DbSet<IdentityRole> IdentityRoles { get; set; }
-        // FIN
         public virtual DbSet<CategoriesProgrammes> CategoriesProgrammes { get; set; }
         public virtual DbSet<CompetenceContextes> CompetenceContextes { get; set; }
         public virtual DbSet<Competences> Competences { get; set; }
@@ -44,8 +38,6 @@ namespace PlanC.Client.Data
         public virtual DbSet<ProgrammeCompetences> ProgrammeCompetences { get; set; }
         public virtual DbSet<ProgrammeDepartementView> ProgrammeDepartementView { get; set; }
         public virtual DbSet<Programmes> Programmes { get; set; }
-        public virtual DbSet<Roles> Roles { get; set; }
-        public virtual DbSet<RolesUtilisateur> RolesUtilisateur { get; set; }
         public virtual DbSet<Sessions> Sessions { get; set; }
         public virtual DbSet<TypesFormationsProgrammes> TypesFormationsProgrammes { get; set; }
 
@@ -59,9 +51,7 @@ namespace PlanC.Client.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-<<<<<<< HEAD
             base.OnModelCreating(modelBuilder);
-            // DEBUT Roles et identifiant
             modelBuilder.Entity<AspNetUsers>(entity =>
             {
                 entity.HasKey(e => e.UserName)
@@ -87,9 +77,6 @@ namespace PlanC.Client.Data
                     .HasConstraintName("FK_TASPUSER_TDPTMNT");
 
             });
-            // FIN Roles et identifiant
-=======
->>>>>>> e6351150fbe926ea9dd68824e6c58e0603ec91b9
             modelBuilder.Entity<CategoriesProgrammes>(entity =>
             {
                 entity.HasKey(e => e.CategorieId)
@@ -578,36 +565,6 @@ namespace PlanC.Client.Data
                     .HasConstraintName("FK_TPGM_TPMGFORMTYPE");
             });
 
-            modelBuilder.Entity<Roles>(entity =>
-            {
-                entity.Property(e => e.Id).ValueGeneratedNever();
-
-                entity.Property(e => e.RcdCdttm).HasDefaultValueSql("(getdate())");
-
-                entity.Property(e => e.Titre).IsUnicode(false);
-            });
-
-            modelBuilder.Entity<RolesUtilisateur>(entity =>
-            {
-                entity.HasKey(e => new { e.UtilisateurId, e.RoleId })
-                    .HasName("PK_TUSERROLE");
-
-                entity.Property(e => e.UtilisateurId).IsUnicode(false);
-
-                entity.Property(e => e.RcdCdttm).HasDefaultValueSql("(getdate())");
-
-                entity.HasOne(d => d.Role)
-                    .WithMany(p => p.RolesUtilisateur)
-                    .HasForeignKey(d => d.RoleId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_TUSERROLE_TROLE");
-
-                entity.HasOne(d => d.Utilisateur)
-                    .WithMany(p => p.RolesUtilisateur)
-                    .HasForeignKey(d => d.UtilisateurId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_TUSERROLE_TUSER");
-            });
 
             modelBuilder.Entity<Sessions>(entity =>
             {
@@ -628,22 +585,6 @@ namespace PlanC.Client.Data
                     .IsUnicode(false)
                     .IsFixedLength();
             });
-
-<<<<<<< HEAD
-=======
-            modelBuilder.Entity<Utilisateurs>(entity =>
-            {
-                entity.Property(e => e.Id).IsUnicode(false);
-
-                entity.Property(e => e.RcdCdttm).HasDefaultValueSql("(getdate())");
-
-                entity.HasOne(d => d.Departement)
-                    .WithMany(p => p.Utilisateurs)
-                    .HasForeignKey(d => d.DepartementId)
-                    .HasConstraintName("FK_TUSER_TDPTMNT");
-            });
-
->>>>>>> e6351150fbe926ea9dd68824e6c58e0603ec91b9
             OnModelCreatingPartial(modelBuilder);
         }
 

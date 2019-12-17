@@ -82,8 +82,7 @@
     Biglink.BiglinkContext bglinkCsimple;
     Biglink.BiglinkContext bglinkOmnivox;
     protected override void OnInitialized()     
-    {
-        bool wasRender = false;    
+    {   
     }
     protected override async void OnAfterRender(bool firstRender)
     {
@@ -102,7 +101,6 @@
             icon = "fas fa-external-link-alt",
             text = "omnivox"
         };
-        wasRender = true;
         // call avec le jsinterop afin de lier les composantes
         // que jquery et que les plugins ui ne peuvent s'accroché
         // car elles ont un cycle différent

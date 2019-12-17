@@ -4,7 +4,6 @@
 @page "/planscadres/{id}/create"
 @page "/planscadres/{id}/edition/{VsnCdttm}/modifier"
 @attribute [Authorize]
-@page "/plancadre/{id}/create"
 @using PlanC.EntityDataModel
 @using PlanC.Client.Components
 @using System.Collections.Generic
@@ -21,7 +20,8 @@
 @using WDocument = Syncfusion.EJ2.DocumentEditor;
 @using PlanC.DocumentGeneration.CourseTemplate
 @using PlanC.DocumentGeneration.Common
-@using using System.Collections.ObjectModel;
+@using PlanC.Client.Components
+@using System.Collections.ObjectModel;
 
 <!--section sécurité doit être seulement coordonateur du programme et la consultation par le professeur-->
 <!-- Section de navigation -->
@@ -42,7 +42,7 @@
 
 <div class="row">
     <div class="col-12">
-        <PlanC.Client.Components.ProgressBar steps="@(new List<string>{ "Déscription", "Compétences", "Examens finaux", "Révision" })" Current="CurrentStep"></PlanC.Client.Components.ProgressBar>
+        <PlanC.Client.Components.ProgressBar steps="@(new List<string>(){ "Déscription", "Compétences", "Examens finaux", "Révision" })" Current="CurrentStep"></PlanC.Client.Components.ProgressBar>
     </div>
 </div>
 
@@ -149,7 +149,7 @@
         List<Competences> competences = new List<Competences>();
 
         /// FAIRE LA SKILL LISTE
-        /// 
+        ///
         // cycle sur les critere element competence
         foreach (var elementsCompetence in Template.PlanCadreCompetenceElements)
         {
@@ -168,8 +168,8 @@
             {
                 Console.WriteLine($"Didn't not find {comp.Enonce}");
             }
-            else 
-            {           
+            else
+            {
                 // ajoute au skill trouvé l'élément dans la compétence relié dans laquelle nous nous trouvons
                 _skill.SkillElements.Add(new SkillElement()
                 {
@@ -191,7 +191,7 @@
             PedagogicalIntent = Template.IntentionPedagogique,
             TimeDistribution = new TimeDistribution(Template.TheoryHoursAccessor, Template.PracticeHoursAccessor, Template.HomeHoursAccessor),
             UnitsCount = Template.UnitsAccessor,
-            Skills = Skills            
+            Skills = Skills
         };
 
         //JS.SaveAs("Bonjour.docx", fileStream.ToArray());
@@ -289,4 +289,4 @@
         NavigationManager.NavigateTo($"/planscadres/{Template.CoursId}/confirmation");
     }
 
-    }
+}
