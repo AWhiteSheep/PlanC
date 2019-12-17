@@ -32,6 +32,20 @@ namespace PlanC.EntityDataModel
         [StringLength(7)]
         public string TrkUid { get; set; }
 
+        [NotMapped]
+        [JsonIgnore]
+        public List<string> GetCritereListString 
+        {
+            get {
+                List<string> criteres = new List<string>();
+                foreach (var critere in CriteresElementCompetence) 
+                {
+                    criteres.Add(critere.DescriptionCritere);
+                }
+                return criteres;
+            }
+        }
+
         [ForeignKey(nameof(IdentityKeyCompetences))]
         [InverseProperty(nameof(Competences.ElementsCompetence))]
         [JsonIgnore]

@@ -23,6 +23,10 @@
 @using Syncfusion.EJ2.Blazor.DocumentEditor
 @using Syncfusion.EJ2.DocumentEditor.Blazor
 @using WDocument = Syncfusion.EJ2.DocumentEditor;
+@using PlanC.DocumentGeneration.CourseTemplate
+@using PlanC.DocumentGeneration.Common
+@using using System.Collections.ObjectModel;
+
 <!--section sécurité doit être seulement coordonateur du programme et la consultation par le professeur-->
 <!-- Section de navigation -->
 <div class="row mb-3">
@@ -95,7 +99,7 @@
 <div hidden="@(!EditorOpen)" class="container shadow p-5" style="margin-bottom: 200px; margin-top: 50px">
     <EjsButton @onclick="() => EditorOpen = false">Fermer</EjsButton>
     <EjsButton @onclick="OnDownload">Télécharger</EjsButton>
-    <EjsDocumentEditorContainer @ref="container">
+    <EjsDocumentEditorContainer EnableToolbar="false" @ref="container">
     </EjsDocumentEditorContainer>
 </div>
 
@@ -108,35 +112,6 @@
     // document editor ref point
     EjsDocumentEditorContainer container;
     bool EditorOpen;
-
-    public void Export()
-    {
-        // génère le document
-        EditorOpen = true;
-        Download();
-    }
-
-    public void Download()
-    {
-        //JS.SaveAs("Bonjour.docx", fileStream.ToArray());
-        string filePath = "Data/Bonjour.docx";
-        // ouvre le document stream
-        using (FileStream fileStream = new FileStream(filePath, System.IO.FileMode.Open, System.IO.FileAccess.Read))
-        {
-            WDocument.WordDocument document = WDocument.WordDocument.Load(fileStream, WDocument.FormatType.Docx);
-            string json = Newtonsoft.Json.JsonConvert.SerializeObject(document);
-            document.Dispose();
-            DocumentEditorModule editor = container.GetDocumentEditor();
-            editor.Open(json);
-        }
-    }
-
-    public void OnDownload()
-    {
-        //envoit un document à la sauvegarde
-        DocumentEditorModule editor = container.GetDocumentEditor();
-        editor.Save("sample", FormatType.Docx);
-    }
 
     [Parameter]
     public string Id { get; set; }
@@ -152,6 +127,7 @@
     private LinkedListNode<CourseTemplateFormComponent> CurrentNode { get; set; }
     private LinkedList<CourseTemplateFormComponent> Forms { get; set; }
 
+
     // sauvegarde des remarque laissé dans le formulaire template review
     public EjsRichTextEditor Remarque { get; set; }
 
@@ -161,6 +137,87 @@
     private int CurrentStep = 0;
 
     ChangeEventArgs<PlanC.Client.Components.DropdownProgramSelection> programSelectChange;
+
+    public void Export()
+    {
+        // génère le document
+        EditorOpen = true;
+        Download();
+    }
+
+    public void Download()
+    {
+        // First sKILL has competence
+        System.Collections.ObjectModel.Collection<Skill> Skills = new System.Collections.ObjectModel.Collection<Skill>();
+        // tous les compétences reliés avec le plancadre
+        List<Competences> competences = new List<Competences>();
+
+        /// FAIRE LA SKILL LISTE
+        /// 
+        // cycle sur les critere element competence
+        foreach (var elementsCompetence in Template.PlanCadreCompetenceElements)
+        {
+            var comp = elementsCompetence.ElementCompetence.IdentityKeyCompetencesNavigation;
+            // composant d'une compétence
+            if (!competences.Contains(comp))
+            {
+                competences.Add(comp);
+                Skills.Add(new Skill() { Title = competences.Last().Enonce });
+            }
+
+            // trouve le skill et ajoute à celui ci le skill element trouvé
+            var _skill = Skills.First(e => e.Title == comp.Enonce);
+
+            if (_skill == null)
+            {
+                Console.WriteLine($"Didn't not find {comp.Enonce}");
+            }
+            else 
+            {           
+                // ajoute au skill trouvé l'élément dans la compétence relié dans laquelle nous nous trouvons
+                _skill.SkillElements.Add(new SkillElement()
+                {
+                    Title = elementsCompetence.LongDescription,
+                    Criterias = new System.Collections.ObjectModel.Collection<string>(elementsCompetence.ElementCompetence.GetCritereListString)
+                });
+
+                // acquired all context has string
+                _skill.AchievementContexts = new System.Collections.ObjectModel.Collection<string>(comp.GetContextListString);
+            }
+        }
+
+        CourseTemplate template = new CourseTemplate()
+        {
+            CourseId = Template.CoursId,
+            CourseDescription = Template.Description,
+            CourseTitle = Template.DenominationCours,
+            EducativeIntent = Template.IntentionEducative,
+            PedagogicalIntent = Template.IntentionPedagogique,
+            TimeDistribution = new TimeDistribution(Template.TheoryHoursAccessor, Template.PracticeHoursAccessor, Template.HomeHoursAccessor),
+            UnitsCount = Template.UnitsAccessor,
+            Skills = Skills            
+        };
+
+        //JS.SaveAs("Bonjour.docx", fileStream.ToArray());
+        string filePath = "Data/Bonjour.docx";
+        // ouvre le document stream
+        using (FileStream fileStream = new FileStream(filePath, System.IO.FileMode.Open, System.IO.FileAccess.Read))
+        {
+            WDocument.WordDocument document = WDocument.WordDocument.Load(fileStream, WDocument.FormatType.Docx);
+            string json = Newtonsoft.Json.JsonConvert.SerializeObject(document);
+            document.Dispose();
+            DocumentEditorModule editor = container.GetDocumentEditor();
+            editor.Open(json);
+        }
+
+    }
+
+    public void OnDownload()
+    {
+        //envoit un document à la sauvegarde
+        DocumentEditorModule editor = container.GetDocumentEditor();
+        editor.Save("sample", FormatType.Docx);
+    }
 
     protected override void OnInitialized()
     {
@@ -185,7 +242,8 @@
 
 
         //Création des composantes du wizard et ajout à la liste liée.
-        Forms = new LinkedList<CourseTemplateFormComponent>();
+        Forms = new LinkedList<CourseTemplateFormComponent>
+    ();
 
         Forms.AddLast(new EditFormPlancadre());
         Forms.AddLast(new TemplateSkillElemInput());
@@ -235,4 +293,4 @@
         NavigationManager.NavigateTo($"/planscadres/{Template.CoursId}/confirmation");
     }
 
-}
+    }

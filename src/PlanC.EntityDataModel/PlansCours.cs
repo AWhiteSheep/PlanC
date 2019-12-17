@@ -37,6 +37,8 @@ namespace PlanC.EntityDataModel
 
         [Column("CoursePolicy", TypeName = "ntext")]
         public string CoursePolicy { get; set; }
+        [Column("PonderationComment", TypeName ="ntext")]
+        public string PonderationComment { get; set; }
 
 
         [ForeignKey(nameof(SessionId))]
