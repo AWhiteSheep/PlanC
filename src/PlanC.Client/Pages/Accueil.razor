@@ -2,12 +2,8 @@
 @using PlanC.Client.Pages.Shared
 @inject IJSRuntime JSRuntime
 
-<<<<<<< HEAD
-    <link async href="css/my-tiles.css" rel="stylesheet" />
+<link async href="css/my-tiles.css" rel="stylesheet" />
 <div style="min-height: 100%;">
-=======
-<div id="editor">
->>>>>>> e6351150fbe926ea9dd68824e6c58e0603ec91b9
     <div class="row">
         <div id="theme-portal-welcome" class="col-12">
             <div class="text-center">
@@ -20,13 +16,8 @@
         </div>
     </div>
     <!-- Section de bienvenue pour les nouveau arrivants -->
-<<<<<<< HEAD
     <div class="row justify-content-center mt-5">
         <div class="col-md-5 card shadow" style="margin-bottom: 200px;">
-=======
-    <div class="row justify-content-center mt-3">
-        <div class="col-10 card shadow">
->>>>>>> e6351150fbe926ea9dd68824e6c58e0603ec91b9
             <div class="card-body" style="font-size: large">
                 <!-- Contrôleur pour les envoyés vers les initialisation prérequis -->
                 <ul class="nav nav-tabs" id="myTab" role="tablist">
@@ -80,20 +71,14 @@
 </div>
 
 @code {
-<<<<<<< HEAD
     // afficher des site externe
     Biglink.BiglinkContext bglinkDocumentation;
     Biglink.BiglinkContext bglinkCsimple;
     Biglink.BiglinkContext bglinkOmnivox;
     protected override void OnInitialized()
-=======
-    bool wasRender = false;
-    protected override async void OnAfterRender(bool firstRender)
->>>>>>> e6351150fbe926ea9dd68824e6c58e0603ec91b9
     {
         bglinkDocumentation = new Biglink.BiglinkContext
         {
-<<<<<<< HEAD
             icon = "fas fa-passport",
             text = "Voir la documentation."
         };
@@ -107,34 +92,5 @@
             icon = "fas fa-external-link-alt",
             text = "omnivox"
         };
-=======
-            wasRender = true;
-            // call avec le jsinterop afin de lier les composantes
-            // que jquery et que les plugins ui ne peuvent s'accroché
-            // car elles ont un cycle différent
-            try
-            {
-                await JSRuntime.InvokeAsync<string>("InitTrumbowyg", "#editor");
-            }
-            catch { 
-            }
-        }
-    }
-
-    public async void Dispose()
-    {
-        try
-        {
-            try
-            {
-                await JSRuntime.InvokeAsync<string>("DisposeTrumbowyg", "#editor");
-            }
-            catch
-            {
-
-            }
-        }
-        catch { }
->>>>>>> e6351150fbe926ea9dd68824e6c58e0603ec91b9
     }
 }

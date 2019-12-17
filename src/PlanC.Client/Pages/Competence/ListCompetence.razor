@@ -21,7 +21,6 @@
 
 <div class="container shadow p-5">
     <div class="row">
-<<<<<<< HEAD
         <h3>Liste des compétences:</h3>
         <div class="col-12">
             <div class="input-group">
@@ -41,30 +40,6 @@
                            checked="@(OptionFilter == "Énoncé")" @onclick="@(() => OptionFilter = "Énoncé")" value="Énoncé" />
                     <input class="btn btn-primary @(OptionFilter == "Département" ? "active" : "")" type="button"
                            checked="@(OptionFilter == "Département")" @onclick="@(() => OptionFilter = "Département")" value="Département" />
-=======
-        @if (competences != null)
-        {
-            <h3>Liste des compétences:</h3>
-            <div class="col-12">
-                <div class="input-group">
-                    <input type="text" class="form-control" @bind="Filter"
-                          aria-describedby="input-recherche" />
-                    <div class="input-group-append" id="input-recherche">
-                        <button class="btn btn-primary" @onclick="DoFilter" type="button"><i class="fas fa-search"></i></button>
-                    </div>
-                </div>
-            </div>
-            <div class="col-12 pt-3 d-flex justify-content-between">
-                <div class="form-group">
-                    <div class="btn-group btn-group-toggle" data-toggle="buttons">
-                        <input class="btn btn-primary @(OptionFilter == "Numéro" ? "active" : "")" type="button"
-                                checked="@(OptionFilter == "Numéro")" @onclick="@(() => OptionFilter = "Numéro")" value="Numéro" />
-                        <input class="btn btn-primary @(OptionFilter == "Énoncé" ? "active" : "")" type="button"
-                                checked="@(OptionFilter == "Énoncé")" @onclick="@(() => OptionFilter = "Énoncé")" value="Énoncé" />
-                        <input class="btn btn-primary @(OptionFilter == "Département" ? "active" : "")" type="button"
-                                checked="@(OptionFilter == "Département")" @onclick="@(() => OptionFilter = "Département")" value="Département" />
-                    </div>
->>>>>>> e6351150fbe926ea9dd68824e6c58e0603ec91b9
                 </div>
             </div>
             <a href="/competences/creation">Formulaire d'une nouvelle compétence</a>
@@ -157,11 +132,7 @@
                 case "Numéro":                    
                     competences = _competences.Where(e => e.CompetenceId.Contains(_filter)).ToList();
                     break;
-<<<<<<< HEAD
                 case "Énoncé":
-=======
-                default:                     
->>>>>>> e6351150fbe926ea9dd68824e6c58e0603ec91b9
                     competences = _competences.Where(e => e.Enonce.Contains(_filter)).ToList();
                     break;
                 default:
