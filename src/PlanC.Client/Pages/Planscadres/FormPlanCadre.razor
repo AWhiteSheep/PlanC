@@ -4,20 +4,25 @@
 @page "/planscadres/{id}/create"
 @page "/planscadres/{id}/edition/{VsnCdttm}/modifier"
 @attribute [Authorize]
-@using PlanC.EntityDataModel
-@using PlanC.Client.Components
-@using System.Collections.Generic
-@using Microsoft.EntityFrameworkCore
 @inject NavigationManager NavigationManager
 @inject PCU001Context context
 @inject IJSRuntime JS
-@using Syncfusion.EJ2.Blazor.RichTextEditor
 @using System.IO
 @using PlanC.Client.Data
+@using Newtonsoft.Json
+@using PlanC.EntityDataModel
+@using PlanC.Client.Components
+@using System.Collections.Generic
+@using PlanC.DocumentGeneration.CourseTemplate
+@using PlanC.DocumentGeneration.Common
+@using Microsoft.EntityFrameworkCore
+@using Syncfusion.EJ2.Blazor.RichTextEditor
 @using Syncfusion.EJ2.Blazor.Buttons
 @using Syncfusion.EJ2.Blazor.DocumentEditor
 @using Syncfusion.EJ2.DocumentEditor.Blazor
 @using WDocument = Syncfusion.EJ2.DocumentEditor;
+@using System.Collections.ObjectModel;
+
 <!--section sécurité doit être seulement coordonateur du programme et la consultation par le professeur-->
 <!-- Section de navigation -->
 <div class="row mb-3">
@@ -36,7 +41,7 @@
 
 
 <div class="row">
-    <div class="col-12">
+    <div class="col-12 d-flex justify-content-center">
         <PlanC.Client.Components.ProgressBar steps="@(new List<string>{ "Déscription", "Compétences", "Examens finaux", "Révision" })" Current="CurrentStep"></PlanC.Client.Components.ProgressBar>
     </div>
 </div>
@@ -87,9 +92,9 @@
 </div>
 
 
-<div hidden="@(!EditorOpen)" class="container shadow p-5" style="margin-bottom: 200px; margin-top: 50px">
+<div hidden="@(!EditorOpen)" class="container shadow p-5 w-100 h-100" style="margin-bottom: 200px; margin-top: 50px">
     <EjsButton @onclick="() => EditorOpen = false">Fermer</EjsButton>
-    <EjsButton @onclick="OnDownload">Télécharger</EjsButton>
+    <EjsButton @onclick="Export">Télécharger</EjsButton>
     <EjsDocumentEditorContainer @ref="container">
     </EjsDocumentEditorContainer>
 </div>
@@ -102,7 +107,7 @@
 @code{
     // document editor ref point
     EjsDocumentEditorContainer container;
-    bool EditorOpen;
+    bool EditorOpen { get; set; }
 
     public void Export()
     {
@@ -113,24 +118,94 @@
 
     public void Download()
     {
-        //JS.SaveAs("Bonjour.docx", fileStream.ToArray());
-        string filePath = "Data/Bonjour.docx";
-        // ouvre le document stream
-        using (FileStream fileStream = new FileStream(filePath, System.IO.FileMode.Open, System.IO.FileAccess.Read))
+        List<PlanCadreCompetenceElements> tempTemplateElements =null;
+        if(Template != null)
+            tempTemplateElements = context.PlanCadreCompetenceElements.Include(e => e.ElementCompetence)
+                .ThenInclude(d => d.IdentityKeyCompetencesNavigation)
+                .Include(v => v.PlansCadres)
+                .Where(t => t.CoursId.Trim() == Template.CoursId.Trim()).ToList();
+
+        if (tempTemplateElements == null)
+            return;
+        // First sKILL has competence
+        System.Collections.ObjectModel.Collection<Skill> Skills = new System.Collections.ObjectModel.Collection<Skill>();
+        // tous les compétences reliés avec le plancadre
+        List<Competences> competences = new List<Competences>();
+
+        /// FAIRE LA SKILL LISTE
+        ///
+        // cycle sur les critere element competence
+        foreach (var elementsCompetenceTemplate in tempTemplateElements)
         {
-            WDocument.WordDocument document = WDocument.WordDocument.Load(fileStream, WDocument.FormatType.Docx);
-            string json = Newtonsoft.Json.JsonConvert.SerializeObject(document);
-            document.Dispose();
+            Competences comp = elementsCompetenceTemplate.ElementCompetence.IdentityKeyCompetencesNavigation;
+            // composant d'une compétence
+            if (!competences.Contains(comp))
+            {
+                competences.Add(comp);
+                Skills.Add(new Skill() { Title = competences.Last().Enonce });
+            }
+
+            // trouve le skill et ajoute à celui ci le skill element trouvé
+            var _skill = Skills.First(e => e.Title == comp.Enonce);
+
+            if (_skill == null)
+            {
+                Console.WriteLine($"Didn't not find {comp.Enonce}");
+            }
+            else
+            {
+                // ajoute au skill trouvé l'élément dans la compétence relié dans laquelle nous nous trouvons
+                _skill.SkillElements.Add(new SkillElement()
+                {
+                    Title = elementsCompetenceTemplate.LongDescription,
+                    Criterias = new System.Collections.ObjectModel.Collection<string>(elementsCompetenceTemplate.ElementCompetence.GetCritereListString)
+                });
+
+                // acquired all context has string
+                _skill.AchievementContexts = new System.Collections.ObjectModel.Collection<string>(comp.GetContextListString);
+            }
+        }
+
+        CourseTemplate template = new CourseTemplate()
+        {            
+            CourseId = Template.CoursId,
+            CourseDescription = Template.Description,
+            CourseTitle = Template.DenominationCours,
+            EducativeIntent = Template.IntentionEducative,
+            PedagogicalIntent = Template.IntentionPedagogique,
+            TimeDistribution = new TimeDistribution(Template.TheoryHoursAccessor, Template.PracticeHoursAccessor, Template.HomeHoursAccessor),
+            UnitsCount = Template.UnitsAccessor,
+            Skills = Skills,            
+        };
+
+        using (var stream = new MemoryStream())
+        {
+            using (var document = DocumentFactory.Create(stream))
+            {
+                var editor = new DocumentEditor(document);
+                editor.Model = template;
+                editor.ApplyChanges();
+            }
+            Open(stream);
+        }
+    }
+    string sfdtString;
+    public void Open(MemoryStream stream)
+    {
+        WDocument.WordDocument document = WDocument.WordDocument.Load(stream, WDocument.FormatType.Docx);
+        sfdtString = JsonConvert.SerializeObject(document);
+        document.Dispose();
+        if (!String.IsNullOrEmpty(sfdtString))
+        {
             DocumentEditorModule editor = container.GetDocumentEditor();
-            editor.Open(json);
+            editor.Open(sfdtString);
         }
     }
 
     public void OnDownload()
     {
-        //envoit un document à la sauvegarde
         DocumentEditorModule editor = container.GetDocumentEditor();
-        editor.Save("sample", FormatType.Docx);
+        editor.Save("Plancadres"+Template.CoursId, FormatType.Docx);
     }
 
     [Parameter]
