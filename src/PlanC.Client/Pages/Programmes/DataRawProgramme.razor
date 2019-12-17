@@ -1,10 +1,17 @@
 ﻿@page  "/admin/programmes"
+@inject PCU001Context context
+@inject NavigationManager _NavigationManager
+@inject IJSRuntime Js
 @using PlanC.EntityDataModel
 @using Newtonsoft.Json
 @using Syncfusion.EJ2.Blazor.Grids
-@*context de la base de donné et js runtime*@
-@inject PCU001Context _context
-@inject IJSRuntime JSRuntime
+@using Microsoft.AspNetCore.Components
+@using Syncfusion.EJ2.Blazor.Buttons
+@using Microsoft.JSInterop
+@using Microsoft.EntityFrameworkCore
+@using PlanC.Client
+@using System.Linq
+@using Syncfusion.EJ2.Blazor.Navigations
 @attribute [Authorize]
 @* les cdn(s) doivent être ajoutés pour le bon fonctionnement du componant *@
 
@@ -26,131 +33,161 @@
     </div>
 </div>
 
-@if (programmes == null)
-{
-    <p><em>En cours de chargement...</em></p>
-}
-else if (!programmes.Any())
-{
-    <p><em>Nous avons trouvé aucun programme.</em></p>
-}
-else
-{
-    <div class="col-12">
-        <div class="card shadow table-responsive">
-            <div class="card-body">
-                <!-- Module table des départements -->
-                <table id="table" class="table table-striped table-hover">
-                    <thead>
-                        <tr>
-                            <th scope="col">Titre du programmes</th>
-                            <th scope="col">ID</th>
-                            <th scope="col">Département ID</th>
-                            <th scope="col" style="width: 60px;">Nombre de compétences obligatoires</th>
-                            <th scope="col">Nombre de compétences optionnelles</th>
-                            <th scope="col">Nombre de compétences complémentaires</th>
-                            <td></td>
-                        </tr>
-                    </thead>
-                    <tbody id="table">
-                        @foreach (Programmes programme in programmes)
-                        {
-                            <tr>
-                                <th scope="row">@programme.Designation</th>
-                                <td>@programme.Id</td>
-                                <td>@programme.DepartementId</td>
-                                <td class="text-center">@programme.NombreCompetencesObligatoires</td>
-                                <td class="text-center">@programme.NombreCompetencesOptionnelles</td>
-                                <td class="text-center">@programme.NombreCompetencesComplementaires</td>
-                                <td class="d-flex">
-                                    <button type="button" class="btn btn-link mr-2" @onclick="@(() => Edit(@programme.Id, @programme.DepartementId))" data-toggle="modal" data-target="#exampleModalCenter">modifier</button>
-                                    <button class="btn btn-link">Supprimer</button>
-                                </td>
-                            </tr>
-                        }
-                    </tbody>
-                </table>
-            </div>
-        </div>
+<div class="row justify-content-center">
+    <!-- Affiche tous les départements -->
+    <div class="col-12" hidden="@(formLoadDisplay)">
+        <EjsButton @onclick="ToggleForm">Ajout d'un programme</EjsButton>
+        <br />
+        @if (programmes != null)
+        {
+            <EjsGrid DataSource="@programmes" AllowSorting="true" AllowPaging="true" 
+                     ContextMenuItems="@(new List<ContextMenuItemModel>() {new ContextMenuItemModel { Text = "Voir le programme", Target = ".e-content", Id = "edit" }})">
+                <GridPageSettings PageSize="8"></GridPageSettings>
+                <!-- Les événements se passant sur la table et les paramètre -->
+                <GridEvents ContextMenuItemClicked="OnContextMenuClick" RowSelected="RowSelectHandler" RowDeselected="() => Selected = null" TValue="Programmes"></GridEvents>
+                <GridColumns>
+                    <GridColumn IsPrimaryKey="true" Field=@nameof(Selected.Id) HeaderText="Identifiant du cours"></GridColumn>
+                    <GridColumn Field=@nameof(Selected.Designation) HeaderText="Nom du programme"></GridColumn>
+                    <GridColumn Field=@nameof(Selected.Departement.Titre) HeaderText="Département"></GridColumn>
+                    <GridColumn Field=@nameof(Selected.NombreCompetencesObligatoiresAccessor) HeaderText="NB compétence obligatoire"></GridColumn>
+                    <GridColumn Field=@nameof(Selected.RcdCdttm) HeaderText="Date du dernier enregistrement" Format="yMd" Type=ColumnType.Date></GridColumn>
+                </GridColumns>
+            </EjsGrid>
+        }
+        else if (loadFailed)
+        {
+            <a href="" class="reload">Recharger la page</a>
+        }
+        else
+        {
+            <h1>En chargement...</h1>
+        }
     </div>
-}
-<!-- Modal -->
-@if (SelectedItem != null)
-{
-    <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered" role="document">
+    <div hidden="@(!formLoadDisplay)" class="col-12" id="exampleModalCenter">
+        <EjsButton @onclick="ToggleForm">Fermer</EjsButton>
+        <div class="modal-dialog" role="document">
             <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalCenterTitle"> @SelectedItem.Id @SelectedItem.DepartementId </h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
                 <div class="modal-body">
-                    <EditForm Model="@SelectedItem" OnValidSubmit="@HandleValidSubmit">
-                        <DataAnnotationsValidator />
-                        <ValidationSummary />
-                        <div class="form-group">
-                            <label for="designation">Désignation du programme: </label>
-                            <InputText id="designation" @bind-Value="SelectedItem.Designation" />
+                    @if (Selected != null)
+                    {
+                        <div class="row">
+                            <div class="col-12">
+                                <h4 class="modal-title" id="exampleModalCenterTitle"> Nouveau programme </h4>
+                                <button @onclick="ToggleForm" type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
                         </div>
-                        <div class="form-group">
-                            <label for="obligatoire">Nombre de compétences obligatoires: </label>
-                            <InputNumber id="obligatoire" @bind-Value="SelectedItem.NombreCompetencesObligatoires" />
-                        </div>
-                        <div class="form-group">
-                            <label for="optionnelles">Nombre de compétences optionnelles: </label>
-                            <InputNumber id="optionnelles" @bind-Value="SelectedItem.NombreCompetencesOptionnelles" />
-                        </div>
-                        <div class="form-group">
-                            <label for="complementaires">Nombre de compétences complementaires: </label>
-                            <InputNumber id="complementaires" @bind-Value="SelectedItem.NombreCompetencesComplementaires" />
-                        </div>
-                        <button type="submit" class="btn btn-primary">Submit</button>
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal"></button>
-                    </EditForm>
+                        <EditForm Model="@Selected" OnValidSubmit="@HandleValidSubmit">
+                            <DataAnnotationsValidator />
+                            <ValidationSummary />
+                            <div class="form-group">
+                                <label for="designation">Désignation du programme: </label>
+                                <InputText class="col-12" id="designation" @bind-Value="Selected.Designation" />
+                            </div>
+                            <div class="form-group">
+                                <label for="designation">Département: </label>
+                                <InputSelect class="col-12" id="designation" @bind-Value="Selected.DepartementIdHasString">
+                                    @foreach (var departement in departements)
+                                    {
+                                        <option value="@departement.Id">@departement.Titre</option>
+                                    }
+                                </InputSelect>
+                            </div>
+                            <div class="form-group">
+                                <label for="obligatoire">Nombre de compétences obligatoires: </label>
+                                <InputNumber class="col-12" id="obligatoire" @bind-Value="Selected.NombreCompetencesObligatoiresAccessor" />
+                            </div>
+                            <div class="form-group">
+                                <label for="optionnelles">Nombre de compétences optionnelles: </label>
+                                <InputNumber class="col-12" id="optionnelles" @bind-Value="Selected.NombreCompetencesComplementairesAccessor" />
+                            </div>
+                            <div class="form-group">
+                                <label for="complementaires">Nombre de compétences complementaires: </label>
+                                <InputNumber class="col-12" id="complementaires" @bind-Value="Selected.NombreCompetencesOptionnellesAccessor" />
+                            </div>
+                            <div class="form-group">
+                                <label for="complementaires">Url de l'image: </label>
+                                <InputText class="col-12" id="image" @bind-Value="Selected.ProgrammeImg" />
+                            </div>
+                            <button type="submit" class="btn btn-primary">Submit</button>
+                        </EditForm>
+                    }
                 </div>
             </div>
         </div>
     </div>
-}
+
+</div>
+<!-- Modal -->
+
 
 <div class="col-12 text-center">
     <span class="smallerFontSize">La page ne répond pas? <a href="/admin/programmes" onclick="window.location.reload()" class="reload">Rafraîchir la page.</a></span>
 </div>
 
+<style>
+    .image img {
+        height: 55px;
+        width: 55px;
+        border-radius: 50px;
+        box-shadow: inset 0 0 1px #e0e0e0, inset 0 0 14px rgba(0, 0, 0, 0.2);
+    }
+</style>
+
 @code {
-    private Programmes SelectedItem;
+    private Programmes Selected;
     List<Programmes> programmes;
+    List<Departements> departements;
+    private bool loadFailed;
+    private bool formLoadDisplay = false;
+    private bool isEditing = false;
 
     protected override void OnInitialized()
     {
-        JSRuntime.InvokeAsync<string>("requestScripts", JsonConvert.SerializeObject(new string[] { "https://cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js" }));
-        JSRuntime.InvokeAsync<string>("requestScripts", JsonConvert.SerializeObject(new string[] { "/js/fr-FR.js", "https://cdn.datatables.net/1.10.20/js/dataTables.bootstrap4.min.js" }));
-        programmes = _context.Programmes.ToList();
+        programmes = context.Programmes.Include(d => d.Departement).ToList();
+        departements = context.Departements.ToList();
     }
 
     protected void Change()
     {
-        _context.SaveChanges();
+        context.SaveChanges();
     }
 
-    protected override void OnAfterRender(bool firstRender)
+    protected void Edit()
     {
-        if (firstRender)
-        {
-            JSRuntime.InvokeAsync<string>("initTable", "#table");
-            JSRuntime.InvokeAsync<string>("requestScripts", JsonConvert.SerializeObject(new string[] { "/js/generalAsyncJs.js" }));
-        }
+        formLoadDisplay = true;
+        isEditing = true;
     }
 
-    void Edit(string id, int depId)
-    {
-        SelectedItem = programmes.First(e => e.Id == id && e.DepartementId == depId);
-        JSRuntime.InvokeAsync<string>("showModal", "#exampleModalCenter");
-    }
     private void HandleValidSubmit()
     {
-        Console.WriteLine("OnValidSubmit");
+        if (!isEditing && !context.Programmes.Contains(Selected)) 
+        { 
+            context.Add(Selected);
+        }
+        context.SaveChanges();
+        ToggleForm();
+        StateHasChanged();
+    }
+
+    public void ToggleForm()
+    {
+        isEditing = false;
+        formLoadDisplay = !formLoadDisplay;
+        Selected = new Programmes();
+    }
+
+    public void RowSelectHandler(RowSelectEventArgs<Programmes> args)
+    {
+        Selected = programmes.FirstOrDefault(e => e.Id == args.Data.Id);
+    }
+
+    public void OnContextMenuClick(MenuEventArgs args)
+    {
+        if (args.Item.Id == "edit")
+        {
+            Edit();
+        }
     }
 }

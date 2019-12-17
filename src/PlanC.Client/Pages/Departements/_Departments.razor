@@ -1,6 +1,11 @@
 ﻿@page "/departements"
 @using Microsoft.AspNetCore.Components
 @inject PCU001Context context
+@inject NavigationManager _NavigationManager
+@using Syncfusion.EJ2.Blazor.Grids
+@using Syncfusion.EJ2.Blazor.Buttons
+@using PlanC.EntityDataModel
+@using Syncfusion.EJ2.Blazor.Navigations
 <!-- Section de navigation -->
 <div class="row mb-3">
     <div class="col">
@@ -35,42 +40,71 @@
 <!-- Container pour blazor component -->
 <div class="row justify-content-center">
     <!-- Affiche tous les départements -->
-    <div class="col-12">
-        <div class="card shadow">
-            <div class="card-body">
-                @foreach (Departements department in departements)
-                {
-                    <!-- Affiche les informations d'un département -->
-                    <table style="position: relative">
-                        <tbody>
-                            <tr>
-                                <td valign="top">
-                                    <h4><a href="#">#@department.Id</a></h4>
-                                </td>
-                                <td>
-                                    <h4>@department.Titre</h4>
-                                    <!-- Renvoit les programmes reliés au département-->
-                                </td>
-                                <td valign="top" class="flex-column">
-                                    <a class="btn btn-success" href="/departements/@department.Id">Consulter</a>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                }
-            </div>
-        </div>
+    <div class="col-12" hidden="@(formLoadDisplay)">
+        <EjsButton @onclick="ToggleForm">Ajout d'un département</EjsButton>
+        <br />
+        @if (departements != null)
+        {
+            <EjsGrid DataSource="@departements" AllowSorting="true" AllowPaging="true"
+                     ContextMenuItems="@(new List<ContextMenuItemModel>() {
+                                                 new ContextMenuItemModel { Text = "Voir le département", Target = ".e-content", Id = "open" }
+                                             })">
+                <GridEditSettings AllowAdding="true" AllowDeleting="true"></GridEditSettings>
+                <GridPageSettings PageSize="8"></GridPageSettings>
+                <!-- Les événements se passant sur la table et les paramètre -->
+                <GridEvents ContextMenuItemClicked="OnContextMenuClick" RowSelected="RowSelectHandler" RowDeselected="() => Selected = null" TValue="Departements"></GridEvents>
+                <GridColumns>
+                    <GridColumn IsPrimaryKey="true" Field=@nameof(Selected.Id) HeaderText="Identifiant du cours"></GridColumn>
+                    <GridColumn Field=@nameof(Selected.Titre) HeaderText="Identifiant du programme"></GridColumn>
+                    <GridColumn Field=@nameof(Selected.RcdCdttm) HeaderText="Date du dernier enregistrement" Format="yMd" Type=ColumnType.Date></GridColumn>
+                </GridColumns>
+            </EjsGrid>
+        }
+        else if (loadFailed)
+        {
+            <a href="" class="reload">Recharger la page</a>
+        }
+        else
+        {
+            <h1>En chargement...</h1>
+        }
+    </div>
+    <div class="col-12" hidden="@(!formLoadDisplay)">
+        <EjsButton @onclick="ToggleForm">Fermer</EjsButton>
+        <TDepartements IsEditable="true"></TDepartements>
     </div>
 </div>
 <div class="col-12 text-center">
-     <span class="smallerFontSize">La page ne répond pas? <a href="/departements" onclick="window.location.reload()" class="reload">Rafraîchir la page.</a></span>
+    <span class="smallerFontSize">La page ne répond pas? <a href="/departements" onclick="window.location.reload()" class="reload">Rafraîchir la page.</a></span>
 </div>
 
 @code {
     protected List<Departements> departements;
+    protected Departements Selected;
+    //safe check si la list à eu une erreur pour demander à l'usager de reload
+    private bool loadFailed;
+    private bool formLoadDisplay = false;
 
     protected override void OnInitialized()
     {
         departements = context.Departements.OrderBy(e => e.Id).ToList();
+    }
+
+    public void ToggleForm() 
+    {
+        formLoadDisplay = !formLoadDisplay;
+    }
+
+    public void RowSelectHandler(RowSelectEventArgs<Departements> args)
+    {
+        Selected = departements.FirstOrDefault(e => e.Id == args.Data.Id);
+    }
+
+    public void OnContextMenuClick(MenuEventArgs args)
+    {
+        if (args.Item.Id == "open")
+        {
+            _NavigationManager.NavigateTo($"/departements/{Selected.Id}");
+        }
     }
 }
