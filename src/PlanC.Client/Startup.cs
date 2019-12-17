@@ -66,24 +66,6 @@ namespace PlanC.Client
             {
                 o.MaximumReceiveMessageSize = 102400000;
             });
-            services.AddMvc();
-
-            services.AddRazorPages();
-            services.AddServerSideBlazor();
-
-
-            // Be Safe – Sanitize Your HTML 
-            services.AddScoped<IHtmlSanitizer, HtmlSanitizer>(x =>
-            {                
-                // https://blog.jonblankenship.com/2019/01/27/safely-rendering-markdown-in-blazor/
-                // Configure sanitizer rules as needed here.
-                // For now, just use default rules + allow class attributes
-                var sanitizer = new Ganss.XSS.HtmlSanitizer();
-                sanitizer.AllowedAttributes.ToList().AddRange(new List<string> { "b", "ul", "ol", "li", "p","i", "u", "em", "strong",
-                 "h1","h2","h3","h4","h5","h6","br","hr","blockquote","code", "del", "dl", "dd", "img", "pre", "s", "sup", "sub", "strike",
-                "div"});
-                return sanitizer;
-            });
             services.AddCors();
         }
 
