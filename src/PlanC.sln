@@ -3,11 +3,15 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.29418.71
 MinimumVisualStudioVersion = 10.0.40219.1
+Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "PCU001", "PlanC.Data\PCU001.sqlproj", "{5C4BFD62-AABD-4016-97DD-734A62C3BB34}"
+EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PlanC.EntityDataModel", "PlanC.EntityDataModel\PlanC.EntityDataModel.csproj", "{6975245D-0105-44FC-A7C1-A7E6B70A3815}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PlanC.DocumentGeneration", "PlanC.DocumentGeneration\PlanC.DocumentGeneration.csproj", "{13F680D5-D6EF-43D4-8701-68A83BCFED05}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PlanC.Client", "PlanC.Client\PlanC.Client.csproj", "{22C2B24C-A46C-4CA4-96EB-496434D13006}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PlanC.WebApi", "PlanC.WebApi\PlanC.WebApi.csproj", "{6A7BCB8B-DFEA-49E0-AD37-B86C2407248F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +19,12 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{5C4BFD62-AABD-4016-97DD-734A62C3BB34}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5C4BFD62-AABD-4016-97DD-734A62C3BB34}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5C4BFD62-AABD-4016-97DD-734A62C3BB34}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{5C4BFD62-AABD-4016-97DD-734A62C3BB34}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5C4BFD62-AABD-4016-97DD-734A62C3BB34}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5C4BFD62-AABD-4016-97DD-734A62C3BB34}.Release|Any CPU.Deploy.0 = Release|Any CPU
 		{6975245D-0105-44FC-A7C1-A7E6B70A3815}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{6975245D-0105-44FC-A7C1-A7E6B70A3815}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6975245D-0105-44FC-A7C1-A7E6B70A3815}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -27,6 +37,10 @@ Global
 		{22C2B24C-A46C-4CA4-96EB-496434D13006}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{22C2B24C-A46C-4CA4-96EB-496434D13006}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{22C2B24C-A46C-4CA4-96EB-496434D13006}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6A7BCB8B-DFEA-49E0-AD37-B86C2407248F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6A7BCB8B-DFEA-49E0-AD37-B86C2407248F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6A7BCB8B-DFEA-49E0-AD37-B86C2407248F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6A7BCB8B-DFEA-49E0-AD37-B86C2407248F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

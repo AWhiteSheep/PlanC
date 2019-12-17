@@ -7,6 +7,7 @@ td {
   padding: 20px 20px 20px 0;
 }
 
+<<<<<<< HEAD
 /*side bar toggler animation*/
 .motion-press {
     webkit-appearance: none;
@@ -224,6 +225,8 @@ input[disabled] {
 
 /***/
 
+=======
+>>>>>>> e6351150fbe926ea9dd68824e6c58e0603ec91b9
 .press {
     border-radius: 500px !important;
 }
@@ -419,8 +422,11 @@ html {
  * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
  */
 :root {
+<<<<<<< HEAD
   --memory: #00bcd4;
   --memory-secondary: #00bcd4;
+=======
+>>>>>>> e6351150fbe926ea9dd68824e6c58e0603ec91b9
   --blue: #4e73df;
   --indigo: #6610f2;
   --purple: #6f42c1;
@@ -2874,23 +2880,6 @@ fieldset:disabled a.btn {
   pointer-events: none;
 }
 
-.btn-memory {
-  color: #fff;
-  background-color: var(--memory);
-  border-color: var(--memory);
-}
-
-.btn-memory:hover {
-  color: #fff;
-  background-color:var(--memory);
-  border-color: var(--memory);
-}
-  .btn-memory:focus, .btn-memory.focus {
-    box-shadow: 0 0 0 0.2rem rgba(105, 136, 228, 0.5);
-  }
-
-  
-
 .btn-primary {
   color: #fff;
   background-color: #4e73df;
@@ -3877,20 +3866,6 @@ input[type="button"].btn-block {
   flex-wrap: wrap;
   align-items: stretch;
   width: 100%;
-}
-
-.form-memory:focus {
-  color: #FF5722;
-  background-color: #fff;
-  border-color: #00BCD4;
-  outline: 0;
-  box-shadow: 0 0 0 0.01rem #00BCD4;
-}
-.form-memory {
-  color: #FF5722;
-}
-.form-control {
-  caret-color: #00bcd4;
 }
 
   .input-group > .form-control,
@@ -10855,7 +10830,7 @@ a:focus {
 }
 
   #wrapper #content-wrapper {
-    background-color: #fff; /*#f8f9fc*/
+    background-color: #f8f9fc;
     width: 100%;
     overflow-x: hidden;
   }
@@ -12564,6 +12539,7 @@ svg,
 video {
   /* 1 */
   max-width: 100%;
+  height: auto;
   /* 2 */
   box-sizing: border-box;
 }

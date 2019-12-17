@@ -1,7 +1,11 @@
 ﻿@page "/portail"
+<<<<<<< HEAD
 @using Microsoft.AspNetCore.Identity
 @inject UserManager<AspNetUsers> UserManager
 @attribute [Authorize]
+=======
+
+>>>>>>> e6351150fbe926ea9dd68824e6c58e0603ec91b9
 @namespace PlanC.Client.Pages
 @inject PCU001Context context
 
@@ -14,8 +18,9 @@
             Tout ce dont vous avez besoin afin de créer des plans de cours à une vitesse éclaire!
             <div class="d-flex flex-row card-area">
                 <div class="d-flex flex-row">
-                    <a href="/planscadres/creation"> Créer un plans-cadres </a>
-                    <a href="/documents"> Voir tout les documents </a>
+                    <a href="~/Personnel/PlansCadres"> Créer un plans-cadres </a>
+                    <a href="~/Personnel/PlansCours"> Les plans de cours </a>
+                    <a href="~/Personnel"> Voir l'ensemble </a>
                 </div>
             </div>
         </p>

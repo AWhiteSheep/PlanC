@@ -5,7 +5,6 @@
 @*context de la base de donné et js runtime*@
 @inject PCU001Context _context
 @inject IJSRuntime JSRuntime
-@attribute [Authorize]
 @* les cdn(s) doivent être ajoutés pour le bon fonctionnement du componant *@
 
 
@@ -124,9 +123,9 @@ else
     List<Programmes> programmes;
 
     protected override void OnInitialized()
-    {
+    {        
         JSRuntime.InvokeAsync<string>("requestScripts", JsonConvert.SerializeObject(new string[] { "https://cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js" }));
-        JSRuntime.InvokeAsync<string>("requestScripts", JsonConvert.SerializeObject(new string[] { "/js/fr-FR.js", "https://cdn.datatables.net/1.10.20/js/dataTables.bootstrap4.min.js" }));
+        JSRuntime.InvokeAsync<string>("requestScripts", JsonConvert.SerializeObject(new string[] { "/js/fr-FR.js" ,  "https://cdn.datatables.net/1.10.20/js/dataTables.bootstrap4.min.js"}));
         programmes = _context.Programmes.ToList();
     }
 
@@ -138,7 +137,7 @@ else
     protected override void OnAfterRender(bool firstRender)
     {
         if (firstRender)
-        {
+        {            
             JSRuntime.InvokeAsync<string>("initTable", "#table");
             JSRuntime.InvokeAsync<string>("requestScripts", JsonConvert.SerializeObject(new string[] { "/js/generalAsyncJs.js" }));
         }

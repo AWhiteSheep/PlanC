@@ -127,7 +127,6 @@ $(document).on('click', 'a.scroll-to-top', function (e) {
     e.preventDefault();
 });
 
-// autocomplete 
 var values = [
     { value: 'Admin', data: '/admin' },
     { value: 'Competence', data: '/personnel/competences' },
@@ -136,25 +135,13 @@ var values = [
     { value: 'Plans cadre', data: '/personnel/planscadres' },
 ];
 
-var autocompleter = $('#autocomplete');
-
 $('#autocomplete').autocomplete({
     lookup: values,
-    noCache: true,
     onSelect: function (suggestion) {
         location.replace(suggestion.value);
-    },
-    // ui est vide
-    onSearchStart: function (suggestions) {
-        console.log(suggestions);
-        $('#autocomplete').addClass("autocomplete-open");
-    },
-    onHide: function (container) {
-        $('#autocomplete').removeClass("autocomplete-open");
     }
 });
 
-// pour les clickables de la top bar
 $(document).on('click', '.panel-heading span.clickable', function (e) {
     var $this = $(this);
     if (!$this.hasClass('panel-collapsed')) {
@@ -168,6 +155,7 @@ $(document).on('click', '.panel-heading span.clickable', function (e) {
         $this.find('i').removeClass('glyphicon-chevron-up').addClass('glyphicon-chevron-down');
 
     }
+<<<<<<< HEAD
 })
 
 // confirmation post de la deconnection
@@ -204,3 +192,6 @@ $('.me-card').each(function (i, e) {
     // attache à l'élément une joyeuse apparence 
     mdc.ripple.MDCRipple.attachTo(e);
 });
+=======
+})
+>>>>>>> e6351150fbe926ea9dd68824e6c58e0603ec91b9

@@ -1,22 +1,10 @@
-﻿<CascadingAuthenticationState>
-    <Router AppAssembly="@typeof(Program).Assembly">
-        <Found Context="routeData">
-            <AuthorizeRouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)">
-                <NotAuthorized>
-                    <!--signalisation d'une droit sécurisé et sous connection-->
-                    <PlanC.Client.Pages.Authorization></PlanC.Client.Pages.Authorization>
-                </NotAuthorized>
-                <Authorizing>
-                    <h1>Authorization en cours...</h1>
-                    <p>....</p>
-                </Authorizing>
-            </AuthorizeRouteView>
-        </Found>
-        <NotFound>
-            <!--signalilsation d'une page non trouvé-->
-            <LayoutView Layout="@typeof(MainLayout)">
-                <PlanC.Client.Pages.NotFound></PlanC.Client.Pages.NotFound>
-            </LayoutView>
-        </NotFound>
-    </Router>
-</CascadingAuthenticationState>
+﻿<Router AppAssembly="@typeof(Program).Assembly">
+    <Found Context="routeData">
+        <RouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)" />
+    </Found>
+    <NotFound>
+        <LayoutView Layout="@typeof(MainLayout)">
+            <p>Sorry, there's nothing at this address.</p>
+        </LayoutView>
+    </NotFound>
+</Router>
