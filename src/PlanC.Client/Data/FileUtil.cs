@@ -9,6 +9,10 @@ using System.Linq;
 using System.Threading.Tasks;
 using Syncfusion.DocIO.DLS;
 using System.IO;
+using PlanC.EntityDataModel;
+using PlanC.DocumentGeneration.CourseTemplate;
+using Microsoft.EntityFrameworkCore;
+using PlanC.DocumentGeneration.Common;
 
 namespace PlanC.Client.Data
 {
@@ -43,6 +47,85 @@ namespace PlanC.Client.Data
             stream.Position = 0;
             document = new WordDocument(stream, FormatType.Html, XHTMLValidationType.None);
             return document;
+        }
+
+        public static Stream FromTemplate(PlanC.EntityDataModel.PlansCadres plansCadre, PCU001Context context) 
+        {
+            List<PlanCadreCompetenceElements> tempTemplateElements = null;
+            if (plansCadre != null)
+                tempTemplateElements = context.PlanCadreCompetenceElements.Include(e => e.ElementCompetence)
+                    .ThenInclude(d => d.IdentityKeyCompetencesNavigation)
+                    .Include(v => v.PlansCadres)
+                    .Where(t => t.CoursId.Trim() == plansCadre.CoursId.Trim()).ToList();
+
+            if (tempTemplateElements == null) 
+            {
+                Console.WriteLine($"Didn't not find any connection to competence elements {plansCadre.CoursId}");
+                return null;            
+            }
+
+            // First sKILL has competence
+            System.Collections.ObjectModel.Collection<Skill> Skills = new System.Collections.ObjectModel.Collection<Skill>();
+            // tous les compétences reliés avec le plancadre
+            List<Competences> competences = new List<Competences>();
+
+            /// FAIRE LA SKILL LISTE
+            ///
+            // cycle sur les critere element competence
+            foreach (var elementsCompetenceTemplate in tempTemplateElements)
+            {
+                Competences comp = elementsCompetenceTemplate.ElementCompetence.IdentityKeyCompetencesNavigation;
+                // composant d'une compétence
+                if (!competences.Contains(comp))
+                {
+                    competences.Add(comp);
+                    Skills.Add(new Skill() { Title = competences.Last().Enonce });
+                }
+
+                // trouve le skill et ajoute à celui ci le skill element trouvé
+                var _skill = Skills.First(e => e.Title == comp.Enonce);
+
+                if (_skill == null)
+                {
+                    Console.WriteLine($"Didn't not find {comp.Enonce}");
+                }
+                else
+                {
+                    // ajoute au skill trouvé l'élément dans la compétence relié dans laquelle nous nous trouvons
+                    _skill.SkillElements.Add(new SkillElement()
+                    {
+                        Title = elementsCompetenceTemplate.LongDescription,
+                        Criterias = new System.Collections.ObjectModel.Collection<string>(elementsCompetenceTemplate.ElementCompetence.GetCritereListString)
+                    });
+
+                    // acquired all context has string
+                    _skill.AchievementContexts = new System.Collections.ObjectModel.Collection<string>(comp.GetContextListString);
+                }
+            }
+
+            CourseTemplate template = new CourseTemplate()
+            {
+                CourseId = plansCadre.CoursId,
+                CourseDescription = plansCadre.Description,
+                CourseTitle = plansCadre.DenominationCours,
+                EducativeIntent = plansCadre.IntentionEducative,
+                PedagogicalIntent = plansCadre.IntentionPedagogique,
+                TimeDistribution = new TimeDistribution(plansCadre.TheoryHoursAccessor, plansCadre.PracticeHoursAccessor, plansCadre.HomeHoursAccessor),
+                UnitsCount = plansCadre.UnitsAccessor,
+                Skills = Skills,
+            };
+
+            using (var stream = new MemoryStream())
+            {
+                using (var document = PlanC.DocumentGeneration.CourseTemplate.DocumentFactory.Create(stream))
+                {
+                    var editor = new DocumentEditor(document);
+                    editor.Model = template;
+                    editor.ApplyChanges();
+                }
+                // stream ready envoit un nouveau document
+                return stream;
+            }
         }
     }
 }

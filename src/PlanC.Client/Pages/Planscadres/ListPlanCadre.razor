@@ -2,9 +2,15 @@
 @inject PCU001Context context
 @using System.Linq
 @inject NavigationManager _NavigationManager
+@inject IJSRuntime Js
 @using Syncfusion.EJ2.Blazor.Navigations
 @using Syncfusion.EJ2.Blazor.Grids
 @using Syncfusion.EJ2.Blazor.Buttons
+@using WDocument = Syncfusion.EJ2.DocumentEditor;
+@using PlanC.DocumentGeneration.CourseTemplate
+@using PlanC.DocumentGeneration.Common
+@using System.Collections.ObjectModel;
+@using System.IO
 
 <!--section sécurité doit être seulement coordonateur du programme et la consultation par le professeur-->
 <!-- Section de navigation -->
@@ -33,7 +39,10 @@
             @if (TemplateCours != null)
             {
                 <EjsGrid DataSource="@TemplateCours" AllowSorting="true" AllowPaging="true"
-                         ContextMenuItems="@(new List<ContextMenuItemModel>() { new ContextMenuItemModel { Text = "Ouvrir plan cours", Target = ".e-content", Id = "open" } })">
+                         ContextMenuItems="@(new List<ContextMenuItemModel>() {
+                                                 new ContextMenuItemModel { Text = "Ouvrir plan cours", Target = ".e-content", Id = "open" },
+                                                 new ContextMenuItemModel { Text = "Sauvegarder en tant que word", Target = ".e-content", Id = "word" }
+                                             })">
                     <GridEditSettings AllowAdding="true" AllowDeleting="true"></GridEditSettings>
                     <GridPageSettings PageSize="8"></GridPageSettings>
                     <!-- Les événements se passant sur la table et les paramètre -->
@@ -111,6 +120,13 @@
         if (args.Item.Id == "open")
         {
             _NavigationManager.NavigateTo($"/plancadre/{Selected.CoursId}/create");
+        }
+        else if (args.Item.Id == "word")
+        {
+            WDocument.WordDocument document = WDocument.WordDocument.Load(FileUtil.FromTemplate(Selected, context), WDocument.FormatType.Docx);
+            string json = Newtonsoft.Json.JsonConvert.SerializeObject(document);
+            document.Dispose();
+            FileUtil.SaveAs(Js, "Planscadre" + DateTime.Now.ToString(), System.Text.Encoding.UTF8.GetBytes(json));
         }
     }
 }
