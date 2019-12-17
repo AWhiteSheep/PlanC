@@ -18,6 +18,6 @@ namespace PlanC.DocumentGeneration.CoursePlan
         //Chaque chaîne est dans le format d'affichage
         //P. ex. "Mercredi 9h-10h"
         //TODO Structurer disponibilités
-        public string[]? Availailities { get; set; }
+        public string[]? Availabilities { get; set; }
     }
 }
