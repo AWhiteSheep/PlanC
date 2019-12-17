@@ -180,7 +180,7 @@
 
         using (var stream = new MemoryStream())
         {
-            using (var document = DocumentFactory.Create(stream))
+            using (var document = PlanC.DocumentGeneration.CourseTemplate.DocumentFactory.Create(stream))
             {
                 var editor = new DocumentEditor(document);
                 editor.Model = template;
