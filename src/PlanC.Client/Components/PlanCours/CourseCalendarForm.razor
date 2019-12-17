@@ -134,6 +134,24 @@
         AssociatedSkillElems = Template.PlanCadreCompetenceElements.Select(tse => tse.ElementCompetence).ToList();
 
         AssociatedSkillElemCrits = AssociatedSkillElems.SelectMany(se => se.CriteresElementCompetence).ToList();
+
+        _context.Entry(CoursePlan)
+                .Collection(c => c.CoursActivite)
+                .Load();
+
+        foreach (CoursActivite act in CoursePlan.CoursActivite)
+        {
+            _context.Entry(act)
+                    .Collection(a => a.CoursCompetenceElements)
+                    .Load();
+        }
+
+        CoursePlan.CoursActivite.OrderBy(act => act.ActvtSqnbr);
+
+        foreach(CoursActivite act in CoursePlan.CoursActivite)
+        {
+            CurrentActivities.AddLast(act);
+        }
     }
 
     public void SetCrit(ChangeEventArgs<int> crt, CoursCompetenceElements cse)
@@ -154,29 +172,29 @@
 
     public override async Task<bool> SaveProgress()
     {
-        using (PCU001Context __context = new PCU001Context())
+        try
         {
-            try
+            Int16 iter = 1;
+            foreach (CoursActivite block in CurrentActivities)
             {
-
-                foreach (CoursActivite block in CoursePlan.CoursActivite)
+                block.ActvtSqnbr = iter++;
+                CoursActivite existingEntity = _context.CoursActivite.Find(block.Identity);
+                if (existingEntity != null)
                 {
-                    _context.CoursCompetenceElements.RemoveRange(block.CoursCompetenceElements.ToArray());
-                    _context.Remove(block);
+                    _context.Entry(existingEntity).CurrentValues.SetValues(block);
                 }
-                await _context.SaveChangesAsync();
-                foreach (CoursActivite block in CurrentActivities)
+                else
                 {
-                    _context.CoursActivite.Add(block);
+                    CoursePlan.CoursActivite.Add(block);
                 }
-                await _context.SaveChangesAsync();
-                return true;
             }
-            catch (Exception except)
-            {
-                Console.WriteLine($"{except.Message}");
-                return false;
-            }
+            _context.SaveChanges();
+            return true;
+        }
+        catch (Exception except)
+        {
+            Console.WriteLine($"{except.Message}");
+            return false;
         }
     }
 

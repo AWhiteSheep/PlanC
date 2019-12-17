@@ -1,16 +1,99 @@
 ﻿@using Syncfusion.EJ2.Blazor.DropDowns
 @inherits CoursePlanInputFormComponent
+@inject PCU001Context _context
 
+<button class="btn btn-outline-dark mb-4" @onclick="() => AddMaterial()">Ajouter un matériel de cours</button>
 
+<hr class="bcSeparator" />
+<table class="mt-3 table table-borderless text-center p-0" style="width:100%">
+    <thead>
+        <tr>
+            <th style="min-width:90%">Matériel</th>
+            <th>
+
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (MaterielsCours mat in CurrentMaterial)
+        {
+            <tr>
+                <td>
+                    <input class="input form-control" @bind="mat.Description" />
+                </td>
+                <td>
+                    <button class="btn btn-circle" @onclick="() => DeleteMaterial(mat)"><i class="fas fa-trash"></i></button>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
 
 @code {
+
+    private List<MaterielsCours> CurrentMaterial { get; set; } = new List<MaterielsCours>();
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        FetchData();
+    }
+
+    private void FetchData()
+    {
+        _context.Entry(CoursePlan)
+                .Collection(c => c.MaterielsCours)
+                .Load();
+
+
+    }
+
     public async override Task<bool> SaveProgress()
     {
-        return true;
+        try
+        {
+            _context.MaterielsCours.RemoveRange(CoursePlan.MaterielsCours);
+            _context.SaveChanges();
+
+
+            Int16 iter = 1;
+            foreach(MaterielsCours mat in CurrentMaterial)
+            {
+                mat.MaterielSqnbr = iter++;
+                CoursePlan.MaterielsCours.Add(mat);
+            }
+            _context.SaveChanges();
+            return true;
+        }
+        catch (Exception except)
+        {
+            Console.WriteLine($"Error in course material data entry: {except.Message}");
+            return false;
+        }
     }
 
     public override string ToString()
     {
         return "Matériels de cours";
+    }
+
+    private void AddMaterial()
+    {
+        CurrentMaterial.Add(new MaterielsCours()
+        {
+            PlansCours = CoursePlan,
+            TrkUid = "testusr",
+            TchrUid = CoursePlan.TchrUid,
+            CoursId = CoursePlan.CoursId,
+            PlnVsnCdttm = CoursePlan.PlnVsnCdttm,
+            SessionId = CoursePlan.SessionId
+        });
+        StateHasChanged();
+    }
+
+    private void DeleteMaterial(MaterielsCours mat)
+    {
+        CurrentMaterial.Remove(mat);
+        StateHasChanged();
     }
 }

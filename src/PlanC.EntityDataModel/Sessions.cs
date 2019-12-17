@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Runtime.Serialization;
+using System.Text.Json.Serialization;
 
 namespace PlanC.EntityDataModel
 {
@@ -29,6 +31,8 @@ namespace PlanC.EntityDataModel
         public string TrkUid { get; set; }
 
         [InverseProperty("Session")]
+        [IgnoreDataMember]
+        [JsonIgnore]
         public virtual ICollection<PlansCours> PlansCours { get; set; }
     }
 }
