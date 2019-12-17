@@ -33,8 +33,8 @@
       </w:r>
     </w:p>
     <xsl:choose>
-      <xsl:when test="/CourseTemplate/Prerequisites/Prerequisite[PrerequisiteType=$prerequisite-type]">
-        <xsl:for-each select="/CourseTemplate/Prerequisites/Prerequisite[PrerequisiteType=$prerequisite-type]">
+      <xsl:when test="self::node()/Prerequisite[PrerequisiteType=$prerequisite-type]">
+        <xsl:for-each select="self::node()/Prerequisite[PrerequisiteType=$prerequisite-type]">
           <w:p>
             <w:pPr>
               <w:pStyle w:val="NoSpacing2"/>
@@ -60,6 +60,32 @@
     </xsl:choose>
   </xsl:template>
 
+  <xsl:template name="all-prerequisites-paragraph"
+                match="Prerequisites">
+
+    <!--...Corequis-->
+    <xsl:call-template name="prerequisite-paragraph">
+      <xsl:with-param name="header-text">Corequis</xsl:with-param>
+      <xsl:with-param name="prerequisite-type">CoRequisite</xsl:with-param>
+      <xsl:with-param name="data-list-node"
+                      select="self::node()"/>
+    </xsl:call-template>
+    <!--...Relatifs-->
+    <xsl:call-template name="prerequisite-paragraph">
+      <xsl:with-param name="header-text">Relatifs</xsl:with-param>
+      <xsl:with-param name="prerequisite-type">Relative</xsl:with-param>
+      <xsl:with-param name="data-list-node"
+                      select="self::node()"/>
+    </xsl:call-template>
+    <!--...Absolus-->
+    <xsl:call-template name="prerequisite-paragraph">
+      <xsl:with-param name="header-text">Absolus</xsl:with-param>
+      <xsl:with-param name="prerequisite-type">Absolute</xsl:with-param>
+      <xsl:with-param name="data-list-node"
+                      select="self::node()"/>
+    </xsl:call-template>
+  </xsl:template>
+
   <!--Modèle pour un simple paragraphe sans texte-->
   <xsl:template name="empty-paragraph">
     <w:p>
@@ -67,6 +93,478 @@
         <w:t/>
       </w:r>
     </w:p>
+  </xsl:template>
+  
+  <!--Modèle pour les tableaux de compétence-->
+  <xsl:template match="Skills">
+    <xsl:for-each select="./Skill">
+      <w:tbl>
+        <w:tblPr>
+          <w:tblStyle w:val="TableGrid"/>
+          <w:tblW w:w="0"
+                  w:type="auto"/>
+          <w:tblLook w:firstRow="1"
+                     w:lastRow="0"
+                     w:firstColumn="0"
+                     w:lastColumn="0"
+                     w:noHBand="0"
+                     w:noVBand="1"/>
+        </w:tblPr>
+        <w:tblGrid>
+          <w:gridCol w:w="3116"/>
+          <w:gridCol w:w="3117"/>
+          <w:gridCol w:w="3117"/>
+        </w:tblGrid>
+        <!--Ligne 1 avec le code de la compétence-->
+        <w:tr>
+          <w:tc>
+            <w:tcPr>
+              <w:tcW w:w="9350"
+                     w:type="dxa"/>
+              <w:gridSpan w:val="3"/>
+              <w:shd w:val="clear"
+                     w:color="auto"
+                     w:fill="B4C6E7"
+                     w:themeFill="accent1"
+                     w:themeFillTint="66"/>
+            </w:tcPr>
+            <w:p>
+              <w:pPr>
+                <w:pStyle w:val="SkillTableSkillCode"/>
+              </w:pPr>
+              <w:r>
+                <w:t>00LM</w:t>
+              </w:r>
+            </w:p>
+          </w:tc>
+        </w:tr>
+        <!--Ligne 2-->
+        <w:tr>
+          <w:tc>
+            <w:tcPr>
+              <w:tcW w:w="3116"
+                     w:type="dxa"/>
+            </w:tcPr>
+            <w:p>
+              <w:pPr>
+                <w:pStyle w:val="SkillTableHeader1"/>
+              </w:pPr>
+              <w:r>
+                <w:t>Objectif</w:t>
+              </w:r>
+            </w:p>
+          </w:tc>
+          <w:tc>
+            <w:tcPr>
+              <w:tcW w:w="3117"
+                     w:type="dxa"/>
+            </w:tcPr>
+            <w:p>
+              <w:pPr>
+                <w:pStyle w:val="SkillTableHeader1"/>
+              </w:pPr>
+              <w:r>
+                <w:t>Standard</w:t>
+              </w:r>
+            </w:p>
+          </w:tc>
+          <w:tc>
+            <w:tcPr>
+              <w:tcW w:w="3117"
+                     w:type="dxa"/>
+            </w:tcPr>
+            <w:p>
+              <w:pPr>
+                <w:pStyle w:val="SkillTableHeader1"/>
+              </w:pPr>
+              <w:r>
+                <w:t>Précisions sur les contenus</w:t>
+              </w:r>
+            </w:p>
+          </w:tc>
+        </w:tr>
+        <!--Ligne 3-->
+        <w:tr>
+          <w:tc>
+            <w:tcPr>
+              <w:tcW w:w="3116"
+                     w:type="dxa"/>
+            </w:tcPr>
+            <w:p>
+              <w:pPr>
+                <w:pStyle w:val="SkillTableHeader2"/>
+              </w:pPr>
+              <w:r>
+                <w:t>Énoncé de la compétence</w:t>
+              </w:r>
+            </w:p>
+          </w:tc>
+          <w:tc>
+            <w:tcPr>
+              <w:tcW w:w="3117"
+                     w:type="dxa"/>
+            </w:tcPr>
+            <w:p>
+              <w:pPr>
+                <w:pStyle w:val="SkillTableHeader2"/>
+              </w:pPr>
+              <w:r>
+                <w:t>Contexte de réalisation</w:t>
+              </w:r>
+            </w:p>
+          </w:tc>
+          <w:tc>
+            <w:tcPr>
+              <w:tcW w:w="3117"
+                     w:type="dxa"/>
+            </w:tcPr>
+            <w:p>
+              <w:pPr>
+                <w:pStyle w:val="SkillTableHeader2"/>
+              </w:pPr>
+            </w:p>
+          </w:tc>
+        </w:tr>
+        <!--Ligne 4-->
+        <w:tr>
+          <!--Cellule 1-->
+          <w:tc>
+            <w:tcPr>
+              <w:tcW w:w="3116"
+                     w:type="dxa"/>
+            </w:tcPr>
+            <w:p>
+              <w:r>
+                <w:t>
+                  <xsl:value-of select="./Title"/>
+                </w:t>
+              </w:r>
+            </w:p>
+          </w:tc>
+          <!--Cellule 2-->
+          <w:tc>
+            <w:tcPr>
+              <w:tcW w:w="3117"
+                     w:type="dxa"/>
+            </w:tcPr>
+            <xsl:call-template name="list-paragraph">
+              <xsl:with-param name="data-list-node" select="./AchievementContexts"/>
+              <xsl:with-param name="items-level">0</xsl:with-param>
+              <xsl:with-param name="list-id">1</xsl:with-param>
+            </xsl:call-template>
+          </w:tc>
+          <!--Cellule 3-->
+          <w:tc>
+            <w:tcPr>
+              <w:tcW w:w="3117"
+                     w:type="dxa"/>
+            </w:tcPr>
+            <xsl:call-template name="list-paragraph">
+              <xsl:with-param name="data-list-node" select="./ContentPrecisions"/>
+              <xsl:with-param name="items-level">0</xsl:with-param>
+              <!--TODO: This should actually be a separate list-->
+              <xsl:with-param name="list-id">1</xsl:with-param>
+            </xsl:call-template>
+          </w:tc>
+        </w:tr>
+        <!--Ligne 5-->
+        <w:tr>
+          <w:tc>
+            <w:tcPr>
+              <w:tcW w:w="3116"
+                     w:type="dxa"/>
+            </w:tcPr>
+            <w:p>
+              <w:pPr>
+                <w:pStyle w:val="SkillTableHeader2"/>
+              </w:pPr>
+              <w:r>
+                <w:t>Éléments de compétence</w:t>
+              </w:r>
+            </w:p>
+          </w:tc>
+          <w:tc>
+            <w:tcPr>
+              <w:tcW w:w="3117"
+                     w:type="dxa"/>
+            </w:tcPr>
+            <w:p>
+              <w:pPr>
+                <w:pStyle w:val="SkillTableHeader2"/>
+              </w:pPr>
+              <w:r>
+                <w:t>Critère de performance</w:t>
+              </w:r>
+            </w:p>
+          </w:tc>
+          <w:tc>
+            <w:tcPr>
+              <w:tcW w:w="3117"
+                     w:type="dxa"/>
+            </w:tcPr>
+            <w:p>
+              <w:pPr>
+                <w:pStyle w:val="SkillTableHeader2"/>
+              </w:pPr>
+            </w:p>
+          </w:tc>
+        </w:tr>
+        <!--Ligne 6-->
+        <w:tr>
+          <!--Cellule 1-->
+          <w:tc>
+            <w:tcPr>
+              <w:tcW w:w="3116"
+                     w:type="dxa"/>
+            </w:tcPr>
+            <w:p>
+              <w:pPr>
+                <w:pStyle w:val="ListParagraph"/>
+                <w:numPr>
+                  <w:ilvl w:val="0"/>
+                  <w:numId w:val="2"/>
+                </w:numPr>
+              </w:pPr>
+              <w:r>
+                <w:t>###</w:t>
+              </w:r>
+            </w:p>
+          </w:tc>
+          <!--Cellule 2-->
+          <w:tc>
+            <w:tcPr>
+              <w:tcW w:w="3117"
+                     w:type="dxa"/>
+            </w:tcPr>
+            <w:p>
+              <w:pPr>
+                <w:pStyle w:val="ListParagraph"/>
+                <w:numPr>
+                  <w:ilvl w:val="1"/>
+                  <w:numId w:val="2"/>
+                </w:numPr>
+              </w:pPr>
+              <w:r>
+                <w:t>###</w:t>
+              </w:r>
+            </w:p>
+            <w:p>
+              <w:pPr>
+                <w:pStyle w:val="ListParagraph"/>
+                <w:numPr>
+                  <w:ilvl w:val="1"/>
+                  <w:numId w:val="2"/>
+                </w:numPr>
+              </w:pPr>
+              <w:r>
+                <w:t>###</w:t>
+              </w:r>
+            </w:p>
+          </w:tc>
+          <!--Cellule 3-->
+          <w:tc>
+            <w:tcPr>
+              <w:tcW w:w="3117"
+                     w:type="dxa"/>
+            </w:tcPr>
+            <w:p>
+              <w:pPr>
+                <w:pStyle w:val="ListParagraph"/>
+                <w:numPr>
+                  <w:ilvl w:val="0"/>
+                  <w:numId w:val="3"/>
+                </w:numPr>
+              </w:pPr>
+              <w:r>
+                <w:t>###</w:t>
+              </w:r>
+            </w:p>
+          </w:tc>
+        </w:tr>
+        <!--Ligne 7-->
+        <w:tr>
+          <!--Cellule 1-->
+          <w:tc>
+            <w:tcPr>
+              <w:tcW w:w="3116"
+                     w:type="dxa"/>
+            </w:tcPr>
+            <w:p>
+              <w:pPr>
+                <w:pStyle w:val="ListParagraph"/>
+                <w:numPr>
+                  <w:ilvl w:val="0"/>
+                  <w:numId w:val="2"/>
+                </w:numPr>
+              </w:pPr>
+              <w:r>
+                <w:t>###</w:t>
+              </w:r>
+            </w:p>
+          </w:tc>
+          <!--Cellule 2-->
+          <w:tc>
+            <w:tcPr>
+              <w:tcW w:w="3117"
+                     w:type="dxa"/>
+            </w:tcPr>
+            <w:p>
+              <w:pPr>
+                <w:pStyle w:val="ListParagraph"/>
+                <w:numPr>
+                  <w:ilvl w:val="1"/>
+                  <w:numId w:val="2"/>
+                </w:numPr>
+              </w:pPr>
+              <w:r>
+                <w:t>###</w:t>
+              </w:r>
+            </w:p>
+            <w:p>
+              <w:pPr>
+                <w:pStyle w:val="ListParagraph"/>
+                <w:numPr>
+                  <w:ilvl w:val="1"/>
+                  <w:numId w:val="2"/>
+                </w:numPr>
+              </w:pPr>
+              <w:r>
+                <w:t>###</w:t>
+              </w:r>
+            </w:p>
+          </w:tc>
+          <!--Cellule 3-->
+          <w:tc>
+            <w:tcPr>
+              <w:tcW w:w="3117"
+                     w:type="dxa"/>
+            </w:tcPr>
+            <w:p>
+              <w:pPr>
+                <w:pStyle w:val="ListParagraph"/>
+                <w:numPr>
+                  <w:ilvl w:val="0"/>
+                  <w:numId w:val="3"/>
+                </w:numPr>
+              </w:pPr>
+              <w:r>
+                <w:t>###</w:t>
+              </w:r>
+            </w:p>
+          </w:tc>
+        </w:tr>
+      </w:tbl>
+      <!--Paragraphe vide après chaque tableau-->
+      <w:p/>
+    </xsl:for-each>
+  </xsl:template>
+
+  <xsl:template match="FinalExam">
+    <w:tbl>
+      <w:tblPr>
+        <w:tblStyle w:val="TableGrid"/>
+        <w:tblW w:w="0"
+                w:type="auto"/>
+        <w:tblLook w:val="0620"
+                   w:firstRow="1"
+                   w:lastRow="0"
+                   w:firstColumn="0"
+                   w:lastColumn="0"
+                   w:noHBand="1"
+                   w:noVBand="1"/>
+      </w:tblPr>
+      <w:tblGrid>
+        <w:gridCol w:w="4315"/>
+        <w:gridCol w:w="4315"/>
+      </w:tblGrid>
+      <!--Ligne 1-->
+      <w:tr>
+        <!--Cellule 1-->
+        <w:tc>
+          <w:tcPr>
+            <w:tcW w:w="4315"
+                   w:type="dxa"/>
+          </w:tcPr>
+          <w:p>
+            <w:r>
+              <w:t>Critère</w:t>
+            </w:r>
+          </w:p>
+        </w:tc>
+        <!--Cellule 2-->
+        <w:tc>
+          <w:tcPr>
+            <w:tcW w:w="4315"
+                   w:type="dxa"/>
+          </w:tcPr>
+          <w:p>
+            <w:r>
+              <w:t>Pondération</w:t>
+            </w:r>
+          </w:p>
+        </w:tc>
+      </w:tr>
+      <!--Ligne 2 à totalLignes-1 pour les critères-->
+      <xsl:for-each select="./Criterias/FinalExamCriteria">
+        <w:tr>
+          <!--Cellule 1-->
+          <w:tc>
+            <w:tcPr>
+              <w:tcW w:w="4315"
+                     w:type="dxa"/>
+            </w:tcPr>
+            <w:p>
+              <w:r>
+                <w:t>
+                  <xsl:value-of select="./Description"/>
+                </w:t>
+              </w:r>
+            </w:p>
+          </w:tc>
+          <!--Cellule 2-->
+          <w:tc>
+            <w:tcPr>
+              <w:tcW w:w="4315"
+                     w:type="dxa"/>
+            </w:tcPr>
+            <w:p>
+              <w:r>
+                <w:t>
+                  <xsl:value-of select="./Weight"/> %
+                </w:t>
+              </w:r>
+            </w:p>
+          </w:tc>
+        </w:tr>
+      </xsl:for-each>
+      <!--Ligne 3-->
+      <w:tr>
+        <w:tc>
+          <w:tcPr>
+            <w:tcW w:w="8630"
+                   w:type="dxa"/>
+            <w:gridSpan w:val="2"/>
+            <w:shd w:val="clear"
+                   w:color="auto"
+                   w:fill="E7E6E6"
+                   w:themeFill="background2"/>
+          </w:tcPr>
+          <w:p>
+            <w:r>
+              <w:rPr>
+                <w:rStyle w:val="InlineLabel"/>
+              </w:rPr>
+              <w:t xml:space="preserve">Pondération de l’évaluation : </w:t>
+            </w:r>
+            <w:r>
+              <w:t>
+                <xsl:value-of select="/CourseTemplate/FinalExam/Weight"/> %
+              </w:t>
+            </w:r>
+          </w:p>
+        </w:tc>
+      </w:tr>
+    </w:tbl>
   </xsl:template>
 
   <!--
@@ -82,6 +580,21 @@
     </xsl:for-each>
   </xsl:template>
   -->
+
+  <!--Modèle pour représenter chaque item d'un tableau sous forme de paragraphe. Solution tempo.-->
+  <xsl:template name="array-to-paragraph">
+    <xsl:param name="array"/>
+    
+    <xsl:for-each select="$array/*">
+      <w:p>
+        <w:r>
+          <w:t>
+            <xsl:value-of select="."/>
+          </w:t>
+        </w:r>
+      </w:p>
+    </xsl:for-each>
+  </xsl:template>
 
   <!--Modèle pour une liste d'éléments. S'il n'y a aucun item, affiche le texte "Aucun item"-->
   <xsl:template name="list-paragraph">
