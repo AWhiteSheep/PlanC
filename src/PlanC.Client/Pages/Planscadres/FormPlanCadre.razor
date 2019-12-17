@@ -99,7 +99,7 @@
     </EjsDocumentEditorContainer>
 </div>
 
-<div class="col-12 d-flex justify-content-center m-3">
+<div hidden="@(CurrentNode.Next != null)" disabled="@(CurrentNode.Next != null)" class="col-12 d-flex justify-content-center m-3">
     <!-- Click pour faire -->
     <a @onclick="Export" class="btn btn-outline-primary">Gérérer le plan-cadre</a>
 </div>

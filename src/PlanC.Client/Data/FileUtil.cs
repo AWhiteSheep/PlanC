@@ -50,7 +50,24 @@ namespace PlanC.Client.Data
         }
 
         public static byte[] FromTemplate(PlanC.EntityDataModel.PlansCadres plansCadre, PCU001Context context) 
-        {
+        {           
+			CourseTemplate template = GetWordTemplate(plansCadre, context);
+			
+            using (var stream = new MemoryStream())
+            {
+                using (var document = PlanC.DocumentGeneration.CourseTemplate.DocumentFactory.Create(stream))
+                {
+                    var editor = new DocumentEditor(document);
+                    editor.Model = template;
+                    editor.ApplyChanges();
+                }
+                // stream ready envoit un nouveau document
+                return stream.ToArray();
+            }
+        }
+		//PlanC.Client.Data.GetWordTemplate
+        public static CourseTemplate GetWordTemplate(PlanC.EntityDataModel.PlansCadres plansCadre, PCU001Context context) 
+        {           
             List<PlanCadreCompetenceElements> tempTemplateElements = null;
             if (plansCadre != null)
                 tempTemplateElements = context.PlanCadreCompetenceElements.Include(e => e.ElementCompetence)
@@ -114,18 +131,8 @@ namespace PlanC.Client.Data
                 UnitsCount = plansCadre.UnitsAccessor,
                 Skills = Skills,
             };
-
-            using (var stream = new MemoryStream())
-            {
-                using (var document = PlanC.DocumentGeneration.CourseTemplate.DocumentFactory.Create(stream))
-                {
-                    var editor = new DocumentEditor(document);
-                    editor.Model = template;
-                    editor.ApplyChanges();
-                }
-                // stream ready envoit un nouveau document
-                return stream.ToArray();
-            }
+			
+			return template;
         }
     }
 }

@@ -4,11 +4,15 @@
 @page "/plancours/{id}/creation"
 
 @using PlanC.EntityDataModel
+@using PlanC.DocumentGeneration.CoursePlan
+@using PlanC.DocumentGeneration.CourseTemplate
 @using Components.PlanCours
 @using System.Collections.Generic;
 @using Microsoft.EntityFrameworkCore;
 @inject NavigationManager NavigationManager
+@inject IJSRuntime JS
 @inject PCU001Context context
+@using System.IO
 
 <div class="row mb-3">
     <div class="col">
@@ -81,6 +85,10 @@
 </div>
 
 
+<div hidden="@(CurrentNode.Next != null)" disabled="@(CurrentNode.Next != null)" class="col-12 d-flex justify-content-center m-3">
+    <!-- Click pour faire -->
+    <a @onclick="Export" class="btn btn-outline-primary">Gérérer le plan-cadre</a>
+</div>
 
 
 
@@ -100,6 +108,26 @@
     public PlansCours CoursePlan { get; set; } = new PlansCours();
 
     private int CurrentStep = 0;
+
+    public void Export()
+    {
+        PlansCadres plansCadre = context.PlansCadres.Where(e => e.CoursId.Trim() == CoursePlan.CoursId.Trim())
+            .OrderByDescending(p => p.VsnCdttm).FirstOrDefault();
+        // génère le document
+        var _document = ToDocumentModel(CoursePlan, plansCadre, context);
+
+
+        using (var stream = new MemoryStream())
+        {
+            using (var document = PlanC.DocumentGeneration.CoursePlan.DocumentFactory.Create(stream))
+            {
+                var editor = new PlanC.DocumentGeneration.CoursePlan.DocumentEditor(document);
+                editor.Model = _document;
+                editor.ApplyChanges();
+            }
+            JS.SaveAs("plancours.docx", stream.ToArray());
+        }
+    }
 
     protected override void OnInitialized()
     {
@@ -172,4 +200,60 @@
         CREATE = 1,
         EDIT = 2
     }
+
+    public CoursePlan ToDocumentModel(PlansCours plan, PlansCadres template, PCU001Context context)
+    {
+        CourseTemplate ParentTemplateDocumentModel = FileUtil.GetWordTemplate(template, context);
+
+        CoursePlan model = new CoursePlan();
+
+        model.CourseId = plan.CoursId;
+        model.Campus = "Gabrielle-Roy";
+        model.Exams.Add(ParentTemplateDocumentModel.FinalExam);
+        foreach (Examens exam in plan.ExamensCertificatifsNonsFinals.Select(ex => ex.Examen))
+        {
+            model.Exams.Add(new DocumentGeneration.Common.Exam()
+            {
+                Title = exam.Qualification,
+                Weight = exam.PoidExamen
+            });
+        }
+        model.Introduction = ParentTemplateDocumentModel.CourseDescription.Split(Environment.NewLine);
+
+        plan.CoursActivite.OrderBy(act => act.ActvtSqnbr);
+        foreach (CoursActivite act in plan.CoursActivite)
+        {
+            int CurrentWeek = 1;
+            model.ActivityPeriodEntries.Add(new ActivityCalendarPeriodEntry()
+            {
+                Content = act.ActvtDesc.Split(Environment.NewLine),
+                PeriodLabel = $"Semaine {CurrentWeek} - Semaine {CurrentWeek + act.ActvtLgnth - 1}",
+                SkillElements = new System.Collections.ObjectModel
+                    .Collection<string>(act.CoursCompetenceElements.Select(ase => ase.IdentityCritereElementCompetenceNavigation.DescriptionCritere).ToList())
+            });
+            CurrentWeek += act.ActvtLgnth.GetValueOrDefault();
+        }
+
+        model.PedagogicalIntents = ParentTemplateDocumentModel.PedagogicalIntent.Split(Environment.NewLine);
+
+        model.Prerequisites = ParentTemplateDocumentModel.Prerequisites;
+
+        foreach (MaterielsCours mat in plan.MaterielsCours)
+        {
+            model.RequiredMaterial.Add($"{mat.Description}");
+        }
+
+        model.Session = plan.Session.Titre;
+        model.Skills = ParentTemplateDocumentModel.Skills;
+
+        model.Teacher = new Teacher()
+        {
+            Name = plan.TchrUid
+        };
+
+        model.TimeDistribution = ParentTemplateDocumentModel.TimeDistribution;
+
+        return model;
+    }
+
 }
