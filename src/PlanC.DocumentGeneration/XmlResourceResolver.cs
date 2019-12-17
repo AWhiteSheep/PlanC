@@ -91,7 +91,7 @@ namespace PlanC.DocumentGeneration
             var resource = resourceFile.GetObject(resourceItemName, _cultureInfo);
             if (resource == null)
                 throw new FileNotFoundException(
-                    $"Impossible de trouver une ressource portant le nom {resourceFile} parmis les gestionnaire de ressource de l'assembly {_assembly}.");
+                    $"Impossible de trouver une ressource portant le nom {resourceItemName} au sein du fichier ressource {resourceFile.BaseName} se trouvant dans l'assembly {_assembly}.");
 
             if (ofObjectToReturn != null)
             {
@@ -108,13 +108,13 @@ namespace PlanC.DocumentGeneration
                     throw new NotSupportedException(
                         $"Le type d'objet demandé est {ofObjectToReturn}. Or, la ressource est de type {resource.GetType()}. Lorsque ces deux types ne sont pas compatibles, ce resolveur ne peut que retourner un MemoryStream.");
                 }
+            }
 
-                //Pour l'instant, on ne support que la création d'un stream à partir d'un tableau de byte.
-                if (resource.GetType() != typeof(byte[]))
-                {
-                    throw new NotSupportedException(
-                        $"La ressource est de type {resource.GetType()}. Or, ce resolveur ne supporte que la création d'un stream à partir d'un tableau de byte.");
-                }
+            //Pour l'instant, on ne support que la création d'un stream à partir d'un tableau de byte.
+            if (resource.GetType() != typeof(byte[]))
+            {
+                throw new NotSupportedException(
+                    $"La ressource est de type {resource.GetType()}. Or, ce resolveur ne supporte que la création d'un stream à partir d'un tableau de byte.");
             }
 
             return new MemoryStream((byte[])resource);

@@ -7,12 +7,12 @@ using System.Diagnostics.Contracts;
 using System.IO;
 using System.Text;
 
-namespace PlanC.DocumentGeneration.CourseTemplate
+namespace PlanC.DocumentGeneration.CoursePlan
 {
     public static class DocumentFactory
     {
         /// <summary>
-        ///     Creates a blank <see cref="WordprocessingDocument"/> for a course template.
+        ///     Creates a blank <see cref="WordprocessingDocument"/> for a course plan.
         /// </summary>
         /// <param name="documentStream">
         ///     The stream that the document should be written to.
@@ -22,7 +22,7 @@ namespace PlanC.DocumentGeneration.CourseTemplate
         /// </returns>
         public static WordprocessingDocument Create(Stream documentStream, string? author = null)
         {
-            using (var templateStream = new MemoryStream(Templates.CourseTemplate.GetPackage()))
+            using (var templateStream = new MemoryStream(Templates.CoursePlan.GetPackage()))
             {
                 return OpenXmlHelpers.CreateFromTemplate(templateStream, documentStream, author);
             }

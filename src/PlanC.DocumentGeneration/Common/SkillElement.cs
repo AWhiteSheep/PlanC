@@ -3,15 +3,17 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Text;
 
-namespace PlanC.DocumentGeneration.CourseTemplate
+namespace PlanC.DocumentGeneration.Common
 {
     [Serializable]
     public class SkillElement
     {
         private Collection<string>? _criterias;
-        private Collection<string>? _contentPrecisions = new Collection<string>();
+        private Collection<string>? _contentPrecisions;
 
         public string? Title { get; set; }
+
+        public bool? IsPartiallyAchieved { get; set; }
 
         public Collection<string> Criterias
         {
