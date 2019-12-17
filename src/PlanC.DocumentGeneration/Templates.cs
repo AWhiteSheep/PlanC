@@ -31,6 +31,8 @@ namespace PlanC.DocumentGeneration
         public static class CoursePlan
         {
             public static byte[] GetPackage() => GetBytes("CoursePlanPackage.dotx");
+
+            public static byte[] GetMainDocumentPart() => GetBytes("CoursePlanMainDocumentPart.xslt");
         }
     }
 }

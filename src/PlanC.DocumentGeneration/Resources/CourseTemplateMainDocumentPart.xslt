@@ -187,7 +187,9 @@
         </w:p>
         <w:p>
           <w:r>
-            <w:t>###</w:t>
+            <w:t>
+              <xsl:value-of select="/CourseTemplate/EducativeIntent"/>
+            </w:t>
           </w:r>
         </w:p>
         <!--Brève description du cours-->
@@ -201,7 +203,9 @@
         </w:p>
         <w:p>
           <w:r>
-            <w:t>###</w:t>
+            <w:t>
+              <xsl:value-of select="/CourseTemplate/CourseDescription"/>
+            </w:t>
           </w:r>
         </w:p>
         <!--Préalables-->
