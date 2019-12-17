@@ -21,7 +21,6 @@
 
 <div class="container shadow p-5">
     <div class="row">
-<<<<<<< HEAD
         <h3>Liste des compétences:</h3>
         <div class="col-12">
             <div class="input-group">
@@ -41,81 +40,56 @@
                            checked="@(OptionFilter == "Énoncé")" @onclick="@(() => OptionFilter = "Énoncé")" value="Énoncé" />
                     <input class="btn btn-primary @(OptionFilter == "Département" ? "active" : "")" type="button"
                            checked="@(OptionFilter == "Département")" @onclick="@(() => OptionFilter = "Département")" value="Département" />
-=======
-        @if (competences != null)
-        {
-            <h3>Liste des compétences:</h3>
-            <div class="col-12">
-                <div class="input-group">
-                    <input type="text" class="form-control" @bind="Filter"
-                          aria-describedby="input-recherche" />
-                    <div class="input-group-append" id="input-recherche">
-                        <button class="btn btn-primary" @onclick="DoFilter" type="button"><i class="fas fa-search"></i></button>
-                    </div>
                 </div>
             </div>
-            <div class="col-12 pt-3 d-flex justify-content-between">
-                <div class="form-group">
-                    <div class="btn-group btn-group-toggle" data-toggle="buttons">
-                        <input class="btn btn-primary @(OptionFilter == "Numéro" ? "active" : "")" type="button"
-                                checked="@(OptionFilter == "Numéro")" @onclick="@(() => OptionFilter = "Numéro")" value="Numéro" />
-                        <input class="btn btn-primary @(OptionFilter == "Énoncé" ? "active" : "")" type="button"
-                                checked="@(OptionFilter == "Énoncé")" @onclick="@(() => OptionFilter = "Énoncé")" value="Énoncé" />
-                        <input class="btn btn-primary @(OptionFilter == "Département" ? "active" : "")" type="button"
-                                checked="@(OptionFilter == "Département")" @onclick="@(() => OptionFilter = "Département")" value="Département" />
-                    </div>
->>>>>>> e6351150fbe926ea9dd68824e6c58e0603ec91b9
-                </div>
-            </div>
-            <a href="/competences/creation">Formulaire d'une nouvelle compétence</a>
-        </div>
-        @if (competences != null)
-        {
-            @if (competences.Any())
+            @if (competences != null)
             {
-                @foreach (var competence in competences)
+                @if (competences.Any())
                 {
-                    <div id="container-@competence.IdentityKey" class="col-sm-12 col-lg-6 p-2">
-                        <div class="card">
-                            <div class="card-header d-flex justify-content-between">
-                                <p class="panel-title">@competence.Enonce</p>
-                                <div>
-                                    <button class="btn btn-link press" data-expend-button="@competence.IdentityKey"> Afficher @competence.CompetenceId </button>
+                    @foreach (var competence in competences)
+                    {
+                        <div id="container-@competence.IdentityKey" class="col-sm-12 col-lg-6 p-2">
+                            <div class="card">
+                                <div class="card-header d-flex justify-content-between">
+                                    <p class="panel-title">@competence.Enonce</p>
+                                    <div>
+                                        <button class="btn btn-link press" data-expend-button="@competence.IdentityKey"> Afficher @competence.CompetenceId </button>
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="collapse" id="@competence.IdentityKey">
-                                <div class="card-body">
-                                    <CascadingValue TValue="Competences" Value="competence">
-                                        <PlanC.Client.Pages.Competence.FormCompetenceReview></PlanC.Client.Pages.Competence.FormCompetenceReview>
-                                    </CascadingValue>
+                                <div class="collapse" id="@competence.IdentityKey">
+                                    <div class="card-body">
+                                        <CascadingValue TValue="Competences" Value="competence">
+                                            <PlanC.Client.Pages.Competence.FormCompetenceReview></PlanC.Client.Pages.Competence.FormCompetenceReview>
+                                        </CascadingValue>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                }
+                    }
 
+                }
+                else
+                {
+                    <p>Il n'y pas de compétences pouvant être chargé.</p>
+                }
             }
             else
             {
-                <p>Il n'y pas de compétences pouvant être chargé.</p>
-            }
-        }
-        else
-        {
-            <div class="col-12">
-                <div class="card">
-                    <div class="card-header d-flex justify-content-between">
-                        <p class="panel-title">Récupération de la compétence...</p>
-                    </div>
-                    <div>
-                        <div class="card-body">
-                            Chargement de la compétence...
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-header d-flex justify-content-between">
+                            <p class="panel-title">Récupération de la compétence...</p>
+                        </div>
+                        <div>
+                            <div class="card-body">
+                                Chargement de la compétence...
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
-        }
-    </div>
+            }
+        </div>
+</div>
 </div>
 
 <div class="col-12 text-center">
@@ -157,15 +131,9 @@
                 case "Numéro":                    
                     competences = _competences.Where(e => e.CompetenceId.Contains(_filter)).ToList();
                     break;
-<<<<<<< HEAD
                 case "Énoncé":
-=======
                 default:                     
->>>>>>> e6351150fbe926ea9dd68824e6c58e0603ec91b9
                     competences = _competences.Where(e => e.Enonce.Contains(_filter)).ToList();
-                    break;
-                default:
-                    competences = _competences.Where(e => e.CompetenceId.Contains(_filter)).ToList();
                     break;
             }
         }
