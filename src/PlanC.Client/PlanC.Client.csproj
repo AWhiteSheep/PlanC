@@ -2,24 +2,8 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.0</TargetFramework>
-    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <IsPackable>true</IsPackable>
-    <ApplicationIcon />
-    <Win32Resource />
-    <UserSecretsId>e70ab380-2a04-4758-8541-a8078c4985a8</UserSecretsId>
   </PropertyGroup>
 
-  <ItemGroup>
-    <Compile Remove="Pages\Identity\Pages\Manage\**" />
-    <Content Remove="Pages\Identity\Pages\Manage\**" />
-    <EmbeddedResource Remove="Pages\Identity\Pages\Manage\**" />
-    <None Remove="Pages\Identity\Pages\Manage\**" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Remove="Linker.xml" />
-  </ItemGroup>
-  
   <ItemGroup>
     <_ContentIncludedByDefault Remove="wwwroot\images\avatars\boy-1.svg" />
     <_ContentIncludedByDefault Remove="wwwroot\images\avatars\boy.svg" />
@@ -36,13 +20,8 @@
     <_ContentIncludedByDefault Remove="wwwroot\js\license.autocomplete.txt" />
     <_ContentIncludedByDefault Remove="wwwroot\js\site.js" />
   </ItemGroup>
-  
   <ItemGroup>
-    <Content Include="Linker.xml" />
-  </ItemGroup>
-  <ItemGroup>
-    <PackageReference Include="AspNetCore.RouteAnalyzer" Version="0.5.3" />
-    <PackageReference Include="HtmlSanitizer" Version="4.0.217" />
+    <PackageReference Include="HtmlSanitizer" Version="5.0.274-beta" />
     <PackageReference Include="Markdig" Version="0.18.0" />
     <PackageReference Include="Microsoft.AspNetCore.Components" Version="3.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.Components.Forms" Version="3.0.0" />
@@ -59,7 +38,6 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="3.0.0" />
-    <PackageReference Include="Microsoft.VisualStudio.Web.BrowserLink" Version="2.2.0" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="3.0.0" />
     <PackageReference Include="Syncfusion.Compression.Base" Version="17.4.0.39" />
     <PackageReference Include="Syncfusion.EJ.Export" Version="17.3.0.34" />

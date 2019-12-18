@@ -2,7 +2,7 @@
 @using PlanC.Client.Pages.Shared
 @inject IJSRuntime JSRuntime
 
-    <link async href="css/my-tiles.css" rel="stylesheet" />
+<link async href="css/my-tiles.css" rel="stylesheet" />
 <div style="min-height: 100%;">
     <div class="row">
         <div id="theme-portal-welcome" class="col-12">
@@ -43,7 +43,7 @@
                     <div class="tab-pane fade" id="profil"
                          role="tabpanel" aria-labelledby="profil-tab">
                         Pour la première visite, nous vous prions de bien vouloir vous rendre à
-                        la <a class="card-link" href="/profil/configuration"> configuration de votre profil </a>
+                        la <a class="card-link" href="/personnel"> configuration de votre profil </a>
                         afin de remplir l'information nécessaire afin de créer un gabarit,
                         lequel soutiendra vos plans.
                     </div>
@@ -64,6 +64,10 @@
             </div>
         </div>
     </div>
+</div>
+
+<div id="theme-portal-image" class="col-lg-6">
+    <img style="position:fixed;width:300px;bottom:0;right:0;opacity:.6;" src="/images/undraw_thinker.svg" />
 </div>
 
 @code {
