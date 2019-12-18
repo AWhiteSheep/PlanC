@@ -5,13 +5,13 @@
 @inherits CoursePlanInputFormComponent
 
 <label class="label-info">Choix de plan-cadre</label>
-<EjsComboBox TValue="PlansCadres" DataSource="Templates">
+<EjsComboBox CssClass="theme-dropdown"  TValue="PlansCadres" DataSource="Templates">
     <ComboBoxEvents TValue="string" ValueChange="SetTemplate"></ComboBoxEvents>
     <ComboBoxFieldSettings GroupBy="ProgrammeId" Value="CoursId" Text="DenominationCours"></ComboBoxFieldSettings>
 </EjsComboBox>
 
 <label class="label-info">Choix de session</label>
-<EjsComboBox TValue="Sessions" DataSource="Semesters">
+<EjsComboBox CssClass="theme-dropdown" TValue="Sessions" DataSource="Semesters">
     <ComboBoxEvents TValue="string" ValueChange="SetSemester"></ComboBoxEvents>
     <ComboBoxFieldSettings Value="Id" Text="Titre"></ComboBoxFieldSettings>
 </EjsComboBox>

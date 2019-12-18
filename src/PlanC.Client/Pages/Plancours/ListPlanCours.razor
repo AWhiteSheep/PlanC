@@ -38,9 +38,10 @@
             <br />
             @if (PlansCours != null)
             {
-                <EjsGrid DataSource="@PlansCours" AllowSorting="true" AllowPaging="true"
+                <EjsGrid @ref="grid" DataSource="@PlansCours" AllowSorting="true" AllowPaging="true" AllowExcelExport="true"
                          ContextMenuItems="@(new List<ContextMenuItemModel>() {
                                                  new ContextMenuItemModel { Text = "Ouvrir plan cours", Target = ".e-content", Id = "open" },
+                                                 new ContextMenuItemModel { Text = "Supprimer", Target = ".e-content", Id = "delete" },
                                                  new ContextMenuItemModel { Text = "Sauvegarder en tant que word", Target = ".e-content", Id = "word" }
                                              })">
                     <GridEditSettings AllowAdding="true" AllowDeleting="true"></GridEditSettings>
@@ -49,9 +50,10 @@
                     <GridEvents ContextMenuItemClicked="OnContextMenuClick" RowSelected="RowSelectHandler" RowDeselected="() => Selected = null" TValue="PlansCours"></GridEvents>
                     <GridColumns>
                         <GridColumn IsPrimaryKey="true" Field=@nameof(Selected.CoursId) HeaderText="Identifiant du cours"></GridColumn>
-                        <GridColumn Field=@nameof(Selected.CoursePolicy) HeaderText="Identifiant du programme"></GridColumn>
-                        <GridColumn Field=@nameof(Selected.RcdCdttm) HeaderText="Date du dernier enregistrement" Format="yMd" Type=ColumnType.Date></GridColumn>
+                        <GridColumn Field=@nameof(Selected.PlnVsnCdttm) HeaderText="Dernier enregistrement"></GridColumn>
+                        <GridColumn Field=@nameof(Selected.RcdCdttmString) HeaderText="Date approuvé"></GridColumn>                        
                     </GridColumns>
+                    <Syncfusion.EJ2.Blazor.Grids.GridTextWrapSettings WrapMode="WrapMode.Content"></Syncfusion.EJ2.Blazor.Grids.GridTextWrapSettings>
                 </EjsGrid>
             }
             else if (loadFailed)
@@ -71,9 +73,10 @@
 
 @code {
     public List<PlanC.EntityDataModel.PlansCours>
-    PlansCours { get; set; }
+        PlansCours { get; set; }
     public PlansCours Selected { get; set; }
     private bool loadFailed; //safe check si la list à eu une erreur pour demander à l'usager de reload
+    EjsGrid<PlansCours> grid;
 
     protected override void OnInitialized()
     {
@@ -100,6 +103,25 @@
         if (args.Item.Id == "open")
         {
             _NavigationManager.NavigateTo($"/plancours/{Selected.CoursId}/create");
+        }
+        else if (args.Item.Id == "delete")
+        {
+            PlansCours.Remove(Selected);
+            context.PlansCours.Remove(Selected);
+            grid.Refresh();
+            SaveProgress();
+        }
+    }
+
+    public void SaveProgress()
+    {
+        try
+        {
+            context.SaveChanges();
+        }
+        catch (Exception except)
+        {
+            Console.WriteLine($"Plan cadre liste error: {except.Message}");
         }
     }
 }

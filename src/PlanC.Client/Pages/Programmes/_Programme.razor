@@ -42,85 +42,74 @@
     {
         <div class="col-12 firstLayer" style="position: absolute; top: 0; left: 0;">
             <div class="shadow card-body">
-
                 <div class="container">
-                    <ul class="button-group filter-button-group uk-subnav uk-subnav-pill uk-flex-center">
-                        <li><button class="btn btn-outline-info" data-filter="*">Tous</button></li>
-                        <li><button class="btn btn-outline-info" data-filter=".500, .510">Arts</button></li>
-                        <li><button class="btn btn-outline-info" data-filter=".420">Administration</button></li>
-                        <li><button class="btn btn-outline-info" data-filter=".300">Humains</button></li>
-                        <li><button class="btn btn-outline-info" data-filter=".200, .140, .420">Sciences</button></li>
-                        <li><button class="btn btn-outline-info" data-filter=".111">Santé</button></li>
-                    </ul>
                     @if (!programmes.Any())
                     {
                         <p><em>Nous avons trouvé aucun programme.</em></p>
                     }
                     else
                     {
-                        <div class="grid">
-                            @foreach (Programmes programme in programmes)
-                            {
-                                <!-- Affiche les informations d'un département -->
-                                <div class="grid-item @programme.DepartementId">
-                                    <h4><a href="#">#@programme.Id</a></h4>
-                                    <h4>@programme.Designation</h4>
-                                    <!-- Renvoit les programmes reliés au département-->
-                                    <a class="btn btn-outline-success" href="/departements/@programme.DepartementId/planscadres/creation">Nouveau plan-cadre</a>
-                                    <a class="btn btn-success" href="/departements/@programme.DepartementId/competences/creation">Nouvelle compétence</a>
+                        <!-- DataTales Example -->
+                        <div class="card shadow mb-4">
+                            <div class="card-header py-3">
+                                <h6 class="m-0 font-weight-bold text-primary">DataTables Example</h6>
+                            </div>
+                            <div class="card-body">
+                                <div class="table-responsive">
+                                    <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                                        <thead>
+                                            <tr>
+                                                <th class="pr-3">Nom</th>
+                                                <th class="pr-3">Identifiant</th>
+                                                <th class="pr-3">Département</th>
+                                                <th class="pr-3"> --- </th>
+                                                <th class="pr-3"> Pdf </th>
+                                                <th class="pr-3"> Image </th>
+                                            </tr>
+                                        </thead>
+                                        <tfoot>
+                                            <tr>
+                                                <th colspan="4"><hr /></th>
+                                            </tr>
+                                        </tfoot>
+                                        <tbody>
+                                            @foreach (var prog in programmes)
+                                            {
+                                            <tr>
+                                                <td valign="top" class="p-0">@prog.Designation</td>
+                                                <td valign="top" class="p-0">@prog.Id</td>
+                                                <td valign="top" class="p-0">@prog.DepartementId</td>
+                                                <td valign="top" class="p-0">
+                                                    <table>
+                                                        <tr>
+                                                            <th valign="top" align="center" colspan="3" class="p-0">Pondération des compétences</th>
+                                                        </tr>
+                                                        <tr>
+                                                            <td valign="top" align="center" class="p-0 m-0">Obligatoire</td>
+                                                            <td valign="top" align="center" class="p-0 m-0">Absolue</td>
+                                                            <td valign="top" align="center" class="p-0 m-0">Optionnelle</td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td valign="top" align="center" class="p-0">@prog.NombreCompetencesObligatoires</td>
+                                                            <td valign="top" align="center" class="p-0">@prog.NombreCompetencesComplementairesAccessor</td>
+                                                            <td valign="top" align="center" class="p-0">@prog.NombreCompetencesOptionnellesAccessor</td>
+                                                        </tr>
+                                                    </table>
+                                                </td>
+                                                <td class="p-0"><a href="@prog.ProgrammePdfAccess">@prog.ProgrammePdfAccess.Split('/').Last()</a></td>
+                                                <td class="p-0"><img style="height: 50px; width: 50px" src="@prog.ProgrammeImgAccess" /></td>
+                                            </tr>
+                                            }
+                                        </tbody>
+                                    </table>
                                 </div>
-                            }
+                            </div>
                         </div>
                     }
                 </div>
             </div>
-            <div class="d-flex flex-column text-right pt-3 pb-3">
-                <button class="btn btn-primary" @onclick="Add"> Ajouter un département </button>
-                <div class="custom-checkbox pl-5 pt-2 disable-select">
-                    <input @bind="BulkCheck" type="checkbox" class="custom-control-input" id="bulkCheckDepart" />
-                    <label class="custom-control-label" for="bulkCheckDepart"> Cocher pour ajouter plus d'un département </label>
-                </div>
-            </div>
         </div>
     }
-    <div class="card shadow hiddenForm col-12">
-        <div class="card-header">
-            <div class="d-flex">
-                <button class="btn btn-danger" @onclick="Cancel"> Anuller </button>
-                <div class="custom-checkbox pl-5 pt-2 disable-select">
-                    <input @bind="BulkCheck" type="checkbox" class="custom-control-input" id="bulkCheckDepart" />
-                    <label class="custom-control-label" for="bulkCheckDepart"> Ajouter plus d'un département </label>
-                </div>
-            </div>
-        </div>
-        <form class="col-12">
-            <div class="form-row">
-                <div class="form-group col-12">
-                    <label for="title"> Nom du programme </label>
-                    <input id="title" class="form-control @(IsValidating ? (IsTitleValid ? "is-valid": "is-invalid") : "")" @bind="@newProgram.Designation" required />
-                    <div class="valid-feedback">
-                        Semble bon!
-                    </div>
-                    <div class="invalid-feedback">
-                        Veuillez entrer un nom du programme.
-                    </div>
-                </div>
-            </div>
-            <div class="form-row">
-                <div class="form-group col-12">
-                    <label for="description"> Description </label>
-                    <textarea id="description" class="form-control @(IsValidating ? (IsDescriptionValid ? "is-valid": "is-invalid"): "")" rows="4" @bind="@newProgram.Description" required></textarea>
-                    <div class="valid-feedback">
-                        Semble bon!
-                    </div>
-                    <div class="invalid-feedback">
-                        Veuillez entrer une description.
-                    </div>
-                </div>
-            </div>
-            <button class="btn btn-success" @onclick="SaveAsync"> Sauvegarder </button>
-        </form>
-    </div>
 </div>
 
 <div class="col-12 text-center">
@@ -128,88 +117,22 @@
 </div>
 
 @code {
-
     private List<Programmes> programmes;
-    private Programmes newProgram = new Programmes();
-    private bool IsCreating;
-    private bool IsValidating = false;
-    private bool IsTitleValid;
-    private bool IsDescriptionValid;
-    private bool BulkCheck;
 
     protected override void OnInitialized()
     {
-        // part l'initialisateur chez le client
-        JSRuntime.InvokeAsync<string>("modelInitializing");
-        JSRuntime.InvokeAsync<string>("requestScripts", JsonConvert.SerializeObject(new string[] { "https://unpkg.com/isotope-layout@3.0.6/dist/isotope.pkgd.min.js" }));
         // contextualise les programmes
         programmes = _context.Programmes.ToList();
     }
 
-    protected override void OnAfterRender(bool firstRender)
+    protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        if (firstRender)
+        base.OnAfterRender(firstRender);
+
+        if (firstRender) 
         {
-            // request les javascripts obligatoires pour la page
-            JSRuntime.InvokeAsync<string>("requestScripts", JsonConvert.SerializeObject(new string[] { "/js/programme.js" }));
-            JSRuntime.InvokeAsync<string>("initForm");
+            await JSRuntime.InvokeAsync<string>("initTable", "#dataTable");
         }
-    }
-
-    private void Add()
-    {
-        // affiche le formulaire pour que l'utilisateur puisse entrer de nouvelles données
-        JSRuntime.InvokeAsync<string>("showForm");
-        newProgram = new Programmes();
-        IsCreating = true;
-    }
-
-    private void Cancel()
-    {
-        // cancel la demande du formulaire et retourne la table
-        JSRuntime.InvokeAsync<string>("hideForm");
-        newProgram = new Programmes();
-        IsCreating = false;
-    }
-
-    private async void SaveAsync()
-    {
-        //sauvegarde le nouveau programme dans la base de données
-        IsValidating = true;
-        IsTitleValid = !string.IsNullOrEmpty(newProgram.Designation);
-        IsDescriptionValid = !string.IsNullOrEmpty(newProgram.Description);
-
-        if (IsTitleValid && IsDescriptionValid)
-        {
-            // ajoute les données dans la database
-            try
-            {
-                _context.Programmes.Add(newProgram);
-                _context.SaveChanges();
-
-                newProgram = new Programmes();
-
-                // si le check est true redébuter le formulaire
-                if (BulkCheck)
-                {
-                    IsCreating = true;
-                    IsValidating = false;
-                }
-                else
-                {
-                    IsCreating = false;
-                }
-
-                // update le ui
-                StateHasChanged();
-            }
-            catch (Exception e)
-            {
-                await JSRuntime.InvokeAsync<string>("alertDatabaseError");
-            }
-        }
-
-        StateHasChanged();
     }
 }
 

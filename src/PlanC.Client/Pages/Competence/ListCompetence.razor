@@ -54,9 +54,15 @@
                     <div id="container-@competence.IdentityKey" class="col-sm-12 col-lg-6 p-2">
                         <div class="card">
                             <div class="card-header d-flex justify-content-between">
-                                <p class="panel-title">@competence.Enonce</p>
-                                <div>
-                                    <button class="btn btn-link press" data-expend-button="@competence.IdentityKey"> Afficher @competence.CompetenceId </button>
+                                <p data-expend-button="@competence.IdentityKey" class="panel-title btn btn-link text-left">@competence.Enonce</p>
+                                <div class="dropdown">
+                                    <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        <i class="fas fa-cog"></i>
+                                    </button>
+                                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                        <button class="dropdown-item" @onclick="() => Delete(competence)">Supprimer</button>
+                                        <a class="dropdown-item" href="/departements/@competence.DisciplineId/competences/@competence.CompetenceId/create">Modifier</a>
+                                    </div>
                                 </div>
                             </div>
                             <div class="collapse" id="@competence.IdentityKey">
@@ -165,5 +171,14 @@
     {
         // render le script pour les collapsible
         JSRuntime.InvokeAsync<string>("LoadCollapse");
+    }
+
+    private void Delete(Competences competence)
+    {
+        // supprime a travers le context car la liste ne se fait suivre par une référence extérieur
+        context.Competences.Remove(competence);
+        competences.Remove(competence);
+        context.SaveChanges();
+        StateHasChanged();
     }
 }

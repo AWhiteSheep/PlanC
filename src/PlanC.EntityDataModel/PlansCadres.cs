@@ -61,14 +61,12 @@ namespace PlanC.EntityDataModel
         public virtual ICollection<PlanCadreCompetenceElements> PlanCadreCompetenceElements { get; set; }
 
         [NotMapped]
-        [JsonIgnore]
-        [IgnoreDataMember]
         [Range(0, 9.99, ErrorMessage = "Format: 9.99")]
         public decimal UnitsAccessor
         {
             get
             {
-                return Unites.GetValueOrDefault();
+                return Unites.GetValueOrDefault(0);
             }
             set
             {
@@ -77,13 +75,11 @@ namespace PlanC.EntityDataModel
         }
 
         [NotMapped]
-        [JsonIgnore]
-        [IgnoreDataMember]
         public int TheoryHoursAccessor 
         {
             get 
             {
-                return HeuresTotalesTheorie.GetValueOrDefault();
+                return HeuresTotalesTheorie.GetValueOrDefault(0);
             }
             set
             {
@@ -91,13 +87,11 @@ namespace PlanC.EntityDataModel
             } 
         }
         [NotMapped]
-        [JsonIgnore]
-        [IgnoreDataMember]
         public int PracticeHoursAccessor
         {
             get
             {
-                return HeuresTotalesPratique.GetValueOrDefault();
+                return HeuresTotalesPratique.GetValueOrDefault(0);
             }
             set
             {
@@ -105,13 +99,11 @@ namespace PlanC.EntityDataModel
             }
         }
         [NotMapped]
-        [JsonIgnore]
-        [IgnoreDataMember]
         public int HomeHoursAccessor
         {
             get
             {
-                return HeuresTotalesMaison.GetValueOrDefault();
+                return HeuresTotalesMaison.GetValueOrDefault(0);
             }
             set
             {
@@ -120,8 +112,6 @@ namespace PlanC.EntityDataModel
         }
 
         [NotMapped]
-        [JsonIgnore]
-        [IgnoreDataMember]
         public DateTime DptDateAccessor
         {
             get
@@ -134,13 +124,11 @@ namespace PlanC.EntityDataModel
             }
         }
         [NotMapped]
-        [JsonIgnore]
-        [IgnoreDataMember]
         public DateTime CmteDateAccessor
         {
             get
             {
-                return DateApprobationCommite.HasValue ? DateApprobationCommite.Value : DateTime.Now;
+                return DateApprobationCommite.GetValueOrDefault();
             }
             set
             {
@@ -148,8 +136,6 @@ namespace PlanC.EntityDataModel
             }
         }
         [NotMapped]
-        [JsonIgnore]
-        [IgnoreDataMember]
         public DateTime DirectorDateAccessor
         {
             get
@@ -159,6 +145,51 @@ namespace PlanC.EntityDataModel
             set
             {
                 DateApprobationCadre = value;
+            }
+        }
+        [NotMapped]
+        public DateTime RcdCdttmAccess
+        {
+            get
+            {
+                return RcdCdttm.GetValueOrDefault();
+            }
+            set
+            {
+                RcdCdttm = value;
+            }
+        }
+
+        [NotMapped]
+        public string DptDateString
+        {
+            get
+            {
+                return DateApprobationDepartement?.ToString() ?? "<i class='fas fa-mug-hot'></i>";
+            }
+        }
+        [NotMapped]
+        public string CmteDateString
+        {
+            get
+            {
+                return DateApprobationCommite?.ToString() ?? "<i class='fas fa-mug-hot'></i>";
+            }
+        }
+        [NotMapped]
+        public string DirectorDateString
+        {
+            get
+            {
+                return DateApprobationCadre?.ToString() ?? "<i class='fas fa-mug-hot'></i>";
+            }
+        }
+        [NotMapped]
+        public string RcdCdttmString
+        {
+            get
+            {
+                return RcdCdttm?.ToString() ?? "<i class='fas fa-mug-hot'></i>";
             }
         }
     }
