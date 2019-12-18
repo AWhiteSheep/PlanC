@@ -183,16 +183,19 @@
 
     protected override void OnParametersSet()
     {
-        switch (CurrentMode)
+        using (PCU001Context _temp = new PCU001Context())
         {
-            case FormPlanCadre.FormMode.CREATE:
-                Program = context.Programmes.FirstOrDefault();
-                break;
-            case FormPlanCadre.FormMode.EDIT:
-                Program = context.Programmes.SingleOrDefault(p => p.Id == Template.ProgrammeId);
-                break;
-            default:
-                throw new Exception($"Error in {this}: CurrentMode is {CurrentMode}");
+            switch (CurrentMode)
+            {
+                case FormPlanCadre.FormMode.CREATE:
+                    Program = _temp.Programmes.FirstOrDefault();
+                    break;
+                case FormPlanCadre.FormMode.EDIT:
+                    Program = _temp.Programmes.SingleOrDefault(p => p.Id == Template.ProgrammeId);
+                    break;
+                default:
+                    throw new Exception($"Error in {this}: CurrentMode is {CurrentMode}");
+            }
         }
     }
 
@@ -204,7 +207,7 @@
     {
         if (firstRender && !IsReadOnly)
         {
-            ProgramSelect.ValueChanged += UpdateProgram;   
+            ProgramSelect.ValueChanged += UpdateProgram;
         }
     }
 
@@ -253,7 +256,7 @@
                     }
                 case FormPlanCadre.FormMode.EDIT:
                     try
-                    {                    
+                    {
                         Template.ProgrammeId = Program.Id;
                         Template.IntentionEducative = Intention.Value;
                         Template.Description = Description.Value;

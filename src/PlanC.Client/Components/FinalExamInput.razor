@@ -2,12 +2,13 @@
 @using Pages.Planscadres
 @using System.Linq;
 @using Microsoft.EntityFrameworkCore
+@using Syncfusion.EJ2.DropDowns
 @inject PCU001Context _context
 @inject IJSRuntime JSRuntime
 @inherits CourseTemplateFormComponent
 
 
-<button disabled="@(IsReadOnly)" hidden="@(IsReadOnly)" class="btn btn-success mb-4" @onclick="() => AddExam()">Ajouter un examen</button>
+<button disabled="@(IsReadOnly)" hidden="@(IsReadOnly)" class="btn btn-outline-dark mb-4" @onclick="() => AddExam()">Ajouter un examen</button>
 
 <hr class="bcSeparator" />
 <table class="mt-3 table table-borderless text-center p-0" style="width:100%">
@@ -15,31 +16,62 @@
         <tr>
             @if (!IsReadOnly)
             {
-                <th></th>
+                <th>Ajouter un élément de compétence</th>
             }
             <th style="min-width:60%">Titre de l'examen</th>
             <th>Pondération</th>
+            @if (!IsReadOnly)
+            {
+                <th></th>
+            }
         </tr>
     </thead>
     <tbody>
-        @foreach (Examens exam in ExamInput)
+        @foreach (Examens exam in Template.ExamensFinalsCertificatifs.Select(ex => ex.Examen))
         {
-            <tr>
-                @if (!IsReadOnly)
-                {
+        <tr>
+            @if (!IsReadOnly)
+            {
+                <td>
+                    <button class="btn btn-circle" @onclick="() => AddElement(exam)"><i class="fas fa-plus"></i></button>
+                </td>
+            }
+            <td>
+                <input class="input form-control" readonly="@(IsReadOnly)" @bind="exam.Qualification" />
+            </td>
+            <td>
+                <input class="input form-control" readonly="@(IsReadOnly)" @bind="exam.WeightAccessor" />
+            </td>
+            
+        </tr>
+
+            @foreach (ExamensElementsCompetences ese in exam.ExamensElementsCompetences)
+            {
+                <tr>
                     <td>
-                        <button class="btn btn-danger" @onclick="() => DeleteExam(exam)"><i class="fas fa-trash"></i></button>
+                        Élément:
                     </td>
-                }
-
-                <td>
-                    <input class="input form-control" readonly="@(IsReadOnly)" @bind="exam.Qualification" />
-                </td>
-                <td>
-                    <input class="input form-control" readonly="@(IsReadOnly)" @bind="exam.WeightAccessor" />
-                </td>
-            </tr>
-
+                    <td>
+                        <EjsComboBox Readonly="@(IsReadOnly)" Placeholder="Choisir un élément..." 
+                                     CssClass="input form-control border-dark" TValue="string" Value="GetUnselectedSkillElements(exam).First().Libele"  DataSource="GetUnselectedSkillElements(exam)">
+                            <ComboBoxEvents TValue="string" ValueChange="@(e => SetElement(e, ese))"></ComboBoxEvents>
+                            <ComboBoxFieldSettings Value="Id" Text="Libele"></ComboBoxFieldSettings>
+                        </EjsComboBox>
+                    </td>
+                    <td>
+                        Pondération
+                    </td>
+                    <td>
+                        <input class="input form-control" readonly="@(IsReadOnly)" type="number" @bind="ese.PoidElement" />
+                    </td>
+                    @if (!IsReadOnly)
+                    {
+                        <td>
+                            <button class="btn btn-circle" @onclick="() => exam.ExamensElementsCompetences.Remove(ese)"><i class="fas fa-trash"></i></button>
+                        </td>
+                    }
+                </tr>
+            }
         }
     </tbody>
 </table>
@@ -67,30 +99,21 @@
 
         public List<ExamensElementsCompetences> ExamSkillElemInput { get; private set; }
 
-        public EditContext Edit { get; set; }
+        private List<ElementsCompetence> Availableskillelements { get; set; }
 
         protected override void OnParametersSet()
         {
-            switch (CurrentMode)
-            {
-                case FormPlanCadre.FormMode.CREATE:
-                    ExamInput = new List<Examens>();
-                    FinalExams = new List<ExamensFinalsCertificatifs>();
-                    ExamSkillElemInput = new List<ExamensElementsCompetences>();
-                    break;
-                case FormPlanCadre.FormMode.EDIT:
-                    foreach (ExamensFinalsCertificatifs fe in Template.ExamensFinalsCertificatifs)
-                    {
-                        _context.Entry(fe)
-                                .Reference(fe => fe.Examen)
-                                .Load();
-                    }
-                    FinalExams = Template.ExamensFinalsCertificatifs.ToList();
-                    ExamInput = Template.ExamensFinalsCertificatifs.Select(fe => fe.Examen).ToList();
-                    break;
-            }
 
-            Edit = new EditContext(ExamInput);
+
+
+        }
+
+        protected override void OnInitialized()
+        {
+            Availableskillelements = Template.PlanCadreCompetenceElements.Select(tse => tse.ElementCompetence).ToList();
+
+            FinalExams = Template.ExamensFinalsCertificatifs.ToList();
+            ExamInput = Template.ExamensFinalsCertificatifs.Select(fe => fe.Examen).ToList();
         }
 
         public override bool SaveProgress()
@@ -137,5 +160,25 @@
         {
             ExamInput.Remove(exam);
             StateHasChanged();
+        }
+
+        private void AddElement(Examens exam)
+        {
+            exam.ExamensElementsCompetences.Add(new ExamensElementsCompetences()
+            {
+                Examen = exam,
+                ExamenId = exam.Id
+            });
+        }
+
+        private void SetElement(ChangeEventArgs<string> args, ExamensElementsCompetences ese)
+        {
+            ese.ElementCompetence = Availableskillelements.Find(se => se.Id == args.Value);
+            StateHasChanged();
+        }
+
+        List<ElementsCompetence> GetUnselectedSkillElements(Examens exam)
+        {
+            return Availableskillelements.Except(exam.ExamensElementsCompetences.Select(ese => ese.ElementCompetence)).ToList();
         }
     }

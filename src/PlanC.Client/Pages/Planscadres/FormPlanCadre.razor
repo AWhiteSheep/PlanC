@@ -91,7 +91,6 @@
     </div>
 </div>
 
-
 <div hidden="@(!EditorOpen)" class="container shadow p-5 w-100 h-100" style="margin-bottom: 200px; margin-top: 50px">
     <EjsButton @onclick="() => EditorOpen = false">Fermer</EjsButton>
     <EjsButton @onclick="OnDownload">Télécharger</EjsButton>
@@ -192,7 +191,7 @@
         }
 
         CourseTemplate template = new CourseTemplate()
-        {            
+        {
             CourseId = Template.CoursId,
             CourseDescription = Template.Description,
             CourseTitle = Template.DenominationCours,
@@ -200,7 +199,7 @@
             PedagogicalIntent = Template.IntentionPedagogique,
             TimeDistribution = new TimeDistribution(Template.TheoryHoursAccessor, Template.PracticeHoursAccessor, Template.HomeHoursAccessor),
             UnitsCount = Template.UnitsAccessor,
-            Skills = Skills,            
+            Skills = Skills,
         };
 
         using (var stream = new MemoryStream())
@@ -235,14 +234,14 @@
         editor.Save("Plancadres"+Template.CoursId, FormatType.Docx);
     }
 
-    protected override void OnInitialized()
+    protected override async Task OnInitializedAsync()
     {
         //Si la page reçoit un ID spécifique, ce processus le charge en mémoire. Sinon, il génère un nouvel objet.
-        PlansCadres SpecifiedTemplate = context.PlansCadres.Include(tmp => tmp.PlanCadreCompetenceElements)
-                                                            .Include(tmp => tmp.ExamensFinalsCertificatifs)
-                                                            .Where(cadre => cadre.CoursId.Trim() == this.Id)
+        PlansCadres SpecifiedTemplate = context.PlansCadres.Where(cadre => cadre.CoursId.Trim() == this.Id)
                                                             .OrderByDescending(cadre => cadre.VsnCdttm)
                                                             .FirstOrDefault();
+
+
 
 
         if (SpecifiedTemplate != null)
@@ -267,6 +266,9 @@
 
         CurrentNode = Forms.First;
         CurrentForm = CurrentNode.Value;
+
+        await LoadTemplateDataAsync();
+
         StateHasChanged();
     }
 
@@ -306,6 +308,33 @@
         Template.IntentionPedagogique = (CurrentForm as TemplateReview).Remarque.Value;
         context.SaveChanges();
         NavigationManager.NavigateTo($"/planscadres/{Template.CoursId}/confirmation");
+    }
+
+    /// <summary>
+    /// Performs a deep load of all related entities that are necessary for template creation
+    /// </summary>
+    /// <returns></returns>
+    private async Task LoadTemplateDataAsync()
+    {
+        await context.Entry(Template).Collection(t => t.PlanCadreCompetenceElements).LoadAsync();
+
+        await context.Entry(Template).Collection(t => t.ExamensFinalsCertificatifs).LoadAsync();
+
+        foreach(ExamensFinalsCertificatifs ex in Template.ExamensFinalsCertificatifs)
+        {
+            await context.Entry(ex).Reference(ex => ex.Examen).LoadAsync();
+        }
+
+        foreach(Examens exam in Template.ExamensFinalsCertificatifs.Select(ex => ex.Examen))
+        {
+            await context.Entry(exam).Collection(exam => exam.ExamensElementsCompetences).LoadAsync();
+
+            foreach(ExamensElementsCompetences elem in exam.ExamensElementsCompetences)
+            {
+                await context.Entry(elem).Reference(elem => elem.ElementCompetence).LoadAsync();
+            }
+        }
+
     }
 
 }

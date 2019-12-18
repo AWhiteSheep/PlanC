@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Runtime.Serialization;
 using System.Text.Json.Serialization;
 
 namespace PlanC.EntityDataModel
@@ -53,8 +54,12 @@ namespace PlanC.EntityDataModel
         [InverseProperty("ElementCompetence")]
         public virtual ICollection<CriteresElementCompetence> CriteresElementCompetence { get; set; }
         [InverseProperty("ElementCompetence")]
+        [JsonIgnore]
+        [IgnoreDataMember]
         public virtual ICollection<ExamensElementsCompetences> ExamensElementsCompetences { get; set; }
         [InverseProperty("ElementCompetence")]
+        [JsonIgnore]
+        [IgnoreDataMember]
         public virtual ICollection<PlanCadreCompetenceElements> PlanCadreCompetenceElements { get; set; }
     }
 }

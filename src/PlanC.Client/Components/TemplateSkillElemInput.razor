@@ -21,7 +21,7 @@
         </div>
         <!-- le coordonateur peut ajouter des remarques et précision local pour le plan cadre donné-->
         <div class="col-lg-6">
-            <EjsButton CssClass="btn btn-info" @onclick="AddSkill">Ajouter</EjsButton>
+            <EjsButton CssClass="btn btn-outline-dark" @onclick="AddSkill">Ajouter</EjsButton>
         </div>
     </div>
 }
@@ -37,7 +37,7 @@
                 </a>
                 @if (!IsReadOnly)
                 {
-                    <button class="btn btn-danger" @onclick="() => RemoveSkill(skill)"><i class="fas fa-trash"></i></button>
+                    <button class="btn btn-circle" @onclick="() => RemoveSkill(skill)"><i class="fas fa-trash"></i></button>
                 }
             </div>
         </div>
@@ -191,9 +191,15 @@
     protected void RemoveSkill(Competences skill)
     {
         SelectedSkills.Remove(skill);
-        _context.PlanCadreCompetenceElements.RemoveRange(SelectedSkillElements.Where(tse => tse.ElementCompetence.IdentityKeyCompetencesNavigation == skill));
         SelectedSkillElements = SelectedSkillElements.Where(tse => tse.ElementCompetence.IdentityKeyCompetencesNavigation != skill).ToList();
+
+        var targets = _context.PlanCadreCompetenceElements.Where(tse => tse.ElementCompetence.IdentityKeyCompetencesNavigation == skill)
+                                                            .Where(tse => tse.PlansCadres == Template)
+                                                            .ToList();
+
+        _context.PlanCadreCompetenceElements.RemoveRange(targets);
         _context.SaveChanges();
+
         RefreshSkills();
     }
 
@@ -201,7 +207,17 @@
     {
         try
         {
-            Template.PlanCadreCompetenceElements = SelectedSkillElements;
+            foreach (PlanCadreCompetenceElements tse in SelectedSkillElements)
+            {
+                var existingItem = _context.PlanCadreCompetenceElements.Find(tse.IdentityKey);
+
+                if (existingItem != null)
+                {
+                    _context.Entry(existingItem).CurrentValues.SetValues(tse);
+                }
+
+                else Template.PlanCadreCompetenceElements.Add(tse);
+            }
             int result = _context.SaveChanges();
             return true;
         }
