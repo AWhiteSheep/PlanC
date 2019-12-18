@@ -51,6 +51,23 @@ namespace PlanC.EntityDataModel
             }
         }
 
+
+
+        [NotMapped]
+        [JsonIgnore]
+        public List<string> GetContextListString
+        {
+            get
+            {
+                List<string> contexts = new List<string>();
+                foreach (var context in CompetenceContextes)
+                {
+                    contexts.Add(context.Text);
+                }
+                return contexts;
+            }
+        }
+
         [ForeignKey(nameof(DisciplineId))]
         [InverseProperty(nameof(Departements.Competences))]
         [JsonIgnore]

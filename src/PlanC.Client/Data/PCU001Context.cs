@@ -1,6 +1,6 @@
 ﻿using System;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using PlanC.EntityDataModel;
 using Microsoft.AspNetCore.Identity;
 
@@ -19,8 +19,6 @@ namespace PlanC.Client.Data
 
         // DEBUT Roles et authentification
         public virtual DbSet<AspNetUsers> AspNetUsers { get; set; }
-        public virtual DbSet<IdentityRole> IdentityRoles { get; set; }
-        // FIN
         public virtual DbSet<CategoriesProgrammes> CategoriesProgrammes { get; set; }
         public virtual DbSet<CompetenceContextes> CompetenceContextes { get; set; }
         public virtual DbSet<Competences> Competences { get; set; }
@@ -56,7 +54,6 @@ namespace PlanC.Client.Data
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
-            // DEBUT Roles et identifiant
             modelBuilder.Entity<AspNetUsers>(entity =>
             {
                 entity.HasKey(e => e.UserName)
@@ -82,7 +79,6 @@ namespace PlanC.Client.Data
                     .HasConstraintName("FK_TASPUSER_TDPTMNT");
 
             });
-            // FIN Roles et identifiant
             modelBuilder.Entity<CategoriesProgrammes>(entity =>
             {
                 entity.HasKey(e => e.CategorieId)
@@ -590,7 +586,6 @@ namespace PlanC.Client.Data
                     .IsUnicode(false)
                     .IsFixedLength();
             });
-
             OnModelCreatingPartial(modelBuilder);
         }
 

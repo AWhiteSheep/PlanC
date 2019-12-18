@@ -1,4 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
 using System;
 using System.Collections.Generic;
@@ -24,17 +24,14 @@ namespace PlanC.EntityDataModel
         [StringLength(7)]
         public override string UserName { get; set; }
         [Column("DepartementID")]
-        [PersonalData]
         public int? DepartementId { get; set; }
         [Column("GVN_NM")]
         [StringLength(50)]
-        [PersonalData]
-        public string GvnNm { get; set; } // prénom
+        public string GvnNm { get; set; }
         [Column("SNM")]
         [StringLength(50)]
         public string Snm { get; set; }
         [Column("RCD_CDTTM", TypeName = "datetime")]
-        [PersonalData]
         public DateTime? RcdCdttm { get; set; }
 
         [ForeignKey(nameof(DepartementId))]
@@ -44,7 +41,6 @@ namespace PlanC.EntityDataModel
         public virtual Departements Departement { get; set; }
         [InverseProperty("U")]
         public virtual ICollection<DisponibilitesUtilisateur> DisponibilitesUtilisateur { get; set; }
-
         // à ne pas se référer n'est pas la clé primaire mais bien un clef de récupration
         [IgnoreDataMember]
         public override string Id { get; set; } // FALLBACK KEY

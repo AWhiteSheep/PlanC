@@ -136,9 +136,6 @@
                 case "Énoncé":
                     competences = _competences.Where(e => e.Enonce.Contains(_filter)).ToList();
                     break;
-                default:
-                    competences = _competences.Where(e => e.CompetenceId.Contains(_filter)).ToList();
-                    break;
             }
         }
         else

@@ -109,6 +109,31 @@
     EjsDocumentEditorContainer container;
     bool EditorOpen { get; set; }
 
+    [Parameter]
+    public string Id { get; set; }
+    // date pour la recherche du plan-cadre
+    [Parameter]
+    public DateTime VsnCdttm { get; set; }
+
+    [CascadingParameter]
+    public FormMode CurrentMode { get; set; }
+
+    public CourseTemplateFormComponent CurrentForm { get; set; }
+
+    private LinkedListNode<CourseTemplateFormComponent> CurrentNode { get; set; }
+    private LinkedList<CourseTemplateFormComponent> Forms { get; set; }
+
+
+    // sauvegarde des remarque laissé dans le formulaire template review
+    public EjsRichTextEditor Remarque { get; set; }
+
+    [Parameter]
+    public PlansCadres Template { get; set; }
+
+    private int CurrentStep = 0;
+
+    ChangeEventArgs<PlanC.Client.Components.DropdownProgramSelection> programSelectChange;
+
     public void Export()
     {
         // génère le document
@@ -200,37 +225,15 @@
             DocumentEditorModule editor = container.GetDocumentEditor();
             editor.Open(sfdtString);
         }
+
     }
 
     public void OnDownload()
     {
+        //envoit un document à la sauvegarde
         DocumentEditorModule editor = container.GetDocumentEditor();
         editor.Save("Plancadres"+Template.CoursId, FormatType.Docx);
     }
-
-    [Parameter]
-    public string Id { get; set; }
-    // date pour la recherche du plan-cadre
-    [Parameter]
-    public DateTime VsnCdttm { get; set; }
-
-    [CascadingParameter]
-    public FormMode CurrentMode { get; set; }
-
-    public CourseTemplateFormComponent CurrentForm { get; set; }
-
-    private LinkedListNode<CourseTemplateFormComponent> CurrentNode { get; set; }
-    private LinkedList<CourseTemplateFormComponent> Forms { get; set; }
-
-    // sauvegarde des remarque laissé dans le formulaire template review
-    public EjsRichTextEditor Remarque { get; set; }
-
-    [Parameter]
-    public PlansCadres Template { get; set; }
-
-    private int CurrentStep = 0;
-
-    ChangeEventArgs<PlanC.Client.Components.DropdownProgramSelection> programSelectChange;
 
     protected override void OnInitialized()
     {
