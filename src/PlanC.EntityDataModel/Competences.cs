@@ -26,6 +26,18 @@ namespace PlanC.EntityDataModel
         [Range(0, int.MaxValue)]
         public int DisciplineId { get; set; }
         [Required(ErrorMessage = "Ce champ est obligatoire")]
+        [Column("DisciplineID")]
+        [Range(0, int.MaxValue)]
+        [NotMapped]
+        public string DisciplineIdHastring {
+            get {
+                return DisciplineId.ToString();
+            }
+            set {
+                DisciplineId = int.Parse(value);
+            }
+        }
+        [Required(ErrorMessage = "Ce champ est obligatoire")]
         [StringLength(200)]
         public string Enonce { get; set; }
         [Column(TypeName = "ntext")]
@@ -37,23 +49,6 @@ namespace PlanC.EntityDataModel
         [Column("TRK_UID")]
         [StringLength(7)]
         public string TrkUid { get; set; }
-        [NotMapped]
-        [JsonIgnore]
-        public List<string> GetContextListString
-        {
-            get
-            {
-                List<string> contexts = new List<string>();
-                foreach (var context in CompetenceContextes)
-                {
-                    contexts.Add(context.Text);
-                }
-                return contexts;
-            }
-        }
-
-
-
         [NotMapped]
         [JsonIgnore]
         public List<string> GetContextListString

@@ -16,12 +16,12 @@ namespace PlanC.EntityDataModel
         [StringLength(4)]
         public string CompetenceId { get; set; }
         [Key]
-        [Column("DisciplineId")]     
+        [Column("DisciplineId")]
         public int DisciplineId { get; set; }
         [Key]
-        [Column("ElementCompetenceQNBR", TypeName = "smallint")]
-        public Int16 ElementCompetenceQnbr { get; set; }
-        [Column("PRTL_SKL_IND")]
+        [Column("ElementCompetenceQNBR")]
+        public int ElementCompetenceQnbr { get; set; }
+        [Column("PRTL_SKL_IND", TypeName = "char")]
         [StringLength(1)]
         public string PrtlSklInd { get; set; }
         [Column("TXNMY_CD")]

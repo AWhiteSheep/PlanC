@@ -1,4 +1,5 @@
 ﻿@page "/plancours"
+@attribute [Authorize]
 @using PlanC.Client.Data
 @inject PCU001Context context
 @using System.Linq
@@ -71,7 +72,8 @@
 
 @code {
     public List<PlanC.EntityDataModel.PlansCours>
-    PlansCours { get; set; }
+    PlansCours
+    { get; set; }
     public PlansCours Selected { get; set; }
     private bool loadFailed; //safe check si la list à eu une erreur pour demander à l'usager de reload
 
@@ -88,7 +90,7 @@
             loadFailed = true;
             Console.WriteLine("Failed to load {context}, {ex}", context, ex);
         }
-    } 
+    }
 
     public void RowSelectHandler(RowSelectEventArgs<PlansCours> args)
     {

@@ -34,12 +34,12 @@
     <div class="col-sm-6">
         <div class="form-group">
             <label class="control-label" for="CrsId"> Département: </label>
-            <PlanC.Client.Components.Models.NumberSelectComponent @bind-Value="@(skill.DisciplineId)" class="form-control">
+            <InputSelect @bind-Value="skill.DisciplineIdHastring" class="form-control">
                 @foreach (Departements departement in departements)
                 {
                     <option value="@departement.Id">@departement.Titre</option>
                 }
-            </PlanC.Client.Components.Models.NumberSelectComponent>
+            </InputSelect>
             <div class="invalid-feedback">
                 <ValidationMessage TValue="int" For="@(() => skill.DisciplineId)" />
             </div>

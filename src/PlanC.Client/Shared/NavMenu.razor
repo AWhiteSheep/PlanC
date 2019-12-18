@@ -22,53 +22,59 @@
             </NavLink>
         </li>
 
-        <!-- Nav Item - Dashboard -->
-        <li class="nav-item">
-            <NavLink class="nav-link" Match="NavLinkMatch.Prefix" href="/admin" >
-                <i class="fas fa-archway"></i>
-                <span> Administration </span>
-            </NavLink>
-        </li>
+        <CascadingAuthenticationState>
+            <AuthorizeView>
+                <!-- Nav Item - Dashboard -->
+                <li class="nav-item">
+                    <NavLink class="nav-link" Match="NavLinkMatch.Prefix" href="/admin">
+                        <i class="fas fa-archway"></i>
+                        <span> Administration </span>
+                    </NavLink>
+                </li>
+                <!-- Divider -->
+                <hr class="sidebar-divider my-0">
+            </AuthorizeView>
+        </CascadingAuthenticationState>
 
-        <!-- Divider -->
-        <hr class="sidebar-divider my-0">
+            <!-- Nav Item - Section départements -->
+            <li class="nav-item">
+                <NavLink class="nav-link" Match="NavLinkMatch.Prefix" href="/departements">
+                    <i class="far fa-file-alt"></i>
+                    <span> Les départements </span>
+                </NavLink>
+            </li>
 
-        <!-- Nav Item - Section départements -->
-        <li class="nav-item">
-            <NavLink class="nav-link" Match="NavLinkMatch.Prefix" href="/departements">
-                <i class="far fa-file-alt"></i>
-                <span> Les départements </span>
-            </NavLink>
-        </li>
+            <!-- Nav Item - Section départements -->
+            <li class="nav-item">
+                <NavLink class="nav-link" Match="NavLinkMatch.Prefix" href="/programmes">
+                    <i class="far fa-file-alt"></i>
+                    <span> Les programmes d'étude </span>
+                </NavLink>
+            </li>
 
-        <!-- Nav Item - Section départements -->
-        <li class="nav-item">
-            <NavLink class="nav-link" Match="NavLinkMatch.Prefix" href="/programmes">
-                <i class="far fa-file-alt"></i>
-                <span> Les programmes d'étude </span>
-            </NavLink>
-        </li>
+            <!-- Divider -->
+            <hr class="sidebar-divider">
 
-        <!-- Divider -->
-        <hr class="sidebar-divider">
+            <CascadingAuthenticationState>
+                <AuthorizeView>
+                    <!-- Heading -->
+                    <NavLink Match="NavLinkMatch.Prefix" class="sidebar-heading" href="/portail"> Personnel enseignant </NavLink>
 
-        <!-- Heading -->
-        <NavLink Match="NavLinkMatch.Prefix" class="sidebar-heading" href="/portail"> Personnel enseignant </NavLink>
+                    <!-- Nav Item - Afffiche tous les documents respectant les criltères -->
+                    <li class="nav-item">
+                        <NavLink Match="NavLinkMatch.Prefix" class="nav-link" href="/documents">
+                            <i class="far fa-file-alt"></i>
+                            <span> Tout les documents </span>
+                        </NavLink>
+                    </li>
+                </AuthorizeView>
+            </CascadingAuthenticationState>
+            <!-- Divider -->
+            <hr class="sidebar-divider d-none d-md-block">
 
-        <!-- Nav Item - Afffiche tous les documents respectant les criltères -->
-        <li class="nav-item">
-            <NavLink Match="NavLinkMatch.Prefix" class="nav-link" href="/documents">
-                <i class="far fa-file-alt"></i>
-                <span> Tout les documents </span>
-            </NavLink>
-        </li>
-
-        <!-- Divider -->
-        <hr class="sidebar-divider d-none d-md-block">
-
-        <!-- Sidebar Toggler (Sidebar) -->
-        <div class="text-center d-none d-md-inline">
-            <button data-toggle="collapse" data-target="#accordionSidebar" class="rounded-circle border-0" id="sidebarToggle" onclick="toggleSidebarToggleSide()"></button>
-        </div>
+            <!-- Sidebar Toggler (Sidebar) -->
+            <div class="text-center d-none d-md-inline">
+                <button data-toggle="collapse" data-target="#accordionSidebar" class="rounded-circle border-0" id="sidebarToggle" onclick="toggleSidebarToggleSide()"></button>
+            </div>
     </ul>
 </div>

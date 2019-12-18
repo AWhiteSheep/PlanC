@@ -41,38 +41,42 @@
 <div class="row justify-content-center">
     <!-- Affiche tous les départements -->
     <div class="col-12" hidden="@(formLoadDisplay)">
-        <EjsButton @onclick="ToggleForm">Ajout d'un département</EjsButton>
-        <br />
-        @if (departements != null)
-        {
-            <EjsGrid DataSource="@departements" AllowSorting="true" AllowPaging="true"
-                     ContextMenuItems="@(new List<ContextMenuItemModel>() {
+        <AuthorizeView>
+            <EjsButton @onclick="ToggleForm">Ajout d'un département</EjsButton>
+        </AuthorizeView>
+            <br />
+            @if (departements != null)
+            {
+                <EjsGrid DataSource="@departements" AllowSorting="true" AllowPaging="true"
+                         ContextMenuItems="@(new List<ContextMenuItemModel>() {
                                                  new ContextMenuItemModel { Text = "Voir le département", Target = ".e-content", Id = "open" }
                                              })">
-                <GridEditSettings AllowAdding="true" AllowDeleting="true"></GridEditSettings>
-                <GridPageSettings PageSize="8"></GridPageSettings>
-                <!-- Les événements se passant sur la table et les paramètre -->
-                <GridEvents ContextMenuItemClicked="OnContextMenuClick" RowSelected="RowSelectHandler" RowDeselected="() => Selected = null" TValue="Departements"></GridEvents>
-                <GridColumns>
-                    <GridColumn IsPrimaryKey="true" Field=@nameof(Selected.Id) HeaderText="Identifiant du cours"></GridColumn>
-                    <GridColumn Field=@nameof(Selected.Titre) HeaderText="Identifiant du programme"></GridColumn>
-                    <GridColumn Field=@nameof(Selected.RcdCdttm) HeaderText="Date du dernier enregistrement" Format="yMd" Type=ColumnType.Date></GridColumn>
-                </GridColumns>
-            </EjsGrid>
-        }
-        else if (loadFailed)
-        {
-            <a href="" class="reload">Recharger la page</a>
-        }
-        else
-        {
-            <h1>En chargement...</h1>
-        }
+                    <GridEditSettings AllowAdding="true" AllowDeleting="true"></GridEditSettings>
+                    <GridPageSettings PageSize="8"></GridPageSettings>
+                    <!-- Les événements se passant sur la table et les paramètre -->
+                    <GridEvents ContextMenuItemClicked="OnContextMenuClick" RowSelected="RowSelectHandler" RowDeselected="() => Selected = null" TValue="Departements"></GridEvents>
+                    <GridColumns>
+                        <GridColumn IsPrimaryKey="true" Field=@nameof(Selected.Id) HeaderText="Identifiant du cours"></GridColumn>
+                        <GridColumn Field=@nameof(Selected.Titre) HeaderText="Identifiant du programme"></GridColumn>
+                        <GridColumn Field=@nameof(Selected.RcdCdttm) HeaderText="Date du dernier enregistrement" Format="yMd" Type=ColumnType.Date></GridColumn>
+                    </GridColumns>
+                </EjsGrid>
+            }
+            else if (loadFailed)
+            {
+                <a href="" class="reload">Recharger la page</a>
+            }
+            else
+            {
+                <h1>En chargement...</h1>
+            }
     </div>
-    <div class="col-12" hidden="@(!formLoadDisplay)">
-        <EjsButton @onclick="ToggleForm">Fermer</EjsButton>
-        <TDepartements IsEditable="true"></TDepartements>
-    </div>
+    <AuthorizeView>
+        <div class="col-12" hidden="@(!formLoadDisplay)">
+            <EjsButton @onclick="ToggleForm">Fermer</EjsButton>
+            <TDepartements IsEditable="true"></TDepartements>
+        </div>
+    </AuthorizeView>
 </div>
 <div class="col-12 text-center">
     <span class="smallerFontSize">La page ne répond pas? <a href="/departements" onclick="window.location.reload()" class="reload">Rafraîchir la page.</a></span>
@@ -90,7 +94,7 @@
         departements = context.Departements.OrderBy(e => e.Id).ToList();
     }
 
-    public void ToggleForm() 
+    public void ToggleForm()
     {
         formLoadDisplay = !formLoadDisplay;
     }

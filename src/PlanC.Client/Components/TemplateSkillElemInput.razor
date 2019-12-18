@@ -7,6 +7,7 @@
 @using Syncfusion.EJ2.Blazor.Grids
 @inject PCU001Context _context
 @inject IJSRuntime JSRuntime
+@inherits CourseTemplateFormComponent
 
 <EjsComboBox @ref="SkillDropdown" TValue="@Competences" DataSource="AvailableSkills">
     <ComboBoxFieldSettings Text="ToString"></ComboBoxFieldSettings>
@@ -69,21 +70,21 @@
             .Select(pc => pc.CompetenceId)
             .ToList();
 
-        AvailableSkills =  _context.Competences .Where(c => AvailableSkillIds.Contains(c.CompetenceId))
+        AvailableSkills = _context.Competences.Where(c => AvailableSkillIds.Contains(c.CompetenceId))
                                                 .Except(SelectedSkills)
                                                 .ToList();
 
-        List<ElementsCompetence> AssociatedSkillElems = _context.ElementsCompetence.Where(ec => AvailableSkills.Contains(ec.Competences)).ToList();
+        List<ElementsCompetence> AssociatedSkillElems = _context.ElementsCompetence.Where(ec => AvailableSkills.Contains(ec.IdentityKeyCompetencesNavigation)).ToList();
 
-        foreach(ElementsCompetence sklelem in AssociatedSkillElems)
+        foreach (ElementsCompetence sklelem in AssociatedSkillElems)
         {
             SelectedSkillElements.Add(new CoursElementsCompetences
             {
                 CoursId = Template.CoursId,
-                CompetenceId = sklelem.CompetenceId,
+                CompetenceId = sklelem.IdentityKeyCompetencesNavigation.CompetenceId,
                 ElementCompetenceQnbr = sklelem.ElementCompetenceSqnbr,
                 VsnCdttm = Template.VsnCdttm,
-                DisciplineId = sklelem.DisciplineId
+                DisciplineId = sklelem.IdentityKeyCompetencesNavigation.DisciplineId
             });
         }
     }
