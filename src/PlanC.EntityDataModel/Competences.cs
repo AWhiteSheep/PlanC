@@ -23,6 +23,7 @@ namespace PlanC.EntityDataModel
         public string CompetenceId { get; set; }
         [Required(ErrorMessage = "Ce champ est obligatoire")]
         [Column("DisciplineID")]
+        [Range(0, int.MaxValue)]
         public int DisciplineId { get; set; }
         [Required(ErrorMessage = "Ce champ est obligatoire")]
         [StringLength(200)]
@@ -81,7 +82,7 @@ namespace PlanC.EntityDataModel
 
         public override string ToString()
         {
-            return $"{CompetenceId} -- {Enonce}";
+            return $"{CompetenceId}: {Enonce}";
         }
     }
 }
