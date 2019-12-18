@@ -17,7 +17,6 @@ namespace PlanC.Client.Data
         {
         }
 
-        // DEBUT Roles et authentification
         public virtual DbSet<AspNetUsers> AspNetUsers { get; set; }
         public virtual DbSet<CategoriesProgrammes> CategoriesProgrammes { get; set; }
         public virtual DbSet<CompetenceContextes> CompetenceContextes { get; set; }
