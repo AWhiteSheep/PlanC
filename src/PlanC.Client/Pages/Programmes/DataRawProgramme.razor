@@ -46,9 +46,9 @@
                 <!-- Les événements se passant sur la table et les paramètre -->
                 <GridEvents ContextMenuItemClicked="OnContextMenuClick" RowSelected="RowSelectHandler" RowDeselected="() => Selected = null" TValue="Programmes"></GridEvents>
                 <GridColumns>
-                    <GridColumn IsPrimaryKey="true" Field=@nameof(Selected.Id) HeaderText="Identifiant du cours"></GridColumn>
-                    <GridColumn Field=@nameof(Selected.Designation) HeaderText="Nom du programme"></GridColumn>
+                    <GridColumn Field=@nameof(Selected.Id) HeaderText="Identifiant du programme"></GridColumn>
                     <GridColumn Field=@nameof(Selected.Departement.Titre) HeaderText="Département"></GridColumn>
+                    <GridColumn Field=@nameof(Selected.Designation) HeaderText="Nom"></GridColumn>
                     <GridColumn Field=@nameof(Selected.NombreCompetencesObligatoiresAccessor) HeaderText="NB compétence obligatoire"></GridColumn>
                     <GridColumn Field=@nameof(Selected.RcdCdttm) HeaderText="Date du dernier enregistrement" Format="yMd" Type=ColumnType.Date></GridColumn>
                 </GridColumns>
@@ -81,6 +81,10 @@
                         <EditForm Model="@Selected" OnValidSubmit="@HandleValidSubmit">
                             <DataAnnotationsValidator />
                             <ValidationSummary />
+                            <div class="form-group">
+                                <label for="designation">Identifiant du programme: </label>
+                                <InputText class="col-12" id="designation" @bind-Value="Selected.Id" />
+                            </div>
                             <div class="form-group">
                                 <label for="designation">Désignation du programme: </label>
                                 <InputText class="col-12" id="designation" @bind-Value="Selected.Designation" />
@@ -162,7 +166,9 @@
 
     private void HandleValidSubmit()
     {
-        if (!isEditing && !context.Programmes.Contains(Selected)) 
+        if (!isEditing && (context.Programmes
+            .FirstOrDefault(e => e.DepartementId == Selected.DepartementId 
+            && e.Id == Selected.Id) == null)) 
         { 
             context.Add(Selected);
         }
@@ -180,7 +186,7 @@
 
     public void RowSelectHandler(RowSelectEventArgs<Programmes> args)
     {
-        Selected = programmes.FirstOrDefault(e => e.Id == args.Data.Id);
+        Selected = programmes.FirstOrDefault(e => e.Id == args.Data.Id && e.DepartementId == args.Data.DepartementId);
     }
 
     public void OnContextMenuClick(MenuEventArgs args)
