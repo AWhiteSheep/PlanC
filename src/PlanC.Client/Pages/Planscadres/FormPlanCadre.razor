@@ -94,7 +94,7 @@
 
 <div hidden="@(!EditorOpen)" class="container shadow p-5 w-100 h-100" style="margin-bottom: 200px; margin-top: 50px">
     <EjsButton @onclick="() => EditorOpen = false">Fermer</EjsButton>
-    <EjsButton @onclick="Export">Télécharger</EjsButton>
+    <EjsButton @onclick="OnDownload">Télécharger</EjsButton>
     <EjsDocumentEditorContainer @ref="container">
     </EjsDocumentEditorContainer>
 </div>
@@ -104,7 +104,7 @@
     <a @onclick="Export" class="btn btn-outline-primary">Gérérer le plan-cadre</a>
 </div>
 
-@code{
+@code {
     // document editor ref point
     EjsDocumentEditorContainer container;
     bool EditorOpen { get; set; }

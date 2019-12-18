@@ -1,5 +1,5 @@
 ﻿@page "/compte/nouveau"
-@model PlanC.Client.Pages.Identity.Pages.Account.RegisterModel
+@model RegisterModel
 @inject PlanC.Client.Data.PCU001Context context
 @{
     SelectList departments = new SelectList(context.Departements, "Id", "Titre");
