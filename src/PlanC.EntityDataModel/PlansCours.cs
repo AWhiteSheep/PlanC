@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -29,6 +30,13 @@ namespace PlanC.EntityDataModel
         [Column("SessionID")]
         [StringLength(3)]
         public string SessionId { get; set; }
+        public string Group { get; set; }
+        [NotMapped]
+        public string _Group {
+            get {
+                return string.IsNullOrEmpty(Group) ? "Non spécifié" : Group;
+            }
+        }
         [Column("RCD_CDTTM", TypeName = "datetime")]
         public DateTime? RcdCdttm { get; set; }
         [Column("TRK_UID")]
@@ -50,5 +58,18 @@ namespace PlanC.EntityDataModel
         public virtual ICollection<ExamensCertificatifsNonsFinals> ExamensCertificatifsNonsFinals { get; set; }
         [InverseProperty("PlansCours")]
         public virtual ICollection<MaterielsCours> MaterielsCours { get; set; }
+        [NotMapped]
+        public Collection<string> _MaterielsCours {
+            get {
+                if(MaterielsCours == null)
+                    return new Collection<string>();
+
+                var listMateriel = new Collection<string>();
+                foreach(var materiel in MaterielsCours){
+                    listMateriel.Add(materiel.Description);
+                }
+                return listMateriel;
+            }
+        }
     }
 }

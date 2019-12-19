@@ -5,12 +5,12 @@
 @inject NavigationManager _NavigationManager
 @inject IJSRuntime Js
 @using Syncfusion.EJ2.Blazor.Navigations
+@using System.Collections.ObjectModel;
 @using Syncfusion.EJ2.Blazor.Grids
 @using Syncfusion.EJ2.Blazor.Buttons
 @using WDocument = Syncfusion.EJ2.DocumentEditor;
 @using PlanC.DocumentGeneration.CourseTemplate
 @using PlanC.DocumentGeneration.Common
-@using System.Collections.ObjectModel;
 @using System.IO
 
 <!--section sécurité doit être seulement coordonateur du programme et la consultation par le professeur-->
@@ -80,6 +80,9 @@
         // initialisation de la liste
         try
         {
+            // load la liste en initialisant la bool en false si une
+            // exception est survient de l'autre côté nous remetrons la bool à true
+            // et loader le message devant être affiché
             loadFailed = false;
             TemplateCours = context.PlansCadres.ToList();
         }
@@ -92,6 +95,9 @@
 
     protected void Supprimer()
     {
+        // supprimer le template selectionné da la liste affiché
+        // par la suite le supprime du contexte et nous sauvons le context pour
+        // updater l'affichage
         TemplateCours.Remove(Selected);
         context.PlansCadres.Remove(Selected);
         SaveProgress();
@@ -113,17 +119,22 @@
 
     public void RowSelectHandler(RowSelectEventArgs<PlansCadres> args)
     {
+        // à la selection nous gratifions la selection selon le id du cours
         Selected = TemplateCours.FirstOrDefault(e => e.CoursId == args.Data.CoursId);
     }
 
     public void OnContextMenuClick(MenuEventArgs args)
     {
+        // un evenement est inclu lorsque l'utilisateur fait un right click
         if (args.Item.Id == "open")
         {
+            // naviguer l'utilisateur vers la création du plan cadre
             _NavigationManager.NavigateTo($"/plancadre/{Selected.CoursId}/create");
         }
         else if (args.Item.Id == "word")
         {
+            // selon la methode template de création, le Js runtime contactant le serveur par
+            // le socket de connection lui envoit les bytes qui compose le fichier docx. construit
             byte[] dataInByte = FileUtil.FromTemplate(Selected, context);
             Js.SaveAs("Planscadre" + DateTime.Now.ToString() + ".docx", dataInByte);
         }

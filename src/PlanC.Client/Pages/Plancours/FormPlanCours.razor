@@ -1,19 +1,25 @@
-﻿@page "/plancours/create"
+﻿@*tous les liens que l'utilisateur peut utiliser pour afficher cette page*@
+@page "/plancours/create"
 @page "/plancours/creation"
 @page "/plancours/{id}/create"
 @page "/plancours/{id}/creation"
+@*fin des liens de page*@
+@*authorize la page de sécurité pour cette dernière*@
 @attribute [Authorize]
+@*using pour les namespaces qui doivent exister pour la fonction de la page*@
 @using PlanC.EntityDataModel
 @using PlanC.DocumentGeneration.CoursePlan
 @using PlanC.DocumentGeneration.CourseTemplate
 @using Components.PlanCours
-@using System.Collections.Generic;
-@using Microsoft.EntityFrameworkCore;
+@using System.Collections.Generic
+@using Microsoft.EntityFrameworkCore
+@using System.IO
+@*Injection de la page, dont cette dernière est dépendante*@
 @inject NavigationManager NavigationManager
 @inject IJSRuntime JS
 @inject PCU001Context context
-@using System.IO
 
+<!-- affichage de l'endroit ou l'utilisateur est -->
 <div class="row mb-3">
     <div class="col">
         <nav aria-label="breadcrumb">
@@ -31,15 +37,17 @@
 
 <div class="row">
     <div class="col-12 d-flex justify-content-center">
+        @*affiche un progress bar pour que l'utilisateur puisse savoir à quelle étape il est suivi seulement par un current step, une variable --int-- *@
         <PlanC.Client.Components.ProgressBar steps="@(new List<string> { "Session, cadre, politiques", "Calendrier", "Examens", "Matériel", "Révision" })"
                                              Current="CurrentStep"></PlanC.Client.Components.ProgressBar>
     </div>
 </div>
 
 <div class="container shadow p-5" style="margin-bottom: 200px">
-    @*Envoit le paramètre à tous les enfants*@
+    @* CascadingValue est une balise pour envoyé à tous les enfants la valeur seulement si nous ne spécifions pas un nom le type est pris pour que l'enfant puisse savoir ou ranger la valeur *@
     <CascadingValue TValue="PCU001Context" Value="context">
         <CascadingValue TValue="FormMode" Value="CurrentMode">
+         @* en conséquence du type du formulaire la page change est reformé pour afficher le bon formulaire *@
             @if (CurrentForm is CourseDescriptionForm)
             {
                 <PlanC.Client.Components.PlanCours.CourseDescriptionForm @bind-CoursePlan="CoursePlan" @ref="CurrentForm"></PlanC.Client.Components.PlanCours.CourseDescriptionForm>
@@ -60,7 +68,7 @@
     </CascadingValue>
     <div class="container mt-3">
         <div class="row">
-
+            @* tous les liens sont activé selon le current node présenté par les linklist et linklistnode présentant la valeur et le current node dans lequel l'utilisateur est *@
             <div class="col-12 d-flex justify-content-around">
                 <!-- appelle fonction javascript permettant d'ajouter le .wasvalidated sur la division du formulaire -->
                 <!-- suite au poste validate nous envoyons l'utilisateur vers la deuxième partie celle de remplire les contextes et les éléments de compétence-->
@@ -94,35 +102,40 @@
 
 @code{
     [Parameter]
+    // le paramètre doit prendre le même nom que ce qui est dans le url
     public string id { get; set; }
-
+    [Parameter]
+    // un type peut être passé en paramètre seulement si elle est en clé primaire ou si elle est donnée en paramètre de balisage
+    public PlansCours CoursePlan { get; set; } = new PlansCours();
     [CascadingParameter]
+    // le paramètre en cascade donné par le parent selon le type
     public FormMode CurrentMode { get; set; }
 
+    // module de step pour afficher le bon component
     public CoursePlanInputFormComponent CurrentForm { get; set; }
-
     private LinkedListNode<CoursePlanInputFormComponent> CurrentNode { get; set; }
     private LinkedList<CoursePlanInputFormComponent> Forms { get; set; }
-
-    [Parameter]
-    public PlansCours CoursePlan { get; set; } = new PlansCours();
 
     private int CurrentStep = 0;
 
     public void Export()
     {
+        // trouve la bonne entité dans la base de donné tout en ordonnant ce qui est au retour
         PlansCadres plansCadre = context.PlansCadres.Where(e => e.CoursId.Trim() == CoursePlan.CoursId.Trim())
             .OrderByDescending(p => p.VsnCdttm).FirstOrDefault();
         // génère le document
         var _document = ToDocumentModel(CoursePlan, plansCadre, context);
 
-
+        // ouverture du stream pour envoyé ver le socket du client connecté
         using (var stream = new MemoryStream())
         {
+            // ouverture de stream pour créer un document et qui sera lui envoyé au client en stream array transformé en byte array
             using (var document = PlanC.DocumentGeneration.CoursePlan.DocumentFactory.Create(stream))
             {
                 var editor = new PlanC.DocumentGeneration.CoursePlan.DocumentEditor(document);
                 editor.Model = _document;
+                // sauvegarde le changement mis au document à la suite d'avoir appliquer le model sur le document venant d'être
+                // créer à partir du script static de document generation
                 editor.ApplyChanges();
             }
             JS.SaveAs("plancours.docx", stream.ToArray());
@@ -137,6 +150,8 @@
                                                             .OrderByDescending(p => p.PlnVsnCdttm)
                                                             .FirstOrDefault();
 
+        // spécéfication de comment le formulaire doit être
+        // remis au client, soit en mode edit, create
         if (SpecifiedPlan != null)
         {
             CoursePlan = SpecifiedPlan;

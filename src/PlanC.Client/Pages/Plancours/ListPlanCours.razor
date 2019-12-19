@@ -11,8 +11,15 @@
 @using PlanC.Client
 @using PlanC.EntityDataModel
 @using Syncfusion.EJ2.Blazor.Navigations
+@using PlanC.DocumentGeneration.CourseTemplate
+@using PlanC.DocumentGeneration.CoursePlan
+@using PlanC.DocumentGeneration.Common
 @using Syncfusion.EJ2.Blazor.Grids
 @using Syncfusion.EJ2.Blazor.Buttons
+@using System.Collections.Generic;
+@using System.Collections.ObjectModel;
+@using System.IO
+@using Microsoft.EntityFrameworkCore
 
 <!--section sécurité doit être seulement coordonateur du programme et la consultation par le professeur-->
 <!-- Section de navigation -->
@@ -71,17 +78,18 @@
 </div>
 
 @code {
-    public List<PlanC.EntityDataModel.PlansCours>
-    PlansCours
-    { get; set; }
+    public List<PlanC.EntityDataModel.PlansCours> PlansCours { get; set; }
     public PlansCours Selected { get; set; }
-    private bool loadFailed; //safe check si la list à eu une erreur pour demander à l'usager de reload
+    //safe check si la list à eu une erreur pour demander à l'usager de reload
+    private bool loadFailed;
 
     protected override void OnInitialized()
     {
-        // initialisation de la liste
         try
         {
+            // initialisation de la liste
+            // si une exception est levé, nous lui affichons une message d'erreur
+            // et nous luis demandons de rafraîchir la page
             loadFailed = false;
             PlansCours = context.PlansCours.ToList();
         }
@@ -94,6 +102,8 @@
 
     public void RowSelectHandler(RowSelectEventArgs<PlansCours> args)
     {
+        // au click le plan de cours selectionné est passé à la page afin de pouvoir
+        // performer des action sur ce dernier
         Selected = PlansCours.FirstOrDefault(e => e.CoursId == args.Data.CoursId);
     }
 
@@ -101,7 +111,152 @@
     {
         if (args.Item.Id == "open")
         {
+            // envoit l'usager vers l'édition du plan de cours passé en paramètre
             _NavigationManager.NavigateTo($"/plancours/{Selected.CoursId}/create");
+        }
+        else
+        {
+            // empêche les erreurs pas rapport à la transaction
+            if (Selected == null)
+                return;
+            // load les références des entitées que le plan de cours est constitué
+            context.Entry(Selected).Reference(d => d.CoursActivite).Load();
+            context.Entry(Selected).Reference(d => d.ExamensCertificatifsNonsFinals).Load();
+            context.Entry(Selected).Reference(d => d.MaterielsCours).Load();
+            context.Entry(Selected).Reference(d => d.Session).Load();
+
+            // loadong la référence de l'utilisateur lequel à créer le plans de cadre
+            // n'a pas d'autre option que word donc ici nous créons le template
+            AspNetUsers teacher = context.AspNetUsers.Include(t => t.DisponibilitesUtilisateur).FirstOrDefault(d => d.UserName == Selected.TchrUid);
+            // ramene le dernier plan de cadre créer lié au cours donné
+            PlansCadres coursTemplate = context.PlansCadres.Where(e => e.CoursId == Selected.CoursId)
+                        .OrderByDescending(cadre => cadre.VsnCdttm)
+                        .FirstOrDefault();
+            // ramene le programme nominé pour le plan cadre
+            Programmes programmeTemplate = context.Programmes.FirstOrDefault(v => v.Id == coursTemplate.ProgrammeId);
+
+            // annule la transaction si une des conditions donnent vrai
+            if (teacher == null || coursTemplate == null || programmeTemplate == null)
+                return;
+
+            // Prerequis faire la liste des compétences pour donner à la propriété
+            List<PlanCadreCompetenceElements> tempTemplateElements = null;
+            if (coursTemplate != null)
+                tempTemplateElements = context.PlanCadreCompetenceElements.Include(e => e.ElementCompetence)
+                    .ThenInclude(d => d.IdentityKeyCompetencesNavigation)
+                    .Include(v => v.PlansCadres)
+                    .Where(t => t.CoursId.Trim() == coursTemplate.CoursId.Trim()).ToList();
+
+            if (tempTemplateElements == null)
+                return;
+
+            // First sKILL has competence
+            System.Collections.ObjectModel.Collection<Skill> Skills = new System.Collections.ObjectModel.Collection<Skill>();
+            // tous les compétences reliés avec le plancadre
+            List<Competences> competences = new List<Competences>();
+
+            /// FAIRE LA SKILL LISTE
+            ///
+            // cycle sur les critere element competence
+            foreach (var elementsCompetenceTemplate in tempTemplateElements)
+            {
+                Competences comp = elementsCompetenceTemplate.ElementCompetence.IdentityKeyCompetencesNavigation;
+                // composant d'une compétence
+                if (!competences.Contains(comp))
+                {
+                    competences.Add(comp);
+                    Skills.Add(new Skill() { Title = competences.Last().Enonce });
+                }
+
+                // trouve le skill et ajoute à celui ci le skill element trouvé
+                var _skill = Skills.First(e => e.Title == comp.Enonce);
+
+                if (_skill == null)
+                {
+                    Console.WriteLine($"Didn't not find {comp.Enonce}");
+                }
+                else
+                {
+                    // ajoute au skill trouvé l'élément dans la compétence relié dans laquelle nous nous trouvons
+                    _skill.SkillElements.Add(new SkillElement()
+                    {
+                        Title = elementsCompetenceTemplate.LongDescription,
+                        Criterias = new System.Collections.ObjectModel.Collection<string>(elementsCompetenceTemplate.ElementCompetence.GetCritereListString)
+                    });
+
+                    // acquired all context has string
+                    _skill.AchievementContexts = new System.Collections.ObjectModel.Collection<string>(comp.GetContextListString);
+                }
+            }
+            // fin à la construction la skills listes XD
+
+            // début de la création du plan cadre les entités liés sont loader dans la page
+            // création de la template pour créer le plan de cours
+            var coursePlan = new PlanC.DocumentGeneration.CoursePlan.CoursePlan
+            {
+                CourseId = Selected.CoursId,
+                CourseTitle = coursTemplate.DenominationCours,
+                StudyProgram = programmeTemplate.Designation,
+                TimeDistribution = new TimeDistribution(coursTemplate.TheoryHoursAccessor, coursTemplate.PracticeHoursAccessor, coursTemplate.HomeHoursAccessor),
+                Session = Selected.Session.Titre,
+                Campus = teacher._Campus,
+                Teacher = new PlanC.DocumentGeneration.CoursePlan.Teacher
+                {
+                    Name = teacher.Snm + " " + teacher.GvnNm,
+                    EmailAddress = teacher.Email,
+                    PhoneNumber = "819-770-1234 poste " + teacher.PhoneNumber,
+                    Office = teacher._Office,
+                    Availabilities = teacher._DisponibilitesUtilisateur
+                },
+                Group = Selected._Group,
+                Introduction = new[]
+                {
+                            coursTemplate.Description
+                        },
+                PedagogicalIntents = new[]
+                {
+                            coursTemplate.IntentionEducative
+                        },
+                Skills = Skills,
+                Exams = new Collection<Exam>
+                    {
+                            new Exam
+                            {
+                                Title = "Laboratoire 1",
+                                Weight = 100M
+                            },
+                            new FinalExam
+                            {
+                                Title = "Examen final",
+                                Weight = 40M,
+                                Criterias = new Collection<PlanC.DocumentGeneration.Common.FinalExamCriteria>
+                            {
+                                    new PlanC.DocumentGeneration.Common.FinalExamCriteria
+                                    {
+                                        Description = "Faire des application incandescentes.",
+                                        Weight = 40M
+                                    },
+                                    new PlanC.DocumentGeneration.Common.FinalExamCriteria
+                                    {
+                                        Description = "Décrire des régistraires historiques à des fin de validations programmatives.",
+                                        Weight = 60M
+                                    }
+                                }
+                            }
+                        },
+                RequiredMaterial = Selected._MaterielsCours
+            };
+            // start le stream pour envoyer au client et le tour devrait être joué!
+            using (var stream = new MemoryStream())
+            {
+                using (var document = PlanC.DocumentGeneration.CoursePlan.DocumentFactory.Create(stream))
+                {
+                    var editor = new PlanC.DocumentGeneration.CoursePlan.DocumentEditor(document);
+                    editor.Model = coursePlan;
+                    editor.ApplyChanges();
+                }
+                Js.SaveAs("Planscours-" + DateTime.Now.ToString() + ".docx", stream.ToArray());
+            }
         }
     }
 }

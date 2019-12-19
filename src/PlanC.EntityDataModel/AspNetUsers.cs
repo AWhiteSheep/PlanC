@@ -28,6 +28,24 @@ namespace PlanC.EntityDataModel
         [Column("GVN_NM")]
         [StringLength(50)]
         public string GvnNm { get; set; }
+        public string Office { get; set; }
+        [NotMapped]
+        // renvoit le numéro d'office du professeur
+        public string _Office {
+            get
+            {
+                return string.IsNullOrEmpty(Office) ? "Non spécifié" : Office;
+            }
+         }
+        public string Campus { get; set; }
+        [NotMapped]
+        // renvoit le nom du campus si n'est pas donné nous pouvons ne pas
+        // renvoyé un NULL ne pouvant pas être lue de l'autre côté
+        public string _Campus {
+            get {
+                return string.IsNullOrEmpty(Campus) ? "Gabrielle-Roy et Félix-Leclerc" : Campus;
+            }
+        }
         [Column("SNM")]
         [StringLength(50)]
         public string Snm { get; set; }
@@ -41,6 +59,20 @@ namespace PlanC.EntityDataModel
         public virtual Departements Departement { get; set; }
         [InverseProperty("U")]
         public virtual ICollection<DisponibilitesUtilisateur> DisponibilitesUtilisateur { get; set; }
+        [NotMapped]
+        public virtual string[] _DisponibilitesUtilisateur {
+            get {
+                if(DisponibilitesUtilisateur == null)
+                    return new[] { "Non spécifié" };
+                // la liste de dispo qui sera renvoyé en array
+                List<string> dispos = new List<string>();
+                foreach(var dispo in dispos)
+                {
+                    dispos.Add(DayOfWeekHumanLangageFR + " " + dispo.StartTimeSpan + "-" + dispo.StopTimeSpan);
+                }
+                return dispos.ToArray();
+            }
+         }
         // à ne pas se référer n'est pas la clé primaire mais bien un clef de récupration
         [IgnoreDataMember]
         public override string Id { get; set; } // FALLBACK KEY

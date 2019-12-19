@@ -60,6 +60,8 @@ namespace PlanC.EntityDataModel
         [InverseProperty("PlansCadres")]
         public virtual ICollection<PlanCadreCompetenceElements> PlanCadreCompetenceElements { get; set; }
 
+        public
+
         [NotMapped]
         [JsonIgnore]
         [IgnoreDataMember]

@@ -59,6 +59,19 @@ namespace PlanC.EntityDataModel
             }
         }
 
+        public TimeSpan StartTimeSpan
+        {
+            get {
+                return AvlStm.GetValueOrDefault();
+            }
+        }
+        public TimeSpan StopTimeSpan
+        {
+            get {
+                return AvlNtm.GetValueOrDefault();
+            }
+        }
+
         [NotMapped]
         public string DayOfWeekString
         {
