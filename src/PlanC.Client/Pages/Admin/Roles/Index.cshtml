@@ -5,44 +5,108 @@
     ViewData["Title"] = "Rôles";
 }
 
-<h4>Les rôles</h4>
+<div class="container justify-content-center">
+    <div class="col-12 text-center">
+        <h4>Les rôles</h4>
+    </div>
+    <hr />
+    <div class="col-md-8 card shadow m-auto">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>
+                        @Html.DisplayNameFor(model => model.IdentityRolesList[0].Name)
+                    </th>
+                    <th>Déscription</th>
+                </tr>
+            </thead>
+            <tfoot>
+                <tr>
+                    <th align="center">
+                        <a href="/admin/roles/creer">Ajouter un nouveau rôle</a>
+                    </th>
+                    <th>
+                        <a href="/admin/roles/user/assigner">Assigner un utilisateur à un rôle</a>
+                    </th>
+                </tr>
+            </tfoot>
+            <tbody>
+                @foreach (var item in Model.IdentityRolesList)
+                {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Name)
+                        </td>
+                        <td>
+                            <button role="button" onclick="selectRole('@item.Id', '@item.Name')" class="btn btn-link">Modifier</button> |
+                            <button role="button" onclick="selectRoleShowKey('@(Model.secrets.FirstOrDefault(e => e.RoleId == item.Id)?.Key ?? "pas de clée")')" class="btn btn-link">Afficher clée</button> |
+                            <a href="/admin/roles/supprimer/@item.Id">Supprimer</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
 
-<p>
-    <a href="/admin/roles/creer">Ajouter un nouveau rôle</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.IdentityRolesList[0].Name)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.IdentityRolesList[0].NormalizedName)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.IdentityRolesList[0].ConcurrencyStamp)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model.IdentityRolesList) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Name)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.NormalizedName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.ConcurrencyStamp)
-            </td>
-            <td>
-                <a href="/admin/roles/modifier/@item.Id">Modifier</a> |
-                <a href="/admin/roles/info/@item.Id">Détails</a> |
-                <a href="/admin/roles/supprimer/@item.Id">Supprimer</a>
-            </td>
-        </tr>
+<div id="dialogForm">
+    <form href="/admin/roles" method="post">
+        <input asp-for="RoleModification.Id" hidden />
+        <div class="form-group">
+            <label asp-for="RoleModification.Name" class="control-label"></label>
+            <input asp-for="RoleModification.Name" class="form-control" />
+            <span asp-validation-for="RoleModification.Name" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <a class="btn btn-outline-secondary" onclick="$('#dialogForm').dialog('close');"> Annuler </a>
+            <input type="submit" value="Sauvegarder" class="btn btn-primary" />
+        </div>
+    </form>
+</div>
+
+<div id="dialogKey">
+    <div class="form-group">
+        <input readonly id="inputKey" />
+    </div>
+</div>
+
+<script>
+    $(function () {
+        $("#dialogForm").dialog({
+            autoOpen: false,
+            show: {
+                effect: "blind",
+                duration: 750
+            },
+            hide: {
+                effect: "blind",
+                duration: 500
+            }
+        });
+        $("#dialogKey").dialog({
+            autoOpen: false,
+            show: {
+                effect: "blind",
+                duration: 750
+            },
+            hide: {
+                effect: "blind",
+                duration: 500
+            }
+        });
+    });
+    function selectRole(roleId, Name) {
+        $('#dialogForm').dialog('open');
+        $("#RoleModification_Id").val(roleId);
+        $("#RoleModification_Name").val(Name);
+    }
+    function selectRoleShowKey(roleId) {
+        $('#dialogKey').dialog('open');
+        $("#inputKey").val(roleId);
+    }
+</script>
+
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 }
-    </tbody>
-</table>

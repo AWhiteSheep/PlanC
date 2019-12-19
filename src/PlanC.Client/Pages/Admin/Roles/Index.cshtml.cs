@@ -6,23 +6,52 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
+using PlanC.Client.Pages.Identity.Pages.Models;
 
 namespace PlanC.Client
 {
     public class IndexModel : PageModel
     {
         RoleManager<IdentityRole> roleManager;
+        private readonly SecretContext secretContext;
 
-        public IndexModel(RoleManager<IdentityRole> _roleManager)
+        public IndexModel(RoleManager<IdentityRole> _roleManager, SecretContext secretContext)
         {
             roleManager = _roleManager;
+            this.secretContext = secretContext;
         }
 
-        public IList<IdentityRole> IdentityRolesList { get;set; }
+        public IList<AspNetRoles> IdentityRolesList { get;set; }
+        public IList<RolesSecretKeys> secrets { get;set; }
+
+
+        [BindProperty]
+        public IdentityRole RoleModification { get; set; }
 
         public async Task OnGetAsync()
         {
-            IdentityRolesList = await roleManager.Roles.ToListAsync();
+            IdentityRolesList = await secretContext.AspNetRoles.ToListAsync();
+            secrets = await secretContext.RolesSecretKeys.ToListAsync();
+        }
+
+        public async Task<IActionResult> OnPostAsync() 
+        {
+            if (!ModelState.IsValid)
+            {
+                return Page();
+            }
+
+            // bind le id recu en paramètre et recherche l'objet dans la base de données
+            var result = await roleManager.FindByIdAsync(RoleModification.Id);
+            if (result != null) 
+            {
+                // fait la modification du nom et rapporte une nouvelle liste
+                await roleManager.SetRoleNameAsync(result, RoleModification.Name);
+                await roleManager.UpdateNormalizedRoleNameAsync(result);
+            }
+
+            IdentityRolesList = await secretContext.AspNetRoles.ToListAsync();
+            return Page();
         }
     }
 }

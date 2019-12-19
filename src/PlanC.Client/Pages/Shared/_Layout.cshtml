@@ -19,6 +19,25 @@
     <link async href="/css/site.css" rel="stylesheet" />
     <link async href="/lib/controllers/action-button.css" rel="stylesheet" />
     <link async href="/css/login.css" rel="stylesheet" />
+    <!--link async href="css/my-tiles.css" rel="stylesheet" /-->
+    <!-- cdn pour le richtext editor pour les css https://cdnjs.com/libraries/Trumbowyg -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Trumbowyg/2.19.1/ui/trumbowyg.min.css" />
+
+    <!-- Fonts -->
+    <script src="https://kit.fontawesome.com/50510c8db2.js" crossorigin="anonymous"></script>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link href="https://unpkg.com/material-components-web@latest/dist/material-components-web.min.css" rel="stylesheet">
+
+    <!-- scripts -->
+    <script defer src="https://cdn.jsdelivr.net/npm/jquery-ajax-unobtrusive@3.2.6/dist/jquery.unobtrusive-ajax.min.js"
+            integrity="sha256-PAC000yuHt78nszJ2RO0OiDMu/uLzPLRlYTk8J3AO10=" crossorigin="anonymous"></script>
+
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <script src="https://code.jquery.com/jquery-3.4.1.js"
+            integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU="
+            crossorigin="anonymous"></script>
+    <script defer src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+
 </head>
 <body>
     <div id="wrapper">
@@ -40,25 +59,37 @@
             </div>
         </div>
     </div>
-    <environment include="Development">
-        <script src="~/Identity/lib/jquery/dist/jquery.js"></script>
-        <script src="~/Identity/lib/bootstrap/dist/js/bootstrap.bundle.js"></script>
-    </environment>
-    <environment exclude="Development">
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"
-                asp-fallback-src="~/Identity/lib/jquery/dist/jquery.min.js"
-                asp-fallback-test="window.jQuery"
-                crossorigin="anonymous"
-                integrity="sha384-tsQFqpEReu7ZLhBV2VZlAu7zcOV+rXbYlF2cqB8txI/8aZajjp4Bqd+V6D5IgvKT">
-        </script>
-        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.bundle.min.js"
-                asp-fallback-src="~/Identity/lib/bootstrap/dist/js/bootstrap.bundle.min.js"
-                asp-fallback-test="window.jQuery && window.jQuery.fn && window.jQuery.fn.modal"
-                crossorigin="anonymous"
-                integrity="sha384-xrRywqdh3PHs8keKZN+8zzc5TX0GRTLCcmivcbNJWm2rs5C8PRhcEn3czEjhAO9o">
-        </script>
-    </environment>
+    <!-- Modal de déconnection -->
+    <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <!-- Haut du modal -->
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel"> Prêt pour partir? </h5>
+                    <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <!-- Body du modal -->
+                <div class="modal-body"> Choisir "Déconnexion" si vous voulez mettre fin à votre session. </div>
+                <!-- Option du modal -->
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" type="button" data-dismiss="modal"> Canceler </button>
+                    <form id="formlogout" method="post">
+                        @Html.AntiForgeryToken()
+                    </form>
+                    <button onclick="deconnection()" id="logout" class="btn btn-danger">Déconnexion</button>
+                </div>
+            </div>
+        </div>
+    </div>
     <script src="~/Identity/js/site.js" asp-append-version="true"></script>
+    <!-- Material components pour le web -->
+    <script src="https://unpkg.com/material-components-web@latest/dist/material-components-web.min.js"></script>
+
+    <!-- CDNs bootstrap -->
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+
 
     @RenderSection("Scripts", required: false)
 </body>

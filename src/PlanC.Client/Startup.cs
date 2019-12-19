@@ -13,6 +13,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using PlanC.Client.Data;
+using PlanC.Client.Pages.Identity.Pages.Models;
 using PlanC.EntityDataModel;
 
 namespace PlanC.Client
@@ -33,6 +34,9 @@ namespace PlanC.Client
             // Ajout de la dbContext
             services.AddDbContext<PCU001Context>(options => 
                 options.UseSqlServer(Configuration.GetConnectionString("RDS_PCU001")));
+
+            // ajout d'un scope pour la sécurité et l'authorization (système)
+            services.AddScoped((e) => new SecretContext());
 
             // ajout du identity store et provider
             services.AddIdentity<AspNetUsers, IdentityRole>(options => { 

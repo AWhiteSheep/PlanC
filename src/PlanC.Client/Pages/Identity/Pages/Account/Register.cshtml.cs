@@ -14,8 +14,10 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.WebUtilities;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using PlanC.Client.Data;
+using PlanC.Client.Pages.Identity.Pages.Models;
 using PlanC.EntityDataModel;
 
 namespace PlanC.Client.Pages.Identity.Pages.Account
@@ -27,17 +29,22 @@ namespace PlanC.Client.Pages.Identity.Pages.Account
         private readonly UserManager<AspNetUsers> _userManager;
         private readonly ILogger<RegisterModel> _logger;
         private readonly IEmailSender _emailSender;
+        private readonly RoleManager<IdentityRole> roleManager;
+        private readonly SecretContext secretContext;
+        private readonly PCU001Context context;
 
         public RegisterModel(
             UserManager<AspNetUsers> userManager,
             SignInManager<AspNetUsers> signInManager,
             ILogger<RegisterModel> logger,
-            IEmailSender emailSender)
+            IEmailSender emailSender, RoleManager<IdentityRole> _roleManager, SecretContext secretContext)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _logger = logger;
             _emailSender = emailSender;
+            roleManager = _roleManager;
+            this.secretContext = secretContext;
         }
 
         [BindProperty]
@@ -105,7 +112,10 @@ namespace PlanC.Client.Pages.Identity.Pages.Account
         {
             returnUrl = returnUrl ?? Url.Content("~/");
 
-            if (Input.Clef != "585858") {
+            var roleToInitialise = secretContext.RolesSecretKeys.Include(d => d.Role).FirstOrDefault(e => e.Key == Input.Clef);
+
+            // donner l'accès qui lui est revenue à la suite de la création de l'utilisateur
+            if (roleToInitialise == null) {
                 ModelState.AddModelError("Clef", "La clée n'a pas été trouvée, s'il vous plaît contacter l'administrateur du système.");
             }
 
@@ -120,6 +130,10 @@ namespace PlanC.Client.Pages.Identity.Pages.Account
                     _logger.LogInformation("User created a new account with password.");
 
                     await _signInManager.SignInAsync(user, isPersistent: false);
+
+                    // ajouter le role spéfifié par la clée
+                    await _userManager.AddToRoleAsync(user, roleToInitialise.Role.Name);
+
                     return LocalRedirect(returnUrl);
                 }
                 foreach (var error in result.Errors)
