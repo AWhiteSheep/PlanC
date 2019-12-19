@@ -23,16 +23,18 @@
         </li>
 
         <CascadingAuthenticationState>
-            <AuthorizeView>
-                <!-- Nav Item - Dashboard -->
-                <li class="nav-item">
-                    <NavLink class="nav-link" Match="NavLinkMatch.Prefix" href="/admin">
-                        <i class="fas fa-archway"></i>
-                        <span> Administration </span>
-                    </NavLink>
-                </li>
-                <!-- Divider -->
-                <hr class="sidebar-divider my-0">
+            <AuthorizeView Roles="Admin, Ministaire, Coordinateur">
+                <Authorized>
+                    <!-- Nav Item - Dashboard -->
+                    <li class="nav-item">
+                        <NavLink class="nav-link" Match="NavLinkMatch.Prefix" href="/admin">
+                            <i class="fas fa-archway"></i>
+                            <span> Administration </span>
+                        </NavLink>
+                    </li>
+                    <!-- Divider -->
+                    <hr class="sidebar-divider my-0">
+                </Authorized>
             </AuthorizeView>
         </CascadingAuthenticationState>
 
@@ -56,7 +58,7 @@
             <hr class="sidebar-divider">
 
             <CascadingAuthenticationState>
-                <AuthorizeView>
+                <AuthorizeView Roles="Coordonateur, Enseignant, Admin">
                     <!-- Heading -->
                     <NavLink Match="NavLinkMatch.Prefix" class="sidebar-heading" href="/portail"> Personnel enseignant </NavLink>
 
@@ -67,10 +69,10 @@
                             <span> Tout les documents </span>
                         </NavLink>
                     </li>
+                    <!-- Divider -->
+                    <hr class="sidebar-divider d-none d-md-block">
                 </AuthorizeView>
             </CascadingAuthenticationState>
-            <!-- Divider -->
-            <hr class="sidebar-divider d-none d-md-block">
 
             <!-- Sidebar Toggler (Sidebar) -->
             <div class="text-center d-none d-md-inline">

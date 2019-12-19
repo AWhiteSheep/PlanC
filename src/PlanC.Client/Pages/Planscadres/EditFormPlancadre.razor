@@ -2,7 +2,9 @@
 @inherits CourseTemplateFormComponent
 @implements IDisposable
 @using Syncfusion.EJ2.Blazor.RichTextEditor
-
+@using System.Security.Claims
+@using Microsoft.AspNetCore.Identity;
+@inject UserManager<IdentityRole> userManager
 
 
 <!-- Formulaire d'un nouveau plan-cadre -->
@@ -11,112 +13,124 @@
 {
     <PlanC.Client.Components.DropdownProgramSelection @ref="ProgramSelect"></PlanC.Client.Components.DropdownProgramSelection>
 }
-<div class="row">
-    <div class="col-12">
-        <h3> Formulaire de plan-cadre: </h3>
-    </div>
-    <div class="col-12">
-        <div class="form-group">
-            <label class="control-label" for="CrsTitle"> Titre du du programme: </label>
-            <input readonly type="text" class="form-control" value="@Program.ToString()" />
-        </div>
-    </div>
-</div>
-<EditForm EditContext="editContext">
-    @*The Data annotations validator uses annotations on the properties of the specified EF model to perform validations*@
-    <DataAnnotationsValidator />
+
+@if (hasRights || !IsReadOnly)
+{
     <div class="row">
-        <!-- Valeur pour le titre du plan-cadre -->
-        <div class="col-lg-6">
-            <div class="form-group">
-                <label class="control-label" for="CrsTitle"> Nom du cours associé: </label>
-                <input readonly="@IsReadOnly" type="text" @bind="Template.DenominationCours" class="form-control" />
-            </div>
+        <div class="col-12">
+            <h3> Formulaire de plan-cadre: </h3>
         </div>
-        <!-- Valeur pour l'identification du cours -->
-        <div class="col-lg-6">
+        <div class="col-12">
             <div class="form-group">
-                <label class="control-label" for="CrsId"> Identifiant du cours: </label>
-                <InputText readonly="@IsReadOnly" type="text" @bind-Value="Template.CoursId" class="form-control" />
-                <ValidationMessage For="(() => Template.CoursId)"></ValidationMessage>
+                <label class="control-label" for="CrsTitle"> Titre du du programme: </label>
+                <input readonly type="text" class="form-control" value="@Program.ToString()" />
             </div>
         </div>
     </div>
-    <div class="row">
-        <!-- Ajout de la pondération -->
-        <div class="col-md-12">
-            <div class="form-group">
-                <div class="row">
-                    <div class="form-group col-12">
-                        <table>
-                            <thead>
-                                <tr><td></td><td class="p-0">Pondération du cours:</td></tr>
-                                <tr>
-                                    <td width="50%" class="p-0">Nombre d'unités:</td>
-                                    <th>Théorie</th>
-                                    <th>Pratique</th>
-                                    <th>Chez soi</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td class="no-left-padding">
-                                        <ValidationMessage For="() => Template.UnitsAccessor"></ValidationMessage>
-                                        <InputNumber readonly="@IsReadOnly" TValue="decimal" @bind-Value="Template.UnitsAccessor" class="form-control theme-mask input" id="Units" />
-                                    </td>
-                                    <!-- Nombre d'unités pour le cours donné -->
-                                    <td class="no-left-padding">
-                                        <InputNumber readonly="@IsReadOnly" class="theme-mask form-control" TValue="int" Mask="0" @bind-Value="Template.TheoryHoursAccessor" />
-                                    </td>
-                                    <td class="no-left-padding">
-                                        <InputNumber readonly="@IsReadOnly" class="theme-mask form-control" TValue="int" Mask="0" @bind-Value="Template.PracticeHoursAccessor" />
-                                    </td>
-                                    <td class="no-left-padding pr-0">
-                                        <InputNumber readonly="@IsReadOnly" class="theme-mask form-control" TValue="int" Mask="0" @bind-Value="Template.HomeHoursAccessor" />
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
+    <EditForm EditContext="editContext">
+        @*The Data annotations validator uses annotations on the properties of the specified EF model to perform validations*@
+        <DataAnnotationsValidator />
+        <div class="row">
+            <!-- Valeur pour le titre du plan-cadre -->
+            <div class="col-lg-6">
+                <div class="form-group">
+                    <label class="control-label" for="CrsTitle"> Nom du cours associé: </label>
+                    <input readonly="@IsReadOnly" type="text" @bind="Template.DenominationCours" class="form-control" />
+                </div>
+            </div>
+            <!-- Valeur pour l'identification du cours -->
+            <div class="col-lg-6">
+                <div class="form-group">
+                    <label class="control-label" for="CrsId"> Identifiant du cours: </label>
+                    <InputText readonly="@IsReadOnly" type="text" @bind-Value="Template.CoursId" class="form-control" />
+                    <ValidationMessage For="(() => Template.CoursId)"></ValidationMessage>
                 </div>
             </div>
         </div>
-        <!-- Séparateur -->
-        <hr />
-        <div class="col-12">
-            <!-- Descriptions du cours -->
-            <div class="form-group">
-                <label class="control-label" for="CrsDesc">Brève description du cours: </label>
-                <EjsRichTextEditor @ref="Description" Readonly="@IsReadOnly" ShowCharCount="true" MaxLength="450" Value="@(Template.Description)" />
+        <div class="row">
+            <!-- Ajout de la pondération -->
+            <div class="col-md-12">
+                <div class="form-group">
+                    <div class="row">
+                        <div class="form-group col-12">
+                            <table>
+                                <thead>
+                                    <tr><td></td><td class="p-0">Pondération du cours:</td></tr>
+                                    <tr>
+                                        <td width="50%" class="p-0">Nombre d'unités:</td>
+                                        <th>Théorie</th>
+                                        <th>Pratique</th>
+                                        <th>Chez soi</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td class="no-left-padding">
+                                            <ValidationMessage For="() => Template.UnitsAccessor"></ValidationMessage>
+                                            <InputNumber readonly="@IsReadOnly" TValue="decimal" @bind-Value="Template.UnitsAccessor" class="form-control theme-mask input" id="Units" />
+                                        </td>
+                                        <!-- Nombre d'unités pour le cours donné -->
+                                        <td class="no-left-padding">
+                                            <InputNumber readonly="@IsReadOnly" class="theme-mask form-control" TValue="int" Mask="0" @bind-Value="Template.TheoryHoursAccessor" />
+                                        </td>
+                                        <td class="no-left-padding">
+                                            <InputNumber readonly="@IsReadOnly" class="theme-mask form-control" TValue="int" Mask="0" @bind-Value="Template.PracticeHoursAccessor" />
+                                        </td>
+                                        <td class="no-left-padding pr-0">
+                                            <InputNumber readonly="@IsReadOnly" class="theme-mask form-control" TValue="int" Mask="0" @bind-Value="Template.HomeHoursAccessor" />
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Séparateur -->
+            <hr />
+            <div class="col-12">
+                <!-- Descriptions du cours -->
+                <div class="form-group">
+                    <label class="control-label" for="CrsDesc">Brève description du cours: </label>
+                    <EjsRichTextEditor @ref="Description" Readonly="@IsReadOnly" ShowCharCount="true" MaxLength="450" Value="@(Template.Description)" />
+                </div>
+            </div>
+            <div class="col-12">
+                <!-- les intentions du cours -->
+                <div class="form-group">
+                    <label class="control-label" for="CrsIntent">Intentions éducatives: </label>
+                    <EjsRichTextEditor @ref="Intention" Readonly="@IsReadOnly" ShowCharCount="true" MaxLength="450" Value="@(Template.IntentionEducative)" />
+                </div>
+            </div>
+            <!-- Plus tard dans la section approbation-->
+            <div class="row" style="display:contents">
+                <div class="col-md-4">
+                    <label class="label-info">Date d'approbation en département</label>
+                    <input readonly="@IsReadOnly" type="date" @bind="Template.DateApprobationDepartement" class="form-control input" />
+                </div>
+                <div class="col-md-4">
+                    <label class="label-info">Date d'approbation en comité</label>
+                    <input readonly="@IsReadOnly" type="date" @bind="Template.DateApprobationCommite" class="form-control input" />
+                </div>
+                <div class="col-md-4">
+                    <label class="label-info">Date d'approbation de la direction de études</label>
+                    <input readonly="@IsReadOnly" type="date" @bind="Template.DateApprobationDepartement" class="form-control input" />
+                </div>
             </div>
         </div>
-        <div class="col-12">
-            <!-- les intentions du cours -->
-            <div class="form-group">
-                <label class="control-label" for="CrsIntent">Intentions éducatives: </label>
-                <EjsRichTextEditor  @ref="Intention" Readonly="@IsReadOnly" ShowCharCount="true" MaxLength="450" Value="@(Template.IntentionEducative)" />
-            </div>
-        </div>
-        <!-- Plus tard dans la section approbation-->
-        <div class="row" style="display:contents">
-            <div class="col-md-4">
-                <label class="label-info">Date d'approbation en département</label>
-                <input readonly="@IsReadOnly" type="date" @bind="Template.DateApprobationDepartement" class="form-control input" />
-            </div>
-            <div class="col-md-4">
-                <label class="label-info">Date d'approbation en comité</label>
-                <input readonly="@IsReadOnly" type="date" @bind="Template.DateApprobationCommite" class="form-control input" />
-            </div>
-            <div class="col-md-4">
-                <label class="label-info">Date d'approbation de la direction de études</label>
-                <input readonly="@IsReadOnly" type="date" @bind="Template.DateApprobationDepartement" class="form-control input" />
-            </div>
-        </div>
-    </div>
-</EditForm>
-
-
+    </EditForm>
+}
 @code {
+    [CascadingParameter]
+    // vérifie si 'utilisateur à les rôles dont il a besoin pour
+    public Task<AuthenticationState> authenticationState { get; set; }
+    [CascadingParameter]
+    public ClaimsPrincipal user { get; set; }
+    [Parameter]
+    // fait en sorte que le template est editable
+    public bool IsReadOnly { get; set; } = false;
+    public bool hasRights { get; set; } = false;
+
     public Programmes Program { get; set; }
 
     //Passed by the parent form with two-way binding so that changes made in this component propagate upwards.
@@ -144,9 +158,6 @@
     [Parameter]
     public EditContext editContext { get; set; }
 
-    [Parameter]
-    public bool IsReadOnly { get; set; } = false;
-
     //affiche un rich textinput pour les intentions éducatives
     [Bindable]
     [Parameter]
@@ -166,7 +177,6 @@
         "CreateLink", "Image", "|", "ClearFormat", "Print",
         "SourceCode", "FullScreen", "|", "Undo", "Redo"
     };
-
     //Callback given to the program selection dropdown box. Updates program property.
     private void UpdateProgram(object sender, Programmes arg)
     {
@@ -178,8 +188,9 @@
     protected override void OnInitialized()
     {
         editContext = new EditContext(Template);
+        // check role
+        hasRights = user.IsInRole("Coordonnateur");
     }
-
 
     protected override void OnParametersSet()
     {

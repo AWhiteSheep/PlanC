@@ -22,6 +22,7 @@
 @using Syncfusion.EJ2.DocumentEditor.Blazor
 @using WDocument = Syncfusion.EJ2.DocumentEditor;
 @using System.Collections.ObjectModel;
+@using System.Security.Claims
 
 <!--section sécurité doit être seulement coordonateur du programme et la consultation par le professeur-->
 <!-- Section de navigation -->
@@ -48,11 +49,12 @@
 
 <div hidden="@(EditorOpen)" class="container shadow p-5" style="margin-bottom: 200px; margin-top: 50px">
     @*Envoit le paramètre à tous les enfants*@
+    <CascadingValue TValue="ClaimsPrincipal" Value="user">
     <CascadingValue TValue="PCU001Context" Value="context">
         <CascadingValue TValue="FormMode" Value="CurrentMode">
             @if (CurrentForm is EditFormPlancadre)
             {
-                <EditFormPlancadre @bind-Template="Template" @ref="CurrentForm"></EditFormPlancadre>
+                <EditFormPlancadre IsReadOnly="IsReadOnly" @bind-Template="Template" @ref="CurrentForm"></EditFormPlancadre>
             }
             else if (CurrentForm is TemplateSkillElemInput)
             {
@@ -67,6 +69,7 @@
                 <PlanC.Client.Components.TemplateReview Template="Template" @ref="CurrentForm"></PlanC.Client.Components.TemplateReview>
             }
         </CascadingValue>
+    </CascadingValue>
     </CascadingValue>
     <div class="container mt-3">
         <div class="row">
@@ -104,6 +107,15 @@
 </div>
 
 @code {
+
+    [CascadingParameter]
+    // vérifie si 'utilisateur à les rôles dont il a besoin pour
+    public Task<AuthenticationState> authenticationState { get; set; }
+    public ClaimsPrincipal user;
+    // paramètre qui sera donné au template pour les différentes authorization
+    public bool IsReadOnly { get; set; }
+
+
     // document editor ref point
     EjsDocumentEditorContainer container;
     bool EditorOpen { get; set; }
@@ -142,8 +154,8 @@
 
     public void Download()
     {
-        List<PlanCadreCompetenceElements> tempTemplateElements =null;
-        if(Template != null)
+        List<PlanCadreCompetenceElements> tempTemplateElements = null;
+        if (Template != null)
             tempTemplateElements = context.PlanCadreCompetenceElements.Include(e => e.ElementCompetence)
                 .ThenInclude(d => d.IdentityKeyCompetencesNavigation)
                 .Include(v => v.PlansCadres)
@@ -231,7 +243,7 @@
     {
         //envoit un document à la sauvegarde
         DocumentEditorModule editor = container.GetDocumentEditor();
-        editor.Save("Plancadres"+Template.CoursId, FormatType.Docx);
+        editor.Save("Plancadres" + Template.CoursId, FormatType.Docx);
     }
 
     protected override async Task OnInitializedAsync()
@@ -242,17 +254,31 @@
                                                             .FirstOrDefault();
 
 
+        // vérifier les authorization de l'utilisateur connecté
+        // si est le coordonnateur ou dison l'administrateur nous laisser
+        //une chance à présenter... nous mettonts editable a true
+        // qu'un coordonnateur peut créer..
+        var user = (await authenticationState).User;
 
+        if (user.IsInRole("Coordonnateur"))
+        {
+            IsReadOnly = false;
+        }
 
         if (SpecifiedTemplate != null)
         {
+            // mets la template spécifié
             Template = SpecifiedTemplate;
             CurrentMode = FormMode.EDIT;
         }
-        else
+        else if (!IsReadOnly)
         {
             Template = new PlansCadres();
             CurrentMode = FormMode.CREATE;
+        }
+        else 
+        {
+            NavigationManager.NavigateTo("")
         }
 
 
@@ -268,7 +294,6 @@
         CurrentForm = CurrentNode.Value;
 
         await LoadTemplateDataAsync();
-
         StateHasChanged();
     }
 
@@ -320,16 +345,16 @@
 
         await context.Entry(Template).Collection(t => t.ExamensFinalsCertificatifs).LoadAsync();
 
-        foreach(ExamensFinalsCertificatifs ex in Template.ExamensFinalsCertificatifs)
+        foreach (ExamensFinalsCertificatifs ex in Template.ExamensFinalsCertificatifs)
         {
             await context.Entry(ex).Reference(ex => ex.Examen).LoadAsync();
         }
 
-        foreach(Examens exam in Template.ExamensFinalsCertificatifs.Select(ex => ex.Examen))
+        foreach (Examens exam in Template.ExamensFinalsCertificatifs.Select(ex => ex.Examen))
         {
             await context.Entry(exam).Collection(exam => exam.ExamensElementsCompetences).LoadAsync();
 
-            foreach(ExamensElementsCompetences elem in exam.ExamensElementsCompetences)
+            foreach (ExamensElementsCompetences elem in exam.ExamensElementsCompetences)
             {
                 await context.Entry(elem).Reference(elem => elem.ElementCompetence).LoadAsync();
             }
