@@ -62,13 +62,13 @@ namespace PlanC.EntityDataModel
         public TimeSpan StartTimeSpan
         {
             get {
-                return AvlStm.GetValueOrDefault();
+                return AvlStm;
             }
         }
         public TimeSpan StopTimeSpan
         {
             get {
-                return AvlNtm.GetValueOrDefault();
+                return AvlNtm;
             }
         }
 

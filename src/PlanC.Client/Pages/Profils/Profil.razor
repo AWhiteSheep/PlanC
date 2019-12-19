@@ -37,12 +37,12 @@
                                     <DataAnnotationsValidator />
                                     <label for="Username" class="control-label"> Numéro d'usagé: </label>
                                     <input placeholder="... .. ." value="@Username" class="form-control" disabled />
-                                    <label for="phonenumeber" class="control-label pt-3"> Numéro de poste: </label>
+                                    <label class="control-label pt-3"> Numéro de poste: </label>
                                     <InputText placeholder=".. ... ." @bind-Value="Input.PhoneNumber" class="form-control" />
                                     <span class="text-danger">
                                         <ValidationMessage For="(() => Input.PhoneNumber)"></ValidationMessage>
                                     </span>
-                                    <label for="phonenumeber" class="control-label pt-3"> Email: </label>
+                                    <label class="control-label pt-3"> Email: </label>
                                     <InputText placeholder=".. ... ." @bind-Value="Input.NewEmail" class="form-control" />
                                     <span class="text-danger">
                                         <ValidationMessage class="text-danger" For="(() => Input.NewEmail)"></ValidationMessage>
@@ -126,7 +126,7 @@
             if (string.IsNullOrEmpty(_user))
                 NavigationManager.NavigateTo("/error");
 
-            user = context.AspNetUsers
+            user = context.AspNetUsers                
                 .First(e => e.UserName == _user);
 
             if (user == null)
@@ -134,10 +134,16 @@
                 StatusMessage = $"Impossible de trouver l'utlisateur ayant le ID '{Username}'.";
             }
 
+            // préparation de la présentation
             Username = user.UserName;
-
             Input.NewEmail = user.Email;
             Input.PhoneNumber = user.PhoneNumber;
+            Input.Campus = user.Campus;
+            Input.Département = user.DepartementId.GetValueOrDefault();
+            Input.Nom = user.GvnNm;
+            Input.Prénom = user.Snm;
+            Input.ImageProfilChoice = user._ImageProfilChoice;
+            // affichage refresh sur cette page
             StateHasChanged();
         }
     }

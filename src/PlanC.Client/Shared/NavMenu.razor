@@ -1,18 +1,25 @@
-﻿<!-- Sidebar -->
+﻿@using Microsoft.AspNetCore.Components.Authorization
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@using Microsoft.AspNetCore.Identity
+@inject UserManager<AspNetUsers> userManager
+
+<!-- Sidebar -->
 @*<ul class="navbar-nav sidebar sidebar-dark accordion toggled" id="accordionSidebar">*@
 <div>
     <ul class="navbar-nav sidebar sidebar-dark accordion toggled collapse show" id="accordionSidebar">
-
-        <!-- Sidebar - Brand -->
-        <a class="sidebar-brand d-flex align-items-center justify-content-center" href="/profil/configuration">
-            <div class="sidebar-brand-icon rotate-n-15">
-                <i class="far fa-address-card"></i>
-            </div>
-            <div class="sidebar-brand-text mx-3"> Profil </div>
-        </a>
-
-        <!-- Divider -->
-        <hr class="sidebar-divider my-0">
+        <CascadingAuthenticationState>
+            <AuthorizeView Roles="Coordonateur, Enseignant, Admin">
+                <!-- Sidebar - Brand -->
+                <a class="sidebar-brand d-flex align-items-center justify-content-center" href="/profil/configuration">
+                    <div class="sidebar-brand-icon">
+                        <img class="rounded-circle" width="50" height="50" src="/images/avatars/@(imageSelecion).svg" />
+                    </div>
+                    <div class="sidebar-brand-text mx-3"> Bonjour @Prenom! </div>
+                </a>
+                <!-- Divider -->
+                <hr class="sidebar-divider my-0">
+            </AuthorizeView>
+        </CascadingAuthenticationState>
 
         <!-- Nav Item - Dashboard -->
         <li class="nav-item">
@@ -38,45 +45,70 @@
             </AuthorizeView>
         </CascadingAuthenticationState>
 
-            <!-- Nav Item - Section départements -->
-            <li class="nav-item">
-                <NavLink class="nav-link" Match="NavLinkMatch.Prefix" href="/departements">
-                    <i class="far fa-file-alt"></i>
-                    <span> Les départements </span>
-                </NavLink>
-            </li>
+        <!-- Nav Item - Section départements -->
+        <li class="nav-item">
+            <NavLink class="nav-link" Match="NavLinkMatch.Prefix" href="/departements">
+                <i class="far fa-file-alt"></i>
+                <span> Les départements </span>
+            </NavLink>
+        </li>
 
-            <!-- Nav Item - Section départements -->
-            <li class="nav-item">
-                <NavLink class="nav-link" Match="NavLinkMatch.Prefix" href="/programmes">
-                    <i class="far fa-file-alt"></i>
-                    <span> Les programmes d'étude </span>
-                </NavLink>
-            </li>
+        <!-- Nav Item - Section départements -->
+        <li class="nav-item">
+            <NavLink class="nav-link" Match="NavLinkMatch.Prefix" href="/programmes">
+                <i class="far fa-file-alt"></i>
+                <span> Les programmes d'étude </span>
+            </NavLink>
+        </li>
 
-            <!-- Divider -->
-            <hr class="sidebar-divider">
+        <!-- Divider -->
+        <hr class="sidebar-divider">
 
-            <CascadingAuthenticationState>
-                <AuthorizeView Roles="Coordonateur, Enseignant, Admin">
-                    <!-- Heading -->
-                    <NavLink Match="NavLinkMatch.Prefix" class="sidebar-heading" href="/portail"> Personnel enseignant </NavLink>
+        <CascadingAuthenticationState>
+            <AuthorizeView Roles="Coordonateur, Enseignant, Admin">
+                <!-- Heading -->
+                <NavLink Match="NavLinkMatch.Prefix" class="sidebar-heading" href="/portail"> Personnel enseignant </NavLink>
 
-                    <!-- Nav Item - Afffiche tous les documents respectant les criltères -->
-                    <li class="nav-item">
-                        <NavLink Match="NavLinkMatch.Prefix" class="nav-link" href="/documents">
-                            <i class="far fa-file-alt"></i>
-                            <span> Tout les documents </span>
-                        </NavLink>
-                    </li>
-                    <!-- Divider -->
-                    <hr class="sidebar-divider d-none d-md-block">
-                </AuthorizeView>
-            </CascadingAuthenticationState>
+                <!-- Nav Item - Afffiche tous les documents respectant les criltères -->
+                <li class="nav-item">
+                    <NavLink Match="NavLinkMatch.Prefix" class="nav-link" href="/documents">
+                        <i class="far fa-file-alt"></i>
+                        <span> Tout les documents </span>
+                    </NavLink>
+                </li>
+                <!-- Divider -->
+                <hr class="sidebar-divider d-none d-md-block">
+            </AuthorizeView>
+        </CascadingAuthenticationState>
 
-            <!-- Sidebar Toggler (Sidebar) -->
-            <div class="text-center d-none d-md-inline">
-                <button data-toggle="collapse" data-target="#accordionSidebar" class="rounded-circle border-0" id="sidebarToggle" onclick="toggleSidebarToggleSide()"></button>
-            </div>
+        <!-- Sidebar Toggler (Sidebar) -->
+        <div class="text-center d-none d-md-inline">
+            <button data-toggle="collapse" data-target="#accordionSidebar" class="rounded-circle border-0" id="sidebarToggle" onclick="toggleSidebarToggleSide()"></button>
+        </div>
     </ul>
 </div>
+
+@code {
+    // initialisation des champ permettant d'afficher les informations pour le menu
+    // profil surtout
+    public int imageSelecion { get; set; } = 0;
+    public string Prenom { get; set; } = "Aventurière ou aventurier";
+    protected async override Task OnAfterRenderAsync(bool first)
+    {
+        if (first)
+        {
+            // authentification de l'utilisateur avec le service injecté inscrit en haut
+            var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+            var user = authState.User;
+
+            if (user.Identity.IsAuthenticated) {             
+                // fait l'authentification
+                Console.WriteLine($"{user.Identity.Name} is authenticated.");
+                var asp = await userManager.GetUserAsync(user);
+                Prenom = asp.Snm;
+                imageSelecion = asp._ImageProfilChoice;
+            }
+
+        }
+    }
+}

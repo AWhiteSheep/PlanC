@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.Forms;
 using System.Security.Claims;
+using PlanC.Client.Data;
 
 namespace PlanC.Client.Pages.Profils
 {
@@ -24,6 +25,8 @@ namespace PlanC.Client.Pages.Profils
         public Task<AuthenticationState> authenticationStateTask { get; set; }
         [Inject]
         public NavigationManager NavigationManager { get; set; }
+        [Inject]
+        public PCU001Context _context { get; set; }
         // utilisateur pour qui les formulaire sont
         public AspNetUsers user;
 
@@ -40,11 +43,24 @@ namespace PlanC.Client.Pages.Profils
         {
             // validation pour un téléphone
             [Phone]
+            [Display(Name = "Combiné de votre poste")]
             public string PhoneNumber { get; set; }
+            [Display(Name = "Campus primaire")]
+            public string Campus { get; set; }
+            [Display(Name = "Bureau")]
+            public string Office { get; set; }
+            [Display(Name = "Prénom")]
+            public string Prénom { get; set; }
+            [Display(Name = "Nom de famille")]
+            public string Nom { get; set; }
+            [Display(Name = "Département")]
+            public int Département { get; set; }
             [Required]
             [EmailAddress]
             [Display(Name = "Nouvelle email")]
             public string NewEmail { get; set; }
+            [Display(Name = "Choix de votre image de profil")]
+            public int ImageProfilChoice { get; set; }
         }
         public class InputPasswordModel
         {
@@ -92,6 +108,14 @@ namespace PlanC.Client.Pages.Profils
                     postError += "Erreur, votre email n'a pas été changé." + Environment.NewLine;
                 }
             }
+
+            user.Office = Input.Office;
+            user.GvnNm = Input.Nom;
+            user.Snm = Input.Prénom;
+            user.DepartementId = Input.Département;
+
+
+            
 
             if (postError != "")
                 StatusMessage = postError;

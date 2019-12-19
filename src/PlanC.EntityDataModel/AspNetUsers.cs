@@ -28,6 +28,9 @@ namespace PlanC.EntityDataModel
         [Column("GVN_NM")]
         [StringLength(50)]
         public string GvnNm { get; set; }
+        public int? ImageProfilChoice { get ; set ; }
+        [NotMapped]
+        public int _ImageProfilChoice { get => ImageProfilChoice ?? 0; set => ImageProfilChoice = value; }
         public string Office { get; set; }
         [NotMapped]
         // renvoit le numéro d'office du professeur
@@ -66,9 +69,9 @@ namespace PlanC.EntityDataModel
                     return new[] { "Non spécifié" };
                 // la liste de dispo qui sera renvoyé en array
                 List<string> dispos = new List<string>();
-                foreach(var dispo in dispos)
+                foreach(var dispo in DisponibilitesUtilisateur)
                 {
-                    dispos.Add(DayOfWeekHumanLangageFR + " " + dispo.StartTimeSpan + "-" + dispo.StopTimeSpan);
+                    dispos.Add(dispo.DayOfWeekHumanLangageFR + " " + dispo.StartTimeSpan.ToString() + "-" + dispo.StopTimeSpan.ToString());
                 }
                 return dispos.ToArray();
             }
