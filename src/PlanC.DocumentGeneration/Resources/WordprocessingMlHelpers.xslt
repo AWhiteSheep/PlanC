@@ -95,7 +95,11 @@
     </w:p>
   </xsl:template>
   
-  <!--Modèle pour les tableaux de compétence-->
+  <!--
+  Modèle pour les tableaux de compétence.
+  Remarque : Nécessite une liste concrète avec un ID de 2 pour les éléments de compétence et une autre avec un ID de 3
+  pour les divers autres items non-numérotés.
+  -->
   <xsl:template match="Skills">
     <xsl:for-each select="./Skill">
       <w:tbl>
@@ -248,7 +252,8 @@
                      w:type="dxa"/>
             </w:tcPr>
             <xsl:call-template name="list-paragraph">
-              <xsl:with-param name="data-list-node" select="./AchievementContexts"/>
+              <xsl:with-param name="data-list-node"
+                              select="./AchievementContexts"/>
               <xsl:with-param name="items-level">0</xsl:with-param>
               <xsl:with-param name="list-id">1</xsl:with-param>
             </xsl:call-template>
@@ -260,7 +265,8 @@
                      w:type="dxa"/>
             </w:tcPr>
             <xsl:call-template name="list-paragraph">
-              <xsl:with-param name="data-list-node" select="./ContentPrecisions"/>
+              <xsl:with-param name="data-list-node"
+                              select="./ContentPrecisions"/>
               <xsl:with-param name="items-level">0</xsl:with-param>
               <!--TODO: This should actually be a separate list-->
               <xsl:with-param name="list-id">1</xsl:with-param>
@@ -293,7 +299,7 @@
                 <w:pStyle w:val="SkillTableHeader2"/>
               </w:pPr>
               <w:r>
-                <w:t>Critère de performance</w:t>
+                <w:t>Critères de performance</w:t>
               </w:r>
             </w:p>
           </w:tc>
@@ -309,153 +315,70 @@
             </w:p>
           </w:tc>
         </w:tr>
-        <!--Ligne 6-->
-        <w:tr>
-          <!--Cellule 1-->
-          <w:tc>
-            <w:tcPr>
-              <w:tcW w:w="3116"
-                     w:type="dxa"/>
-            </w:tcPr>
-            <w:p>
-              <w:pPr>
-                <w:pStyle w:val="ListParagraph"/>
-                <w:numPr>
-                  <w:ilvl w:val="0"/>
-                  <w:numId w:val="2"/>
-                </w:numPr>
-              </w:pPr>
-              <w:r>
-                <w:t>###</w:t>
-              </w:r>
-            </w:p>
-          </w:tc>
-          <!--Cellule 2-->
-          <w:tc>
-            <w:tcPr>
-              <w:tcW w:w="3117"
-                     w:type="dxa"/>
-            </w:tcPr>
-            <w:p>
-              <w:pPr>
-                <w:pStyle w:val="ListParagraph"/>
-                <w:numPr>
-                  <w:ilvl w:val="1"/>
-                  <w:numId w:val="2"/>
-                </w:numPr>
-              </w:pPr>
-              <w:r>
-                <w:t>###</w:t>
-              </w:r>
-            </w:p>
-            <w:p>
-              <w:pPr>
-                <w:pStyle w:val="ListParagraph"/>
-                <w:numPr>
-                  <w:ilvl w:val="1"/>
-                  <w:numId w:val="2"/>
-                </w:numPr>
-              </w:pPr>
-              <w:r>
-                <w:t>###</w:t>
-              </w:r>
-            </w:p>
-          </w:tc>
-          <!--Cellule 3-->
-          <w:tc>
-            <w:tcPr>
-              <w:tcW w:w="3117"
-                     w:type="dxa"/>
-            </w:tcPr>
-            <w:p>
-              <w:pPr>
-                <w:pStyle w:val="ListParagraph"/>
-                <w:numPr>
-                  <w:ilvl w:val="0"/>
-                  <w:numId w:val="3"/>
-                </w:numPr>
-              </w:pPr>
-              <w:r>
-                <w:t>###</w:t>
-              </w:r>
-            </w:p>
-          </w:tc>
-        </w:tr>
-        <!--Ligne 7-->
-        <w:tr>
-          <!--Cellule 1-->
-          <w:tc>
-            <w:tcPr>
-              <w:tcW w:w="3116"
-                     w:type="dxa"/>
-            </w:tcPr>
-            <w:p>
-              <w:pPr>
-                <w:pStyle w:val="ListParagraph"/>
-                <w:numPr>
-                  <w:ilvl w:val="0"/>
-                  <w:numId w:val="2"/>
-                </w:numPr>
-              </w:pPr>
-              <w:r>
-                <w:t>###</w:t>
-              </w:r>
-            </w:p>
-          </w:tc>
-          <!--Cellule 2-->
-          <w:tc>
-            <w:tcPr>
-              <w:tcW w:w="3117"
-                     w:type="dxa"/>
-            </w:tcPr>
-            <w:p>
-              <w:pPr>
-                <w:pStyle w:val="ListParagraph"/>
-                <w:numPr>
-                  <w:ilvl w:val="1"/>
-                  <w:numId w:val="2"/>
-                </w:numPr>
-              </w:pPr>
-              <w:r>
-                <w:t>###</w:t>
-              </w:r>
-            </w:p>
-            <w:p>
-              <w:pPr>
-                <w:pStyle w:val="ListParagraph"/>
-                <w:numPr>
-                  <w:ilvl w:val="1"/>
-                  <w:numId w:val="2"/>
-                </w:numPr>
-              </w:pPr>
-              <w:r>
-                <w:t>###</w:t>
-              </w:r>
-            </w:p>
-          </w:tc>
-          <!--Cellule 3-->
-          <w:tc>
-            <w:tcPr>
-              <w:tcW w:w="3117"
-                     w:type="dxa"/>
-            </w:tcPr>
-            <w:p>
-              <w:pPr>
-                <w:pStyle w:val="ListParagraph"/>
-                <w:numPr>
-                  <w:ilvl w:val="0"/>
-                  <w:numId w:val="3"/>
-                </w:numPr>
-              </w:pPr>
-              <w:r>
-                <w:t>###</w:t>
-              </w:r>
-            </w:p>
-          </w:tc>
-        </w:tr>
+        <!--Ligne 6...-->
+        <xsl:for-each select="./SkillElements/SkillElement">
+          <w:tr>
+            <!--Cellule 1-->
+            <w:tc>
+              <w:tcPr>
+                <w:tcW w:w="3116"
+                       w:type="dxa"/>
+              </w:tcPr>
+              <w:p>
+                <w:pPr>
+                  <w:pStyle w:val="ListParagraph"/>
+                  <w:numPr>
+                    <w:ilvl w:val="0"/>
+                    <w:numId w:val="2"/>
+                  </w:numPr>
+                </w:pPr>
+                <w:r>
+                  <w:t>
+                    <xsl:value-of select="./Title"/>
+                  </w:t>
+                </w:r>
+              </w:p>
+            </w:tc>
+            <!--Cellule 2-->
+            <w:tc>
+              <w:tcPr>
+                <w:tcW w:w="3117"
+                       w:type="dxa"/>
+              </w:tcPr>
+              <xsl:call-template name="list-paragraph">
+                <xsl:with-param name="data-list-node"
+                                select="./Criterias"/>
+                <xsl:with-param name="items-level">1</xsl:with-param>
+                <xsl:with-param name="list-id">2</xsl:with-param>
+              </xsl:call-template>
+            </w:tc>
+            <!--Cellule 3-->
+            <w:tc>
+              <w:tcPr>
+                <w:tcW w:w="3117"
+                       w:type="dxa"/>
+              </w:tcPr>
+              <xsl:call-template name="list-paragraph">
+                <xsl:with-param name="data-list-node"
+                                select="./ContentPrecisions"/>
+                <xsl:with-param name="items-level">0</xsl:with-param>
+                <xsl:with-param name="list-id">3</xsl:with-param>
+              </xsl:call-template>
+            </w:tc>
+          </w:tr>
+        </xsl:for-each>
       </w:tbl>
-      <!--Paragraphe vide après chaque tableau-->
-      <w:p/>
+      <!--Saut de section "page suivante" après chaque tableau pour redémarrer la numérotation. À noter que cela ne
+      fonctionne qu'avec Word 2013 et supérieur. Par ailleurs, il s'agit d'un hack, selon moi, puisque les listes
+      restent liées. De plus, un saut de section est "global" au document, donc il pourrait affecter d'autres listes.
+      TODO Utiliser XSLT pour la partie Numérotation-->
+      <w:p>
+        <w:pPr>
+          <w:sectPr>
+            <w:type w:val="nextPage" />
+          </w:sectPr>
+        </w:pPr>
+      </w:p>
     </xsl:for-each>
   </xsl:template>
 

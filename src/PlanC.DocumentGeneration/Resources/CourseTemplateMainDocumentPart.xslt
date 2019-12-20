@@ -219,6 +219,14 @@
         </w:p>
         <xsl:apply-templates select="/CourseTemplate/Prerequisites"/>        
         <!--Compétences-->
+        <!--TODO Utiliser XSLT pour la partie Numérotation-->
+        <w:p>
+          <w:pPr>
+            <w:sectPr>
+              <w:type w:val="nextPage" />
+            </w:sectPr>
+          </w:pPr>
+        </w:p>
         <w:p>
           <w:pPr>
             <w:pStyle w:val="Heading1"/>
