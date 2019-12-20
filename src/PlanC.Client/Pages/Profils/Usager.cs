@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.Forms;
 using System.Security.Claims;
 using PlanC.Client.Data;
+using Microsoft.JSInterop;
 
 namespace PlanC.Client.Pages.Profils
 {
@@ -27,18 +28,22 @@ namespace PlanC.Client.Pages.Profils
         public NavigationManager NavigationManager { get; set; }
         [Inject]
         public PCU001Context _context { get; set; }
+        [Inject]
+        public IJSRuntime jsRuntime { get; set; }
         // utilisateur pour qui les formulaire sont
         public AspNetUsers user;
-
+        // list des départements que peut choisir l'utilisateur
+        public List<PlanC.EntityDataModel.Departements> GetDepartements { 
+            get => _context.Departements.ToList();  
+        }
         public string Username { get; set; }
         // message destiné a l'usagé
         public string StatusMessage { get; set; }
         public string Email { get; set; }
-
         public bool IsEmailConfirmed { get; set; }
-
         public InputModel Input { get; set; }
         public InputPasswordModel InputPassword { get; set; }
+        public InputPersonnalData InputPerson { get; set; }
         public class InputModel
         {
             // validation pour un téléphone
@@ -49,18 +54,14 @@ namespace PlanC.Client.Pages.Profils
             public string Campus { get; set; }
             [Display(Name = "Bureau")]
             public string Office { get; set; }
-            [Display(Name = "Prénom")]
-            public string Prénom { get; set; }
-            [Display(Name = "Nom de famille")]
-            public string Nom { get; set; }
             [Display(Name = "Département")]
-            public int Département { get; set; }
+            [RegularExpression("^[0-9]+$")]
+            // département ID mais doit être en string pas oublier de le convertir
+            public string Département { get; set; }
             [Required]
             [EmailAddress]
             [Display(Name = "Nouvelle email")]
             public string NewEmail { get; set; }
-            [Display(Name = "Choix de votre image de profil")]
-            public int ImageProfilChoice { get; set; }
         }
         public class InputPasswordModel
         {
@@ -79,6 +80,18 @@ namespace PlanC.Client.Pages.Profils
             [Display(Name = "Confirmer nouveau mot de passe")]
             [Compare("NewPassword", ErrorMessage = "Les mots de passe ne sont pas identiques.")]
             public string ConfirmPassword { get; set; }
+        }
+
+        public class InputPersonnalData 
+        {
+            [Required(ErrorMessage = "{0} est obligatoire")]
+            [Display(Name = "Prénom")]
+            public string Prénom { get; set; }
+            [Required(ErrorMessage = "{0} est obligatoire")]
+            [Display(Name = "Nom de famille")]
+            public string Nom { get; set; }
+            [Display(Name = "Choix de votre image de profil")]
+            public int ImageProfilChoice { get; set; }
         }
         // sauvegarde le numéro de téléphone
         public async Task PostPublicAsync()
@@ -104,18 +117,14 @@ namespace PlanC.Client.Pages.Profils
                     await _userManager.SetEmailAsync(user, Input.NewEmail);
                     postSuccess += "Le lien de confirmation vous a été envoyé par email. Veuillez voir votre boîte de messagerie." + Environment.NewLine;
                 }
-                catch(Exception e) {
+                catch(Exception e)
+                {
                     postError += "Erreur, votre email n'a pas été changé." + Environment.NewLine;
                 }
             }
 
             user.Office = Input.Office;
-            user.GvnNm = Input.Nom;
-            user.Snm = Input.Prénom;
-            user.DepartementId = Input.Département;
-
-
-            
+            user.DepartementId = int.Parse(Input.Département);
 
             if (postError != "")
                 StatusMessage = postError;
@@ -123,6 +132,7 @@ namespace PlanC.Client.Pages.Profils
                 StatusMessage = postSuccess;
 
             // refresh la page pour l'utilisateur
+            SaveProgress();
             StateHasChanged();
         }
         public async Task PostPasswordAsync()
@@ -141,6 +151,26 @@ namespace PlanC.Client.Pages.Profils
             }
             // refresh la page pour l'utilisateur
             StateHasChanged();
+        }
+        public async Task PostPersonnalDataAsync()
+        {
+            user.GvnNm = InputPerson.Nom;
+            user.Snm = InputPerson.Prénom;
+            user._ImageProfilChoice = InputPerson.ImageProfilChoice;
+            SaveProgress();
+        }
+
+        public void SaveProgress()
+        {
+            try
+            {
+                _context.SaveChanges();
+                StateHasChanged();
+            }
+            catch (Exception except)
+            {
+                Console.WriteLine($"Plan cadre liste error: {except.Message}");
+            }
         }
 
     }

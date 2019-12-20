@@ -30,7 +30,7 @@
                 <!-- Donne accès au portail selon le role de l'utilisateur -->
                 <li class="breadcrumb-item"><a href="/"> Portail </a></li>
                 <li style="padding: 0 4px;"><i class="fas fa-home" style="font-size: 15px; color: #3f51b5;"></i></li>
-                <li class="breadcrumb-item active" aria-current="page"> Visualisation des plans cadres </li>
+                <li class="breadcrumb-item active" aria-current="page"> Visualisation des <bold>plans de cours</bold> </li>
             </ol>
         </nav>
     </div>
@@ -39,10 +39,10 @@
 <div class="container shadow p-5">
     <div class="row">
         <div class="col-12">
-            <h3>Liste des plans cadres:</h3>
+            <h3>Liste des plans de cours:</h3>
         </div>
         <div class="col-12">
-            <a href="/plancours/create">Nouveau plancadre</a>
+            <a href="/plancours/create">Nouveau <bold>plan de cours</bold></a>
             <br />
             @if (PlansCours != null)
             {
@@ -57,7 +57,7 @@
                     <GridEvents ContextMenuItemClicked="OnContextMenuClick" RowSelected="RowSelectHandler" RowDeselected="() => Selected = null" TValue="PlansCours"></GridEvents>
                     <GridColumns>
                         <GridColumn IsPrimaryKey="true" Field=@nameof(Selected.CoursId) HeaderText="Identifiant du cours"></GridColumn>
-                        <GridColumn Field=@nameof(Selected.CoursePolicy) HeaderText="Identifiant du programme"></GridColumn>
+                        <GridColumn Field=@nameof(Selected.CoursePolicy) HeaderText="Programme"></GridColumn>
                         <GridColumn Field=@nameof(Selected.RcdCdttm) HeaderText="Date du dernier enregistrement" Format="yMd" Type=ColumnType.Date></GridColumn>
                     </GridColumns>
                 </EjsGrid>
@@ -120,18 +120,18 @@
             if (Selected == null)
                 return;
             // load les références des entitées que le plan de cours est constitué
-            context.Entry(Selected).Reference(d => d.CoursActivite).Load();
-            context.Entry(Selected).Reference(d => d.ExamensCertificatifsNonsFinals).Load();
-            context.Entry(Selected).Reference(d => d.MaterielsCours).Load();
+            context.Entry(Selected).Collection(d => d.CoursActivite).Load();
+            context.Entry(Selected).Collection(d => d.ExamensCertificatifsNonsFinals).Load();
+            context.Entry(Selected).Collection(d => d.MaterielsCours).Load();
             context.Entry(Selected).Reference(d => d.Session).Load();
 
             // loadong la référence de l'utilisateur lequel à créer le plans de cadre
             // n'a pas d'autre option que word donc ici nous créons le template
             AspNetUsers teacher = context.AspNetUsers.Include(t => t.DisponibilitesUtilisateur).FirstOrDefault(d => d.UserName == Selected.TchrUid);
             // ramene le dernier plan de cadre créer lié au cours donné
-            PlansCadres coursTemplate = context.PlansCadres.Where(e => e.CoursId == Selected.CoursId)
-                        .OrderByDescending(cadre => cadre.VsnCdttm)
-                        .FirstOrDefault();
+            PlansCadres coursTemplate = context.PlansCadres
+                        .FirstOrDefault(e => e.CoursId.Trim() == Selected.CoursId.Trim());                       
+
             // ramene le programme nominé pour le plan cadre
             Programmes programmeTemplate = context.Programmes.FirstOrDefault(v => v.Id == coursTemplate.ProgrammeId);
 
