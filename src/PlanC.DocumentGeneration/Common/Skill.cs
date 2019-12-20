@@ -13,6 +13,8 @@ namespace PlanC.DocumentGeneration.Common
         private Collection<string>? _contentPrecisions;
         private Collection<SkillElement>? _skillElements;
 
+        public string? Id { get; set; }
+
         public string? Title { get; set; }
 
         public Collection<string> AchievementContexts

@@ -752,7 +752,10 @@
             <w:t>Compétences</w:t>
           </w:r>
         </w:p>
-        <xsl:apply-templates select="/CoursePlan/Skills"/>
+        <xsl:apply-templates select="/CoursePlan/Skills">
+          <xsl:with-param name="ordered-list-id">2</xsl:with-param>
+          <xsl:with-param name="unordered-list-id">3</xsl:with-param>
+        </xsl:apply-templates>
         <!--Évaluation des apprentissages-->
         <w:p>
           <w:pPr>

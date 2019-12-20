@@ -7,6 +7,7 @@
                 xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"
                 xmlns:w14="http://schemas.microsoft.com/office/word/2010/wordml"
                 xmlns:o="urn:schemas-microsoft-com:office:office"
+                xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"
                 exclude-result-prefixes="msxsl">
 
   <xsl:import href="WordprocessingMlHelpers.xslt"/>
@@ -223,6 +224,8 @@
         <w:p>
           <w:pPr>
             <w:sectPr>
+              <w:footerReference w:type="default"
+                                 r:id="rId7"/>
               <w:type w:val="nextPage" />
             </w:sectPr>
           </w:pPr>
@@ -236,7 +239,11 @@
           </w:r>
         </w:p>
         <!--Tableaux des compétences-->
-        <xsl:apply-templates select="/CourseTemplate/Skills"/>
+        <xsl:apply-templates select="/CourseTemplate/Skills">
+          <xsl:with-param name="ordered-list-id">2</xsl:with-param>
+          <xsl:with-param name="unordered-list-id">3</xsl:with-param>
+          <xsl:with-param name="footer-id">rId7</xsl:with-param>
+        </xsl:apply-templates>
         <!--Évaluation finale-->
         <w:p>
           <w:pPr>
@@ -279,6 +286,8 @@
                           select="/CourseTemplate/BoardApprovalDate"/>
         </xsl:call-template>
         <w:sectPr>
+          <w:footerReference w:type="default"
+                             r:id="rId7"/>
           <w:pgSz w:w="12240"
                   w:h="15840"/>
           <w:pgMar w:top="1440"
