@@ -13,6 +13,7 @@ namespace PlanC.EntityDataModel
             CoursActivite = new HashSet<CoursActivite>();
             ExamensCertificatifsNonsFinals = new HashSet<ExamensCertificatifsNonsFinals>();
             MaterielsCours = new HashSet<MaterielsCours>();
+            RelTablPcrsPcadres = new HashSet<RelTablPcrsPcadres>();
         }
 
         [Key]
@@ -58,6 +59,8 @@ namespace PlanC.EntityDataModel
         public virtual ICollection<ExamensCertificatifsNonsFinals> ExamensCertificatifsNonsFinals { get; set; }
         [InverseProperty("PlansCours")]
         public virtual ICollection<MaterielsCours> MaterielsCours { get; set; }
+        [InverseProperty("PlC")]
+        public virtual ICollection<RelTablPcrsPcadres> RelTablPcrsPcadres { get; set; }
         [NotMapped]
         public Collection<string> _MaterielsCours {
             get {

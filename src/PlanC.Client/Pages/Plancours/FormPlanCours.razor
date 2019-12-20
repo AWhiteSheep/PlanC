@@ -27,7 +27,7 @@
                 <!-- Donne accès au portail selon le role de l'utilisateur -->
                 <li class="breadcrumb-item"><a href="/"> Portail </a></li>
                 <li style="padding: 0 4px;"><i class="fas fa-home" style="font-size: 15px; color: #3f51b5;"></i></li>
-                <li class="breadcrumb-item active" aria-current="page"> Nouveau plan cadre </li>
+                <li class="breadcrumb-item active" aria-current="page"> Nouveau <b>plan de cours</b> </li>
             </ol>
         </nav>
     </div>
@@ -74,7 +74,7 @@
                 <!-- suite au poste validate nous envoyons l'utilisateur vers la deuxième partie celle de remplire les contextes et les éléments de compétence-->
                 <button @onclick="NavigatePrevious" disabled="@(CurrentNode.Previous == null)" class="btn btn-primary">Précédent</button>
                 <button @onclick="NavigateNext" hidden="@(CurrentNode.Next == null)" disabled="@(CurrentNode.Next == null)" class="btn btn-primary">Suivant</button>
-                <a href="" @onclick="FinishForm" hidden="@(CurrentNode.Next != null)" disabled="@(CurrentNode.Next != null)" class="btn btn-primary">Terminer</a>
+                <a @onclick="FinishForm" hidden="@(CurrentNode.Next != null)" disabled="@(CurrentNode.Next != null)" class="btn btn-primary">Terminer</a>
             </div>
         </div>
     </div>
@@ -107,6 +107,7 @@
     [Parameter]
     // un type peut être passé en paramètre seulement si elle est en clé primaire ou si elle est donnée en paramètre de balisage
     public PlansCours CoursePlan { get; set; } = new PlansCours();
+    public PlansCadres plCadreChooseen { get; set; } = new PlansCadres();
     [CascadingParameter]
     // le paramètre en cascade donné par le parent selon le type
     public FormMode CurrentMode { get; set; }
@@ -154,7 +155,8 @@
         // remis au client, soit en mode edit, create
         if (SpecifiedPlan != null)
         {
-            CoursePlan = SpecifiedPlan;
+            CoursePlan = SpecifiedPlan;            
+            context.Entry(CoursePlan).Collection(e => e.RelTablPcrsPcadres).Load();
             CurrentMode = FormMode.EDIT;
         }
         else
@@ -185,6 +187,32 @@
     {
         if (await CurrentForm.SaveProgress())
         {
+            if (CurrentForm is CourseDescriptionForm && plCadreChooseen == null) {
+                // sauvegader le plan de cadre en mémoire pour plus tard 
+                // completation du formulaire tous sauvegarder est créer un entité de la table 
+                // de ralation
+                plCadreChooseen = (CurrentForm as CourseDescriptionForm).plCadreChooseen;
+                context.Entry(plCadreChooseen).Collection(e => e.RelTablPcrsPcadres).Load();
+                if (!CoursePlan.RelTablPcrsPcadres.Any(d => plCadreChooseen.CoursId == d.PlCadreId) && plCadreChooseen != null) 
+                {                
+                    // nouvelle entité de relation
+                    RelTablPcrsPcadres relTablPcrsPcadres = new RelTablPcrsPcadres();
+                    // initialisation de tous les clées pour l'entité de relation
+                    // initialisation de tous les clées liées au plan cadre
+                    relTablPcrsPcadres.PlCadreId = plCadreChooseen.CoursId;
+                    relTablPcrsPcadres.PlVsnCdttm = plCadreChooseen.VsnCdttm;
+                    // initialisation de tous les clés lié au plan de cours
+                    relTablPcrsPcadres.PlCoursCrsId = CoursePlan.CoursId;
+                    relTablPcrsPcadres.PlCrsPlnVsnCdttm = CoursePlan.PlnVsnCdttm;
+                    relTablPcrsPcadres.PlCrsSessionId = CoursePlan.SessionId;
+                    relTablPcrsPcadres.PlCrsTchrUid = CoursePlan.TchrUid;
+                    // ajout local de la suivie de l'entité
+                    CoursePlan.RelTablPcrsPcadres.Add(relTablPcrsPcadres);
+                    plCadreChooseen.RelTablPcrsPcadres.Add(relTablPcrsPcadres);
+                    // sauvegarde à la base de données
+                    context.SaveChanges();
+                }
+            }
             CurrentNode = CurrentNode.Next;
             CurrentForm = CurrentNode.Value;
             CurrentMode = FormMode.EDIT;

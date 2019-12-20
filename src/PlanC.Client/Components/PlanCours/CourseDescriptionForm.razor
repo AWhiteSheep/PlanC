@@ -5,6 +5,7 @@
 @inherits CoursePlanInputFormComponent
 
 <label class="label-info">Choix de plan-cadre</label>
+@*combo box proposant des choix que l'utilisateur peut prendre pour définir le plan de cours*@
 <EjsComboBox TValue="PlansCadres" DataSource="Templates">
     <ComboBoxEvents TValue="string" ValueChange="SetTemplate"></ComboBoxEvents>
     <ComboBoxFieldSettings GroupBy="ProgrammeId" Value="CoursId" Text="DenominationCours"></ComboBoxFieldSettings>
@@ -20,8 +21,10 @@
 
 @code {
     private List<PlansCadres> Templates { get; set; } = new List<PlansCadres>();
-
     private List<Sessions> Semesters { get; set; } = new List<Sessions>();
+    [Parameter]
+    [Bindable(true)]
+    public PlansCadres plCadreChooseen { get; set; }
 
     protected override void OnInitialized()
     {
@@ -54,6 +57,8 @@
 
     private void SetTemplate(ChangeEventArgs<string> args)
     {
+        plCadreChooseen = _context.PlansCadres.Where(e => e.CoursId.Trim() == args.Value.Trim())
+                .OrderByDescending(p => p.VsnCdttm).FirstOrDefault();
         CoursePlan.CoursId = args.Value;
         StateHasChanged();
     }
@@ -62,6 +67,5 @@
     {
         CoursePlan.SessionId = args.Value;
         StateHasChanged();
-        ;
     }
 }

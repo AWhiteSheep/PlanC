@@ -36,6 +36,7 @@ namespace PlanC.Client.Data
         public virtual DbSet<PlanCadreCompetenceElements> PlanCadreCompetenceElements { get; set; }
         public virtual DbSet<PlansCadres> PlansCadres { get; set; }
         public virtual DbSet<PlansCours> PlansCours { get; set; }
+        public virtual DbSet<RelTablPcrsPcadres> RelTablPcrsPcadres { get; set; }
         public virtual DbSet<ProgrammeCompetences> ProgrammeCompetences { get; set; }
         public virtual DbSet<ProgrammeDepartementView> ProgrammeDepartementView { get; set; }
         public virtual DbSet<Programmes> Programmes { get; set; }
@@ -103,7 +104,7 @@ namespace PlanC.Client.Data
                 entity.HasOne(d => d.IdentityKeyCompetenceNavigation)
                     .WithMany(p => p.CompetenceContextes)
                     .HasForeignKey(d => d.IdentityKeyCompetence)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .OnDelete(DeleteBehavior.Cascade)
                     .HasConstraintName("FK__Competenc__Ident__68687968");
             });
 
@@ -129,7 +130,7 @@ namespace PlanC.Client.Data
                 entity.HasOne(d => d.Discipline)
                     .WithMany(p => p.Competences)
                     .HasForeignKey(d => d.DisciplineId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .OnDelete(DeleteBehavior.Restrict)
                     .HasConstraintName("FK_TSKL_TDPMNT");
             });
 
@@ -165,7 +166,7 @@ namespace PlanC.Client.Data
                 entity.HasOne(d => d.PlansCours)
                     .WithMany(p => p.CoursActivite)
                     .HasForeignKey(d => new { d.CoursId, d.TchrUid, d.PlnVsnCdttm, d.SessionId })
-                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .OnDelete(DeleteBehavior.Cascade)
                     .HasConstraintName("FK_TCRSACTVT_TCRSPLN");
             });
 
@@ -183,13 +184,13 @@ namespace PlanC.Client.Data
                 entity.HasOne(d => d.IdendityCoursActivityNavigation)
                     .WithMany(p => p.CoursCompetenceElements)
                     .HasForeignKey(d => d.IdendityCoursActivity)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .OnDelete(DeleteBehavior.Cascade)
                     .HasConstraintName("FK__CoursComp__Idend__3F6663D5");
 
                 entity.HasOne(d => d.IdentityCritereElementCompetenceNavigation)
                     .WithMany(p => p.CoursCompetenceElements)
                     .HasForeignKey(d => d.IdentityCritereElementCompetence)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .OnDelete(DeleteBehavior.Cascade)
                     .HasConstraintName("FK__CoursComp__Ident__3E723F9C");
             });
 
@@ -217,7 +218,7 @@ namespace PlanC.Client.Data
                 entity.HasOne(d => d.PlansCadres)
                     .WithMany(p => p.CoursRequis)
                     .HasForeignKey(d => new { d.CoursId, d.VsnCdttm })
-                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .OnDelete(DeleteBehavior.Cascade)
                     .HasConstraintName("FK_TCRSREQ_TCRSTMPLT");
             });
 
@@ -261,7 +262,7 @@ namespace PlanC.Client.Data
                 entity.HasOne(d => d.U)
                     .WithMany(p => p.DisponibilitesUtilisateur)
                     .HasForeignKey(d => d.Uid)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .OnDelete(DeleteBehavior.Cascade)
                     .HasConstraintName("FK_TUSERAVL_TUSER_TASPNET");
             });
 
@@ -326,13 +327,13 @@ namespace PlanC.Client.Data
                 entity.HasOne(d => d.Examen)
                     .WithMany(p => p.ExamensCertificatifsNonsFinals)
                     .HasForeignKey(d => d.ExamenId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .OnDelete(DeleteBehavior.Cascade)
                     .HasConstraintName("FK_TCERTEXAM_TEXAM");
 
                 entity.HasOne(d => d.PlansCours)
                     .WithMany(p => p.ExamensCertificatifsNonsFinals)
                     .HasForeignKey(d => new { d.CoursId, d.TchrUid, d.PlnVsnCdttm, d.SessionId })
-                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .OnDelete(DeleteBehavior.Cascade)
                     .HasConstraintName("FK_TCERTEXAM_TCRSPLN");
             });
 
@@ -353,7 +354,7 @@ namespace PlanC.Client.Data
                 entity.HasOne(d => d.Examen)
                     .WithMany(p => p.ExamensElementsCompetences)
                     .HasForeignKey(d => d.ExamenId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .OnDelete(DeleteBehavior.Cascade)
                     .HasConstraintName("FK_TEXAMSKLELEM_TEXAM");
             });
 
@@ -375,13 +376,13 @@ namespace PlanC.Client.Data
                 entity.HasOne(d => d.Examen)
                     .WithMany(p => p.ExamensFinalsCertificatifs)
                     .HasForeignKey(d => d.ExamenId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .OnDelete(DeleteBehavior.Cascade)
                     .HasConstraintName("FK_TFNLEXAM_TEXAM");
 
                 entity.HasOne(d => d.PlansCadres)
                     .WithMany(p => p.ExamensFinalsCertificatifs)
                     .HasForeignKey(d => new { d.CoursId, d.VsnCdttm })
-                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .OnDelete(DeleteBehavior.Cascade)
                     .HasConstraintName("FK_TFNLEXAM_TCRSTMPLT");
             });
 
@@ -409,7 +410,7 @@ namespace PlanC.Client.Data
                 entity.HasOne(d => d.PlansCours)
                     .WithMany(p => p.MaterielsCours)
                     .HasForeignKey(d => new { d.CoursId, d.TchrUid, d.PlnVsnCdttm, d.SessionId })
-                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .OnDelete(DeleteBehavior.Cascade)
                     .HasConstraintName("FK_TCRSMTRL_TCRSPLN");
             });
 
@@ -446,7 +447,7 @@ namespace PlanC.Client.Data
                 entity.HasOne(d => d.PlansCadres)
                     .WithMany(p => p.PlanCadreCompetenceElements)
                     .HasForeignKey(d => new { d.CoursId, d.VsnCdttm })
-                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .OnDelete(DeleteBehavior.Cascade)
                     .HasConstraintName("FK_TTMPLTSKLELEM_TCRSTMPLT");
             });
 
@@ -496,7 +497,7 @@ namespace PlanC.Client.Data
                 entity.HasOne(d => d.Session)
                     .WithMany(p => p.PlansCours)
                     .HasForeignKey(d => d.SessionId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .OnDelete(DeleteBehavior.ClientNoAction)
                     .HasConstraintName("FK_TCRSPLN_TSMSTR");
             });
 
@@ -516,7 +517,7 @@ namespace PlanC.Client.Data
                 entity.HasOne(d => d.Programmes)
                     .WithMany(p => p.ProgrammeCompetences)
                     .HasForeignKey(d => new { d.ProgrammeId, d.DepartementId })
-                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .OnDelete(DeleteBehavior.Cascade)
                     .HasConstraintName("FK_R_SKL_PGM__PGM");
             });
 
@@ -558,13 +559,39 @@ namespace PlanC.Client.Data
                 entity.HasOne(d => d.Departement)
                     .WithMany(p => p.Programmes)
                     .HasForeignKey(d => d.DepartementId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .OnDelete(DeleteBehavior.Restrict)
                     .HasConstraintName("FK_TPGM_TDPTMNT");
 
                 entity.HasOne(d => d.TypeDegreFormationNavigation)
                     .WithMany(p => p.Programmes)
                     .HasForeignKey(d => d.TypeDegreFormation)
                     .HasConstraintName("FK_TPGM_TPMGFORMTYPE");
+            });
+
+            modelBuilder.Entity<RelTablPcrsPcadres>(entity =>
+            {
+                entity.HasKey(e => new { e.PlCoursCrsId, e.PlCrsTchrUid, e.PlCrsPlnVsnCdttm, e.PlCrsSessionId, e.PlCadreId, e.PlVsnCdttm });
+
+                entity.Property(e => e.PlCoursCrsId).IsFixedLength();
+
+                entity.Property(e => e.PlCrsTchrUid).IsUnicode(false);
+
+                entity.Property(e => e.PlCrsSessionId)
+                    .IsUnicode(false)
+                    .IsFixedLength();
+
+                entity.Property(e => e.PlCadreId).IsFixedLength();
+
+                entity.HasOne(d => d.Pl)
+                    .WithMany(p => p.RelTablPcrsPcadres)
+                    .HasForeignKey(d => new { d.PlCadreId, d.PlVsnCdttm })
+                    .OnDelete(DeleteBehavior.Cascade)
+                    .HasConstraintName("FK_RelTablPCrsPCadres_PlansCadres");
+
+                entity.HasOne(d => d.PlC)
+                    .WithMany(p => p.RelTablPcrsPcadres)
+                    .HasForeignKey(d => new { d.PlCoursCrsId, d.PlCrsTchrUid, d.PlCrsPlnVsnCdttm, d.PlCrsSessionId })
+                    .HasConstraintName("FK_RelTablPCrsPCadres_PlansCours");
             });
 
             modelBuilder.Entity<Sessions>(entity =>
