@@ -17,7 +17,7 @@
 
         <div id="descCollapse" class="collapse show" aria-labelledby="descHeading" data-parent="#formParent">
             <div class="card-body">
-                <PlanC.Client.Pages.Planscadres.EditFormPlancadre Template="Template" IsReadOnly="true"></PlanC.Client.Pages.Planscadres.EditFormPlancadre>
+                <PlanC.Client.Pages.Planscadres.EditFormPlancadre ForDepartement="ForDepartement" hasNoProgramme="false" Template="Template" IsReadOnly="true"></PlanC.Client.Pages.Planscadres.EditFormPlancadre>
             </div>
         </div>
     </div>
@@ -63,7 +63,8 @@
 @code {
     [Parameter]
     public PlansCadres Template { get; set; }
-
+    [Parameter]
+    public Departements ForDepartement { get; set; }
     [Parameter]
     public EventCallback<PlansCadres> TemplateChanged { get; set; }
 

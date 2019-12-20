@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -10,6 +11,7 @@ using PlanC.Client.Pages.Identity.Pages.Models;
 
 namespace PlanC.Client
 {
+    [Authorize(Roles = "Admin")]
     public class IndexModel : PageModel
     {
         RoleManager<IdentityRole> roleManager;

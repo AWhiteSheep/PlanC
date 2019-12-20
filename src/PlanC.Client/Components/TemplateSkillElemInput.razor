@@ -27,6 +27,10 @@
 }
 <div class="container p-0">
 
+    @if (!SelectedSkills.Any()) { 
+        <!-- Envoyer pour continuer la création des compétences... -->
+    }
+
     @foreach (Competences skill in SelectedSkills)
     {
         <hr class="bcSeparator" />

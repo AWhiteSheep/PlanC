@@ -32,3 +32,33 @@ In csproject. ----
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
 </ItemGroup>
+
+
+  
+        // vérifier les authorization de l'utilisateur connecté
+        // si est le coordonnateur ou dison l'administrateur nous laisser
+        //une chance à présenter... nous mettonts editable a true
+        // qu'un coordonnateur peut créer..
+        var user = (await authenticationState).User;
+        if (user.IsInRole("Coordonnateur"))
+        {
+            IsReadOnly = false;
+        }
+
+        if (SpecifiedTemplate != null)
+        {
+            // mets la template spécifié
+            Template = SpecifiedTemplate;
+            CurrentMode = FormMode.EDIT;
+        }
+        else if (!IsReadOnly)
+        {
+            Template = new PlansCadres();
+            CurrentMode = FormMode.CREATE;
+        }
+        else
+        {
+            NavigationManager.NavigateTo("");
+        }
+
+        LoadTemplateData();

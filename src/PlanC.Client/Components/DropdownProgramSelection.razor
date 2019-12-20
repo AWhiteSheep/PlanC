@@ -26,12 +26,14 @@
 
     [Parameter]
     public Programmes CurrentSelection { get; set; }
+    [Parameter]
+    public Departements ForDepartement { get; set; }
 
     protected override void OnInitialized()
     {
         using (PCU001Context _temp = new PCU001Context())
         {
-            programs = _temp.Programmes.ToList();
+            programs = _temp.Programmes.Where(p => p.DepartementId == ForDepartement.Id).ToList();
         }
     }
 
@@ -39,7 +41,7 @@
 
     public void OnValueChanged(Syncfusion.EJ2.Blazor.DropDowns.ChangeEventArgs<string> val)
     {
-        Programmes target = programs.SingleOrDefault(p => p.Id == val.Value);
+        Programmes target = programs.SingleOrDefault(p => p.Id == val.Value && p.DepartementId == ForDepartement.Id);
 
         CurrentSelection = target;
 

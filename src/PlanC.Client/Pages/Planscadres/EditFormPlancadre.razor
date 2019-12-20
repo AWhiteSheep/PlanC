@@ -4,21 +4,24 @@
 @using Syncfusion.EJ2.Blazor.RichTextEditor
 @using System.Security.Claims
 @using Microsoft.AspNetCore.Identity;
-@inject UserManager<IdentityRole> userManager
-
 
 <!-- Formulaire d'un nouveau plan-cadre -->
-
 @if (!IsReadOnly)
 {
-    <PlanC.Client.Components.DropdownProgramSelection @ref="ProgramSelect"></PlanC.Client.Components.DropdownProgramSelection>
+    <PlanC.Client.Components.DropdownProgramSelection ForDepartement="ForDepartement" @ref="ProgramSelect"></PlanC.Client.Components.DropdownProgramSelection>
 }
-
-@if (hasRights || !IsReadOnly)
+@if (CurrentMode == FormPlanCadre.FormMode.EDIT || CurrentMode == FormPlanCadre.FormMode.CREATE || IsReadOnly)
 {
     <div class="row">
         <div class="col-12">
             <h3> Formulaire de plan-cadre: </h3>
+        </div>
+        <div hidden="@(!hasNoProgramme)" class="col-12">
+            <div class="form-group">
+                <!--lui donner la chance de cérer un programme pour le département-->
+                <label class="control-label">Il n'y à pas de programme pour le département sélectionner.</label>
+                <a href="/admin/programmes"> Ajouter une nouvelle référence de programme </a>
+            </div>
         </div>
         <div class="col-12">
             <div class="form-group">
@@ -129,7 +132,12 @@
     [Parameter]
     // fait en sorte que le template est editable
     public bool IsReadOnly { get; set; } = false;
-    public bool hasRights { get; set; } = false;
+    [Parameter]
+    public Departements ForDepartement { get; set; }
+    [Parameter]
+    public bool hasRights { get; set; }
+    [Parameter]
+    public bool hasNoProgramme { get; set; } = false;
 
     public Programmes Program { get; set; }
 
@@ -188,8 +196,6 @@
     protected override void OnInitialized()
     {
         editContext = new EditContext(Template);
-        // check role
-        hasRights = user.IsInRole("Coordonnateur");
     }
 
     protected override void OnParametersSet()

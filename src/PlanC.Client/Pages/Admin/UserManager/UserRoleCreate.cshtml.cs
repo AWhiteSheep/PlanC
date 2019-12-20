@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -11,6 +12,7 @@ using PlanC.EntityDataModel;
 
 namespace PlanC.Client
 {
+    [Authorize(Roles = "Admin")]
     public class UserRoleCreateModel : PageModel
     {
         public readonly RoleManager<IdentityRole> roleManager;

@@ -24,6 +24,8 @@
 
 @code {
     private List<Departements> departements;
+
+    [Bindable]
     public Departements CurrentSelection { get; set; }
 
     protected override void OnInitialized()
@@ -31,15 +33,16 @@
         departements = _context.Departements.ToList();
     }
     
-    public event EventHandler<Departements> ValueChanged;
+    [Parameter]
+    public EventHandler<Departements> ValueChanged { get; set; }
 
     public void OnValueChanged(Syncfusion.EJ2.Blazor.DropDowns.ChangeEventArgs<int> val)
     {
         Departements target = departements.SingleOrDefault(p => p.Id == val.Value);
-
         CurrentSelection = target;
-
+        Console.WriteLine("dropdown" + "SENT" + " new depart");
         ValueChanged?.Invoke(this, target);
+        StateHasChanged();
     }
 
 }

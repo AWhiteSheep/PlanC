@@ -40,81 +40,108 @@
 </div>
 
 
-
 <div class="row">
+    <div class="col-12 text-center">
+        <h4> Selectionner le département pour lequel vous voulez créer un plan cadre: </h4>
+    </div>
     <div class="col-12 d-flex justify-content-center">
-        <PlanC.Client.Components.ProgressBar steps="@(new List<string>{ "Déscription", "Compétences", "Examens finaux", "Révision" })" Current="CurrentStep"></PlanC.Client.Components.ProgressBar>
+        <!-- formulaire pour le choix du programme -->
+        <DropdownDepartements @ref="departeDropdown" ValueChanged="DepartChanged"></DropdownDepartements>
     </div>
 </div>
 
-<div hidden="@(EditorOpen)" class="container shadow p-5" style="margin-bottom: 200px; margin-top: 50px">
-    @*Envoit le paramètre à tous les enfants*@
-    <CascadingValue TValue="ClaimsPrincipal" Value="user">
-    <CascadingValue TValue="PCU001Context" Value="context">
-        <CascadingValue TValue="FormMode" Value="CurrentMode">
-            @if (CurrentForm is EditFormPlancadre)
-            {
-                <EditFormPlancadre IsReadOnly="IsReadOnly" @bind-Template="Template" @ref="CurrentForm"></EditFormPlancadre>
-            }
-            else if (CurrentForm is TemplateSkillElemInput)
-            {
-                <PlanC.Client.Components.TemplateSkillElemInput @bind-Template="Template" @ref="CurrentForm"></PlanC.Client.Components.TemplateSkillElemInput>
-            }
-            else if (CurrentForm is FinalExamInput)
-            {
-                <PlanC.Client.Components.FinalExamInput @bind-Template="Template" @ref="CurrentForm"></PlanC.Client.Components.FinalExamInput>
-            }
-            else if (CurrentForm is TemplateReview)
-            {
-                <PlanC.Client.Components.TemplateReview Template="Template" @ref="CurrentForm"></PlanC.Client.Components.TemplateReview>
-            }
-        </CascadingValue>
-    </CascadingValue>
-    </CascadingValue>
-    <div class="container mt-3">
-        <div class="row">
-            <div class="col-12 d-flex justify-content-around">
-                <!-- appelle fonction javascript permettant d'ajouter le .wasvalidated sur la division du formulaire -->
-                <!-- suite au poste validate nous envoyons l'utilisateur vers la deuxième partie celle de remplire les contextes et les éléments de compétence-->
-                <button @onclick="NavigatePrevious" disabled="@(CurrentNode.Previous == null)" class="btn btn-primary">Précédent</button>
-                <button @onclick="NavigateNext" hidden="@(CurrentNode.Next == null)" disabled="@(CurrentNode.Next == null)" class="btn btn-primary">Suivant</button>
-                <a @onclick="Finish" hidden="@(CurrentNode.Next != null)" disabled="@(CurrentNode.Next != null)" class="btn btn-primary text-white">Terminer</a>
+<hr />
+
+@if (departeDropdown != null || FormIsReady)
+{
+        <div class="row mt-4">
+            <div class="col-12 d-flex justify-content-center">
+                <PlanC.Client.Components.ProgressBar steps="@(new List<string> { "Déscription", "Compétences", "Examens finaux", "Révision" })" Current="CurrentStep"></PlanC.Client.Components.ProgressBar>
             </div>
         </div>
-    </div>
-    <div class="col-12 text-center mt-3">
-        @if (string.IsNullOrEmpty(Id))
-        {
-            <span class="smallerFontSize">La page ne répond pas? <a href="/planscadres/creation" onclick="window.location.reload()" class="reload">Rafraîchir la page.</a></span>
-        }
-        else
-        {
-            <span class="smallerFontSize">La page ne répond pas? <a href="/planscadres/@Id/create" onclick="window.location.reload()" class="reload">Rafraîchir la page.</a></span>
-        }
-    </div>
-</div>
 
-<div hidden="@(!EditorOpen)" class="container shadow p-5 w-100 h-100" style="margin-bottom: 200px; margin-top: 50px">
-    <EjsButton @onclick="() => EditorOpen = false">Fermer</EjsButton>
-    <EjsButton @onclick="OnDownload">Télécharger</EjsButton>
-    <EjsDocumentEditorContainer @ref="container">
-    </EjsDocumentEditorContainer>
-</div>
+        <div hidden="@(EditorOpen)" class="container shadow p-5" style="margin-bottom: 200px; margin-top: 50px">
+            @*Envoit le paramètre à tous les enfants*@
+            <CascadingValue TValue="ClaimsPrincipal" Value="user">
+                <CascadingValue TValue="PCU001Context" Value="context">
+                    <CascadingValue TValue="FormMode" Value="CurrentMode">
+                        @if (CurrentForm is EditFormPlancadre)
+                        {
+                            <EditFormPlancadre hasRights="hasRights" ForDepartement="departChooseen" hasNoProgramme="hasNoProgramme" IsReadOnly="IsReadOnly" @bind-Template="Template" @ref="CurrentForm"></EditFormPlancadre>
+                        }
+                        else if (CurrentForm is TemplateSkillElemInput)
+                        {
+                            <PlanC.Client.Components.TemplateSkillElemInput @bind-Template="Template" @ref="CurrentForm"></PlanC.Client.Components.TemplateSkillElemInput>
+                        }
+                        else if (CurrentForm is FinalExamInput)
+                        {
+                            <PlanC.Client.Components.FinalExamInput @bind-Template="Template" @ref="CurrentForm"></PlanC.Client.Components.FinalExamInput>
+                        }
+                        else if (CurrentForm is TemplateReview)
+                        {
+                            <PlanC.Client.Components.TemplateReview ForDepartement="departChooseen" Template="Template" @ref="CurrentForm"></PlanC.Client.Components.TemplateReview>
+                        }
+                    </CascadingValue>
+                </CascadingValue>
+            </CascadingValue>
+            <div class="container mt-3">
+                <div class="row">
+                    <div class="col-12 d-flex justify-content-around">
+                        <!-- appelle fonction javascript permettant d'ajouter le .wasvalidated sur la division du formulaire -->
+                        <!-- suite au poste validate nous envoyons l'utilisateur vers la deuxième partie celle de remplire les contextes et les éléments de compétence-->
+                        <button @onclick="NavigatePrevious" disabled="@(CurrentNode.Previous == null)" class="btn btn-primary">Précédent</button>
+                        <button @onclick="NavigateNext" hidden="@(CurrentNode.Next == null)" disabled="@(CurrentNode.Next == null)" class="btn btn-primary">Suivant</button>
+                        <a @onclick="Finish" hidden="@(CurrentNode.Next != null)" disabled="@(CurrentNode.Next != null)" class="btn btn-primary text-white">Terminer</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 text-center mt-3">
+                @if (string.IsNullOrEmpty(Id))
+                {
+                    <span class="smallerFontSize">La page ne répond pas? <a href="/planscadres/creation" onclick="window.location.reload()" class="reload">Rafraîchir la page.</a></span>
+                }
+                else
+                {
+                    <span class="smallerFontSize">La page ne répond pas? <a href="/planscadres/@Id/create" onclick="window.location.reload()" class="reload">Rafraîchir la page.</a></span>
+                }
+            </div>
+        </div>
 
-<div hidden="@(CurrentNode.Next != null)" disabled="@(CurrentNode.Next != null)" class="col-12 d-flex justify-content-center m-3">
-    <!-- Click pour faire -->
-    <a @onclick="Export" class="btn btn-outline-primary">Gérérer le plan-cadre</a>
-</div>
+        <div hidden="@(!EditorOpen)" class="container shadow p-5 w-100 h-100" style="margin-bottom: 200px; margin-top: 50px">
+            <EjsButton @onclick="() => EditorOpen = false">Fermer</EjsButton>
+            <EjsButton @onclick="OnDownload">Télécharger</EjsButton>
+            <EjsDocumentEditorContainer @ref="container">
+            </EjsDocumentEditorContainer>
+        </div>
 
+        <div hidden="@(CurrentNode.Next != null)" disabled="@(CurrentNode.Next != null)" class="col-12 d-flex justify-content-center m-3">
+            <!-- Click pour faire -->
+            <a @onclick="Export" class="btn btn-outline-primary">Gérérer le plan-cadre</a>
+        </div>
+    
+
+}
 @code {
 
     [CascadingParameter]
     // vérifie si 'utilisateur à les rôles dont il a besoin pour
     public Task<AuthenticationState> authenticationState { get; set; }
     public ClaimsPrincipal user;
+    public bool hasRights { get; set; } = false;
     // paramètre qui sera donné au template pour les différentes authorization
     public bool IsReadOnly { get; set; }
-
+    public bool FormIsReady { get; set; } = false;
+    public bool hasNoProgramme { get; set; } = false;
+    public Departements departChooseen;
+    public DropdownDepartements departeDropdown;
+    public void DepartChanged(object sender, Departements departementSelected) {
+        Console.WriteLine(sender + "SENT" + " new depart");
+        departChooseen = departementSelected;
+        FormIsReady = true;
+        if (!context.Programmes.Any(e => e.DepartementId == departChooseen.Id))
+            hasNoProgramme = true;
+        StateHasChanged();
+    }
 
     // document editor ref point
     EjsDocumentEditorContainer container;
@@ -258,17 +285,21 @@
         // si est le coordonnateur ou dison l'administrateur nous laisser
         //une chance à présenter... nous mettonts editable a true
         // qu'un coordonnateur peut créer..
-        var user = (await authenticationState).User;
+        user = (await authenticationState).User;
 
         if (user.IsInRole("Coordonnateur"))
         {
             IsReadOnly = false;
+            hasRights = true;
         }
 
         if (SpecifiedTemplate != null)
         {
             // mets la template spécifié
             Template = SpecifiedTemplate;
+            var programChoosen = context.Programmes.Include(t=>t.Departement).SingleOrDefault(e => e.Id == Template.ProgrammeId);
+            departChooseen = programChoosen.Departement;
+            FormIsReady = true;
             CurrentMode = FormMode.EDIT;
         }
         else if (!IsReadOnly)
@@ -276,7 +307,7 @@
             Template = new PlansCadres();
             CurrentMode = FormMode.CREATE;
         }
-        else 
+        else
         {
             NavigationManager.NavigateTo("");
         }
@@ -292,8 +323,8 @@
 
         CurrentNode = Forms.First;
         CurrentForm = CurrentNode.Value;
-
-        await LoadTemplateDataAsync();
+        if(CurrentMode == FormMode.EDIT)
+            LoadTemplateData();
         StateHasChanged();
     }
 
@@ -339,24 +370,24 @@
     /// Performs a deep load of all related entities that are necessary for template creation
     /// </summary>
     /// <returns></returns>
-    private async Task LoadTemplateDataAsync()
+    private void LoadTemplateData()
     {
-        await context.Entry(Template).Collection(t => t.PlanCadreCompetenceElements).LoadAsync();
+        context.Entry(Template).Collection(t => t.PlanCadreCompetenceElements).Load();
 
-        await context.Entry(Template).Collection(t => t.ExamensFinalsCertificatifs).LoadAsync();
+        context.Entry(Template).Collection(t => t.ExamensFinalsCertificatifs).Load();
 
         foreach (ExamensFinalsCertificatifs ex in Template.ExamensFinalsCertificatifs)
         {
-            await context.Entry(ex).Reference(ex => ex.Examen).LoadAsync();
+            context.Entry(ex).Reference(ex => ex.Examen).Load();
         }
 
         foreach (Examens exam in Template.ExamensFinalsCertificatifs.Select(ex => ex.Examen))
         {
-            await context.Entry(exam).Collection(exam => exam.ExamensElementsCompetences).LoadAsync();
+            context.Entry(exam).Collection(exam => exam.ExamensElementsCompetences).Load();
 
             foreach (ExamensElementsCompetences elem in exam.ExamensElementsCompetences)
             {
-                await context.Entry(elem).Reference(elem => elem.ElementCompetence).LoadAsync();
+                context.Entry(elem).Reference(elem => elem.ElementCompetence).Load();
             }
         }
 
