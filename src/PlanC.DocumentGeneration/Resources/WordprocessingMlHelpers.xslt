@@ -104,8 +104,16 @@
   <xsl:template match="Skills">
     <xsl:param name="ordered-list-id"/>
     <xsl:param name="unordered-list-id"/>
-    <xsl:param name="footer-id"/>
+    <xsl:param name="sectPr-child"/>
     
+    <w:p>
+      <w:pPr>
+        <w:pStyle w:val="Heading1"/>
+      </w:pPr>
+      <w:r>
+        <w:t>Compétences</w:t>
+      </w:r>
+    </w:p>
     <xsl:for-each select="./Skill">
       <w:tbl>
         <w:tblPr>
@@ -378,16 +386,14 @@
       fonctionne qu'avec Word 2013 et supérieur. Par ailleurs, il s'agit d'un hack, selon moi, puisque les listes
       restent liées. De plus, un saut de section est "global" au document, donc il pourrait affecter d'autres listes.
       TODO Utiliser XSLT pour la partie Numérotation-->
-      <!--
       <w:p>
         <w:pPr>
           <w:sectPr>
-            <w:footerReference w:type="default"
-                               r:id="{$footer-id}"/>
+            <xsl:copy-of select="$sectPr-child"/>
             <w:type w:val="nextPage" />
           </w:sectPr>
         </w:pPr>
-      </w:p>-->
+      </w:p>
     </xsl:for-each>
   </xsl:template>
 
