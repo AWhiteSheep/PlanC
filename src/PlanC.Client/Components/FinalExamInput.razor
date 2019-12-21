@@ -2,7 +2,7 @@
 @using Pages.Planscadres
 @using System.Linq;
 @using Microsoft.EntityFrameworkCore
-@using Syncfusion.EJ2.DropDowns
+@using Syncfusion.EJ2.Blazor.DropDowns
 @inject PCU001Context _context
 @inject IJSRuntime JSRuntime
 @inherits CourseTemplateFormComponent
@@ -175,6 +175,7 @@
         private void SetElement(ChangeEventArgs<string> args, ExamensElementsCompetences ese)
         {
             ese.ElementCompetence = Availableskillelements.Find(se => se.Id == args.Value);
+            ese.ElementCompetenceId = args.Value;
             StateHasChanged();
         }
 

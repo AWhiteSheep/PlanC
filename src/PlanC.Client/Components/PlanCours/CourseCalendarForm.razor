@@ -52,7 +52,7 @@
                                 {
                                     <div class="row">
                                         <div class="col-md-9">
-                                            <EjsComboBox TValue="string" Placeholder="Choisir un élément de compétence..." Text="@cse.IdentityCritereElementCompetenceNavigation.DescriptionCritere" DataSource="GetUnselectedSkillElementCriteria(timeblock)">
+                                            <EjsComboBox TValue="string" Placeholder="Choisir un élément de compétence..." Text="@(cse.IdentityCritereElementCompetenceNavigation == null? "" : cse.IdentityCritereElementCompetenceNavigation.DescriptionCritere)" DataSource="GetUnselectedSkillElementCriteria(timeblock)">
                                                 <ComboBoxEvents TValue="int" ValueChange="@(e => SetCrit(e, cse))"></ComboBoxEvents>
                                                 <ComboBoxFieldSettings Value="IdentityKey" Text="DescriptionCritere"></ComboBoxFieldSettings>
                                             </EjsComboBox>
