@@ -52,7 +52,10 @@
                         <GridColumn IsPrimaryKey="true" Field=@nameof(PlansCadres.CoursId) HeaderText="Identifiant du cours"></GridColumn>
                         <GridColumn Field=@nameof(PlansCadres.ProgrammeId) HeaderText="Identifiant du programme"></GridColumn>
                         <GridColumn Field=@nameof(PlansCadres.DenominationCours) HeaderText="Nom du cours"></GridColumn>
-                        <GridColumn Field=@nameof(PlansCadres.RcdCdttm) HeaderText="Date du dernier enregistrement" Format="yMd" Type=ColumnType.Date></GridColumn>
+                        <GridColumn Field=@nameof(PlansCadres.RcdCdttmString) HeaderText="Dernier enregistrement"></GridColumn>
+                        <GridColumn Field=@nameof(PlansCadres.DptDateString) HeaderText="Approbation departement"></GridColumn>
+                        <GridColumn Field=@nameof(PlansCadres.DirectorDateString) HeaderText="Approbation direction"></GridColumn>
+                        <GridColumn Field=@nameof(PlansCadres.CmteDateString) HeaderText="Approbation commité"></GridColumn>
                     </GridColumns>
                 </EjsGrid>
             }
