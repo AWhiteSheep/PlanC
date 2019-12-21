@@ -1,5 +1,5 @@
 ﻿@page  "/admin/programmes"
-@inject PCU001Context context
+@inject PCU001Context _context
 @inject NavigationManager _NavigationManager
 @inject IJSRuntime Js
 @using PlanC.EntityDataModel
@@ -49,8 +49,8 @@
                     <GridColumn Field=@nameof(Selected.Id) HeaderText="Identifiant du programme"></GridColumn>
                     <GridColumn Field=@nameof(Selected.Departement.Titre) HeaderText="Département"></GridColumn>
                     <GridColumn Field=@nameof(Selected.Designation) HeaderText="Nom"></GridColumn>
-                    <GridColumn Field=@nameof(Selected.NombreCompetencesObligatoiresAccessor) HeaderText="NB compétence obligatoire"></GridColumn>
-                    <GridColumn Field=@nameof(Selected.RcdCdttm) HeaderText="Date du dernier enregistrement" Format="yMd" Type=ColumnType.Date></GridColumn>
+                    <GridColumn Field=@nameof(Selected.NombreCompetencesObligatoiresAccessor) HeaderText="NB compétence obligatoire"></GridColumn>             
+                    <GridColumn Field=@nameof(Selected.RcdCdttmAccess) HeaderText="Date du dernier enregistrement" Format="yMd" Type=ColumnType.Date></GridColumn>
                 </GridColumns>
             </EjsGrid>
         }
@@ -146,16 +146,18 @@
     private bool loadFailed;
     private bool formLoadDisplay = false;
     private bool isEditing = false;
+    [Parameter]
+    public bool hasAdmin { get; set; } = true;
 
     protected override void OnInitialized()
     {
-        programmes = context.Programmes.Include(d => d.Departement).ToList();
-        departements = context.Departements.ToList();
+        programmes = _context.Programmes.Include(d => d.Departement).ToList();
+        departements = _context.Departements.ToList();
     }
 
     protected void Change()
     {
-        context.SaveChanges();
+        _context.SaveChanges();
     }
 
     protected void Edit()
@@ -166,13 +168,13 @@
 
     private void HandleValidSubmit()
     {
-        if (!isEditing && (context.Programmes
-            .FirstOrDefault(e => e.DepartementId == Selected.DepartementId 
-            && e.Id == Selected.Id) == null)) 
-        { 
-            context.Add(Selected);
+        if (!isEditing && (_context.Programmes
+            .FirstOrDefault(e => e.DepartementId == Selected.DepartementId
+            && e.Id == Selected.Id) == null))
+        {
+            _context.Add(Selected);
         }
-        context.SaveChanges();
+        _context.SaveChanges();
         ToggleForm();
         StateHasChanged();
     }

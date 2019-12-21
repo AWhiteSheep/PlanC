@@ -225,7 +225,7 @@ function validationFor(arg) {
 
 
 window.LoadCollapse = () => {
-    $("button[data-expend-button]").on('mouseup', function (enventData) {
+    $("[data-expend-button]:not(.btn.btn-secondary.dropdown-toggle)").on('mouseup', function (enventData) {
         var id = "#"+$(this).attr("data-expend-button");
         var container = $("#container-" + $(this).attr("data-expend-button"));        
         // a-t-il la classe?
@@ -242,13 +242,11 @@ window.LoadCollapse = () => {
             else {
                 container.removeClass("col-12-important") // enlêve la class qui la ouvre
             }
-            $(this).text("Afficher");
         }
         // n'a pas la classe
         else
         {
             container.addClass("col-12-important");
-            $(this).text("Masquer");
             // ajouter la classe si toggle n'est pas là le toggle
             if (!$(id).hasClass("show")) {
                 // wait pour un peu d'animation

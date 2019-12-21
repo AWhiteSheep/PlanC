@@ -48,7 +48,14 @@ namespace PlanC.EntityDataModel
         public string CoursePolicy { get; set; }
         [Column("PonderationComment", TypeName ="ntext")]
         public string PonderationComment { get; set; }
-
+        [NotMapped]
+        public string RcdCdttmString
+        {
+            get
+            {
+                return RcdCdttm?.ToString() ?? "<i class='fas fa-mug-hot'></i>";
+            }
+        }
 
         [ForeignKey(nameof(SessionId))]
         [InverseProperty(nameof(Sessions.PlansCours))]

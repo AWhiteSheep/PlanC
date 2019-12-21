@@ -9,6 +9,92 @@ namespace PlanC.EntityDataModel
 {
     public partial class Programmes
     {
+
+        [NotMapped]
+        public int NombreCompetencesObligatoiresAccessor
+        {
+            get
+            {
+                return NombreCompetencesObligatoires ?? 0;
+            }
+            set
+            {
+                NombreCompetencesObligatoires = value;
+            }
+        }
+        [NotMapped]
+        public int NombreCompetencesOptionnellesAccessor
+        {
+            get
+            {
+                return NombreCompetencesOptionnelles ?? 0;
+            }
+            set
+            {
+                NombreCompetencesOptionnelles = value;
+            }
+        }
+        [NotMapped]
+        public int NombreCompetencesComplementairesAccessor
+        {
+            get
+            {
+                return NombreCompetencesComplementaires ?? 0;
+            }
+            set
+            {
+                NombreCompetencesComplementaires = value;
+            }
+        }
+        [NotMapped]
+        public string DepartementIdHasString
+        {
+            get
+            {
+                return DepartementId.ToString();
+            }
+            set
+            {
+                DepartementId = int.Parse(value);
+            }
+        }
+        [NotMapped]
+        public string ProgrammePdfAccess
+        {
+            get
+            {
+                return ProgrammePdf ?? "ajouter le lien vers le pdf";
+            }
+            set
+            {
+                ProgrammePdf = value;
+            }
+        }
+        [NotMapped]
+        public string ProgrammeImgAccess
+        {
+            get
+            {
+                return ProgrammeImg ?? "ajouter le lien vers l'image";
+            }
+            set
+            {
+                ProgrammeImg = value;
+            }
+        }
+        [NotMapped]
+        public DateTime RcdCdttmAccess
+        {
+            get
+            {
+                return RcdCdttm ?? DateTime.MaxValue;
+            }
+            set
+            {
+                RcdCdttm = value;
+            }
+        }
+
         public Programmes()
         {
             ProgrammeCompetences = new HashSet<ProgrammeCompetences>();
@@ -34,45 +120,6 @@ namespace PlanC.EntityDataModel
         public int? NombreCompetencesObligatoires { get; set; }
         public int? NombreCompetencesOptionnelles { get; set; }
         public int? NombreCompetencesComplementaires { get; set; }
-        [NotMapped]
-        public int NombreCompetencesObligatoiresAccessor {
-            get {
-                return NombreCompetencesObligatoires ?? 0;
-            } set 
-            {
-                NombreCompetencesObligatoires = value; 
-            }
-        }
-        [NotMapped]
-        public int NombreCompetencesOptionnellesAccessor
-        {
-            get {
-                return NombreCompetencesOptionnelles ?? 0;
-            } set 
-            {
-                NombreCompetencesOptionnelles = value; 
-            } 
-        }
-        [NotMapped]
-        public int NombreCompetencesComplementairesAccessor
-        {
-            get {
-                return NombreCompetencesComplementaires ?? 0;
-            } set 
-            {
-                NombreCompetencesComplementaires = value; 
-            } 
-        }
-        [NotMapped]
-        public string DepartementIdHasString
-        {
-            get {
-                return DepartementId.ToString();
-            } set 
-            {
-                DepartementId = int.Parse(value); 
-            } 
-        }
         [StringLength(3)]
         public string TypeDegreFormation { get; set; }
         [Column("RCD_CDTTM", TypeName = "datetime")]
