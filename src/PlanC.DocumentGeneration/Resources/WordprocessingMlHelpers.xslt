@@ -150,7 +150,9 @@
                 <w:pStyle w:val="SkillTableSkillCode"/>
               </w:pPr>
               <w:r>
-                <w:t>00LM</w:t>
+                <w:t>
+                  <xsl:value-of select="./Id"/>
+                </w:t>
               </w:r>
             </w:p>
           </w:tc>
