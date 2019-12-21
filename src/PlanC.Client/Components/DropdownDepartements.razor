@@ -30,9 +30,12 @@
 
     protected override void OnInitialized()
     {
-        departements = _context.Departements.ToList();
+        using (PCU001Context _temp = new PCU001Context())
+        {
+            departements = _temp.Departements.ToList();
+        }
     }
-    
+
     [Parameter]
     public EventHandler<Departements> ValueChanged { get; set; }
 

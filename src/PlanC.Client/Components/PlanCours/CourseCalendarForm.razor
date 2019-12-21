@@ -29,18 +29,21 @@
             </tr>
         </thead>
         <tbody>
+            @* Pour chaque bloc de temps... *@
             @foreach (CoursActivite timeblock in CurrentActivities)
             {
                 <tr class="border-dark">
+                    @* Les flèches haut et bas donne le bloc courant à la méthode MoveUp et MoveDown pour effectuer la transposition *@
                     <td>
                         <p><i class="fas fa-arrow-up btn btn-circle clickable uk-icon-hover" @onclick="() => MoveUp(timeblock)"></i></p>
                         <p><i class="fas fa-arrow-down btn btn-circle clickable uk-icon-hover" @onclick="() => MoveDown(timeblock)"></i></p>
                     </td>
                     <td>
-                        <input class="input form-control" type="number" min="1" max="15" @bind="timeblock.ActvtLgnth" /> <span>semaines</span>
+                        <input required class="input form-control" type="number" min="1" max="15" @bind="timeblock.ActvtLgnth" /> <span>semaines</span>
                     </td>
                     <td>
                         <div class="row">
+                            @* Le bouton + ajoute un élément de compétence au bloc de temps courant *@
                             <div class="col-md-3">
                                 <button class="btn btn-circle" @onclick="() => AddSkillElemCrit(timeblock)"><i class="fas fa-plus"></i></button>
                             </div>
@@ -49,7 +52,7 @@
                                 {
                                     <div class="row">
                                         <div class="col-md-9">
-                                            <EjsComboBox TValue="CriteresElementCompetence" DataSource="GetUnselectedSkillElementCriteria(timeblock)">
+                                            <EjsComboBox TValue="string" Placeholder="Choisir un élément de compétence..." Text="@(cse.IdentityCritereElementCompetenceNavigation == null? "" : cse.IdentityCritereElementCompetenceNavigation.DescriptionCritere)" DataSource="GetUnselectedSkillElementCriteria(timeblock)">
                                                 <ComboBoxEvents TValue="int" ValueChange="@(e => SetCrit(e, cse))"></ComboBoxEvents>
                                                 <ComboBoxFieldSettings Value="IdentityKey" Text="DescriptionCritere"></ComboBoxFieldSettings>
                                             </EjsComboBox>
@@ -63,7 +66,7 @@
                         </div>
                     </td>
                     <td>
-                        <textarea @bind="timeblock.ActvtDesc" class="input form-control"></textarea>
+                        <textarea required @bind="timeblock.ActvtDesc" class="input form-control"></textarea>
                     </td>
                     <td>
                         <button class="btn btn-circle" @onclick="() => CurrentActivities.Remove(timeblock)"><i class="fas fa-trash"></i></button>
@@ -76,11 +79,14 @@
 </div>
 @code {
 
+    //Plan-cadre parent. Nécessaire pour récupérer les éléments de compétence disponibles.
     private PlansCadres Template { get; set; }
 
+    //Lecture seule pour la revue et/ou si l'usager n'a pas la permission de modifier.
     [Parameter]
     public bool IsReadOnly { get; set; } = false;
 
+    //Éléments de compétence associés au plan-cadre parent.
     public List<ElementsCompetence> AssociatedSkillElems { get; set; }
 
     public List<CriteresElementCompetence> AssociatedSkillElemCrits { get; set; }
@@ -94,11 +100,18 @@
         AssociatedSkillElemCrits = new List<CriteresElementCompetence>();
     }
 
+    /// <summary>
+    /// Récupère les données nécessaires pour accomplir la tâche -- le plan-cadre et ses éléments de compétence.
+    /// </summary>
+    /// <returns></returns>
     protected override async Task OnParametersSetAsync()
     {
         FetchData();
     }
 
+    /// <summary>
+    /// Ajoute un bloc de temps à la liste.
+    /// </summary>
     private void AddActivity()
     {
         CurrentActivities.AddLast(new CoursActivite()
@@ -115,11 +128,13 @@
 
     private void FetchData()
     {
+        //Récupère le plan-cadre.
         Template = _context.PlansCadres.Where(t => t.CoursId == CoursePlan.CoursId)
         .OrderByDescending(t => t.VsnCdttm)
         .Include(t => t.PlanCadreCompetenceElements)
         .First();
 
+        //Charge les éléments de compétence associés au plan-cadre.
         foreach (PlanCadreCompetenceElements tse in Template.PlanCadreCompetenceElements)
         {
             _context.Entry(tse)
@@ -135,6 +150,7 @@
 
         AssociatedSkillElemCrits = AssociatedSkillElems.SelectMany(se => se.CriteresElementCompetence).ToList();
 
+        //Charge les données déjà existantes pour le cas où l'usager modifie un plan existant.
         _context.Entry(CoursePlan)
                 .Collection(c => c.CoursActivite)
                 .Load();
@@ -146,6 +162,7 @@
                     .Load();
         }
 
+        //Ordonne les activités par leur numéro de séquence et les ajoute à la liste locale.
         CoursePlan.CoursActivite.OrderBy(act => act.ActvtSqnbr);
 
         foreach (CoursActivite act in CoursePlan.CoursActivite)
@@ -154,6 +171,11 @@
         }
     }
 
+    /// <summary>
+    /// Modifie la valeur d'un élément de compétence lorsque l'usager clique sur la liste déroulante.
+    /// </summary>
+    /// <param name="crt">L'ID du nouvel élément</param>
+    /// <param name="cse">Une entité de relation entre un bloc de temps et un élément de compétence qui sera modifiée.</param>
     public void SetCrit(ChangeEventArgs<int> crt, CoursCompetenceElements cse)
     {
         cse.IdentityCritereElementCompetence = crt.Value;
@@ -161,6 +183,10 @@
         StateHasChanged();
     }
 
+    /// <summary>
+    /// Ajoute une nouvelle entité de relation entre bloc de temps et élément de compétence.
+    /// </summary>
+    /// <param name="timeblock">Le bloc de temps qui aura un nouvel élément de compétence assigné</param>
     public void AddSkillElemCrit(CoursActivite timeblock)
     {
         timeblock.CoursCompetenceElements.Add(new CoursCompetenceElements()
@@ -170,6 +196,10 @@
         StateHasChanged();
     }
 
+    /// <summary>
+    /// Sauvegarde les changements locaux dans la base de données.
+    /// </summary>
+    /// <returns>True si l'opération a été effectuée avec succès, faux sinon.</returns>
     public override async Task<bool> SaveProgress()
     {
         try
@@ -203,6 +233,11 @@
         return "Calendrier des activités";
     }
 
+    /// <summary>
+    /// Récupère les éléments de compétence qui n'ont toujours pas été assignés à un bloc de temps.
+    /// </summary>
+    /// <param name="timeblock">Le bloc de temps</param>
+    /// <returns>La liste des éléments de compétence non utilisés pour ce bloc de temps.</returns>
     List<CriteresElementCompetence> GetUnselectedSkillElementCriteria(CoursActivite timeblock)
     {
         var select = timeblock.CoursCompetenceElements.Select(cce => cce.IdentityCritereElementCompetenceNavigation).ToList();
@@ -210,6 +245,10 @@
         return returnVal;
     }
 
+    /// <summary>
+    /// Déplace un bloc de temps vers le haut. Aucun effet sur le premier bloc de temps.
+    /// </summary>
+    /// <param name="block">Le bloc de temps à déplacer vers le haut</param>
     private void MoveUp(CoursActivite block)
     {
         LinkedListNode<CoursActivite> node = CurrentActivities.Find(block);
@@ -220,6 +259,10 @@
         StateHasChanged();
     }
 
+    /// <summary>
+    /// Déplace un bloc de temps vers le bas. Aucun effet sur le dernier bloc de temps.
+    /// </summary>
+    /// <param name="block">Le bloc de temps à déplacer ver le bas</param>
     private void MoveDown(CoursActivite block)
     {
         LinkedListNode<CoursActivite> node = CurrentActivities.Find(block);
@@ -228,6 +271,32 @@
         node.Next.Value = block;
         node.Value = temp;
         StateHasChanged();
+    }
+
+    public override bool Validate()
+    {
+        foreach(CoursActivite block in CurrentActivities)
+        {
+            if (block.ActvtLgnth == null)
+            {
+                return false;
+            }
+
+            foreach(CoursCompetenceElements se in block.CoursCompetenceElements)
+            {
+                if (se == null)
+                {
+                    return false;
+                }
+            }
+
+            if (String.IsNullOrEmpty(block.ActvtDesc))
+            {
+                return false;
+            }
+        }
+
+        return true;
     }
 }
 

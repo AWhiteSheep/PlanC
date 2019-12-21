@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Runtime.Serialization;
 using System.Text.Json.Serialization;
 
 namespace PlanC.EntityDataModel
@@ -35,6 +36,7 @@ namespace PlanC.EntityDataModel
         [JsonIgnore]
         [ForeignKey(nameof(ExamenId))]
         [InverseProperty(nameof(Examens.ExamensCertificatifsNonsFinals))]
+        [IgnoreDataMember]
         public virtual Examens Examen { get; set; }
         [ForeignKey("CoursId,TchrUid,PlnVsnCdttm,SessionId")]
         [InverseProperty("ExamensCertificatifsNonsFinals")]

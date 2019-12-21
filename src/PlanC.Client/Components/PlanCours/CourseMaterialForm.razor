@@ -19,7 +19,7 @@
         {
             <tr>
                 <td>
-                    <input class="input form-control" @bind="mat.Description" />
+                    <input required class="input form-control" @bind="mat.Description" />
                 </td>
                 <td>
                     <button class="btn btn-circle" @onclick="() => DeleteMaterial(mat)"><i class="fas fa-trash"></i></button>
@@ -48,6 +48,10 @@
 
     }
 
+    /// <summary>
+    /// Sauvegarde les changements dans la base de données
+    /// </summary>
+    /// <returns>Vrai si succès, faux sinon.</returns>
     public async override Task<bool> SaveProgress()
     {
         try
@@ -95,5 +99,18 @@
     {
         CurrentMaterial.Remove(mat);
         StateHasChanged();
+    }
+
+    public override bool Validate()
+    {
+        foreach (MaterielsCours mat in CurrentMaterial)
+        {
+            if (String.IsNullOrEmpty(mat.Description))
+            {
+                return false;
+            }
+        }
+
+        return true;
     }
 }

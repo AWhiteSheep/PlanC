@@ -48,9 +48,10 @@
             {
                 <EjsGrid @ref="grid" DataSource="@PlansCours" AllowSorting="true" AllowPaging="true" AllowExcelExport="true"
                          ContextMenuItems="@(new List<ContextMenuItemModel>() {
-                                                 new ContextMenuItemModel() { Text = "Ouvrir plan cours", Target = ".e-content", Id = "open" },
-                                                 new ContextMenuItemModel() { Text = "Supprimer", Target = ".e-content", Id = "delete" },
-                                                 new ContextMenuItemModel() { Text = "Sauvegarder en tant que word", Target = ".e-content", Id = "word" } })">
+                                                 new ContextMenuItemModel { Text = "Ouvrir plan cours", Target = ".e-content", Id = "open" },
+                                                 new ContextMenuItemModel { Text = "Supprimer", Target = ".e-content", Id = "delete" },
+                                                 new ContextMenuItemModel { Text = "Sauvegarder en tant que word", Target = ".e-content", Id = "word" }
+                                             })">
                     <GridEditSettings AllowAdding="true" AllowDeleting="true"></GridEditSettings>
                     <GridPageSettings PageSize="8"></GridPageSettings>
                     <!-- Les événements se passant sur la table et les paramètre -->
@@ -132,7 +133,29 @@
                 return;
             // load les références des entitées que le plan de cours est constitué
             context.Entry(Selected).Collection(d => d.CoursActivite).Load();
+
+            foreach (CoursActivite ca in Selected.CoursActivite)
+            {
+                context.Entry(ca)
+                        .Collection(ca => ca.CoursCompetenceElements)
+                        .Load();
+
+                foreach (CoursCompetenceElements cce in ca.CoursCompetenceElements)
+                {
+                    context.Entry(cce)
+                            .Reference(cce => cce.IdentityCritereElementCompetenceNavigation)
+                            .Load();
+                }
+            }
             context.Entry(Selected).Collection(d => d.ExamensCertificatifsNonsFinals).Load();
+
+            foreach (ExamensCertificatifsNonsFinals exam in Selected.ExamensCertificatifsNonsFinals)
+            {
+                context.Entry(exam)
+                        .Reference(exam => exam.Examen)
+                        .Load();
+            }
+
             context.Entry(Selected).Collection(d => d.MaterielsCours).Load();
             context.Entry(Selected).Reference(d => d.Session).Load();
 
@@ -140,15 +163,39 @@
             // n'a pas d'autre option que word donc ici nous créons le template
             AspNetUsers teacher = context.AspNetUsers.Include(t => t.DisponibilitesUtilisateur).FirstOrDefault(d => d.UserName == Selected.TchrUid);
             // ramene le dernier plan de cadre créer lié au cours donné
-            PlansCadres coursTemplate = context.PlansCadres
-                        .FirstOrDefault(e => e.CoursId.Trim() == Selected.CoursId.Trim());
+
+            PlansCadres coursTemplate = context.PlansCadres.Where(e => e.CoursId.Trim() == Selected.CoursId.Trim())
+                                                            .OrderByDescending(t => t.VsnCdttm)
+                                                            .FirstOrDefault();
+
+            context.Entry(coursTemplate)
+                    .Collection(t => t.ExamensFinalsCertificatifs)
+                    .Load();
+
+            foreach(ExamensFinalsCertificatifs fex in coursTemplate.ExamensFinalsCertificatifs)
+            {
+                context.Entry(fex)
+                        .Reference(fex => fex.Examen)
+                        .Load();
+
+                context.Entry(fex.Examen)
+                        .Collection(ex => ex.ExamensElementsCompetences)
+                        .Load();
+
+                foreach(ExamensElementsCompetences exse in fex.Examen.ExamensElementsCompetences)
+                {
+                    context.Entry(exse)
+                            .Reference(exse => exse.ElementCompetence)
+                            .Load();
+                }
+            }
 
             // ramene le programme nominé pour le plan cadre
             Programmes programmeTemplate = context.Programmes.FirstOrDefault(v => v.Id == coursTemplate.ProgrammeId);
 
             // annule la transaction si une des conditions donnent vrai
-            if (teacher == null || coursTemplate == null || programmeTemplate == null)
-                return;
+            //if (teacher == null || coursTemplate == null || programmeTemplate == null)
+            //    return;
 
             // Prerequis faire la liste des compétences pour donner à la propriété
             List<PlanCadreCompetenceElements> tempTemplateElements = null;
@@ -191,27 +238,76 @@
                     // ajoute au skill trouvé l'élément dans la compétence relié dans laquelle nous nous trouvons
                     _skill.SkillElements.Add(new SkillElement()
                     {
-                        Title = elementsCompetenceTemplate.LongDescription,
-                        Criterias = new System.Collections.ObjectModel.Collection<string>(elementsCompetenceTemplate.ElementCompetence.GetCritereListString)
+                        Title = elementsCompetenceTemplate.ElementCompetence.Description,
+                        Criterias = new System.Collections.ObjectModel.Collection<string>(elementsCompetenceTemplate.ElementCompetence.GetCritereListString),
+                        ContentPrecisions = new Collection<string>() { elementsCompetenceTemplate.LongDescription}
                     });
 
                     // acquired all context has string
                     _skill.AchievementContexts = new System.Collections.ObjectModel.Collection<string>(comp.GetContextListString);
                 }
             }
+
+            int CurrentWeek = 1;
+            Collection<ActivityCalendarPeriodEntry> Calendar = new Collection<ActivityCalendarPeriodEntry>();
+            foreach(CoursActivite ca in Selected.CoursActivite)
+            {
+                Calendar.Add(new ActivityCalendarPeriodEntry()
+                {
+                    PeriodLabel = ca.ActvtLgnth == 1 ? $"{CurrentWeek}" : $"{CurrentWeek} - {CurrentWeek + ca.ActvtLgnth - 1}",
+                    SkillElements = new Collection<string>(ca.CoursCompetenceElements.Select(cce => cce.IdentityCritereElementCompetenceNavigation.DescriptionCritere).ToList()),
+                    Content = ca.ActvtDesc.Split(System.Environment.NewLine)
+                });
+
+                CurrentWeek += ca.ActvtLgnth.GetValueOrDefault();
+            }
+
+            Collection<Exam> exams = new Collection<Exam>();
+
+            foreach(Examens exam in Selected.ExamensCertificatifsNonsFinals.Select(ex => ex.Examen))
+            {
+                exams.Add(new Exam()
+                {
+                    Title = exam.Qualification,
+                    Weight = exam.PoidExamen
+                });
+            }
+
+            foreach(Examens exam in coursTemplate.ExamensFinalsCertificatifs.Select(fex => fex.Examen))
+            {
+                Collection<PlanC.DocumentGeneration.Common.FinalExamCriteria> crits = new Collection<PlanC.DocumentGeneration.Common.FinalExamCriteria>();
+                foreach(ExamensElementsCompetences exse in exam.ExamensElementsCompetences)
+                {
+                    crits.Add(new DocumentGeneration.Common.FinalExamCriteria()
+                    {
+                        SkillElementId = exse.ElementCompetenceId == null? "0000" : exse.ElementCompetenceId,
+                        Description = exse.ElementCompetence == null? "Non précisé" : exse.ElementCompetence.Description,
+                        Weight = exse.PoidElement
+                    });
+                }
+
+                exams.Add(new FinalExam()
+                {
+                    Title = exam.Qualification,
+                    Weight = exam.PoidExamen,
+                    Criterias = crits
+                });
+            }
+
+
             // fin à la construction la skills listes XD
 
             // début de la création du plan cadre les entités liés sont loader dans la page
             // création de la template pour créer le plan de cours
-            var coursePlan = new PlanC.DocumentGeneration.CoursePlan.CoursePlan()
+            var coursePlan = new PlanC.DocumentGeneration.CoursePlan.CoursePlan
             {
                 CourseId = Selected.CoursId,
                 CourseTitle = coursTemplate.DenominationCours,
                 StudyProgram = programmeTemplate.Designation,
                 TimeDistribution = new TimeDistribution(coursTemplate.TheoryHoursAccessor, coursTemplate.PracticeHoursAccessor, coursTemplate.HomeHoursAccessor),
                 Session = Selected.Session.Titre,
-                Campus = teacher._Campus,
-                Teacher = new PlanC.DocumentGeneration.CoursePlan.Teacher()
+                Campus = teacher == null?  teacher.Campus : $"Gabrielle-Roy",
+                Teacher = new PlanC.DocumentGeneration.CoursePlan.Teacher
                 {
                     Name = teacher.Snm + " " + teacher.GvnNm,
                     EmailAddress = teacher.Email,
@@ -229,32 +325,8 @@
                             coursTemplate.IntentionEducative
                         },
                 Skills = Skills,
-                Exams = new Collection<Exam>()
-                    {
-                            new Exam
-                            {
-                                Title = "Laboratoire 1",
-                                Weight = 100M
-                            },
-                            new FinalExam
-                            {
-                                Title = "Examen final",
-                                Weight = 40M,
-                                Criterias = new Collection<PlanC.DocumentGeneration.Common.FinalExamCriteria>
-                            {
-                                    new PlanC.DocumentGeneration.Common.FinalExamCriteria
-                                    {
-                                        Description = "Faire des application incandescentes.",
-                                        Weight = 40M
-                                    },
-                                    new PlanC.DocumentGeneration.Common.FinalExamCriteria
-                                    {
-                                        Description = "Décrire des régistraires historiques à des fin de validations programmatives.",
-                                        Weight = 60M
-                                    }
-                                }
-                            }
-                        },
+                ActivityPeriodEntries = Calendar,
+                Exams = exams,
                 RequiredMaterial = Selected._MaterielsCours
             };
             // start le stream pour envoyer au client et le tour devrait être joué!
@@ -283,5 +355,4 @@
         }
     }
 }
-
 

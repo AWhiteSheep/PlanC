@@ -136,12 +136,9 @@
                             <InputSelect class="form-control" @bind-Value="newProgram.DepartementIdHasString">
                                 <option value=""></option>
                                 @foreach (var departement in choixDepartement)
-                                    {
-                                    <option value="@departement.Id.ToString()">@departement.Titre</option>
-                                    }
-                                /**/
-                                /**/
-                                /**/
+                                {
+                                <option value="@departement.Id.ToString()">@departement.Titre</option>
+                                }
                             </InputSelect>
                             <ValidationMessage For="() => newProgram.DepartementIdHasString"></ValidationMessage>
                         </div>
@@ -178,7 +175,6 @@
     private bool IsValidating = false;
     private bool IsTitleValid;
     private bool IsDescriptionValid;
-    private bool BulkCheck;
 
     protected override void OnInitialized()
     {

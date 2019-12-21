@@ -13,12 +13,15 @@
 @using Components.PlanCours
 @using System.Collections.Generic
 @using Microsoft.EntityFrameworkCore
+@using Microsoft.AspNetCore.Identity
 @using System.IO
+@using System.Security.Claims
 @*Injection de la page, dont cette dernière est dépendante*@
 @inject NavigationManager NavigationManager
+@inject UserManager<AspNetUsers> _user
 @inject IJSRuntime JS
 @inject PCU001Context context
-
+@inject AuthenticationStateProvider AuthenticationStateProvider
 <!-- affichage de l'endroit ou l'utilisateur est -->
 <div class="row mb-3">
     <div class="col">
@@ -47,7 +50,7 @@
     @* CascadingValue est une balise pour envoyé à tous les enfants la valeur seulement si nous ne spécifions pas un nom le type est pris pour que l'enfant puisse savoir ou ranger la valeur *@
     <CascadingValue TValue="PCU001Context" Value="context">
         <CascadingValue TValue="FormMode" Value="CurrentMode">
-         @* en conséquence du type du formulaire la page change est reformé pour afficher le bon formulaire *@
+            @* en conséquence du type du formulaire la page change est reformé pour afficher le bon formulaire *@
             @if (CurrentForm is CourseDescriptionForm)
             {
                 <PlanC.Client.Components.PlanCours.CourseDescriptionForm @bind-CoursePlan="CoursePlan" @ref="CurrentForm"></PlanC.Client.Components.PlanCours.CourseDescriptionForm>
@@ -74,7 +77,7 @@
                 <!-- suite au poste validate nous envoyons l'utilisateur vers la deuxième partie celle de remplire les contextes et les éléments de compétence-->
                 <button @onclick="NavigatePrevious" disabled="@(CurrentNode.Previous == null)" class="btn btn-primary">Précédent</button>
                 <button @onclick="NavigateNext" hidden="@(CurrentNode.Next == null)" disabled="@(CurrentNode.Next == null)" class="btn btn-primary">Suivant</button>
-                <a @onclick="FinishForm" hidden="@(CurrentNode.Next != null)" disabled="@(CurrentNode.Next != null)" class="btn btn-primary">Terminer</a>
+                <a href="/plancours" @onclick="FinishForm" hidden="@(CurrentNode.Next != null)" disabled="@(CurrentNode.Next != null)" class="btn btn-primary">Terminer</a>
             </div>
         </div>
     </div>
@@ -155,7 +158,7 @@
         // remis au client, soit en mode edit, create
         if (SpecifiedPlan != null)
         {
-            CoursePlan = SpecifiedPlan;            
+            CoursePlan = SpecifiedPlan;
             context.Entry(CoursePlan).Collection(e => e.RelTablPcrsPcadres).Load();
             CurrentMode = FormMode.EDIT;
         }
@@ -163,8 +166,7 @@
         {
             CoursePlan = new PlansCours()
             {
-                PlnVsnCdttm = DateTime.Now,
-                TchrUid = "testusr"
+                PlnVsnCdttm = DateTime.Now
             };
             CurrentMode = FormMode.CREATE;
         }
@@ -183,18 +185,27 @@
         StateHasChanged();
     }
 
+    protected override async Task OnParametersSetAsync()
+    {
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+
+        CoursePlan.TchrUid = user.Identity.Name;
+    }
+
     private async void NavigateNext()
     {
         if (await CurrentForm.SaveProgress())
         {
-            if (CurrentForm is CourseDescriptionForm && plCadreChooseen == null) {
-                // sauvegader le plan de cadre en mémoire pour plus tard 
-                // completation du formulaire tous sauvegarder est créer un entité de la table 
+            if (CurrentForm is CourseDescriptionForm && plCadreChooseen == null)
+            {
+                // sauvegader le plan de cadre en mémoire pour plus tard
+                // completation du formulaire tous sauvegarder est créer un entité de la table
                 // de ralation
                 plCadreChooseen = (CurrentForm as CourseDescriptionForm).plCadreChooseen;
                 context.Entry(plCadreChooseen).Collection(e => e.RelTablPcrsPcadres).Load();
-                if (!CoursePlan.RelTablPcrsPcadres.Any(d => plCadreChooseen.CoursId == d.PlCadreId) && plCadreChooseen != null) 
-                {                
+                if (!CoursePlan.RelTablPcrsPcadres.Any(d => plCadreChooseen.CoursId == d.PlCadreId) && plCadreChooseen != null)
+                {
                     // nouvelle entité de relation
                     RelTablPcrsPcadres relTablPcrsPcadres = new RelTablPcrsPcadres();
                     // initialisation de tous les clées pour l'entité de relation

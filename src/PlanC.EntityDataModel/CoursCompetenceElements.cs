@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Runtime.Serialization;
+using System.Text.Json.Serialization;
 
 namespace PlanC.EntityDataModel
 {
@@ -22,6 +24,8 @@ namespace PlanC.EntityDataModel
 
         [ForeignKey(nameof(IdendityCoursActivity))]
         [InverseProperty(nameof(CoursActivite.CoursCompetenceElements))]
+        [JsonIgnore]
+        [IgnoreDataMember]
         public virtual CoursActivite IdendityCoursActivityNavigation { get; set; }
         [ForeignKey(nameof(IdentityCritereElementCompetence))]
         [InverseProperty(nameof(CriteresElementCompetence.CoursCompetenceElements))]
