@@ -53,7 +53,7 @@
                     </td>
                     <td>
                         <EjsComboBox Readonly="@(IsReadOnly)" Placeholder="Choisir un élément..." 
-                                     CssClass="input form-control border-dark" TValue="string" Value="GetUnselectedSkillElements(exam).First().Libele"  DataSource="GetUnselectedSkillElements(exam)">
+                                     CssClass="input form-control border-dark" TValue="string"  DataSource="GetUnselectedSkillElements(exam)">
                             <ComboBoxEvents TValue="string" ValueChange="@(e => SetElement(e, ese))"></ComboBoxEvents>
                             <ComboBoxFieldSettings Value="Id" Text="Libele"></ComboBoxFieldSettings>
                         </EjsComboBox>

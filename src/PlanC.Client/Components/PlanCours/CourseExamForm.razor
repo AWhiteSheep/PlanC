@@ -3,6 +3,17 @@
 @inherits CoursePlanInputFormComponent
 @inject PCU001Context _context
 
+
+<div class="h4 bcTitle">Examens</div>
+
+
+@* Génère la liste des examens finaux du plan-cadre en lecture seule. *@
+<hr class="bcSeparator" />
+
+<FinalExamInput Template="Template" IsReadOnly="true"></FinalExamInput>
+
+<hr class="bcSeparator" />
+
 <button class="btn btn-outline-dark mb-4" @onclick="() => AddExam()">Ajouter un examen</button>
 
 <hr class="bcSeparator" />
@@ -21,10 +32,10 @@
         {
             <tr>
                 <td>
-                    <input class="input form-control" @bind="exam.Qualification" />
+                    <input required class="input form-control" @bind="exam.Qualification" />
                 </td>
                 <td>
-                    <input class="input form-control" @bind="exam.WeightAccessor" />
+                    <input required class="input form-control" @bind="exam.WeightAccessor" />
                 </td>
                 <td>
                     <button class="btn btn-circle" @onclick="() => DeleteExam(exam)"><i class="fas fa-trash"></i></button>
@@ -35,12 +46,21 @@
 </table>
 
 @code {
+    //Le plan-cadre. Nécessaire pour tirer les examens finaux.
+    private PlansCadres Template { get; set; }
+
+    //Liste locale des examens.
     private List<Examens> CurrentExams { get; set; } = new List<Examens>();
 
+    /// <summary>
+    /// Récupère les données nécessaires à la tâche -- le plan-cadre et ses examens finaux.
+    /// </summary>
+    /// <returns></returns>
     protected override async Task OnParametersSetAsync()
     {
         FetchData();
     }
+
 
     protected void FetchData()
     {
@@ -54,9 +74,30 @@
                    .Load();
         }
 
+        Template = _context.PlansCadres.Where(t => t.CoursId == CoursePlan.CoursId)
+                                        .OrderByDescending(t => t.VsnCdttm)
+                                        .FirstOrDefault();
+
+        _context.Entry(Template)
+                .Collection(t => t.ExamensFinalsCertificatifs)
+                .Load();
+
+        foreach(ExamensFinalsCertificatifs exam in Template.ExamensFinalsCertificatifs)
+        {
+            _context.Entry(exam)
+                    .Reference(ex => ex.Examen)
+                    .Load();
+        }
+
         CurrentExams = CoursePlan.ExamensCertificatifsNonsFinals.Select(ex => ex.Examen).ToList();
+
+        StateHasChanged();
     }
 
+    /// <summary>
+    /// Sauvegarde les changements dans la base de données
+    /// </summary>
+    /// <returns>Vrai si l'opération a été effectuée avec succès, faux sinon.</returns>
     public async override Task<bool> SaveProgress()
     {
         try
@@ -95,6 +136,9 @@
         return "Examens";
     }
 
+    /// <summary>
+    /// Ajoute un examen à la liste.
+    /// </summary>
     private void AddExam()
     {
         CurrentExams.Add(new Examens()
@@ -104,8 +148,29 @@
         StateHasChanged();
     }
 
+    /// <summary>
+    /// Supprime un examen.
+    /// </summary>
+    /// <param name="exam"></param>
     private void DeleteExam(Examens exam)
     {
         CurrentExams.Remove(exam);
+    }
+
+    /// <summary>
+    /// Validation de base.
+    /// </summary>
+    /// <returns>Vrai si valide, faux sinon.</returns>
+    public override bool Validate()
+    {
+        foreach(Examens exam in CurrentExams)
+        {
+            if (String.IsNullOrEmpty(exam.Qualification) || exam.PoidExamen == null)
+            {
+                return false;
+            }
+        }
+
+        return true;
     }
 }

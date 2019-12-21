@@ -121,7 +121,29 @@
                 return;
             // load les références des entitées que le plan de cours est constitué
             context.Entry(Selected).Collection(d => d.CoursActivite).Load();
+
+            foreach(CoursActivite ca in Selected.CoursActivite)
+            {
+                context.Entry(ca)
+                        .Collection(ca => ca.CoursCompetenceElements)
+                        .Load();
+
+                foreach(CoursCompetenceElements cce in ca.CoursCompetenceElements)
+                {
+                    context.Entry(cce)
+                            .Reference(cce => cce.IdentityCritereElementCompetenceNavigation)
+                            .Load();
+                }
+            }
             context.Entry(Selected).Collection(d => d.ExamensCertificatifsNonsFinals).Load();
+
+            foreach(ExamensCertificatifsNonsFinals exam in Selected.ExamensCertificatifsNonsFinals)
+            {
+                context.Entry(exam)
+                        .Reference(exam => exam.Examen)
+                        .Load();
+            }
+
             context.Entry(Selected).Collection(d => d.MaterielsCours).Load();
             context.Entry(Selected).Reference(d => d.Session).Load();
 
@@ -129,15 +151,17 @@
             // n'a pas d'autre option que word donc ici nous créons le template
             AspNetUsers teacher = context.AspNetUsers.Include(t => t.DisponibilitesUtilisateur).FirstOrDefault(d => d.UserName == Selected.TchrUid);
             // ramene le dernier plan de cadre créer lié au cours donné
-            PlansCadres coursTemplate = context.PlansCadres
-                        .FirstOrDefault(e => e.CoursId.Trim() == Selected.CoursId.Trim());                       
+
+            PlansCadres coursTemplate = context.PlansCadres.Where(e => e.CoursId.Trim() == Selected.CoursId.Trim())
+                                                            .OrderByDescending(t => t.VsnCdttm)
+                                                            .FirstOrDefault();
 
             // ramene le programme nominé pour le plan cadre
             Programmes programmeTemplate = context.Programmes.FirstOrDefault(v => v.Id == coursTemplate.ProgrammeId);
 
             // annule la transaction si une des conditions donnent vrai
-            if (teacher == null || coursTemplate == null || programmeTemplate == null)
-                return;
+            //if (teacher == null || coursTemplate == null || programmeTemplate == null)
+            //    return;
 
             // Prerequis faire la liste des compétences pour donner à la propriété
             List<PlanCadreCompetenceElements> tempTemplateElements = null;

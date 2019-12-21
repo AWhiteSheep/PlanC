@@ -35,6 +35,8 @@ namespace PlanC.EntityDataModel
         [JsonIgnore]
         public virtual ElementsCompetence ElementCompetence { get; set; }
         [InverseProperty("IdentityCritereElementCompetenceNavigation")]
+        [JsonIgnore]
+        [IgnoreDataMember]
         public virtual ICollection<CoursCompetenceElements> CoursCompetenceElements { get; set; }
     }
 }

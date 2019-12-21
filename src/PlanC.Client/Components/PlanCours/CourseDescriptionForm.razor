@@ -5,12 +5,13 @@
 @inherits CoursePlanInputFormComponent
 
 <label class="label-info">Choix de plan-cadre</label>
-@*combo box proposant des choix que l'utilisateur peut prendre pour définir le plan de cours*@
+@*Menu déroulant portant la liste des plans-cadre.*@
 <EjsComboBox TValue="PlansCadres" DataSource="Templates">
     <ComboBoxEvents TValue="string" ValueChange="SetTemplate"></ComboBoxEvents>
     <ComboBoxFieldSettings GroupBy="ProgrammeId" Value="CoursId" Text="DenominationCours"></ComboBoxFieldSettings>
 </EjsComboBox>
 
+@* Menu déroulant portant la liste des sessions enregistrées. *@
 <label class="label-info">Choix de session</label>
 <EjsComboBox TValue="Sessions" DataSource="Semesters">
     <ComboBoxEvents TValue="string" ValueChange="SetSemester"></ComboBoxEvents>
@@ -67,5 +68,15 @@
     {
         CoursePlan.SessionId = args.Value;
         StateHasChanged();
+    }
+
+    public override bool Validate()
+    {
+        if (String.IsNullOrEmpty(CoursePlan.CoursId) || CoursePlan.Session == null || String.IsNullOrEmpty(CoursePlan.CoursePolicy))
+        {
+            return false;
+        }
+
+        else return true;
     }
 }

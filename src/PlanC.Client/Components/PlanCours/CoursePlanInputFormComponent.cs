@@ -18,5 +18,7 @@ namespace PlanC.Client.Components.PlanCours
         public EventCallback<PlansCours> CoursePlanChanged { get; set; }
 
         public abstract Task<bool> SaveProgress();
+
+        public abstract bool Validate();
     }
 }
