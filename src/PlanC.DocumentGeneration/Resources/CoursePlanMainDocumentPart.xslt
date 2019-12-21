@@ -756,6 +756,173 @@
           <xsl:with-param name="ordered-list-id">2</xsl:with-param>
           <xsl:with-param name="unordered-list-id">3</xsl:with-param>
         </xsl:apply-templates>
+        <!--Calendrier des activités-->
+        <w:tbl>
+          <w:tblPr>
+            <w:tblStyle w:val="TableGrid"/>
+            <w:tblW w:w="5000"
+                    w:type="pct"/>
+            <w:tblLook w:firstRow="1"
+                       w:lastRow="0"
+                       w:firstColumn="1"
+                       w:lastColumn="0"
+                       w:noHBand="0"
+                       w:noVBand="1"/>
+          </w:tblPr>
+          <w:tblGrid>
+            <w:gridCol w:w="1361"/>
+            <w:gridCol w:w="4984"/>
+            <w:gridCol w:w="3005"/>
+          </w:tblGrid>
+          <!--Ligne 1-->
+          <w:tr>
+            <!--Cellule 1-->
+            <w:tc>
+              <w:tcPr>
+                <w:tcW w:w="1361"
+                       w:type="dxa"/>
+                <w:shd w:val="clear"
+                       w:color="auto"
+                       w:fill="213A8E"
+                       w:themeFill="accent2"/>
+              </w:tcPr>
+              <w:p>
+                <w:pPr>
+                  <w:rPr>
+                    <w:rFonts w:asciiTheme="majorHAnsi"
+                              w:hAnsiTheme="majorHAnsi"/>
+                    <w:color w:val="FFFFFF"
+                             w:themeColor="background1"/>
+                  </w:rPr>
+                </w:pPr>
+                <w:r>
+                  <w:rPr>
+                    <w:rFonts w:asciiTheme="majorHAnsi"
+                              w:hAnsiTheme="majorHAnsi"/>
+                    <w:color w:val="FFFFFF"
+                             w:themeColor="background1"/>
+                  </w:rPr>
+                  <w:t>Semaine(s)</w:t>
+                </w:r>
+              </w:p>
+            </w:tc>
+            <!--Cellule 2-->
+            <w:tc>
+              <w:tcPr>
+                <w:tcW w:w="0"
+                       w:type="auto"/>
+                <w:shd w:val="clear"
+                       w:color="auto"
+                       w:fill="213A8E"
+                       w:themeFill="accent2"/>
+              </w:tcPr>
+              <w:p>
+                <w:pPr>
+                  <w:rPr>
+                    <w:rFonts w:asciiTheme="majorHAnsi"
+                              w:hAnsiTheme="majorHAnsi"/>
+                    <w:color w:val="FFFFFF"
+                             w:themeColor="background1"/>
+                  </w:rPr>
+                </w:pPr>
+                <w:r>
+                  <w:rPr>
+                    <w:rFonts w:asciiTheme="majorHAnsi"
+                              w:hAnsiTheme="majorHAnsi"/>
+                    <w:color w:val="FFFFFF"
+                             w:themeColor="background1"/>
+                  </w:rPr>
+                  <w:t>Contenu</w:t>
+                </w:r>
+              </w:p>
+            </w:tc>
+            <!--Cellule 3-->
+            <w:tc>
+              <w:tcPr>
+                <w:tcW w:w="3005"
+                       w:type="dxa"/>
+                <w:shd w:val="clear"
+                       w:color="auto"
+                       w:fill="213A8E"
+                       w:themeFill="accent2"/>
+              </w:tcPr>
+              <w:p>
+                <w:pPr>
+                  <w:rPr>
+                    <w:rFonts w:asciiTheme="majorHAnsi"
+                              w:hAnsiTheme="majorHAnsi"/>
+                    <w:color w:val="FFFFFF"
+                             w:themeColor="background1"/>
+                  </w:rPr>
+                </w:pPr>
+                <w:r>
+                  <w:rPr>
+                    <w:rFonts w:asciiTheme="majorHAnsi"
+                              w:hAnsiTheme="majorHAnsi"/>
+                    <w:color w:val="FFFFFF"
+                             w:themeColor="background1"/>
+                  </w:rPr>
+                  <w:t>Élément(s) de compétence</w:t>
+                </w:r>
+              </w:p>
+            </w:tc>
+          </w:tr>
+          <!--Ligne 2...-->
+          <xsl:for-each select="/CoursePlan/ActivityPeriodEntries/ActivityCalendarPeriodEntry">
+            <w:tr>
+              <!--Cellule 1-->
+              <w:tc>
+                <w:tcPr>
+                  <w:tcW w:w="1361"
+                         w:type="dxa"/>
+                  <w:vAlign w:val="center"/>
+                </w:tcPr>
+                <w:p>
+                  <w:pPr>
+                    <w:jc w:val="center"/>
+                  </w:pPr>
+                  <w:r>
+                    <w:t>
+                      <xsl:value-of select="./PeriodLabel"/>
+                    </w:t>
+                  </w:r>
+                </w:p>
+              </w:tc>
+              <!--Cellule 2-->
+              <w:tc>
+                <w:tcPr>
+                  <w:tcW w:w="0"
+                         w:type="auto"/>
+                </w:tcPr>
+                <xsl:call-template name="array-to-paragraph">
+                  <xsl:with-param name="array" select="./Content"/>
+                </xsl:call-template>
+              </w:tc>
+              <!--Cellule 3-->
+              <w:tc>
+                <w:tcPr>
+                  <w:tcW w:w="3005"
+                         w:type="dxa"/>
+                  <w:vAlign w:val="center"/>
+                </w:tcPr>
+                <w:p>
+                  <w:pPr>
+                    <w:jc w:val="center"/>
+                  </w:pPr>
+                  <w:r>
+                    <w:t>
+                      <!--https://stackoverflow.com/a/4942993-->
+                      <xsl:for-each select="./SkillElements/*">
+                        <xsl:if test="position() != 1">, </xsl:if>
+                        <xsl:value-of select="."/>
+                      </xsl:for-each>
+                    </w:t>
+                  </w:r>
+                </w:p>
+              </w:tc>
+            </w:tr>
+          </xsl:for-each>
+        </w:tbl>
         <!--Évaluation des apprentissages-->
         <w:p>
           <w:pPr>
