@@ -227,7 +227,7 @@ function validationFor(arg) {
 window.LoadCollapse = () => {
     $("[data-expend-button]:not(.btn.btn-secondary.dropdown-toggle)").on('mouseup', function (enventData) {
         var id = "#"+$(this).attr("data-expend-button");
-        var container = $("#container-" + $(this).attr("data-expend-button"));        
+        var container = $("#container-" + $(this).attr("data-expend-button")); 
         // a-t-il la classe?
         if (container.hasClass("col-12-important")) {            
             // si il à la classe show l'enlever et fermer et enlever la class

@@ -41,7 +41,8 @@
         @if (programmes != null)
         {
             <EjsGrid DataSource="@programmes" AllowSorting="true" AllowPaging="true" 
-                     ContextMenuItems="@(new List<ContextMenuItemModel>() {new ContextMenuItemModel { Text = "Voir le programme", Target = ".e-content", Id = "edit" }})">
+                     ContextMenuItems="@(new List<ContextMenuItemModel>() {new ContextMenuItemModel { 
+                                             Text = "Voir le programme", Target = ".e-content", Id = "edit" }})">
                 <GridPageSettings PageSize="8"></GridPageSettings>
                 <!-- Les événements se passant sur la table et les paramètre -->
                 <GridEvents ContextMenuItemClicked="OnContextMenuClick" RowSelected="RowSelectHandler" RowDeselected="() => Selected = null" TValue="Programmes"></GridEvents>
