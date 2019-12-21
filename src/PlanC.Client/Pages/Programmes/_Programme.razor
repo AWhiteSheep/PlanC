@@ -2,6 +2,9 @@
 @*context de la base de donné et js runtime*@
 @inject PCU001Context _context
 @inject IJSRuntime JSRuntime
+@* trouver le userid *@
+@using Microsoft.AspNetCore.Components.Authorization
+@inject AuthenticationStateProvider AuthenticationStateProvider
 @using Newtonsoft.Json
 @* les cdn(s) doivent être ajoutés pour le bon fonctionnement du componant *@
 
@@ -31,71 +34,59 @@
     </div>
 </div>
 
-<div style="position:relative;">
+<div style="position:relative; margin-bottom: 150px;">
     <!-- -->
     @if (programmes == null)
     {
         <p><em>En cours de chargement...</em></p>
+        <div class="col-12 text-center">
+            <span class="smallerFontSize">La page ne répond pas? <a href="/programmes" onclick="window.location.reload()" class="reload">Rafraîchir la page.</a></span>
+        </div>
+
     }
     else
     {
-        <div class="col-12 firstLayer" style="position: absolute; top: 0; left: 0;">
-            <div class="shadow card-body">
-                <div class="container">
-                    <ul class="button-group filter-button-group uk-subnav uk-subnav-pill uk-flex-center">
-                        <li><button class="btn btn-outline-info" data-filter="*">Tous</button></li>
-                        <li><button class="btn btn-outline-info" data-filter=".500, .510">Arts</button></li>
-                        <li><button class="btn btn-outline-info" data-filter=".420">Administration</button></li>
-                        <li><button class="btn btn-outline-info" data-filter=".300">Humains</button></li>
-                        <li><button class="btn btn-outline-info" data-filter=".200, .140, .420">Sciences</button></li>
-                        <li><button class="btn btn-outline-info" data-filter=".111">Santé</button></li>
-                    </ul>
-                    @if (!programmes.Any())
-                    {
-                        <p><em>Nous avons trouvé aucun programme.</em></p>
-                    }
-                    else
-                    {
-                        <!-- DataTales Example -->
-                        <div class="card shadow mb-4">
-                            <div class="card-header py-3">
-                                <h6 class="m-0 font-weight-bold text-primary">DataTables Example</h6>
-                            </div>
-                            <div class="card-body">
-                                <div class="table-responsive">
-                                    <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
-                                        <thead>
-                                            <tr>
-                                                <th class="pr-3">Nom</th>
-                                                <th class="pr-3">Identifiant</th>
-                                                <th class="pr-3">Département</th>
-                                                <th class="pr-3"> --- </th>
-                                                <th class="pr-3"> Pdf </th>
-                                                <th class="pr-3"> Image </th>
-                                            </tr>
-                                        </thead>
-                                        <tfoot>
-                                            <tr>
-                                                <th colspan="4"><hr /></th>
-                                            </tr>
-                                        </tfoot>
-                                        <tbody>
-                                            @foreach (var prog in programmes)
-                                            {
+            <div class="container">
+                @if (!programmes.Any())
+                {
+                    <p><em>Nous avons trouvé aucun programme.</em></p>
+                }
+                else
+                {
+                    <!-- DataTales Example -->
+                    <div hidden="@(IsCreating)" class="card shadow mb-4">
+                        <div class="card-header py-3">
+                            <h6 class="m-0 font-weight-bold text-primary">Table des programmes</h6>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                                    <thead>
+                                        <tr>
+                                            <th class="pr-3">Nom</th>
+                                            <th class="pr-3">Identifiant</th>
+                                            <th class="pr-3">Département</th>
+                                            <th class="p-0">Pondération (#-#-#)</th>
+                                            <th class="pr-3"> Pdf </th>
+                                            <th class="pr-3"> Image </th>
+                                        </tr>
+                                    </thead>
+                                    <tfoot>
+                                        <tr>
+                                            <th colspan="4">
+                                                <hr />
+                                            </th>
+                                        </tr>
+                                    </tfoot>
+                                    <tbody>
+                                        @foreach (var prog in programmes)
+                                        {
                                             <tr>
                                                 <td valign="top" class="p-0">@prog.Designation</td>
                                                 <td valign="top" class="p-0">@prog.Id</td>
                                                 <td valign="top" class="p-0">@prog.DepartementId</td>
                                                 <td valign="top" class="p-0">
-                                                    <table>
-                                                        <tr>
-                                                            <th valign="top" align="center" colspan="3" class="p-0">Pondération des compétences</th>
-                                                        </tr>
-                                                        <tr>
-                                                            <td valign="top" align="center" class="p-0 m-0">Obligatoire</td>
-                                                            <td valign="top" align="center" class="p-0 m-0">Absolue</td>
-                                                            <td valign="top" align="center" class="p-0 m-0">Optionnelle</td>
-                                                        </tr>
+                                                    <table width="100%">
                                                         <tr>
                                                             <td valign="top" align="center" class="p-0">@prog.NombreCompetencesObligatoires</td>
                                                             <td valign="top" align="center" class="p-0">@prog.NombreCompetencesComplementairesAccessor</td>
@@ -106,75 +97,82 @@
                                                 <td class="p-0"><a href="@prog.ProgrammePdfAccess">@prog.ProgrammePdfAccess.Split('/').Last()</a></td>
                                                 <td class="p-0"><img style="height: 50px; width: 50px" src="@prog.ProgrammeImgAccess" /></td>
                                             </tr>
-                                            }
-                                        </tbody>
-                                    </table>
-                                </div>
+                                        }
+                                    </tbody>
+                                </table>
                             </div>
+                            <AuthorizeView Roles="Admin,Coordonnateur">
+                                <button class="btn btn-primary" @onclick="Add"> Ajouter un département </button>
+                            </AuthorizeView>
                         </div>
-                    }
-                </div>
-            </div>
-                    }
-                </div>
-            </div>
-            <AuthorizeView>
-                <div class="d-flex flex-column text-right pt-3 pb-3">
-                    <button class="btn btn-primary" @onclick="Add"> Ajouter un département </button>
-                    <div class="custom-checkbox pl-5 pt-2 disable-select">
-                        <input @bind="BulkCheck" type="checkbox" class="custom-control-input" id="bulkCheckDepart" />
-                        <label class="custom-control-label" for="bulkCheckDepart"> Cocher pour ajouter plus d'un département </label>
                     </div>
+                }
+
+                <div hidden="@(!IsCreating)" class="card shadow col-12">
+                    <div class="card-header">
+                        <div class="d-flex">
+                            <button class="btn btn-danger" @onclick="Cancel">Annuller</button>
+                        </div>
+                    </div>
+                    <EditForm Model="newProgram" OnValidSubmit="SaveAsync">
+                        <DataAnnotationsValidator />
+                        <div class="form-group col-12">
+                            <label class="control-label"> Identifiant du nouveau programme </label>
+                            <InputText class="form-control" @bind-Value="newProgram.Id" />
+                            <ValidationMessage For="() => newProgram.Id"></ValidationMessage>
+                        </div>
+                        <div class="form-group col-12">
+                            <label class="control-label"> Identifiant du nouveau programme </label>
+                            <InputText class="form-control" @bind-Value="newProgram.Id" />
+                            <ValidationMessage For="() => newProgram.Id"></ValidationMessage>
+                        </div>
+                        <div class="form-group col-12">
+                            <label class="control-label"> Nom du programme </label>
+                            <InputText class="form-control" @bind-Value="newProgram.Designation" />
+                            <ValidationMessage For="() => newProgram.Designation"></ValidationMessage>
+                        </div>
+                        <div class="form-group col-12">
+                            <label class="control-label"> Choix du département </label>
+                            <InputSelect class="form-control" @bind-Value="newProgram.DepartementIdHasString">
+                                <option value=""></option>
+                                @foreach (var departement in choixDepartement)
+                                    {
+                                    <option value="@departement.Id.ToString()">@departement.Titre</option>
+                                    }
+                                /**/
+                                /**/
+                                /**/
+                            </InputSelect>
+                            <ValidationMessage For="() => newProgram.DepartementIdHasString"></ValidationMessage>
+                        </div>
+                        <div class="form-group col-12">
+                            <label class="control-label"> Déscription </label>
+                            <InputTextArea class="form-control" rows="4" @bind-Value="newProgram.Description"></InputTextArea>
+                            <ValidationMessage For="() => newProgram.Description"></ValidationMessage>
+                        </div>
+                        <div class="form-group col-12">
+                            <label class="control-label"> Url vers le pdf - champ optionnel </label>
+                            <InputText class="form-control" @bind-Value="newProgram.ProgrammePdfAccess" />
+                            <ValidationMessage For="() => newProgram.ProgrammePdfAccess"></ValidationMessage>
+                        </div>
+                        <div class="form-group col-12">
+                            <label class="control-label"> Url vers l'image - champ optionnel </label>
+                            <InputText class="form-control" @bind-Value="newProgram.ProgrammeImgAccess" />
+                            <ValidationMessage For="() => newProgram.ProgrammeImgAccess"></ValidationMessage>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Créer</button>
+                    </EditForm>
                 </div>
-            </AuthorizeView>
+            </div>
+        <div class="col-12 text-center">
+            <span class="smallerFontSize">La page ne répond pas? <a href="/programmes" onclick="window.location.reload()" class="reload">Rafraîchir la page.</a></span>
         </div>
+
     }
-    <div class="card shadow hiddenForm col-12">
-        <div class="card-header">
-            <div class="d-flex">
-                <button class="btn btn-danger" @onclick="Cancel"> Anuller </button>
-                <div class="custom-checkbox pl-5 pt-2 disable-select">
-                    <input @bind="BulkCheck" type="checkbox" class="custom-control-input" id="bulkCheckDepart" />
-                    <label class="custom-control-label" for="bulkCheckDepart"> Ajouter plus d'un département </label>
-                </div>
-            </div>
-        </div>
-        <form class="col-12">
-            <div class="form-row">
-                <div class="form-group col-12">
-                    <label for="title"> Nom du programme </label>
-                    <input id="title" class="form-control @(IsValidating ? (IsTitleValid ? "is-valid": "is-invalid") : "")" @bind="@newProgram.Designation" required />
-                    <div class="valid-feedback">
-                        Semble bon!
-                    </div>
-                    <div class="invalid-feedback">
-                        Veuillez entrer un nom du programme.
-                    </div>
-                </div>
-            </div>
-            <div class="form-row">
-                <div class="form-group col-12">
-                    <label for="description"> Description </label>
-                    <textarea id="description" class="form-control @(IsValidating ? (IsDescriptionValid ? "is-valid": "is-invalid"): "")" rows="4" @bind="@newProgram.Description" required></textarea>
-                    <div class="valid-feedback">
-                        Semble bon!
-                    </div>
-                    <div class="invalid-feedback">
-                        Veuillez entrer une description.
-                    </div>
-                </div>
-            </div>
-            <button class="btn btn-success" @onclick="SaveAsync"> Sauvegarder </button>
-        </form>
-    </div>
 </div>
-
-<div class="col-12 text-center">
-    <span class="smallerFontSize">La page ne répond pas? <a href="/programmes" onclick="window.location.reload()" class="reload">Rafraîchir la page.</a></span>
-</div>
-
 @code {
     private List<Programmes> programmes;
+    private List<Departements> choixDepartement = new List<Departements>();
     private Programmes newProgram = new Programmes();
     private bool IsCreating;
     private bool IsValidating = false;
@@ -184,9 +182,6 @@
 
     protected override void OnInitialized()
     {
-        // part l'initialisateur chez le client
-        JSRuntime.InvokeAsync<string>("modelInitializing");
-        JSRuntime.InvokeAsync<string>("requestScripts", JsonConvert.SerializeObject(new string[] { "https://unpkg.com/isotope-layout@3.0.6/dist/isotope.pkgd.min.js" }));
         // contextualise les programmes
         programmes = _context.Programmes.ToList();
     }
@@ -195,24 +190,22 @@
     {
         if (firstRender)
         {
-            // request les javascripts obligatoires pour la page
-            JSRuntime.InvokeAsync<string>("requestScripts", JsonConvert.SerializeObject(new string[] { "/js/programme.js" }));
-            JSRuntime.InvokeAsync<string>("initForm");
+            JSRuntime.InvokeAsync<string>("initTable", "#dataTable");
         }
     }
 
     private void Add()
     {
         // affiche le formulaire pour que l'utilisateur puisse entrer de nouvelles données
-        JSRuntime.InvokeAsync<string>("showForm");
         newProgram = new Programmes();
+        if (!choixDepartement.Any())
+            choixDepartement = _context.Departements.ToList();
         IsCreating = true;
     }
 
     private void Cancel()
     {
         // cancel la demande du formulaire et retourne la table
-        JSRuntime.InvokeAsync<string>("hideForm");
         newProgram = new Programmes();
         IsCreating = false;
     }
@@ -220,43 +213,26 @@
     private async void SaveAsync()
     {
         //sauvegarde le nouveau programme dans la base de données
-        IsValidating = true;
-        IsTitleValid = !string.IsNullOrEmpty(newProgram.Designation);
-        IsDescriptionValid = !string.IsNullOrEmpty(newProgram.Description);
-
-        if (IsTitleValid && IsDescriptionValid)
+        // ajoute les données dans la database
+        try
         {
-            // ajoute les données dans la database
-            try
-            {
-                _context.Programmes.Add(newProgram);
-                _context.SaveChanges();
+            // authentification de l'utilisateur avec le service injecté inscrit en haut
+            var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+            var user = authState.User;
 
-                newProgram = new Programmes();
-
-                // si le check est true redébuter le formulaire
-                if (BulkCheck)
-                {
-                    IsCreating = true;
-                    IsValidating = false;
-                }
-                else
-                {
-                    IsCreating = false;
-                }
-
-                // update le ui
-                StateHasChanged();
-            }
-            catch (Exception e)
-            {
-                await JSRuntime.InvokeAsync<string>("alertDatabaseError");
-            }
+            // est le numéro de la personne connecté
+            newProgram.TrkUid = user.Identity.Name;
+            _context.Programmes.Add(newProgram);
+            _context.SaveChanges();
+            // changement de la référence pour renouveler le ui.
+            newProgram = new Programmes();
+            // update le ui
+            StateHasChanged();
         }
-
+        catch (Exception e)
+        {
+            await JSRuntime.InvokeAsync<string>("alertDatabaseError");
+        }
         StateHasChanged();
     }
 }
-
-<style>
-</style>

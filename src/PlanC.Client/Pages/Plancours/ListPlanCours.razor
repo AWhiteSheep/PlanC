@@ -48,10 +48,9 @@
             {
                 <EjsGrid @ref="grid" DataSource="@PlansCours" AllowSorting="true" AllowPaging="true" AllowExcelExport="true"
                          ContextMenuItems="@(new List<ContextMenuItemModel>() {
-                                                 new ContextMenuItemModel { Text = "Ouvrir plan cours", Target = ".e-content", Id = "open" },
-                                                 new ContextMenuItemModel { Text = "Supprimer", Target = ".e-content", Id = "delete" },
-                                                 new ContextMenuItemModel { Text = "Sauvegarder en tant que word", Target = ".e-content", Id = "word" }
-                                             })">
+                                                 new ContextMenuItemModel() { Text = "Ouvrir plan cours", Target = ".e-content", Id = "open" },
+                                                 new ContextMenuItemModel() { Text = "Supprimer", Target = ".e-content", Id = "delete" },
+                                                 new ContextMenuItemModel() { Text = "Sauvegarder en tant que word", Target = ".e-content", Id = "word" } })">
                     <GridEditSettings AllowAdding="true" AllowDeleting="true"></GridEditSettings>
                     <GridPageSettings PageSize="8"></GridPageSettings>
                     <!-- Les événements se passant sur la table et les paramètre -->
@@ -119,6 +118,13 @@
             // envoit l'usager vers l'édition du plan de cours passé en paramètre
             _NavigationManager.NavigateTo($"/plancours/{Selected.CoursId}/create");
         }
+        else if (args.Item.Id == "delete")
+        {
+            PlansCours.Remove(Selected);
+            context.PlansCours.Remove(Selected);
+            grid.Refresh();
+            SaveProgress();
+        }
         else
         {
             // empêche les erreurs pas rapport à la transaction
@@ -135,7 +141,7 @@
             AspNetUsers teacher = context.AspNetUsers.Include(t => t.DisponibilitesUtilisateur).FirstOrDefault(d => d.UserName == Selected.TchrUid);
             // ramene le dernier plan de cadre créer lié au cours donné
             PlansCadres coursTemplate = context.PlansCadres
-                        .FirstOrDefault(e => e.CoursId.Trim() == Selected.CoursId.Trim());                       
+                        .FirstOrDefault(e => e.CoursId.Trim() == Selected.CoursId.Trim());
 
             // ramene le programme nominé pour le plan cadre
             Programmes programmeTemplate = context.Programmes.FirstOrDefault(v => v.Id == coursTemplate.ProgrammeId);
@@ -197,7 +203,7 @@
 
             // début de la création du plan cadre les entités liés sont loader dans la page
             // création de la template pour créer le plan de cours
-            var coursePlan = new PlanC.DocumentGeneration.CoursePlan.CoursePlan
+            var coursePlan = new PlanC.DocumentGeneration.CoursePlan.CoursePlan()
             {
                 CourseId = Selected.CoursId,
                 CourseTitle = coursTemplate.DenominationCours,
@@ -205,7 +211,7 @@
                 TimeDistribution = new TimeDistribution(coursTemplate.TheoryHoursAccessor, coursTemplate.PracticeHoursAccessor, coursTemplate.HomeHoursAccessor),
                 Session = Selected.Session.Titre,
                 Campus = teacher._Campus,
-                Teacher = new PlanC.DocumentGeneration.CoursePlan.Teacher
+                Teacher = new PlanC.DocumentGeneration.CoursePlan.Teacher()
                 {
                     Name = teacher.Snm + " " + teacher.GvnNm,
                     EmailAddress = teacher.Email,
@@ -223,7 +229,7 @@
                             coursTemplate.IntentionEducative
                         },
                 Skills = Skills,
-                Exams = new Collection<Exam>
+                Exams = new Collection<Exam>()
                     {
                             new Exam
                             {
@@ -262,12 +268,6 @@
                 }
                 Js.SaveAs("Planscours-" + DateTime.Now.ToString() + ".docx", stream.ToArray());
             }
-        else if (args.Item.Id == "delete")
-        {
-            PlansCours.Remove(Selected);
-            context.PlansCours.Remove(Selected);
-            grid.Refresh();
-            SaveProgress();
         }
     }
 
