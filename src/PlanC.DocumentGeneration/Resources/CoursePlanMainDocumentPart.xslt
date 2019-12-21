@@ -38,6 +38,24 @@
   <xsl:output method="xml"
               omit-xml-declaration="yes"
               indent="yes"/>
+  
+  <!--
+  Les propriétés par défaut d'une section. Nécéssaire, puisqu'on doit répéter ces infos à chaque nouvelle section.
+  Sinon, Word utilise ses propres valeurs par défaut.
+  -->
+  <xsl:variable name="default-sectPr-child">
+    <w:pgSz w:w="12240"
+            w:h="15840"/>
+    <w:pgMar w:top="1440"
+             w:right="1440"
+             w:bottom="1440"
+             w:left="1440"
+             w:header="708"
+             w:footer="708"
+             w:gutter="0"/>
+    <w:cols w:space="708"/>
+    <w:docGrid w:linePitch="360"/>
+  </xsl:variable>
 
   <!--Modèle pour l'ensemble du document-->
   <xsl:template match="/">
@@ -642,22 +660,9 @@
         <!--Saut de section marquant la fin de la page titre-->
         <w:p>
           <w:pPr>
-            <w:jc w:val="center"/>
-            <w:rPr>
-              <w:lang w:val="fr-CA"/>
-            </w:rPr>
             <w:sectPr>
-              <w:pgSz w:w="12240"
-                      w:h="15840"/>
-              <w:pgMar w:top="1440"
-                       w:right="1440"
-                       w:bottom="1440"
-                       w:left="1440"
-                       w:header="709"
-                       w:footer="709"
-                       w:gutter="0"/>
-              <w:cols w:space="708"/>
-              <w:docGrid w:linePitch="360"/>
+              <xsl:copy-of select="$default-sectPr-child"/>
+              <w:type w:val="nextPage"/>
             </w:sectPr>
           </w:pPr>
         </w:p>
@@ -667,7 +672,6 @@
             <w:pStyle w:val="Heading1"/>
           </w:pPr>
           <w:r>
-            <w:lastRenderedPageBreak/>
             <w:t>Introduction</w:t>
           </w:r>
         </w:p>
@@ -744,19 +748,31 @@
           <xsl:with-param name="array" select="/CoursePlan/PedagogicalIntents"/>
         </xsl:call-template>
         <!--Les compétences-->
+        <!--Saut de section page suivante-->
+        <w:p>
+          <w:pPr>
+            <w:sectPr>
+              <xsl:copy-of select="$default-sectPr-child"/>
+              <w:type w:val="nextPage" />
+            </w:sectPr>
+          </w:pPr>
+        </w:p>
+        <!--L'intertitre et le tableau-->
+        <xsl:apply-templates select="/CoursePlan/Skills">
+          <xsl:with-param name="ordered-list-id">2</xsl:with-param>
+          <xsl:with-param name="unordered-list-id">3</xsl:with-param>
+        <xsl:with-param name="sectPr-child"
+                        select="$default-sectPr-child"/>
+        </xsl:apply-templates>
+        <!--Calendrier des activités-->
         <w:p>
           <w:pPr>
             <w:pStyle w:val="Heading1"/>
           </w:pPr>
           <w:r>
-            <w:t>Compétences</w:t>
+            <w:t>Calendrier des activités</w:t>
           </w:r>
         </w:p>
-        <xsl:apply-templates select="/CoursePlan/Skills">
-          <xsl:with-param name="ordered-list-id">2</xsl:with-param>
-          <xsl:with-param name="unordered-list-id">3</xsl:with-param>
-        </xsl:apply-templates>
-        <!--Calendrier des activités-->
         <w:tbl>
           <w:tblPr>
             <w:tblStyle w:val="TableGrid"/>
@@ -1049,17 +1065,7 @@
           <xsl:with-param name="list-id">55</xsl:with-param><!--TODO-->
         </xsl:call-template>
         <w:sectPr>
-          <w:pgSz w:w="12240"
-                  w:h="15840"/>
-          <w:pgMar w:top="1440"
-                   w:right="1440"
-                   w:bottom="1440"
-                   w:left="1440"
-                   w:header="708"
-                   w:footer="708"
-                   w:gutter="0"/>
-          <w:cols w:space="708"/>
-          <w:docGrid w:linePitch="360"/>
+          <xsl:copy-of select="$default-sectPr-child"/>
         </w:sectPr>
       </w:body>
     </w:document>

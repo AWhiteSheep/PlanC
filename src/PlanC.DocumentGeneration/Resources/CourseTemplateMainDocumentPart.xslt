@@ -19,6 +19,26 @@
   <xsl:decimal-format decimal-separator=","
                       grouping-separator=" "/>
 
+  <!--
+  Les propriétés par défaut d'une section. Nécéssaire, puisqu'on doit répéter ces infos à chaque nouvelle section.
+  Sinon, Word utilise ses propres valeurs par défaut.
+  -->
+  <xsl:variable name="default-sectPr-child">
+    <w:footerReference w:type="default"
+                       r:id="rId7"/>
+    <w:pgSz w:w="12240"
+            w:h="15840"/>
+    <w:pgMar w:top="1440"
+             w:right="1440"
+             w:bottom="1440"
+             w:left="1440"
+             w:header="708"
+             w:footer="708"
+             w:gutter="0"/>
+    <w:cols w:space="708"/>
+    <w:docGrid w:linePitch="360"/>
+  </xsl:variable>
+
   <!--Modèle pour une 'date clée' dans le plan-cadre (p. ex., la date de recommendation d'adoption du département)-->
   <xsl:template name="key-date-paragraph">
     <xsl:param name="header-text"/>
@@ -220,29 +240,21 @@
         </w:p>
         <xsl:apply-templates select="/CourseTemplate/Prerequisites"/>        
         <!--Compétences-->
-        <!--TODO Utiliser XSLT pour la partie Numérotation-->
+        <!--Saut de section page suivante-->
         <w:p>
           <w:pPr>
             <w:sectPr>
-              <w:footerReference w:type="default"
-                                 r:id="rId7"/>
+              <xsl:copy-of select="$default-sectPr-child"/>
               <w:type w:val="nextPage" />
             </w:sectPr>
           </w:pPr>
         </w:p>
-        <w:p>
-          <w:pPr>
-            <w:pStyle w:val="Heading1"/>
-          </w:pPr>
-          <w:r>
-            <w:t>Compétences</w:t>
-          </w:r>
-        </w:p>
-        <!--Tableaux des compétences-->
+        <!--L'intertitre et le tableau-->
         <xsl:apply-templates select="/CourseTemplate/Skills">
           <xsl:with-param name="ordered-list-id">2</xsl:with-param>
           <xsl:with-param name="unordered-list-id">3</xsl:with-param>
-          <xsl:with-param name="footer-id">rId7</xsl:with-param>
+          <xsl:with-param name="sectPr-child"
+                          select="$default-sectPr-child"/>
         </xsl:apply-templates>
         <!--Évaluation finale-->
         <w:p>
@@ -286,19 +298,7 @@
                           select="/CourseTemplate/BoardApprovalDate"/>
         </xsl:call-template>
         <w:sectPr>
-          <w:footerReference w:type="default"
-                             r:id="rId7"/>
-          <w:pgSz w:w="12240"
-                  w:h="15840"/>
-          <w:pgMar w:top="1440"
-                   w:right="1440"
-                   w:bottom="1440"
-                   w:left="1440"
-                   w:header="708"
-                   w:footer="708"
-                   w:gutter="0"/>
-          <w:cols w:space="708"/>
-          <w:docGrid w:linePitch="360"/>
+          <xsl:copy-of select="$default-sectPr-child"/>
         </w:sectPr>
       </w:body>
     </w:document>
